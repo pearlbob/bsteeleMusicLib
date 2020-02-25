@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/GridCoordinate.dart';
+import 'package:bsteeleMusicLib/gridCoordinate.dart';
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/ChordSection.dart';
 import 'package:bsteeleMusicLib/songs/ChordSectionLocation.dart';

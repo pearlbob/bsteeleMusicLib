@@ -98,7 +98,7 @@ coerced to reflect the songlist's last modification for that song.
           }
           File inputFile = File(args[i]);
           logger.i(
-              "a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}");
+              'a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
 
           if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
             logger.e('missing input file/directory for -a: ${inputFile.path}');
@@ -120,22 +120,24 @@ coerced to reflect the songlist's last modification for that song.
           if (i < args.length - 1) {
             i++;
             _outputDirectory = Directory(args[i]);
-            if (_verbose)
+            if (_verbose) {
               logger.d('output path: ${_outputDirectory.toString()}');
+            }
             if (!(await _outputDirectory.exists())) {
-              if (_verbose)
+              if (_verbose) {
                 logger.d('output path: ${_outputDirectory.toString()}'
                         ' is missing' +
                     (_outputDirectory.isAbsolute
-                        ? ""
+                        ? ''
                         : ' at ${Directory.current}'));
+              }
 
               Directory parent = _outputDirectory.parent;
               if (!(await parent.exists())) {
                 logger.d('parent path: ${parent.toString()}'
                         ' is missing' +
                     (_outputDirectory.isAbsolute
-                        ? ""
+                        ? ''
                         : ' at ${Directory.current}'));
                 return;
               }
@@ -217,16 +219,17 @@ coerced to reflect the songlist's last modification for that song.
             logger.d('input file path: ${_file.toString()}'
                     ' is missing' +
                 (_outputDirectory.isAbsolute
-                    ? ""
+                    ? ''
                     : ' at ${Directory.current}'));
 
             exit(-1);
             return;
           }
 
-          if (_verbose)
+          if (_verbose) {
             logger.d(
                 'input file: ${_file.toString()}, file size: ${await _file.length()}');
+          }
 
           List<Song> songs;
           if (_file.path.endsWith('.zip')) {
@@ -243,8 +246,9 @@ coerced to reflect the songlist's last modification for that song.
                 songs = Song.songListFromJson(utf8.decode(data));
               }
             }
-          } else
+          } else {
             songs = Song.songListFromJson(_file.readAsStringSync());
+          }
 
           if (songs == null || songs.isEmpty) {
             logger.e('didn\'t find songs in ${_file.toString()}');

@@ -56,8 +56,9 @@ class Key implements Comparable<Key> {
 
   static List<Key> keysByHalfStepFrom(Key key) {
     List<Key> ret = List(halfStepsPerOctave+1);
-    for (int i = 0; i <= halfStepsPerOctave; i++)
+    for (int i = 0; i <= halfStepsPerOctave; i++) {
       ret[i] = byHalfStep(offset: key._halfStep + i);
+    }
     return ret;
   }
 
@@ -77,7 +78,7 @@ class Key implements Comparable<Key> {
               MusicConstants.getMajorDiatonicChordModifier(i));
         }
 
-        key._minorDiatonics = new List<ScaleChord>(notesPerScale);
+        key._minorDiatonics = List<ScaleChord>(notesPerScale);
         for (int i = 0; i < notesPerScale; i++) {
           key._minorDiatonics[i]= ScaleChord(key.getMinorScaleByNote(i),
               MusicConstants.getMinorDiatonicChordModifier(i));
@@ -102,7 +103,7 @@ class Key implements Comparable<Key> {
   static KeyEnum _getKeyEnum(String s) {
     //  lazy eval
     if (_keyEnums == null) {
-      _keyEnums = Map<String, KeyEnum>();
+      _keyEnums = <String, KeyEnum>{};
       for (KeyEnum ke in KeyEnum.values) {
         _keyEnums[_keyEnumToString(ke)] = ke;
       }
@@ -110,10 +111,10 @@ class Key implements Comparable<Key> {
     return _keyEnums[s];
   }
 
-  static final RegExp _hashSignRegExp = new RegExp(r'[♯#]');
+  static final RegExp _hashSignRegExp = RegExp(r'[♯#]');
 
   static Key parseString(String s) {
-    s = s.replaceAll("♭", "b").replaceAll(_hashSignRegExp, "s");
+    s = s.replaceAll('♭', 'b').replaceAll(_hashSignRegExp, 's');
     KeyEnum keyEnum = _getKeyEnum(s);
     return get(keyEnum);
   }
@@ -171,8 +172,9 @@ class Key implements Comparable<Key> {
 
   /// Return the key represented by the given integer value.
   static Key getKeyByValue(int keyValue) {
-    for (Key key in _getKeys().values)
+    for (Key key in _getKeys().values) {
       if (key._keyValue == keyValue) return key;
+    }
     return get(KeyEnum.C); //  not found, so use the default, expected to be C
   }
 
@@ -223,8 +225,9 @@ class Key implements Comparable<Key> {
             if ((diatonic = diatonic.getAlias()) != null) {
               diatonicScaleNote = diatonic.scaleNote;
               if (diatonic != null &&
-                  (count = useMap[diatonicScaleNote]) != null)
+                  (count = useMap[diatonicScaleNote]) != null) {
                 score += count * guessWeights[i];
+              }
             }
           }
         }
@@ -289,10 +292,11 @@ class Key implements Comparable<Key> {
         : ScaleNote.getFlatByHalfStep(halfSteps);
 
     //  deal with exceptions at +-6
-    if (_keyValue == 6 && ret == ScaleNote.get(ScaleNoteEnum.F))
+    if (_keyValue == 6 && ret == ScaleNote.get(ScaleNoteEnum.F)) {
       return ScaleNote.get(ScaleNoteEnum.Es);
-    else if (_keyValue == -6 && ret == ScaleNote.get(ScaleNoteEnum.B))
+    } else if (_keyValue == -6 && ret == ScaleNote.get(ScaleNoteEnum.B)) {
       return ScaleNote.get(ScaleNoteEnum.Cb);
+    }
     return ret;
   }
 

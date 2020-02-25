@@ -1,0 +1,6 @@
+#!/bin/tcsh
+#set echo; set verbose
+
+set dir=~/GitHub/bsteeleMusicLib
+
+dart2native $dir/lib/bsteeleMusicUtil.dart -o ~/bin/bsteeleMusicUtil

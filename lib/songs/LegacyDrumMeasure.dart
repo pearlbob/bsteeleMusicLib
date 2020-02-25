@@ -75,7 +75,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   void setHighHat(String highHat) {
-    this.highHat = (highHat == null ? "" : highHat);
+    this.highHat = (highHat ?? '');
     _isSilent = null;
   }
 
@@ -84,7 +84,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   void setSnare(String snare) {
-    this.snare = (snare == null ? "" : snare);
+    this.snare = (snare ?? '');
     _isSilent = null;
   }
 
@@ -93,13 +93,12 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   void setKick(String kick) {
-    this.kick = (kick == null ? "" : kick);
+    this.kick = (kick ?? '');
     _isSilent = null;
   }
 
   bool isSilent() {
-    if (_isSilent == null)
-      _isSilent = !(regExpHasX.hasMatch(highHat) ||
+    _isSilent ??= !(regExpHasX.hasMatch(highHat) ||
           regExpHasX.hasMatch(snare) ||
           regExpHasX.hasMatch(kick));
     return _isSilent;
@@ -107,7 +106,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
 
   @override
   String toString() {
-    return "{" + highHat + ", " + snare + ", " + kick + '}';
+    return '{' + highHat + ', ' + snare + ', ' + kick + '}';
   }
 
   @override
@@ -141,9 +140,9 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
     return ret;
   }
 
-  String highHat = "";
-  String snare = "";
-  String kick = "";
+  String highHat = '';
+  String snare = '';
+  String kick = '';
   bool _isSilent;
-  static final RegExp regExpHasX = RegExp(".*[xX].*");
+  static final RegExp regExpHasX = RegExp('.*[xX].*');
 }

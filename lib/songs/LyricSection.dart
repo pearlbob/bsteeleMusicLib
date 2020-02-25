@@ -24,7 +24,7 @@ class LyricSection implements Comparable<LyricSection> {
 //  }
 
   void add(String lyricsLine) {
-    logger.v("LyricSection.add($lyricsLine)");
+    logger.v('LyricSection.add($lyricsLine)');
     _lyricsLines.add(lyricsLine);
   }
 

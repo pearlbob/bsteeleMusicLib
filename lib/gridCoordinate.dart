@@ -5,7 +5,7 @@ class GridCoordinate implements Comparable<GridCoordinate> {
 
   @override
   String toString() {
-    return "(" + _row.toString() + "," + _col.toString() + ")";
+    return '(${_row.toString()}, ${_col.toString()})';
   }
 
   @override

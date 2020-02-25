@@ -23,12 +23,12 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   Measure.deepCopy(Measure measure) {
     if (measure == null) return;
 
-    this.beatCount = measure.beatCount;
+    beatCount = measure.beatCount;
 
     //  deep copy
-    List<Chord> chords = new List();
+    List<Chord> chords = List();
     for (Chord chord in measure.chords) {
-      chords.add(new Chord.copy(chord));
+      chords.add( Chord.copy(chord));
     }
     this.chords = chords;
 

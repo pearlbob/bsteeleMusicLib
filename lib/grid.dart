@@ -30,17 +30,19 @@ class Grid<T> {
     }
 
     List<T> row = grid[x];
-    if (y == row.length)
+    if (y == row.length) {
       row.add(t);
-    else {
-      while (y > row.length - 1) row.add(null);
+    } else {
+      while (y > row.length - 1) {
+        row.add(null);
+      }
       row[y] = t;
     }
   }
 
   @override
   String toString() {
-    return "Grid{" + grid.toString() + '}';
+    return 'Grid{' + grid.toString() + '}';
   }
 
   T get(int x, int y) {

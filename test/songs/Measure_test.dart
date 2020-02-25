@@ -10,7 +10,7 @@ import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:logger/logger.dart';
 import "package:test/test.dart";
 
-import '../CustomMatchers.dart';
+import '../customMatchers.dart';
 
 void main() {
   Logger.level = Level.warning;

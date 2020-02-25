@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/Grid.dart';
+import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/ChordSection.dart';
 import 'package:bsteeleMusicLib/songs/Key.dart';
