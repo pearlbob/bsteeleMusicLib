@@ -12,30 +12,30 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.warning;
 
-  test("parse testing", () {
+  test('parse testing', () {
     int beatsPerBar = 4;
 
     {
-      expect(ChordSection.parseString("i:", beatsPerBar).toString().trim(),
-          ChordSectionLocation.parseString("i:").toString());
+      expect(ChordSection.parseString('i:', beatsPerBar).toString().trim(),
+          ChordSectionLocation.parseString('i:').toString());
       ChordSectionLocation chordSectionLocation =
-          ChordSectionLocation.parseString("i:");
-      expect(chordSectionLocation.toString(), "I:");
+          ChordSectionLocation.parseString('i:');
+      expect(chordSectionLocation.toString(), 'I:');
       expect(chordSectionLocation.isPhrase, isFalse);
       expect(chordSectionLocation.isMeasure, isFalse);
 
-      chordSectionLocation = ChordSectionLocation.parseString("verse2:");
-      expect(chordSectionLocation.toString(), "V2:");
+      chordSectionLocation = ChordSectionLocation.parseString('verse2:');
+      expect(chordSectionLocation.toString(), 'V2:');
       expect(chordSectionLocation.isPhrase, isFalse);
       expect(chordSectionLocation.isMeasure, isFalse);
 
-      chordSectionLocation = ChordSectionLocation.parseString("verse2:0");
-      expect(chordSectionLocation.toString(), "V2:0");
+      chordSectionLocation = ChordSectionLocation.parseString('verse2:0');
+      expect(chordSectionLocation.toString(), 'V2:0');
       expect(chordSectionLocation.isPhrase, isTrue);
       expect(chordSectionLocation.isMeasure, isFalse);
 
-      chordSectionLocation = ChordSectionLocation.parseString("verse2:0:12");
-      expect(chordSectionLocation.toString(), "V2:0:12");
+      chordSectionLocation = ChordSectionLocation.parseString('verse2:0:12');
+      expect(chordSectionLocation.toString(), 'V2:0:12');
       expect(chordSectionLocation.isPhrase, isFalse);
       expect(chordSectionLocation.isMeasure, isTrue);
     }
@@ -50,9 +50,9 @@ void main() {
                     phraseIndex: phraseIndex, measureIndex: index);
             ChordSectionLocation chordSectionLocation =
                 ChordSectionLocation.parseString(sectionVersion.id.toString() +
-                    ":" +
+                    ':' +
                     phraseIndex.toString() +
-                    ":" +
+                    ':' +
                     index.toString());
             logger.d(chordSectionLocationExpected.toString());
             expect(chordSectionLocation, chordSectionLocationExpected);
@@ -69,7 +69,7 @@ void main() {
             ChordSectionLocation chordSectionLocationExpected =
                 ChordSectionLocation(sectionVersion,
                     phraseIndex: phraseIndex, measureIndex: index);
-            logger.i("chordSectionLocationExpected: " +
+            logger.i('chordSectionLocationExpected: ' +
                 chordSectionLocationExpected.toString());
             ChordSectionLocation chordSectionLocation =
                 ChordSectionLocation.parseString(
@@ -85,24 +85,24 @@ void main() {
   /**
    * find the chord section in the song
    */
-  test("find testing", () {
+  test('find testing', () {
     int beatsPerBar = 4;
     SongBase a = SongBase.createSongBase(
-        "A",
-        "bob",
-        "bsteele.com",
+        'A',
+        'bob',
+        'bsteele.com',
         Key.getDefault(),
         100,
         beatsPerBar,
         4,
-        "i: A B C D V: D E F F# " +
-            "v1:    Em7 E E G \n" +
-            "       C D E Eb7 x2\n" +
-            "v2:    A B C D |\n" +
-            "       E F G7 G#m | x2\n" +
-            "       D C GB GbB \n" +
-            "C: F F# G G# Ab A O: C C C C B",
-        "i:\nv: bob, bob, bob berand\nv1: lala \nv2: sosos \nc: sing chorus here \no:");
+        'i: A B C D V: D E F F# '
+            'v1:    Em7 E E G \n'
+            '       C D E Eb7 x2\n'
+            'v2:    A B C D |\n'
+            '       E F G7 G#m | x2\n'
+            '       D C GB GbB \n'
+            'C: F F# G G# Ab A O: C C C C B',
+        'i:\nv: bob, bob, bob berand\nv1: lala \nv2: sosos \nc: sing chorus here \no:');
     Section section = Section.get(SectionEnum.verse);
     int v = 1;
     SectionVersion sectionVersion = SectionVersion(section, v);
@@ -110,13 +110,13 @@ void main() {
     expect(
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 0)),
-        Measure.parseString("Em7", beatsPerBar));
+        Measure.parseString('Em7', beatsPerBar));
     expect(
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 3)),
-        Measure.parseString("G", beatsPerBar, endOfRow: true));
+        Measure.parseString('G', beatsPerBar, endOfRow: true));
     expect(
-        Measure.parseString("Eb7", beatsPerBar),
+        Measure.parseString('Eb7', beatsPerBar),
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 1, measureIndex: 3)));
     expect(
@@ -124,23 +124,23 @@ void main() {
             phraseIndex: 0, measureIndex: 9)),
         isNull);
 
-    sectionVersion = SectionVersion.parseString("v2:");
+    sectionVersion = SectionVersion.parseString('v2:');
     expect(
-        Measure.parseString("A", beatsPerBar),
+        Measure.parseString('A', beatsPerBar),
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 0)));
     expect(
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 3)),
-        Measure.parseString("D", beatsPerBar, endOfRow: true));
+        Measure.parseString('D', beatsPerBar, endOfRow: true));
     expect(
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 7)),
-        Measure.parseString("G#m", beatsPerBar));
+        Measure.parseString('G#m', beatsPerBar));
     expect(
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 1, measureIndex: 3)),
-        Measure.parseString("GbB", beatsPerBar, endOfRow: true));
+        Measure.parseString('GbB', beatsPerBar, endOfRow: true));
     expect(
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 1, measureIndex: 4)),
@@ -160,13 +160,13 @@ void main() {
 
     sectionVersion = SectionVersion(section, 0);
     expect(
-        Measure.parseString("F", beatsPerBar),
+        Measure.parseString('F', beatsPerBar),
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 0)));
 
     sectionVersion = SectionVersion(Section.get(SectionEnum.outro), 0);
     expect(
-        Measure.parseString("B", beatsPerBar),
+        Measure.parseString('B', beatsPerBar),
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion,
             phraseIndex: 0, measureIndex: 4)));
     expect(

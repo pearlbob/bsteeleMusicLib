@@ -18,11 +18,11 @@ import 'SectionVersion.dart';
 
 class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   ChordSection(this._sectionVersion, List<Phrase> phrases) {
-    this._phrases = (phrases != null ? phrases : List());
+    _phrases = (phrases ?? []);
   }
 
   static ChordSection getDefault() {
-    return new ChordSection(SectionVersion.getDefault(), null);
+    return ChordSection(SectionVersion.getDefault(), null);
   }
 
   @override
@@ -31,30 +31,28 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   static ChordSection parseString(String s, int beatsPerBar) {
-    return parse(new MarkedString(s), beatsPerBar, false);
+    return parse(MarkedString(s), beatsPerBar, false);
   }
 
-  static ChordSection parse(
-      MarkedString markedString, int beatsPerBar, bool strict) {
-    if (markedString == null || markedString.isEmpty) throw "no data to parse";
+  static ChordSection parse(MarkedString markedString, int beatsPerBar, bool strict) {
+    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
     markedString.stripLeadingWhitespace(); //  includes newline
-    if (markedString.isEmpty) throw "no data to parse";
+    if (markedString.isEmpty) throw 'no data to parse';
 
     SectionVersion sectionVersion;
     try {
       sectionVersion = SectionVersion.parse(markedString);
     } catch (e) {
-      if (strict) throw e;
+      if (strict) rethrow;
 
       //  cope with badly formatted songs
-      sectionVersion =
-          new SectionVersion.bySection(Section.get(SectionEnum.verse));
+      sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
     }
 
-    List<Phrase> phrases = List();
-    List<Measure> measures = List();
-    List<Measure> lineMeasures = List();
+    List<Phrase> phrases = [];
+    List<Measure> measures = [];
+    List<Measure> lineMeasures = [];
     //  bool repeatMarker = false;
     Measure lastMeasure;
     for (int i = 0; i < 2000; i++) //  arbitrary safety hard limit
@@ -67,18 +65,19 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
       try {
         //  look for a block repeat
-        MeasureRepeat measureRepeat = MeasureRepeat.parse(
-            markedString, phrases.length, beatsPerBar, null);
+        MeasureRepeat measureRepeat = MeasureRepeat.parse(markedString, phrases.length, beatsPerBar, null);
         if (measureRepeat != null) {
           //  don't assume every line has an eol
-          for (Measure m in lineMeasures) measures.add(m);
-          lineMeasures = List();
+          for (Measure m in lineMeasures) {
+            measures.add(m);
+          }
+          lineMeasures = [];
           if (measures.isNotEmpty) {
-            phrases.add(new Phrase(measures, phrases.length));
+            phrases.add(Phrase(measures, phrases.length));
           }
           measureRepeat.setPhraseIndex(phrases.length);
           phrases.add(measureRepeat);
-          measures = List();
+          measures = [];
           lastMeasure = null;
           continue;
         }
@@ -88,18 +87,19 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
       try {
         //  look for a phrase
-        Phrase phrase =
-            Phrase.parse(markedString, phrases.length, beatsPerBar, null);
+        Phrase phrase = Phrase.parse(markedString, phrases.length, beatsPerBar, null);
         if (phrase != null) {
           //  don't assume every line has an eol
-          for (Measure m in lineMeasures) measures.add(m);
-          lineMeasures = List();
+          for (Measure m in lineMeasures) {
+            measures.add(m);
+          }
+          lineMeasures = [];
           if (measures.isNotEmpty) {
-            phrases.add(new Phrase(measures, phrases.length));
+            phrases.add(Phrase(measures, phrases.length));
           }
           phrase.setPhraseIndex(phrases.length);
           phrases.add(phrase);
-          measures = List();
+          measures = [];
           lastMeasure = null;
           continue;
         }
@@ -120,7 +120,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       //  consume unused commas
       {
         String s = markedString.remainingStringLimited(10);
-        logger.d("s: " + s);
+        logger.d('s: ' + s);
         RegExpMatch mr = commaRegexp.firstMatch(s);
         if (mr != null) {
           markedString.consume(mr.group(0).length);
@@ -131,7 +131,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       try {
         //  look for a comment
         MeasureComment measureComment = MeasureComment.parse(markedString);
-        for (Measure m in lineMeasures) measures.add(m);
+        for (Measure m in lineMeasures) {
+          measures.add(m);
+        }
         lineMeasures.clear();
         lineMeasures.add(measureComment);
         continue;
@@ -141,44 +143,48 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
       //  chordSection has no choice, force junk into a comment
       {
-        int n = markedString
-            .indexOf("\n"); //  all comments end at the end of the line
-        String s = "";
-        if (n > 0)
+        int n = markedString.indexOf('\n'); //  all comments end at the end of the line
+        String s = '';
+        if (n > 0) {
           s = markedString.remainingStringLimited(n + 1);
-        else
+        } else {
           s = markedString.toString();
+        }
 
         RegExpMatch mr = commentRegExp.firstMatch(s);
 
-//  consume the comment
+        //  consume the comment
         if (mr != null) {
           s = mr.group(1);
           markedString.consume(mr.group(0).length);
-//  cope with unbalanced leading ('s and trailing )'s
-          s = s.replaceAll("^\\(", "").replaceAll(r"\)$", "");
-          s = s
-              .trim(); //  in case there is white space inside unbalanced parens
+          //  cope with unbalanced leading ('s and trailing )'s
+          s = s.replaceAll('^\\(', '').replaceAll(r'\)$', '');
+          s = s.trim(); //  in case there is white space inside unbalanced parens
 
-          MeasureComment measureComment = new MeasureComment(s);
-          for (Measure m in lineMeasures) measures.add(m);
+          MeasureComment measureComment = MeasureComment(s);
+          for (Measure m in lineMeasures) {
+            measures.add(m);
+          }
           lineMeasures.clear();
           lineMeasures.add(measureComment);
           continue;
-        } else
-          logger.i("here: " + s);
+        } else {
+          logger.i('here: ' + s);
+        }
       }
       logger.i("can't figure out: " + markedString.toString());
       throw "can't figure out: " + markedString.toString(); //  all whitespace
     }
 
 //  don't assume every line has an eol
-    for (Measure m in lineMeasures) measures.add(m);
+    for (Measure m in lineMeasures) {
+      measures.add(m);
+    }
     if (measures.isNotEmpty) {
-      phrases.add(new Phrase(measures, phrases.length));
+      phrases.add(Phrase(measures, phrases.length));
     }
 
-    ChordSection ret = new ChordSection(sectionVersion, phrases);
+    ChordSection ret = ChordSection(sectionVersion, phrases);
     return ret;
   }
 
@@ -195,7 +201,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
     Phrase newPhrase = newMeasureNode as Phrase;
 
-    if (_phrases == null) _phrases = List();
+    _phrases ??= [];
 
     if (_phrases.isEmpty) {
       _phrases.add(newPhrase);
@@ -223,7 +229,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
     Phrase newPhrase = newMeasureNode as Phrase;
 
-    if (_phrases == null) _phrases = List();
+    _phrases ??= [];
 
     if (_phrases.isEmpty) {
       _phrases.add(newPhrase);
@@ -239,11 +245,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   void _addPhraseAt(int index, Phrase m) {
-    if (_phrases == null) _phrases = List();
-    if (_phrases.length < index)
+    _phrases ??= [];
+    if (_phrases.length < index) {
       _phrases.add(m);
-    else
+    } else {
       _phrases.insert(index + 1, m);
+    }
   }
 
 //  void _addAllPhrasesAt(int index, List<Phrase> list) {
@@ -334,11 +341,11 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   /**
-   * Return the sectionVersion beats per minute
-   * or null to default to the song BPM.
-   *
-   * @return the sectionVersion BPM or null
-   */
+     * Return the sectionVersion beats per minute
+     * or null to default to the song BPM.
+     *
+     * @return the sectionVersion BPM or null
+     */
 //   Integer getBeatsPerMinute() {
 //    return bpm;
 //}
@@ -370,9 +377,11 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   String transpose(Key key, int halfSteps) {
     StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
-    if (_phrases != null)
-      for (Phrase phrase in _phrases)
+    if (_phrases != null) {
+      for (Phrase phrase in _phrases) {
         sb.write(phrase.transpose(key, halfSteps));
+      }
+    }
     return sb.toString();
   }
 
@@ -380,36 +389,39 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   MeasureNode transposeToKey(Key key) {
     List<Phrase> newPhrases;
     if (_phrases != null) {
-      newPhrases = List();
-      for (Phrase phrase in _phrases)
+      newPhrases = [];
+      for (Phrase phrase in _phrases) {
         newPhrases.add(phrase.transposeToKey(key) as Phrase);
+      }
     }
-    return new ChordSection(_sectionVersion, newPhrases);
+    return ChordSection(_sectionVersion, newPhrases);
   }
 
   @override
   String toMarkup() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
-    sb.write(" ");
+    sb.write(' ');
     sb.write(phrasesToMarkup());
     return sb.toString();
   }
 
   String phrasesToMarkup() {
     if (_phrases == null || _phrases.isEmpty) {
-      return "[]";
+      return '[]';
     }
-    StringBuffer sb = new StringBuffer();
-    for (Phrase phrase in _phrases) sb.write(phrase.toMarkup());
+    StringBuffer sb = StringBuffer();
+    for (Phrase phrase in _phrases) {
+      sb.write(phrase.toMarkup());
+    }
     return sb.toString();
   }
 
   @override
   String toEntry() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
-    sb.write("\n ");
+    sb.write('\n ');
     sb.write(phrasesToEntry());
     return sb.toString();
   }
@@ -427,37 +439,45 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   String phrasesToEntry() {
     if (_phrases == null || _phrases.isEmpty) {
-      return "[]";
+      return '[]';
     }
-    StringBuffer sb = new StringBuffer();
-    for (Phrase phrase in _phrases) sb.write(phrase.toEntry());
+    StringBuffer sb = StringBuffer();
+    for (Phrase phrase in _phrases) {
+      sb.write(phrase.toEntry());
+    }
     return sb.toString();
   }
 
   @override
   String toJson() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
-    sb.write("\n");
+    sb.write('\n');
     if (_phrases == null || _phrases.isEmpty) {
-      sb.write("[]");
-    } else
+      sb.write('[]');
+    } else {
       for (Phrase phrase in _phrases) {
         String s = phrase.toJson();
         sb.write(s);
-        if (!s.endsWith("\n")) sb.write("\n");
+        if (!s.endsWith('\n')) {
+          sb.write('\n');
+        }
       }
+    }
     return sb.toString();
   }
 
   ///Old style markup
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
-    sb.write("\n");
-    if (_phrases != null)
-      for (Phrase phrase in _phrases) sb.write(phrase.toString());
+    sb.write('\n');
+    if (_phrases != null) {
+      for (Phrase phrase in _phrases) {
+        sb.write(phrase.toString());
+      }
+    }
     return sb.toString();
   }
 
@@ -474,7 +494,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   void setPhrases(List<Phrase> phrases) {
-    this._phrases = phrases;
+    _phrases = phrases;
   }
 
   int getPhraseCount() {
@@ -509,8 +529,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     int ret = _sectionVersion.compareTo(o._sectionVersion);
     if (ret != 0) return ret;
 
-    if (_phrases.length != o._phrases.length)
-      return _phrases.length < o._phrases.length ? -1 : 1;
+    if (_phrases.length != o._phrases.length) return _phrases.length < o._phrases.length ? -1 : 1;
 
     for (int i = 0; i < _phrases.length; i++) {
       ret = _phrases[i].toMarkup().compareTo(o._phrases[i].toMarkup());
@@ -524,9 +543,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (identical(this, other)) {
       return true;
     }
-    return other is ChordSection &&
-        _sectionVersion == other._sectionVersion &&
-        listsEqual(_phrases, other._phrases);
+    return other is ChordSection && _sectionVersion == other._sectionVersion && listsEqual(_phrases, other._phrases);
   }
 
   @override
@@ -542,6 +559,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   List<Phrase> get phrases => _phrases;
   List<Phrase> _phrases;
 
-  static RegExp commaRegexp = RegExp("^\\s*,");
-  static RegExp commentRegExp = RegExp("^(\\S+)\\s+");
+  static RegExp commaRegexp = RegExp('^\\s*,');
+  static RegExp commentRegExp = RegExp('^(\\S+)\\s+');
 }

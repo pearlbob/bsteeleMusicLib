@@ -28,9 +28,10 @@ class MeasureRepeatExtension extends MeasureComment {
     return MeasureNodeType.decoration;
   }
 
+  @override
   @deprecated
   String getHtmlBlockId() {
-    return "RE";
+    return 'RE';
   }
 
   @override
@@ -40,7 +41,7 @@ class MeasureRepeatExtension extends MeasureComment {
 
   @override
   String toMarkup() {
-    return "";
+    return '';
   }
 
   @override
@@ -53,19 +54,19 @@ class MeasureRepeatExtension extends MeasureComment {
     return markerString;
   }
 
-  static final String uppperRight = "\u23A4";
-  static final String lowerRight = "\u23A6";
-  static final String uppperLeft = "\u23A1";
-  static final String lowerLeft = "\u23A3";
-  static final String extension = "\u23A5";
+  static final String uppperRight = '\u23A4';
+  static final String lowerRight = '\u23A6';
+  static final String uppperLeft = '\u23A1';
+  static final String lowerLeft = '\u23A3';
+  static final String extension = '\u23A5';
   static final MeasureRepeatExtension upperRightMeasureRepeatExtension =
-      new MeasureRepeatExtension(uppperRight);
+      MeasureRepeatExtension(uppperRight);
   static final MeasureRepeatExtension middleRightMeasureRepeatExtension =
-      new MeasureRepeatExtension(extension);
+      MeasureRepeatExtension(extension);
   static final MeasureRepeatExtension lowerRightMeasureRepeatExtension =
-      new MeasureRepeatExtension(lowerRight);
+      MeasureRepeatExtension(lowerRight);
   static final MeasureRepeatExtension nullMeasureRepeatExtension =
-      new MeasureRepeatExtension("");
+      MeasureRepeatExtension('');
 
   final String markerString;
 }

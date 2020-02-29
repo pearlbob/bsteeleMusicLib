@@ -10,12 +10,14 @@ the describe() method, which generates a textual description of the matcher
 
 class CompareTo extends Matcher {
   final Comparable _comparable;
-  CompareTo(comp) : this._comparable = comp;
-  bool matches(item, Map matchState) {
-    return item is Comparable &&
-        _comparable.compareTo(item)==0;
-  }
-  Description describe(Description description) =>
-      description.add('compare the actual with the expected ');
-}
 
+  CompareTo(comp) : _comparable = comp;
+
+  @override
+  bool matches(item, Map matchState) {
+    return item is Comparable && _comparable.compareTo(item) == 0;
+  }
+
+  @override
+  Description describe(Description description) => description.add('compare the actual with the expected ');
+}

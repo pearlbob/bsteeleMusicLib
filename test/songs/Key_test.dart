@@ -14,8 +14,8 @@ class _Help {
       ScaleNote sn = Key.get(keyEnum).getMajorScaleByNote(j);
       String s = sn.toMarkup();
       sb.write(s);
-      if (s.toString().length < 2) sb.write(" ");
-      sb.write(" ");
+      if (s.toString().length < 2) sb.write(' ');
+      sb.write(' ');
     }
     return sb.toString().trim();
   }
@@ -29,9 +29,9 @@ class _Help {
       int i = s.length;
       while (i < 4) {
         i++;
-        sb.write(" ");
+        sb.write(' ');
       }
-      sb.write(" ");
+      sb.write(' ');
     }
     return sb.toString().trim();
   }
@@ -40,33 +40,33 @@ class _Help {
 void main() {
   Logger.level = Level.info;
 
-  test("testGetKeyByValue testing", () {
+  test('testGetKeyByValue testing', () {
     //  the table of values
     for (int i = -6; i <= 6; i++) {
       Key key = Key.getKeyByValue(i);
       expect(i, key.getKeyValue());
-      logger.v((i >= 0 ? " " : "") +
+      logger.v((i >= 0 ? ' ' : '') +
               i.toString() +
-              " " +
+              ' ' +
               key.name
               //+ " toString: "
               +
-              " (" +
+              ' (' +
               key.toString() +
-              ")\t"
+              ')\t'
           //+ " html: " + key.toHtml()
           );
 
-      logger.i("\tscale: ");
+      logger.i('\tscale: ');
       for (int j = 0; j < 7; j++) {
         ScaleNote sn = key.getMajorScaleByNote(j);
         String s = sn.toString();
         logger.i(s);
-        if (s.toString().length < 2) logger.i(" ");
-        logger.i(" ");
+        if (s.toString().length < 2) logger.i(' ');
+        logger.i(' ');
       }
 
-      logger.i("\tdiatonics: ");
+      logger.i('\tdiatonics: ');
       for (int j = 0; j < 7; j++) {
         ScaleChord sc = key.getMajorDiatonicByDegree(j);
         String s = sc.toString();
@@ -74,61 +74,48 @@ void main() {
         int len = s.length;
         while (len < 4) {
           len++;
-          logger.i(" ");
+          logger.i(' ');
         }
-        logger.i(" ");
+        logger.i(' ');
       }
 
-      logger.i("\tall notes: ");
+      logger.i('\tall notes: ');
       for (int j = 0; j < 12; j++) {
         ScaleNote sn = key.getScaleNoteByHalfStep(j);
         String s = sn.toString();
         logger.i(s);
-        if (s.toString().length < 2) logger.i(" ");
-        logger.i(" ");
+        if (s.toString().length < 2) logger.i(' ');
+        logger.i(' ');
       }
     }
 
-    expect(_Help.majorScale(KeyEnum.Gb), "Gb Ab Bb Cb Db Eb F");
+    expect(_Help.majorScale(KeyEnum.Gb), 'Gb Ab Bb Cb Db Eb F');
     //  fixme: actual should be first on expect!
-    expect(_Help.majorScale(KeyEnum.Db), "Db Eb F  Gb Ab Bb C");
-    expect(_Help.majorScale(KeyEnum.Ab), "Ab Bb C  Db Eb F  G");
-    expect(_Help.majorScale(KeyEnum.Eb), "Eb F  G  Ab Bb C  D");
-    expect(_Help.majorScale(KeyEnum.Bb), "Bb C  D  Eb F  G  A");
-    expect(_Help.majorScale(KeyEnum.F), "F  G  A  Bb C  D  E");
-    expect(_Help.majorScale(KeyEnum.C), "C  D  E  F  G  A  B");
-    expect(_Help.majorScale(KeyEnum.G), "G  A  B  C  D  E  F#");
-    expect(_Help.majorScale(KeyEnum.D), "D  E  F# G  A  B  C#");
-    expect(_Help.majorScale(KeyEnum.E), "E  F# G# A  B  C# D#");
-    expect(_Help.majorScale(KeyEnum.B), "B  C# D# E  F# G# A#");
-    expect(_Help.majorScale(KeyEnum.Fs), "F# G# A# B  C# D# E#");
+    expect(_Help.majorScale(KeyEnum.Db), 'Db Eb F  Gb Ab Bb C');
+    expect(_Help.majorScale(KeyEnum.Ab), 'Ab Bb C  Db Eb F  G');
+    expect(_Help.majorScale(KeyEnum.Eb), 'Eb F  G  Ab Bb C  D');
+    expect(_Help.majorScale(KeyEnum.Bb), 'Bb C  D  Eb F  G  A');
+    expect(_Help.majorScale(KeyEnum.F), 'F  G  A  Bb C  D  E');
+    expect(_Help.majorScale(KeyEnum.C), 'C  D  E  F  G  A  B');
+    expect(_Help.majorScale(KeyEnum.G), 'G  A  B  C  D  E  F#');
+    expect(_Help.majorScale(KeyEnum.D), 'D  E  F# G  A  B  C#');
+    expect(_Help.majorScale(KeyEnum.E), 'E  F# G# A  B  C# D#');
+    expect(_Help.majorScale(KeyEnum.B), 'B  C# D# E  F# G# A#');
+    expect(_Help.majorScale(KeyEnum.Fs), 'F# G# A# B  C# D# E#');
 
-    expect(_Help.diatonicByDegree(KeyEnum.Gb),
-        "Gb   Abm  Bbm  Cb   Db7  Ebm  Fm7b5");
-    expect("Db   Ebm  Fm   Gb   Ab7  Bbm  Cm7b5",
-        _Help.diatonicByDegree(KeyEnum.Db));
-    expect("Ab   Bbm  Cm   Db   Eb7  Fm   Gm7b5",
-        _Help.diatonicByDegree(KeyEnum.Ab));
-    expect("Eb   Fm   Gm   Ab   Bb7  Cm   Dm7b5",
-        _Help.diatonicByDegree(KeyEnum.Eb));
-    expect("Bb   Cm   Dm   Eb   F7   Gm   Am7b5",
-        _Help.diatonicByDegree(KeyEnum.Bb));
-    expect("F    Gm   Am   Bb   C7   Dm   Em7b5",
-        _Help.diatonicByDegree(KeyEnum.F));
-    expect("C    Dm   Em   F    G7   Am   Bm7b5",
-        _Help.diatonicByDegree(KeyEnum.C));
-    expect("G    Am   Bm   C    D7   Em   F#m7b5",
-        _Help.diatonicByDegree(KeyEnum.G));
-    expect("D    Em   F#m  G    A7   Bm   C#m7b5",
-        _Help.diatonicByDegree(KeyEnum.D));
-    expect("A    Bm   C#m  D    E7   F#m  G#m7b5",
-        _Help.diatonicByDegree(KeyEnum.A));
-    expect("E    F#m  G#m  A    B7   C#m  D#m7b5",
-        _Help.diatonicByDegree(KeyEnum.E));
-    expect("B    C#m  D#m  E    F#7  G#m  A#m7b5",
-        _Help.diatonicByDegree(KeyEnum.B));
-    expect("F#   G#m  A#m  B    C#7  D#m  E#m7b5",
-        _Help.diatonicByDegree(KeyEnum.Fs));
+    expect(_Help.diatonicByDegree(KeyEnum.Gb), 'Gb   Abm  Bbm  Cb   Db7  Ebm  Fm7b5');
+    expect('Db   Ebm  Fm   Gb   Ab7  Bbm  Cm7b5', _Help.diatonicByDegree(KeyEnum.Db));
+    expect('Ab   Bbm  Cm   Db   Eb7  Fm   Gm7b5', _Help.diatonicByDegree(KeyEnum.Ab));
+    expect('Eb   Fm   Gm   Ab   Bb7  Cm   Dm7b5', _Help.diatonicByDegree(KeyEnum.Eb));
+    expect('Bb   Cm   Dm   Eb   F7   Gm   Am7b5', _Help.diatonicByDegree(KeyEnum.Bb));
+    expect('F    Gm   Am   Bb   C7   Dm   Em7b5', _Help.diatonicByDegree(KeyEnum.F));
+    expect('C    Dm   Em   F    G7   Am   Bm7b5', _Help.diatonicByDegree(KeyEnum.C));
+    expect('G    Am   Bm   C    D7   Em   F#m7b5', _Help.diatonicByDegree(KeyEnum.G));
+    expect('D    Em   F#m  G    A7   Bm   C#m7b5', _Help.diatonicByDegree(KeyEnum.D));
+    expect('A    Bm   C#m  D    E7   F#m  G#m7b5', _Help.diatonicByDegree(KeyEnum.A));
+    expect('E    F#m  G#m  A    B7   C#m  D#m7b5', _Help.diatonicByDegree(KeyEnum.E));
+    expect('B    C#m  D#m  E    F#7  G#m  A#m7b5', _Help.diatonicByDegree(KeyEnum.B));
+    expect('F#   G#m  A#m  B    C#7  D#m  E#m7b5', _Help.diatonicByDegree(KeyEnum.Fs));
 
 //        -6 Gb toString: G♭ html: G&#9837;
 //        G♭ A♭ B♭ C♭ D♭ E♭ F
@@ -184,7 +171,7 @@ void main() {
 //        F♯ G  G♯ A  A♯ B  C  C♯ D  D♯ E  E♯
   });
 
-  test("testIsDiatonic testing", () {
+  test('testIsDiatonic testing', () {
     for (Key key in Key.values) {
       for (int j = 0; j < MusicConstants.notesPerScale; j++) {
         ScaleChord sc = key.getMajorDiatonicByDegree(j);
@@ -194,7 +181,7 @@ void main() {
     }
   });
 
-  test("testMinorKey testing", () {
+  test('testMinorKey testing', () {
     expect(Key.get(KeyEnum.C).getMinorKey(), Key.get(KeyEnum.A));
     expect(Key.get(KeyEnum.F).getMinorKey(), Key.get(KeyEnum.D));
     expect(Key.get(KeyEnum.A).getMinorKey(), Key.get(KeyEnum.Gb));
@@ -202,72 +189,68 @@ void main() {
     expect(Key.get(KeyEnum.Eb).getMinorKey(), Key.get(KeyEnum.C));
   });
 
-  test("testScaleNoteByHalfStep testing", () {
+  test('testScaleNoteByHalfStep testing', () {
     for (Key key in Key.values) {
-      logger.i("key " + key.toString());
-      if (key.isSharp)
+      logger.i('key ' + key.toString());
+      if (key.isSharp) {
         for (int i = -18; i < 18; i++) {
           ScaleNote scaleNote = key.getScaleNoteByHalfStep(i);
-          logger.i("\t" + i.toString() + ": " + scaleNote.toString());
-          expect(true, scaleNote.toString().indexOf("♭") < 0);
+          logger.i('\t' + i.toString() + ': ' + scaleNote.toString());
+          expect(true, !scaleNote.toString().contains('♭'));
         }
-      else
+      } else {
         for (int i = -18; i < 18; i++) {
           ScaleNote scaleNote = key.getScaleNoteByHalfStep(i);
-          logger.i("\t" + i.toString() + ": " + scaleNote.toString());
-          expect(true, scaleNote.toString().indexOf("♯") < 0);
+          logger.i('\t' + i.toString() + ': ' + scaleNote.toString());
+          expect(true, !scaleNote.toString().contains('♯'));
         }
+      }
     }
   });
 
-  test("testGuessKey testing", () {
+  test('testGuessKey testing', () {
     Key key;
 
-    List<ScaleChord> scaleChords = List();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Gb));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Cb));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Db, ChordDescriptor.dominant7));
+    List<ScaleChord> scaleChords = [];
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Gb));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Cb));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Db, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(key.getKeyScaleNote().getEnum(), ScaleNoteEnum.Gb);
 
     scaleChords.clear();
 
-    scaleChords.add(ScaleChord.parseString("Gb"));
-    scaleChords.add(ScaleChord.parseString("Cb"));
-    scaleChords.add(ScaleChord.parseString("Db7"));
+    scaleChords.add(ScaleChord.parseString('Gb'));
+    scaleChords.add(ScaleChord.parseString('Cb'));
+    scaleChords.add(ScaleChord.parseString('Db7'));
     key = Key.guessKey(scaleChords);
     expect(key.getKeyScaleNote().getEnum(), ScaleNoteEnum.Gb);
 
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.C));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.F));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.G, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.C));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.F));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.G, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.C, key.getKeyScaleNote().getEnum());
 
     //  1     2   3    4    5    6     7
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Db));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Gb));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Ab, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Db));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Gb));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Ab, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Db, key.getKeyScaleNote().getEnum());
 
     //  1     2   3    4    5    6     7
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Cs));
-    scaleChords.add(ScaleChord.parseString("F#"));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Gs, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Cs));
+    scaleChords.add(ScaleChord.parseString('F#'));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Gs, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Db, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Bb, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Bb, ChordDescriptor.minor));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Db, key.getKeyScaleNote().getEnum());
 
@@ -276,19 +259,15 @@ void main() {
     //  B    C♯m  D♯m  E    F♯7  G♯m  A♯m7b5
     //  E    F♯m  G♯m  A    B7   C♯m  D♯m7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.A));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Fs, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.B, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.A));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Fs, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.B, ChordDescriptor.minor));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.B, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.E, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.E, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.E, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.D, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.D, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.A, key.getKeyScaleNote().getEnum());
 
@@ -296,17 +275,13 @@ void main() {
     //  E♭   Fm   Gm   A♭   B♭7  Cm   Dm7b5
     //  F    Gm   Am   B♭   C7   Dm   Em7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Ab));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.F, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.G, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Bb, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Ab));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.F, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.G, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Bb, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.F, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Eb, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Eb, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Eb, key.getKeyScaleNote().getEnum());
 
@@ -314,16 +289,12 @@ void main() {
     //  C    Dm   Em   F    G7   Am   Bm7b5
     //  A    Bm   C♯m  D    E7   F♯m  G♯m7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.A, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.D, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.E, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.A, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.D, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.E, ChordDescriptor.minor));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.A, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.G, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.G, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.D, key.getKeyScaleNote().getEnum());
 
@@ -332,15 +303,12 @@ void main() {
     //  E    F♯m  G♯m  A    B7   C♯m  D♯m7b5
     //  E♭   Fm   Gm   A♭   B♭7  Cm   Dm7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Gs, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Ds, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.E));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Gs, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Ds, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.E));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Eb, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Fs, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Fs, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.E, key.getKeyScaleNote().getEnum());
 
@@ -349,16 +317,13 @@ void main() {
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     //  E♭   Fm   Gm   A♭   B♭7  Cm   Dm7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Bb, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Bb, ChordDescriptor.minor));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Bb, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Ab, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Ab, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Ab, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Db, ChordDescriptor.dominant7));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Db, ChordDescriptor.dominant7));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Ab, key.getKeyScaleNote().getEnum());
 
@@ -366,12 +331,11 @@ void main() {
     //  A♭   B♭m  Cm   D♭   E♭7  Fm   Gm7b5
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-        ScaleNoteEnum.Bb, ChordDescriptor.minor));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Db));
+    scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Bb, ChordDescriptor.minor));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Db));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Db, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Ab));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.Ab));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.Ab, key.getKeyScaleNote().getEnum());
 
@@ -379,20 +343,20 @@ void main() {
     //  G    Am   Bm   C    D7   Em   F♯m7b5
     //  D    Em   F♯m  G    A7   Bm   C♯m7b5
     scaleChords.clear();
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.D));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.A));
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.G));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.D));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.A));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.G));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.D, key.getKeyScaleNote().getEnum());
-    scaleChords.add(new ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.C));
+    scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNoteEnum.C));
     key = Key.guessKey(scaleChords);
     expect(ScaleNoteEnum.G, key.getKeyScaleNote().getEnum());
   });
 
-  test("testTranspose testing", () {
+  test('testTranspose testing', () {
     for (int k = -6; k <= 6; k++) {
       Key key = Key.getKeyByValue(k);
-      logger.d(key.toString() + ":");
+      logger.d(key.toString() + ':');
 
       for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
         ScaleNote fsn = ScaleNote.getFlatByHalfStep(i);
@@ -417,10 +381,10 @@ void main() {
     }
   });
 
-  test("testKeysByHalfStep testing", () {
+  test('testKeysByHalfStep testing', () {
     Key key = Key.get(KeyEnum.A);
     Key lastKey = key.previousKeyByHalfStep();
-    Set<Key> set = Set();
+    Set<Key> set = {};
     for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
       Key nextKey = key.nextKeyByHalfStep();
       expect(false, key == lastKey);
@@ -438,18 +402,18 @@ void main() {
     expect(MusicConstants.halfStepsPerOctave, set.length);
   });
 
-  test("testKeyParse testing", () {
-    expect(Key.parseString("B♭").keyEnum, KeyEnum.Bb);
-    expect(Key.parseString("Bb").keyEnum, KeyEnum.Bb);
-    expect(Key.parseString("F#").keyEnum, KeyEnum.Fs);
-    expect(Key.parseString("F♯").keyEnum, KeyEnum.Fs);
-    expect(Key.parseString("Fs").keyEnum, KeyEnum.Fs);
-    expect(Key.parseString("F").keyEnum, KeyEnum.F);
-    expect(Key.parseString("E♭").keyEnum, KeyEnum.Eb);
-    expect(Key.parseString("Eb").keyEnum, KeyEnum.Eb);
+  test('testKeyParse testing', () {
+    expect(Key.parseString('B♭').keyEnum, KeyEnum.Bb);
+    expect(Key.parseString('Bb').keyEnum, KeyEnum.Bb);
+    expect(Key.parseString('F#').keyEnum, KeyEnum.Fs);
+    expect(Key.parseString('F♯').keyEnum, KeyEnum.Fs);
+    expect(Key.parseString('Fs').keyEnum, KeyEnum.Fs);
+    expect(Key.parseString('F').keyEnum, KeyEnum.F);
+    expect(Key.parseString('E♭').keyEnum, KeyEnum.Eb);
+    expect(Key.parseString('Eb').keyEnum, KeyEnum.Eb);
   });
 
-  test("test byHalfStep()", () {
+  test('test byHalfStep()', () {
     for (int off = -6; off <= 6; off++) {
       logger.i('$off');
       Key key = Key.getKeyByHalfStep(off);
@@ -461,7 +425,7 @@ void main() {
     }
   });
 
-  test("test getKeyByHalfStep()", () {
+  test('test getKeyByHalfStep()', () {
     Key key = Key.get(KeyEnum.E);
     List<Key> test = Key.keysByHalfStepFrom(key);
     int i = MusicConstants.halfStepsPerOctave ~/ 2;

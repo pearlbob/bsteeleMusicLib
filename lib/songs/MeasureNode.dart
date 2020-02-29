@@ -1,4 +1,3 @@
-
 import 'Key.dart';
 
 enum MeasureNodeType {
@@ -10,7 +9,7 @@ enum MeasureNodeType {
   decoration,
 }
 
- enum MeasureEditType {
+enum MeasureEditType {
   insert,
   replace,
   append,
@@ -37,7 +36,7 @@ abstract class MeasureNode {
   }
 
   /// Return true if the measure node is a collection and it's empty
-   bool isEmpty() {
+  bool isEmpty() {
     return false;
   }
 
@@ -61,15 +60,17 @@ abstract class MeasureNode {
 
   static String concatMarkup(List<MeasureNode> measureNodes) {
     StringBuffer sb = StringBuffer();
-    if (measureNodes != null)
-      for (MeasureNode measureNode in measureNodes)
+    if (measureNodes != null) {
+      for (MeasureNode measureNode in measureNodes) {
         sb.write(measureNode.toMarkup());
+      }
+    }
     return sb.toString();
   }
 
   /// Gets the block identifier for this measure node type when expressed in HTML.
   String getHtmlBlockId() {
-    return "C";
+    return 'C';
   }
 
   ///  Export to JSON

@@ -6,12 +6,14 @@ class Util {
 
   /// add quotes to a string so it can be used as a dart constant
   static String quote(String s){
-    if ( s == null)
+    if ( s == null) {
       return null;
-    if ( s.length==0)
-      return "";
+    }
+    if ( s.isEmpty) {
+      return '';
+    }
     s = s.replaceAll("'", "\'")
-    .replaceAll("\n", "\\n'\n'")
+    .replaceAll('\n', "\\n'\n'")
     ;
     return "'$s'";
   }
@@ -55,9 +57,9 @@ class MarkedString {
     _index = i;
   }
 
-  bool get isEmpty => _string.length <= 0 || _index >= _string.length;
+  bool get isEmpty => _string.isEmpty || _index >= _string.length;
 
-  bool get isNotEmpty => _string.length > 0 && _index < _string.length;
+  bool get isNotEmpty => _string.isNotEmpty && _index < _string.length;
 
   String getNextChar() {
     return _string[_index++];
@@ -143,15 +145,15 @@ class StringTriple {
 
   @override
   String toString() {
-    return "(" + _a + ": \"" + _b + "\", \"" + _c + "\")";
+    return '(' + _a + ': \"' + _b + '\", \"' + _c + '\")';
   }
 
   String get a => _a;
-  String _a;
+  final String _a;
 
   String get b => _b;
-  String _b;
+  final String _b;
 
   String get c => _c;
-  String _c;
+  final String _c;
 }

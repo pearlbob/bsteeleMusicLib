@@ -34,7 +34,7 @@ enum ScaleNoteEnum {
 ///
 class ScaleNote {
   ScaleNote._(ScaleNoteEnum scaleNoteE) {
-    this._enum = scaleNoteE;
+    _enum = scaleNoteE;
     switch (scaleNoteE) {
       case ScaleNoteEnum.A:
       case ScaleNoteEnum.X:
@@ -84,8 +84,8 @@ class ScaleNote {
         break;
     }
 
-    String mod = "";
-    String modMarkup = "";
+    String mod = '';
+    String modMarkup = '';
 
     _isSharp = false;
     _isFlat = false;
@@ -114,7 +114,7 @@ class ScaleNote {
       case ScaleNoteEnum.Fs:
       case ScaleNoteEnum.Gs:
         mod += '\u266F';
-        modMarkup = "#";
+        modMarkup = '#';
         _isSharp = true;
         break;
       case ScaleNoteEnum.Ab:
@@ -125,7 +125,7 @@ class ScaleNote {
       case ScaleNoteEnum.Fb:
       case ScaleNoteEnum.Gb:
         mod += '\u266D';
-        modMarkup = "b";
+        modMarkup = 'b';
         _isFlat = true;
         break;
     }
@@ -160,14 +160,15 @@ class ScaleNote {
   }
 
   static ScaleNote parseString(String s) {
-    return parse(new MarkedString(s));
+    return parse(MarkedString(s));
   }
 
   /// Return the ScaleNote represented by the given string.
 //  Is case sensitive.
   static ScaleNote parse(MarkedString markedString) {
-    if (markedString == null || markedString.isEmpty)
-      throw new ArgumentError("no data to parse");
+    if (markedString == null || markedString.isEmpty) {
+      throw ArgumentError('no data to parse');
+    }
 
     int c = markedString.firstUnit();
     if (c < 'A'.codeUnitAt(0) || c > 'G'.codeUnitAt(0)) {
@@ -175,10 +176,10 @@ class ScaleNote {
         markedString.getNextChar();
         return get(ScaleNoteEnum.X);
       }
-      throw new ArgumentError("scale note must start with A to G");
+      throw ArgumentError('scale note must start with A to G');
     }
 
-    StringBuffer stringBuffer = new StringBuffer();
+    StringBuffer stringBuffer = StringBuffer();
     stringBuffer.write(markedString.getNextChar());
 
 //  look for modifier
@@ -265,13 +266,15 @@ class ScaleNote {
       for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
         if (e1 == ScaleNoteEnum.X) continue;
         ScaleNote scaleNote1 = get(e1);
-        if (scaleNote1.isNatural || scaleNote1._alias != null)
-          continue; //  don't duplicate the effort
+        if (scaleNote1.isNatural || scaleNote1._alias != null) {
+          continue;
+        } //  don't duplicate the effort
         for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
           if (e2 == ScaleNoteEnum.X) continue;
           ScaleNote scaleNote2 = get(e2);
-          if (scaleNote2.isNatural || scaleNote2._alias != null)
-            continue; //  don't duplicate the effort
+          if (scaleNote2.isNatural || scaleNote2._alias != null) {
+            continue;
+          } //  don't duplicate the effort
           if (e1 != e2 && scaleNote1.halfStep == scaleNote2.halfStep) {
             scaleNote1._alias = scaleNote2;
             scaleNote2._alias = scaleNote1;
@@ -285,7 +288,7 @@ class ScaleNote {
   static ScaleNote valueOf(String name) {
     //  lazy eval
     if (_parseMap == null) {
-      _parseMap = Map();
+      _parseMap = {};
       for (ScaleNoteEnum e in ScaleNoteEnum.values) {
         ScaleNote sn = get(e);
         _parseMap[sn._scaleNoteMarkup] = sn;

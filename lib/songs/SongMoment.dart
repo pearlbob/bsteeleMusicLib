@@ -77,8 +77,7 @@ class SongMoment implements Comparable<SongMoment> {
   }
 
   ChordSectionLocation getChordSectionLocation() {
-    if (chordSectionLocation == null)
-      chordSectionLocation = new ChordSectionLocation(
+    chordSectionLocation ??= ChordSectionLocation(
           chordSection.getSectionVersion(),
           phraseIndex: phraseIndex,
           measureIndex: measureIndex);
@@ -86,20 +85,20 @@ class SongMoment implements Comparable<SongMoment> {
   }
 
   String get momentLocation =>
-      getChordSectionLocation().toString() + "#" + sectionCount.toString();
+      getChordSectionLocation().toString() + '#' + sectionCount.toString();
 
   @override
   String toString() {
     return momentNumber.toString() +
-        ": " +
+        ': ' +
         momentLocation +
-        " " +
+        ' ' +
         measure.toMarkup() +
-        " beat " +
+        ' beat ' +
         getBeatNumber().toString() +
         (repeatMax > 1
-            ? " " + repeat.toString() + "/" + repeatMax.toString()
-            : "");
+            ? ' ' + repeat.toString() + '/' + repeatMax.toString()
+            : '');
   }
 
   @override

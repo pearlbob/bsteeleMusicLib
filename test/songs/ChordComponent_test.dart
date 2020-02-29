@@ -2,15 +2,15 @@ import 'package:bsteeleMusicLib/songs/ChordComponent.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test("ChordComponent testing", () {
-    List<ChordComponent> list = List();
-    list.addAll(ChordComponent.parse("r"));
+  test('ChordComponent testing', () {
+    List<ChordComponent> list = [];
+    list.addAll(ChordComponent.parse('r'));
     expect(ChordComponent.root, list[0]);
     list.clear();
-    list.addAll(ChordComponent.parse("1"));
+    list.addAll(ChordComponent.parse('1'));
     expect(ChordComponent.root, list[0]);
     list.clear();
-    list.addAll(ChordComponent.parse("R m2  m3 3 4 b5   5 #5 6 m7 7"));
+    list.addAll(ChordComponent.parse('R m2  m3 3 4 b5   5 #5 6 m7 7'));
 
     expect(ChordComponent.root, list[0]);
     expect(ChordComponent.minorSecond, list[1]);
@@ -25,7 +25,7 @@ void main() {
     expect(ChordComponent.seventh, list[10]);
     list.clear();
 
-    Set<ChordComponent> set = ChordComponent.parse("R 3 5 7");
+    Set<ChordComponent> set = ChordComponent.parse('R 3 5 7');
     expect(true, set.contains(ChordComponent.root));
     expect(true, set.contains(ChordComponent.third));
     expect(true, set.contains(ChordComponent.fifth));

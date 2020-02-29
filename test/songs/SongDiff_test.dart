@@ -9,12 +9,12 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.debug;
 
-  test("testEquals", () {
+  test('testEquals', () {
     {
-      SongBase a = SongBase.createSongBase("A", "bobby", "bsteele.com", Key.getDefault(),
-          100, 4, 4, "i1: D D D D v: A B C D", "v: bob, bob, bob berand");
-      SongBase b = SongBase.createSongBase("A", "bobby", "bsteele.com", Key.getDefault(),
-          100, 4, 4, "i1: D D D D D D D D v: A B C D", "v: bob, bob, bob berand");
+      SongBase a = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
+          100, 4, 4, 'i1: D D D D v: A B C D', 'v: bob, bob, bob berand');
+      SongBase b = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
+          100, 4, 4, 'i1: D D D D D D D D v: A B C D', 'v: bob, bob, bob berand');
 
       List<StringTriple> diffs = SongBase.diff(a, b);
       logger.i(diffs.toString());
@@ -29,10 +29,10 @@ void main() {
 //                    , diffs.toString());
     }
     {
-      SongBase a = SongBase.createSongBase("A", "bobby", "bsteele.com", Key.getDefault(),
-          100, 4, 4, "v: A B C D", "v: bob, bob, bob berand");
-      SongBase b = SongBase.createSongBase("A", "bob", "bsteele.com", Key.getDefault(),
-          100, 4, 4, "v: A B D D O: D", "v: bob, bob, Barbara Ann");
+      SongBase a = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
+          100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+      SongBase b = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(),
+          100, 4, 4, 'v: A B D D O: D', 'v: bob, bob, Barbara Ann');
 
       List<StringTriple> diffs = SongBase.diff(a, b);
       logger.d(diffs.toString());

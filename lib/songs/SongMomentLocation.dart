@@ -6,7 +6,7 @@ class SongMomentLocation {
 
   static SongMomentLocation parseString(String s) {
     if (s == null) return null;
-    return parse(new MarkedString(s));
+    return parse(MarkedString(s));
   }
 
   static SongMomentLocation parse(MarkedString markedString) {
@@ -22,7 +22,7 @@ class SongMomentLocation {
         int index = int.parse(mr.group(1));
         if (index <= 0) return null;
         markedString.consume(mr.group(0).length);
-        return new SongMomentLocation(chordSectionLocation, index);
+        return SongMomentLocation(chordSectionLocation, index);
       } catch (nfe) {
         return null;
       }
@@ -63,7 +63,7 @@ class SongMomentLocation {
 
   final ChordSectionLocation _chordSectionLocation;
   final int _index;
-  static final String separator = "#";
+  static final String separator = '#';
 
-  static final RegExp numberRegexp = RegExp("^" + separator + "(\\d+)");
+  static final RegExp numberRegexp = RegExp('^' + separator + '(\\d+)');
 }

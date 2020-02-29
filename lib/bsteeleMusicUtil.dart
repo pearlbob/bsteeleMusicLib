@@ -200,7 +200,8 @@ coerced to reflect the songlist's last modification for that song.
           logger.d("url: '$url'");
           List<Song> addSongs = Song.songListFromJson(utf8
               .decode(await http.readBytes(url))
-              .replaceAll('": null,', '": "",'));
+              .replaceAll('": null,', '": "",'))  //  cheap repair
+          ;
           allSongs.addAll(addSongs);
           break;
 
@@ -289,7 +290,7 @@ coerced to reflect the songlist's last modification for that song.
                 if (_veryVerbose) {
                   logger.i(
                       '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
-                  logger.i("\tidentical");
+                  logger.i('\tidentical');
                 }
               }
             } else {
@@ -306,12 +307,13 @@ coerced to reflect the songlist's last modification for that song.
           break;
       }
     }
-    print("updates: $_updateCount");
+    print('songs: ${allSongs.length}');
+    print('updates: $_updateCount');
     exit(0);
   }
 
   void _addAllSongsFromDir(dynamic inputFile) {
-    logger.i("$inputFile");
+    logger.i('$inputFile');
     if (!(inputFile is Directory)) return;
 
     List contents = (inputFile as Directory).listSync();
@@ -322,11 +324,11 @@ coerced to reflect the songlist's last modification for that song.
   }
 
   void _addAllSongsFromFile(File inputFile) {
-    logger.d("_addAllSongsFromFile: $inputFile");
+    logger.d('_addAllSongsFromFile: $inputFile');
 
     if (!(inputFile is File)) return;
     if (!inputFile.path.endsWith('.songlyrics')) return;
-    if (_verbose) logger.i("$inputFile");
+    if (_verbose) logger.i('$inputFile');
 
     //  fix for bad songlyric files
     String s = inputFile.readAsStringSync();
@@ -343,8 +345,9 @@ coerced to reflect the songlist's last modification for that song.
           allSongs.add(song);
           _updateCount++;
         }
-      } else
+      } else {
         allSongs.add(song);
+      }
     }
   }
 

@@ -13,14 +13,14 @@ class SectionVersion implements Comparable<SectionVersion> {
   /// A constructor for the section version variation's representation.
   SectionVersion(this._section, this._version)
       : _name =
-            _section.abbreviation + (_version > 0 ? _version.toString() : "");
+            _section.abbreviation + (_version > 0 ? _version.toString() : '');
 
   static SectionVersion getDefault() {
-    return new SectionVersion.bySection(Section.get(SectionEnum.verse));
+    return SectionVersion.bySection(Section.get(SectionEnum.verse));
   }
 
   static SectionVersion parseString(String s) {
-    return parse(new MarkedString(s));
+    return parse(MarkedString(s));
   }
 
   /// Return the section from the found id. Match will ignore case. String has to
@@ -29,19 +29,19 @@ class SectionVersion implements Comparable<SectionVersion> {
   /// used in the id.
 
   static SectionVersion parse(MarkedString markedString) {
-    if (markedString == null) throw "no data to parse";
+    if (markedString == null) throw 'no data to parse';
 
     RegExpMatch m = sectionRegexp.firstMatch(markedString.toString());
-    if (m == null) throw "no section version found";
+    if (m == null) throw 'no section version found';
 
     String sectionId = m.group(1);
     String versionId = (m.groupCount >= 2 ? m.group(2) : null);
     int version = 0;
-    if (versionId != null && versionId.length > 0) {
+    if (versionId != null && versionId.isNotEmpty) {
       version = int.parse(versionId);
     }
     Section section = Section.getSection(sectionId);
-    if (section == null) throw "no section found";
+    if (section == null) throw 'no section found';
 
     //   consume the section label
     markedString.consume(m.group(0).length); //  includes the separator
@@ -55,15 +55,15 @@ class SectionVersion implements Comparable<SectionVersion> {
   @override
   String toString() {
     //  note: designed to go to the user display
-    return _name + ":";
+    return _name + ':';
   }
 
   ///Gets a more formal name for the section version that can be presented to the user.
   String getFormalName() {
     //  note: designed to go to the user display
     return _section.formalName +
-        (_version > 0 ? _version.toString() : "") +
-        ":";
+        (_version > 0 ? _version.toString() : '') +
+        ':';
   }
 
   @override
@@ -104,5 +104,5 @@ class SectionVersion implements Comparable<SectionVersion> {
   String get name => _name;
   final String _name;
 
-  static final RegExp sectionRegexp = RegExp(r"^([a-zA-Z]+)([\d]*):\s*\,*");
+  static final RegExp sectionRegexp = RegExp(r'^([a-zA-Z]+)([\d]*):\s*\,*');
 }

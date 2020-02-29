@@ -1,11 +1,11 @@
 import 'package:bsteeleMusicLib/util/util.dart';
-import "package:test/test.dart";
+import 'package:test/test.dart';
 
 void main() {
-  test("test MarkedStrings", ()
+  test('test MarkedStrings', ()
   {
     {
-      MarkedString ms = new MarkedString("1234");
+      MarkedString ms =  MarkedString('1234');
       expect(4, ms.available());
       ms.getNextChar();
       ms.mark();
@@ -63,14 +63,14 @@ void main() {
       }
     }
     {
-      MarkedString eb = new MarkedString("s");
+      MarkedString eb =  MarkedString('s');
       expect(false, eb.isEmpty);
       eb.getNextChar();
       expect(true, eb.isEmpty);
     }
 
     {
-      MarkedString markedString = new MarkedString("1234");
+      MarkedString markedString =  MarkedString('1234');
       expect(4, markedString.available());
       expect('1', markedString.charAt(0));
       expect('2', markedString.charAt(1));
@@ -87,14 +87,14 @@ void main() {
     }
 
     {
-      String s = "1234";
-      MarkedString markedString = new MarkedString(s);
+      String s = '1234';
+      MarkedString markedString =  MarkedString(s);
 
       String actual = markedString.remainingStringLimited(25);
       expect(s, actual);
       expect(s.substring(0, 2), markedString.remainingStringLimited(2));
       expect(s.substring(0, 4), markedString.remainingStringLimited(4));
-      expect("", markedString.remainingStringLimited(0));
+      expect('', markedString.remainingStringLimited(0));
     }
   });
 }

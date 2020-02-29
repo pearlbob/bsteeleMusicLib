@@ -32,35 +32,33 @@ enum ChordAnticipationOrDelayEnum {
 /// Units are fractions of a beat expressed assuming quarter note beat duration.
 class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _delays;
-  static List<dynamic> _initialization = [
-    [ChordAnticipationOrDelayEnum.none, ""],
-    [ChordAnticipationOrDelayEnum.anticipate8th, "<8"],
-    [ChordAnticipationOrDelayEnum.anticipate16th, "<"],
-    [ChordAnticipationOrDelayEnum.anticipateTriplet, "<3"],
-    [ChordAnticipationOrDelayEnum.delay8th, ">8"],
-    [ChordAnticipationOrDelayEnum.delay16th, ">"],
-    [ChordAnticipationOrDelayEnum.delayTriplet, ">3"],
+  static final List<dynamic> _initialization = [
+    [ChordAnticipationOrDelayEnum.none, ''],
+    [ChordAnticipationOrDelayEnum.anticipate8th, '<8'],
+    [ChordAnticipationOrDelayEnum.anticipate16th, '<'],
+    [ChordAnticipationOrDelayEnum.anticipateTriplet, '<3'],
+    [ChordAnticipationOrDelayEnum.delay8th, '>8'],
+    [ChordAnticipationOrDelayEnum.delay16th, '>'],
+    [ChordAnticipationOrDelayEnum.delayTriplet, '>3'],
   ];
 
-  ChordAnticipationOrDelay._(
-      this._chordAnticipationOrDelayEnum, this._shortName);
+  ChordAnticipationOrDelay._(this._chordAnticipationOrDelayEnum, this._shortName);
 
   static ChordAnticipationOrDelay parse(MarkedString markedString) {
-    if (markedString == null) throw "no data to parse";
-    if (markedString.isNotEmpty)
+    if (markedString == null) throw 'no data to parse';
+    if (markedString.isNotEmpty) {
       for (ChordAnticipationOrDelay a in _getSortedByShortName()) {
         if (markedString.available() >= a.shortName.length &&
-            a.shortName ==
-                markedString.remainingStringLimited(a.shortName.length)) {
+            a.shortName == markedString.remainingStringLimited(a.shortName.length)) {
           markedString.consume(a.shortName.length);
           return a;
         }
       }
-    return ChordAnticipationOrDelay._getDelays()[
-        ChordAnticipationOrDelayEnum.none];
+    }
+    return ChordAnticipationOrDelay._getDelays()[ChordAnticipationOrDelayEnum.none];
   }
 
-  static ChordAnticipationOrDelay get( ChordAnticipationOrDelayEnum e ){
+  static ChordAnticipationOrDelay get(ChordAnticipationOrDelayEnum e) {
     return _getDelays()[e];
   }
 
@@ -76,8 +74,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
       _sortedByShortName = SplayTreeSet<ChordAnticipationOrDelay>((a1, a2) {
         return a2.shortName.compareTo(a1.shortName);
       });
-      for (ChordAnticipationOrDelayEnum delays
-          in ChordAnticipationOrDelayEnum.values) {
+      for (ChordAnticipationOrDelayEnum delays in ChordAnticipationOrDelayEnum.values) {
         ChordAnticipationOrDelay delay = _getDelays()[delays];
         _sortedByShortName.add(delay);
       }
@@ -85,11 +82,9 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return _sortedByShortName;
   }
 
-  static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay>
-      _getDelays() {
+  static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _getDelays() {
     if (_delays == null) {
-      _delays = Map<ChordAnticipationOrDelayEnum,
-          ChordAnticipationOrDelay>.identity();
+      _delays = Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay>.identity();
       for (var init in _initialization) {
         ChordAnticipationOrDelayEnum keInit = init[0];
         _delays[keInit] = ChordAnticipationOrDelay._(keInit, init[1]);
@@ -101,8 +96,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
 
   @override
   int compareTo(ChordAnticipationOrDelay other) {
-    return _chordAnticipationOrDelayEnum.index -
-        other._chordAnticipationOrDelayEnum.index;
+    return _chordAnticipationOrDelayEnum.index - other._chordAnticipationOrDelayEnum.index;
   }
 
   /// Returns the human name of this enum.
@@ -111,8 +105,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return _shortName;
   }
 
-  ChordAnticipationOrDelayEnum get chordAnticipationOrDelayEnum =>
-      _chordAnticipationOrDelayEnum;
+  ChordAnticipationOrDelayEnum get chordAnticipationOrDelayEnum => _chordAnticipationOrDelayEnum;
   final ChordAnticipationOrDelayEnum _chordAnticipationOrDelayEnum;
 
   String get shortName => _shortName;

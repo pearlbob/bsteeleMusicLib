@@ -39,16 +39,17 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocation.byMultipleSectionVersion(
       Set<SectionVersion> labelSectionVersions)
       : _sectionVersion = null,
-        this._phraseIndex = -1,
+        _phraseIndex = -1,
         hasPhraseIndex = false,
-        this._measureIndex = -1,
+        _measureIndex = -1,
         _hasMeasureIndex = false {
     if (labelSectionVersions != null) {
       _labelSectionVersions = SplayTreeSet();
-      if (labelSectionVersions.isEmpty)
+      if (labelSectionVersions.isEmpty) {
         _labelSectionVersions.add(SectionVersion.getDefault());
-      else
+      } else {
         _labelSectionVersions.addAll(labelSectionVersions);
+      }
 
       _sectionVersion = labelSectionVersions.first;
     }
@@ -63,7 +64,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       _phraseIndex = -1;
       hasPhraseIndex = false;
     } else {
-      this._phraseIndex = phraseIndex;
+      _phraseIndex = phraseIndex;
       hasPhraseIndex = true;
     }
     _measureIndex = -1;
@@ -71,22 +72,25 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   }
 
   ChordSectionLocation changeSectionVersion(SectionVersion sectionVersion) {
-    if (sectionVersion == null || sectionVersion == this._sectionVersion)
-      return this; //  no change
+    if (sectionVersion == null || sectionVersion == _sectionVersion) {
+      return this;  //  no change
+    }
 
     if (hasPhraseIndex) {
-      if (_hasMeasureIndex)
-        return new ChordSectionLocation(sectionVersion,
+      if (_hasMeasureIndex) {
+        return ChordSectionLocation(sectionVersion,
             phraseIndex: _phraseIndex, measureIndex: _measureIndex);
-      else
-        return new ChordSectionLocation(sectionVersion,
+      } else {
+        return ChordSectionLocation(sectionVersion,
             phraseIndex: _phraseIndex);
-    } else
-      return new ChordSectionLocation(sectionVersion);
+      }
+    } else {
+      return ChordSectionLocation(sectionVersion);
+    }
   }
 
   static ChordSectionLocation parseString(String s) {
-    return parse(new MarkedString(s));
+    return parse(MarkedString(s));
   }
 
   /// Parse a chord section location from the given string input
@@ -99,9 +103,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       if (mr != null) {
         try {
           int phraseIndex = int.parse(mr.group(1));
-          if (phraseIndex == null) phraseIndex = -1;
+          phraseIndex ??= -1;
           int measureIndex = int.parse(mr.group(2));
-          if (measureIndex == null) measureIndex = -1;
+          measureIndex ??= -1;
           markedString.consume(mr.group(0).length);
           return ChordSectionLocation(sectionVersion,
               phraseIndex: phraseIndex, measureIndex: measureIndex);
@@ -123,18 +127,18 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
         }
       }
     }
-    return new ChordSectionLocation(sectionVersion);
+    return ChordSectionLocation(sectionVersion);
   }
 
   ChordSectionLocation nextMeasureIndexLocation() {
     if (!hasPhraseIndex || !_hasMeasureIndex) return this;
-    return new ChordSectionLocation(_sectionVersion,
+    return ChordSectionLocation(_sectionVersion,
         phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
   }
 
   ChordSectionLocation nextPhraseIndexLocation() {
     if (!hasPhraseIndex) return this;
-    return new ChordSectionLocation(_sectionVersion,
+    return ChordSectionLocation(_sectionVersion,
         phraseIndex: _phraseIndex + 1);
   }
 
@@ -145,17 +149,17 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   String getId() {
     if (id == null) {
-      if (_labelSectionVersions == null)
+      if (_labelSectionVersions == null) {
         id = _sectionVersion.toString() +
             (hasPhraseIndex
                 ? _phraseIndex.toString() +
-                    (_hasMeasureIndex ? ":" + _measureIndex.toString() : "")
-                : "");
-      else {
-        StringBuffer sb = new StringBuffer();
+                    (_hasMeasureIndex ? ':' + _measureIndex.toString() : '')
+                : '');
+      } else {
+        StringBuffer sb = StringBuffer();
         for (SectionVersion sv in _labelSectionVersions) {
           sb.write(sv.toString());
-          sb.write(" ");
+          sb.write(' ');
         }
         id = sb.toString();
       }
@@ -172,8 +176,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     ret = _measureIndex - other._measureIndex;
     if (ret != 0) return ret;
 
-    if (_labelSectionVersions == null)
+    if (_labelSectionVersions == null) {
       return other._labelSectionVersions == null ? 0 : -1;
+    }
     if (other._labelSectionVersions == null) return 1;
 
     ret = _labelSectionVersions.length - other._labelSectionVersions.length;
@@ -199,11 +204,13 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
         _phraseIndex == other._phraseIndex &&
         _measureIndex == other._measureIndex)) return false;
 
-    if (_labelSectionVersions == null)
+    if (_labelSectionVersions == null) {
       return (other._labelSectionVersions == null);
+    }
 
-    if (_labelSectionVersions.length != other._labelSectionVersions.length)
+    if (_labelSectionVersions.length != other._labelSectionVersions.length) {
       return false;
+    }
     for (int i = 0; i < _labelSectionVersions.length; i++) {
       if (_labelSectionVersions.elementAt(i) !=
           other._labelSectionVersions.elementAt(i)) {
@@ -217,8 +224,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
     int ret = hash3(_sectionVersion, _phraseIndex, _measureIndex);
-    if (_labelSectionVersions != null && _labelSectionVersions.isNotEmpty)
+    if (_labelSectionVersions != null && _labelSectionVersions.isNotEmpty) {
       ret = ret * 83 + _labelSectionVersions.hashCode;
+    }
     return ret;
   }
 
@@ -246,6 +254,6 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocationMarker _marker;
   String id;
 
-  static final RegExp numberRangeRegexp = RegExp("^(\\d+):(\\d+)");
-  static final RegExp numberRegexp = RegExp("^(\\d+)");
+  static final RegExp numberRangeRegexp = RegExp('^(\\d+):(\\d+)');
+  static final RegExp numberRegexp = RegExp('^(\\d+)');
 }

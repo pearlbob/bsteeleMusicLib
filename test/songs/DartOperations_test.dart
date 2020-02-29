@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.info;
 
-  test("Dart list equals", () {
+  test('Dart list equals', () {
     for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
       ScaleNote n1 = ScaleNote.get(e1);
       for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
@@ -20,8 +20,9 @@ void main() {
         if (e1 == e2) {
           expect(n1, n2);
           expect(n1 == n2, isTrue);
-        } else
+        } else {
           expect(n1 != n2, isTrue);
+        }
       }
     }
 
@@ -34,8 +35,9 @@ void main() {
         if (e1 == e2) {
           expect(sc1, sc2);
           expect(sc1 == sc2, isTrue);
-        } else
+        } else {
           expect(sc1 != sc2, isTrue);
+        }
       }
     }
 
@@ -60,8 +62,8 @@ void main() {
           expect(chord1, chord2);
           expect(chord1 == chord2, isTrue);
         } else {
-          logger.d("chord1: " + chord1.toString());
-          logger.d("chord2: " + chord2.toString());
+          logger.d('chord1: ' + chord1.toString());
+          logger.d('chord2: ' + chord2.toString());
           expect(chord1 != chord2, isTrue);
         }
       }
@@ -84,8 +86,8 @@ void main() {
           expect(m1, m2);
           expect(m1 == m2, isTrue);
         } else {
-          logger.d("m1: " + m1.toString());
-          logger.d("m2: " + m2.toString());
+          logger.d('m1: ' + m1.toString());
+          logger.d('m2: ' + m2.toString());
           expect(m1 != m2, isTrue);
         }
       }
@@ -109,8 +111,8 @@ void main() {
           expect(ph1, ph2);
           expect(ph1 == ph2, isTrue);
         } else {
-          logger.d("ph1: " + ph1.toString());
-          logger.d("ph2: " + ph2.toString());
+          logger.d('ph1: ' + ph1.toString());
+          logger.d('ph2: ' + ph2.toString());
           expect(ph1 != ph2, isTrue);
         }
       }

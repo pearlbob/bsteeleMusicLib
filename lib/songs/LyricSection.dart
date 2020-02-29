@@ -59,8 +59,9 @@ class LyricSection implements Comparable<LyricSection> {
       if (other._lyricsLines != null) return -1;
     } else {
       if (other._lyricsLines == null) return 1;
-      if (_lyricsLines.length != other._lyricsLines.length)
+      if (_lyricsLines.length != other._lyricsLines.length) {
         return _lyricsLines.length - other._lyricsLines.length;
+      }
       for (int i = 0; i < _lyricsLines.length; i++) {
         ret =
             _lyricsLines.elementAt(i).compareTo(other._lyricsLines.elementAt(i));
@@ -76,8 +77,9 @@ class LyricSection implements Comparable<LyricSection> {
       //  compare the lists
       if (_lyricsLines == null) return other._lyricsLines == null ? 0 : 1;
       if (other._lyricsLines == null) return -1;
-      if (_lyricsLines.length != other._lyricsLines.length)
+      if (_lyricsLines.length != other._lyricsLines.length) {
         return _lyricsLines.length < other._lyricsLines.length ? -1 : 1;
+      }
       for (int i = 0; i < _lyricsLines.length; i++) {
         int ret = _lyricsLines[i].compareTo(other._lyricsLines[i]);
         if (ret != 0) return ret;
@@ -107,8 +109,8 @@ class LyricSection implements Comparable<LyricSection> {
 
   SectionVersion get sectionVersion => _sectionVersion;
   SectionVersion _sectionVersion;
-  LegacyDrumSection drumSection = new LegacyDrumSection();
+  LegacyDrumSection drumSection = LegacyDrumSection();
 
   List<String> get lyricsLines => _lyricsLines;
-  List<String> _lyricsLines = new List();
+  final List<String> _lyricsLines = [];
 }

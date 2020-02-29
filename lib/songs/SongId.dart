@@ -1,5 +1,5 @@
 class SongId implements Comparable<SongId> {
-  SongId.noArgs() : _songId = "UnknownSong";
+  SongId.noArgs() : _songId = 'UnknownSong';
 
   SongId(this._songId);
 

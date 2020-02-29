@@ -24,25 +24,26 @@ class ScaleChord implements Comparable<ScaleChord> {
       : _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
 
   static ScaleChord parseString(String s) {
-    return parse(new MarkedString(s));
+    return parse(MarkedString(s));
   }
 
   static ScaleChord parse(MarkedString markedString) {
-    if (markedString == null || markedString.isEmpty)
-      throw new ArgumentError("no data to parse");
+    if (markedString == null || markedString.isEmpty) {
+      throw ArgumentError('no data to parse');
+    }
 
     ScaleNote retScaleNote = ScaleNote.parse(markedString);
     if (retScaleNote == ScaleNote.get(ScaleNoteEnum.X)) {
-      return new ScaleChord(
+      return ScaleChord(
           retScaleNote, ChordDescriptor.major); //  by convention only
     }
 
     ChordDescriptor retChordDescriptor = ChordDescriptor.parse(markedString);
-    return new ScaleChord(retScaleNote, retChordDescriptor);
+    return ScaleChord(retScaleNote, retChordDescriptor);
   }
 
   ScaleChord transpose(Key key, int halfSteps) {
-    return new ScaleChord(scaleNote.transpose(key, halfSteps), chordDescriptor);
+    return ScaleChord(scaleNote.transpose(key, halfSteps), chordDescriptor);
   }
 
 //public final ScaleNote getScaleN//public final ScaleChord transpose(Key key, int halfSteps) {
@@ -52,7 +53,7 @@ class ScaleChord implements Comparable<ScaleChord> {
   ScaleChord getAlias() {
     ScaleNote alias = _scaleNote.alias;
     if (alias == null) return null;
-    return new ScaleChord(alias, _chordDescriptor);
+    return ScaleChord(alias, _chordDescriptor);
   }
 
   Set<ChordComponent> getChordComponents() {
@@ -70,12 +71,12 @@ class ScaleChord implements Comparable<ScaleChord> {
   @override
   String toString() {
     return scaleNote.toString() +
-        (chordDescriptor != null ? chordDescriptor.shortName : "");
+        (chordDescriptor != null ? chordDescriptor.shortName : '');
   }
 
   String toMarkup() {
     return scaleNote.toMarkup() +
-        (chordDescriptor != null ? chordDescriptor.shortName : "");
+        (chordDescriptor != null ? chordDescriptor.shortName : '');
   }
 
   @override
@@ -107,15 +108,15 @@ class ScaleChord implements Comparable<ScaleChord> {
 
   static Set<ScaleChord> _getEasyGuitarChords() {
     if (_easyGuitarChords == null) {
-      _easyGuitarChords = Set<ScaleChord>();
-      _easyGuitarChords.add(ScaleChord.parseString("C"));
-      _easyGuitarChords.add(ScaleChord.parseString("A"));
-      _easyGuitarChords.add(ScaleChord.parseString("G"));
-      _easyGuitarChords.add(ScaleChord.parseString("E"));
-      _easyGuitarChords.add(ScaleChord.parseString("D"));
-      _easyGuitarChords.add(ScaleChord.parseString("Am"));
-      _easyGuitarChords.add(ScaleChord.parseString("Em"));
-      _easyGuitarChords.add(ScaleChord.parseString("Dm"));
+      _easyGuitarChords = <ScaleChord>{};
+      _easyGuitarChords.add(ScaleChord.parseString('C'));
+      _easyGuitarChords.add(ScaleChord.parseString('A'));
+      _easyGuitarChords.add(ScaleChord.parseString('G'));
+      _easyGuitarChords.add(ScaleChord.parseString('E'));
+      _easyGuitarChords.add(ScaleChord.parseString('D'));
+      _easyGuitarChords.add(ScaleChord.parseString('Am'));
+      _easyGuitarChords.add(ScaleChord.parseString('Em'));
+      _easyGuitarChords.add(ScaleChord.parseString('Dm'));
     }
     return _easyGuitarChords;
   }

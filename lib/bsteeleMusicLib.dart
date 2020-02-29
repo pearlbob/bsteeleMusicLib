@@ -1,6 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
+// ignore: library_names
 library bsteeleMusicLib;
 
 export 'src/bsteeleMusicLib_base.dart';

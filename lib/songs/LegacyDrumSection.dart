@@ -26,8 +26,9 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection>{
       //  compare the lists
       if (drumMeasures == null) return o.drumMeasures == null ? 0 : 1;
       if (o.drumMeasures == null) return -1;
-      if (drumMeasures.length != o.drumMeasures.length)
+      if (drumMeasures.length != o.drumMeasures.length) {
         return drumMeasures.length < o.drumMeasures.length ? -1 : 1;
+      }
       for ( int i =0; i < drumMeasures.length; i++){
         int ret = drumMeasures[i].compareTo(o.drumMeasures[i]);
         if (ret != 0) return ret;
@@ -47,8 +48,9 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection>{
 
   @override
   int get hashCode {
-    if ( drumMeasures== null )
+    if ( drumMeasures== null ) {
       return 0;
+    }
     return hashObjects(drumMeasures);
   }
 

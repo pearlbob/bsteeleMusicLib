@@ -17,8 +17,9 @@ class MeasureRepeatMarker extends Measure {
     return toString();
   }
 
+  @override
   String getHtmlBlockId() {
-    return "RX";
+    return 'RX';
   }
 
 //  int compareTo(MeasureRepeatMarker o) {
@@ -31,7 +32,7 @@ class MeasureRepeatMarker extends Measure {
 
   @override
   String toString() {
-    return "x" + repeats.toString();
+    return 'x' + repeats.toString();
   }
 
   @override

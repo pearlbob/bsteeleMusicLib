@@ -11,7 +11,7 @@ import 'Key.dart';
 class MeasureRepeat extends Phrase {
   MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats)
       : super(measures, phraseIndex) {
-    this._repeatMarker = MeasureRepeatMarker(repeats);
+    _repeatMarker = MeasureRepeatMarker(repeats);
   }
 
   static MeasureRepeat parseString(
@@ -21,11 +21,11 @@ class MeasureRepeat extends Phrase {
 
   static MeasureRepeat parse(MarkedString markedString, int phraseIndex,
       int beatsPerBar, Measure priorMeasure) {
-    if (markedString == null || markedString.isEmpty) throw "no data to parse";
+    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
     int initialMark = markedString.mark();
 
-    List<Measure> measures = List();
+    List<Measure> measures = [];
 
     markedString.stripLeadingSpaces();
 
@@ -37,10 +37,10 @@ class MeasureRepeat extends Phrase {
     for (int i = 0; i < 1e3; i++) {
       //  safety
       markedString.stripLeadingSpaces();
-      logger.v("repeat parsing: " + markedString.remainingStringLimited(10));
+      logger.v('repeat parsing: ' + markedString.remainingStringLimited(10));
       if (markedString.isEmpty) {
         markedString.resetTo(initialMark);
-        throw "no data to parse";
+        throw 'no data to parse';
       }
 
 //  extend the search for a repeat only if the line ends with a |
@@ -61,7 +61,7 @@ class MeasureRepeat extends Phrase {
           continue;
         }
         markedString.resetTo(initialMark);
-        throw "repeat not found";
+        throw 'repeat not found';
       }
 
 //  assure this is not a section
@@ -72,7 +72,7 @@ class MeasureRepeat extends Phrase {
         Measure measure =
             Measure.parse(markedString, beatsPerBar, priorMeasure);
         if (!hasBracket && measure.endOfRow) {
-          throw "repeat not found"; //  this is not a repeat!
+          throw 'repeat not found'; //  this is not a repeat!
         }
         priorMeasure = measure;
         measures.add(measure);
@@ -96,19 +96,19 @@ class MeasureRepeat extends Phrase {
     }
 
     final RegExp repeatExp =
-        RegExp("^" + (hasBracket ? "\\s*]" : "") + "\\s*x(\\d+)\\s*");
+        RegExp('^' + (hasBracket ? '\\s*]' : '') + '\\s*x(\\d+)\\s*');
     RegExpMatch mr = repeatExp.firstMatch(markedString.toString());
     if (mr != null) {
       int repeats = int.parse(mr.group(1));
       if (measures.isNotEmpty) measures[measures.length - 1].endOfRow = false;
       MeasureRepeat ret = MeasureRepeat(measures, phraseIndex, repeats);
-      logger.d(" measure repeat: " + ret.toMarkup());
+      logger.d(' measure repeat: ' + ret.toMarkup());
       markedString.consume(mr.group(0).length);
       return ret;
     }
 
     markedString.resetTo(initialMark);
-    throw "repeat not found";
+    throw 'repeat not found';
   }
 
   @override
@@ -161,14 +161,15 @@ class MeasureRepeat extends Phrase {
 
   @override
   String transpose(Key key, int halfSteps) {
-    return "x" + repeats.toString();
+    return 'x' + repeats.toString();
   }
 
   @override
   MeasureNode transposeToKey(Key key) {
-    List<Measure> newMeasures = List<Measure>();
-    for (Measure measure in measures)
+    List<Measure> newMeasures = <Measure>[];
+    for (Measure measure in measures) {
       newMeasures.add(measure.transposeToKey(key) as Measure);
+    }
     return MeasureRepeat(newMeasures, phraseIndex, repeats);
   }
 
@@ -181,25 +182,25 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toMarkup() {
-    return "[" +
-        (measures.isEmpty ? "" : super.toMarkup()) +
-        "] x" +
+    return '[' +
+        (measures.isEmpty ? '' : super.toMarkup()) +
+        '] x' +
         repeats.toString() +
-        " ";
+        ' ';
   }
 
   @override
   String toEntry() {
-    return "[" +
-        (measures.isEmpty ? "" : super.toEntry()) +
-        "] x" +
+    return '[' +
+        (measures.isEmpty ? '' : super.toEntry()) +
+        '] x' +
         repeats.toString() +
-        "\n ";
+        '\n ';
   }
 
   @override
   String toJson() {
-    if (measures == null || measures.isEmpty) return " ";
+    if (measures == null || measures.isEmpty) return ' ';
 
     StringBuffer sb = StringBuffer();
     if (measures.isNotEmpty) {
@@ -209,14 +210,15 @@ class MeasureRepeat extends Phrase {
       for (Measure measure in measures) {
         sb.write(measure.toJson());
         if (i == last) {
-          if (rowCount > 0) sb.write(" |");
-          sb.write(" x" + repeats.toString() + "\n");
+          if (rowCount > 0) sb.write(' |');
+          sb.write(' x' + repeats.toString() + '\n');
           break;
         } else if (measure.endOfRow) {
-          sb.write(" |\n");
+          sb.write(' |\n');
           rowCount++;
-        } else
-          sb.write(" ");
+        } else {
+          sb.write(' ');
+        }
         i++;
       }
     }
@@ -225,9 +227,10 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toString() {
-    return super.toMarkup() + " x" + repeats.toString() + "\n";
+    return super.toMarkup() + ' x' + repeats.toString() + '\n';
   }
 
+  @override
   int compareTo(Object o) {
     if (!(o is MeasureRepeat)) return -1;
 

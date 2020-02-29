@@ -11,15 +11,15 @@ class MusicConstants {
   static const String greekCapitalDelta = '\u0394';
   static const String diminishedCircle = '\u00BA';
 
-  static const String flatHtml = "&#9837;";
-  static const String naturalHtml = "&#9838;";
-  static const String sharpHtml = "&#9839;";
-  static const String greekCapitalDeltaHtml = "&#916;";
-  static const String whiteBulletHtml = "&#25e6;";
+  static const String flatHtml = '&#9837;';
+  static const String naturalHtml = '&#9838;';
+  static const String sharpHtml = '&#9839;';
+  static const String greekCapitalDeltaHtml = '&#916;';
+  static const String whiteBulletHtml = '&#25e6;';
   static const String diminishedCircleHtml = whiteBulletHtml;
 
-  static const String bassClef = "\uD834\uDD22";
-  static const String gClef = "\uD834\uDD1E";
+  static const String bassClef = '\uD834\uDD22';
+  static const String gClef = '\uD834\uDD1E';
 
   static const int halfStepsPerOctave = 12;
   static const int notesPerScale = 7;

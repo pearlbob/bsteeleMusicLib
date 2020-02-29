@@ -25,7 +25,7 @@ enum SongComparatorType {
 class Song extends SongBase implements Comparable<Song> {
   /// Create a minimal song to be used internally as a place holder.
   static Song createEmptySong() {
-    return createSong("", "", "", Key.get(KeyEnum.C), 100, 4, 4, "", "", "");
+    return createSong('', '', '', Key.get(KeyEnum.C), 100, 4, 4, '', '', '');
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
@@ -40,7 +40,7 @@ class Song extends SongBase implements Comparable<Song> {
       String user,
       String chords,
       String lyrics) {
-    Song song = new Song();
+    Song song = Song();
     song.setTitle(title);
     song.setArtist(artist);
     song.setCopyright(copyright);
@@ -67,6 +67,7 @@ class Song extends SongBase implements Comparable<Song> {
         getUnitsPerMeasure(),
         getUser(),
         toMarkup(),
+        // ignore: deprecated_member_use_from_same_package
         getLyricsAsString());
     ret.setFileName(getFileName());
     ret.lastModifiedTime = lastModifiedTime;
@@ -170,9 +171,9 @@ class Song extends SongBase implements Comparable<Song> {
   /// Read a single song or a list from a JSON string
   static List<Song> songListFromJson(String jsonString) {
     //  fix for damaged files
-    jsonString = jsonString.replaceAll("\": null", "\": \"\"");
+    jsonString = jsonString.replaceAll('\": null', '\": \"\"');
 
-    List<Song> songList = List();
+    List<Song> songList = [];
     dynamic json = jsonDecoder.convert(jsonString);
     if (json is List) {
       //  a list of songs
@@ -202,22 +203,22 @@ class Song extends SongBase implements Comparable<Song> {
 
     for (String name in jsonSong.keys) {
       switch (name) {
-        case "title":
+        case 'title':
           song.setTitle(jsonSong[name]);
           break;
-        case "artist":
+        case 'artist':
           song.setArtist(jsonSong[name]);
           break;
-        case "copyright":
+        case 'copyright':
           song.setCopyright(jsonSong[name]);
           break;
-        case "key":
+        case 'key':
           song.setKey(Key.parseString(jsonSong[name]));
           break;
-        case "defaultBpm":
+        case 'defaultBpm':
           song.setDefaultBpm(jsonSong[name] as int);
           break;
-        case "timeSignature":
+        case 'timeSignature':
           //  most of this is coping with real old events with poor formatting
           String timeSignature = jsonSong[name];
           RegExpMatch mr = _timeSignatureExp.firstMatch(timeSignature);
@@ -231,32 +232,33 @@ class Song extends SongBase implements Comparable<Song> {
             song.setUnitsPerMeasure(4);
           }
           break;
-        case "chords":
+        case 'chords':
           dynamic chordRows = jsonSong[name];
-          StringBuffer sb = new StringBuffer();
+          StringBuffer sb = StringBuffer();
           for (int chordRow = 0; chordRow < chordRows.length; chordRow++) {
             sb.write(chordRows[chordRow]);
             //  brutal way to transcribe the new line without the chaos of a newline character
-            sb.write(", ");
+            sb.write(', ');
           }
           song.setChords(sb.toString());
           break;
-        case "lyrics":
+        case 'lyrics':
           dynamic lyricRows = jsonSong[name];
-          StringBuffer sb = new StringBuffer();
+          StringBuffer sb = StringBuffer();
           for (int lyricRow = 0; lyricRow < lyricRows.length; lyricRow++) {
             sb.write(lyricRows[lyricRow]);
-            sb.write("\n");
+            sb.write('\n');
           }
           song.setRawLyrics(sb.toString());
           break;
-        case "lastModifiedDate":
+        case 'lastModifiedDate':
           DateTime songDateTime =
               DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
-          if (songDateTime.isAfter(fileDateTime))
+          if (songDateTime.isAfter(fileDateTime)) {
             song.lastModifiedTime = songDateTime.millisecondsSinceEpoch;
+          }
           break;
-        case "user":
+        case 'user':
           song.setUser(jsonSong[name]);
           break;
       }
@@ -268,95 +270,98 @@ class Song extends SongBase implements Comparable<Song> {
     if (songs == null || songs.isEmpty) {
       return null;
     }
-    StringBuffer sb = new StringBuffer();
-    sb.write("[\n");
+    StringBuffer sb = StringBuffer();
+    sb.write('[\n');
     bool first = true;
     for (Song song in songs) {
-      if (first)
+      if (first) {
         first = false;
-      else
-        sb.write(",\n");
+      } else {
+        sb.write(',\n');
+      }
       sb.write(song.toJsonAsFile());
     }
-    sb.write("]\n");
+    sb.write(']\n');
     return sb.toString();
   }
 
   String toJsonAsFile() {
-    return "{ \"file\": " +
-        jsonEncode(getFileName() ?? "") +
-        ", \"lastModifiedDate\": " +
+    return '{ \"file\": ' +
+        jsonEncode(getFileName() ?? '') +
+        ', \"lastModifiedDate\": ' +
         lastModifiedTime.toString() +
-        ", \"song\":" +
-        " \n" +
+        ', \"song\":' +
+        ' \n' +
         toJson() +
-        "}";
+        '}';
   }
 
   ///Generate the JSON expression of this song.
   String toJson() {
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = StringBuffer();
 
-    sb.write("{\n");
-    sb.write("\"title\": ");
+    sb.write('{\n');
+    sb.write('\"title\": ');
     sb.write(jsonEncode(getTitle()));
-    sb.write(",\n");
-    sb.write("\"artist\": ");
+    sb.write(',\n');
+    sb.write('\"artist\": ');
     sb.write(jsonEncode(getArtist()));
-    sb.write(",\n");
-    sb.write("\"user\": ");
+    sb.write(',\n');
+    sb.write('\"user\": ');
     sb.write(jsonEncode(getUser()));
-    sb.write(",\n");
-    sb.write("\"lastModifiedDate\": ");
+    sb.write(',\n');
+    sb.write('\"lastModifiedDate\": ');
     sb.write(lastModifiedTime);
-    sb.write(",\n");
-    sb.write("\"copyright\": ");
+    sb.write(',\n');
+    sb.write('\"copyright\": ');
     sb.write(jsonEncode(getCopyright()));
-    sb.write(",\n");
-    sb.write("\"key\": \"");
+    sb.write(',\n');
+    sb.write('\"key\": \"');
     sb.write(getKey().toMarkup());
-    sb.write("\",\n");
-    sb.write("\"defaultBpm\": ");
+    sb.write('\",\n');
+    sb.write('\"defaultBpm\": ');
     sb.write(getDefaultBpm());
-    sb.write(",\n");
-    sb.write("\"timeSignature\": \"");
+    sb.write(',\n');
+    sb.write('\"timeSignature\": \"');
     sb.write(getBeatsPerBar());
-    sb.write("/");
+    sb.write('/');
     sb.write(getUnitsPerMeasure());
-    sb.write("\",\n");
-    sb.write("\"chords\": \n");
-    sb.write("    [\n");
+    sb.write('\",\n');
+    sb.write('\"chords\": \n');
+    sb.write('    [\n');
 
     //  chord content
     bool first = true;
-    for (String s in chordsToJsonTransportString().split("\n")) {
-      if (s.length == 0) //  json is not happy with empty array elements
+    for (String s in chordsToJsonTransportString().split('\n')) {
+      if (s.isEmpty) {
         continue;
+      }
       if (first) {
         first = false;
       } else {
-        sb.write(",\n");
+        sb.write(',\n');
       }
-      sb.write("\t");
+      sb.write('\t');
       sb.write(jsonEncode(s));
     }
-    sb.write("\n    ],\n");
-    sb.write("\"lyrics\": \n");
-    sb.write("    [\n");
+    sb.write('\n    ],\n');
+    sb.write('\"lyrics\": \n');
+    sb.write('    [\n');
     //  lyrics content
     first = true;
-    for (String s in getLyricsAsString().split("\n")) {
+    // ignore: deprecated_member_use_from_same_package
+    for (String s in getLyricsAsString().split('\n')) {
       if (first) {
         first = false;
       } else {
-        sb.write(",\n");
+        sb.write(',\n');
       }
-      sb.write("\t");
+      sb.write('\t');
 
       sb.write(jsonEncode(s));
     }
-    sb.write("\n    ]\n");
-    sb.write("}\n");
+    sb.write('\n    ]\n');
+    sb.write('}\n');
 
     return sb.toString();
   }
@@ -368,12 +373,12 @@ class Song extends SongBase implements Comparable<Song> {
       while (ret.length > limit) {
         ret.removeAt(ret.length - 1);
       }
-      ret.add(new StringTriple("+more", "", ""));
+      ret.add(StringTriple('+more', '', ''));
     }
     ret.insert(
         0,
-        new StringTriple(
-            "file date",
+        StringTriple(
+            'file date',
             DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
             DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime)
                 .toString()));
@@ -424,7 +429,7 @@ class Song extends SongBase implements Comparable<Song> {
   }
 
   static final RegExp _timeSignatureExp =
-      RegExp(r"^\w*(\d{1,2})\w*\/\w*(\d)\w*$");
+      RegExp(r'^\w*(\d{1,2})\w*\/\w*(\d)\w*$');
 
   static final JsonDecoder jsonDecoder = JsonDecoder();
 }
@@ -464,14 +469,16 @@ Comparator<Song> _comparatorByLastModifiedDateLast = (Song o1, Song o2) {
 Comparator<Song> _comparatorByVersionNumber = (Song o1, Song o2) {
   int ret = o1.compareTo(o2);
   if (ret != 0) return ret;
-  if (o1.getFileVersionNumber() != o2.getFileVersionNumber())
+  if (o1.getFileVersionNumber() != o2.getFileVersionNumber()) {
     return o1.getFileVersionNumber() < o2.getFileVersionNumber() ? -1 : 1;
+  }
   return _compareByLastModifiedDate(o1, o2);
 };
 
 /// Compares its two arguments for order my most recent modification date.
 Comparator<Song> _comparatorByComplexity = (Song o1, Song o2) {
-  if (o1.getComplexity() != o2.getComplexity())
+  if (o1.getComplexity() != o2.getComplexity()) {
     return o1.getComplexity() < o2.getComplexity() ? -1 : 1;
+  }
   return o1.compareTo(o2);
 };

@@ -9,7 +9,7 @@ class MeasureComment extends Measure {
   }
 
   MeasureComment.zeroArgs()
-      : _comment = "",
+      : _comment = '',
         super.zeroArgs();
 
   @override
@@ -28,16 +28,17 @@ class MeasureComment extends Measure {
 
   /// Trash can of measure parsing.  Will consume all that it sees to the end of line.
   static MeasureComment parse(MarkedString markedString) {
-    if (markedString == null || markedString.isEmpty) throw "no data to parse";
+    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
 //  prep a sub string to look for the comment
     int n =
-        markedString.indexOf("\n"); //  all comments end at the end of the line
-    String s = "";
-    if (n > 0)
+        markedString.indexOf('\n'); //  all comments end at the end of the line
+    String s = '';
+    if (n > 0) {
       s = markedString.remainingStringLimited(n);
-    else
+    } else {
       s = markedString.toString();
+    }
 
     //  properly formatted comment
 
@@ -48,14 +49,14 @@ class MeasureComment extends Measure {
       s = mr.group(1);
       markedString.consume(mr.group(0).length);
     } else {
-      throw "no well formed comment found"; //  all whitespace
+      throw 'no well formed comment found'; //  all whitespace
     }
 
 //  cope with unbalanced leading ('s and trailing )'s
-    s = s.replaceAll(r"^\(", "").replaceAll(r"\)$", "");
+    s = s.replaceAll(r'^\(', '').replaceAll(r'\)$', '');
     s = s.trim(); //  in case there is white space inside unbalanced parens
 
-    MeasureComment ret = new MeasureComment(s);
+    MeasureComment ret = MeasureComment(s);
     return ret;
   }
 
@@ -71,12 +72,12 @@ class MeasureComment extends Measure {
 
   @override
   String toEntry() {
-    return "\n" + toString() + "\n";
+    return '\n' + toString() + '\n';
   }
 
   @override
   String toString() {
-    return _comment == null || _comment.length <= 0 ? "" : "(" + _comment + ")";
+    return _comment == null || _comment.isEmpty ? '' : '(' + _comment + ')';
   }
 
   @override
@@ -100,5 +101,5 @@ class MeasureComment extends Measure {
   String get comment => _comment;
   final String _comment;
 
-  static final RegExp commentRegExp = RegExp(r"^\s*\(\s*(.*?)\s*\)\s*");
+  static final RegExp commentRegExp = RegExp(r'^\s*\(\s*(.*?)\s*\)\s*');
 }

@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.info;
 
-  test("test song moment lyrics distribution", () {
+  test('test song moment lyrics distribution', () {
     List<String> lyricsData = [
       'bob, bob, bob berand',
       'please take my hand',
@@ -35,8 +35,8 @@ void main() {
       logger.i('\nlines: $lines\n$lyrics');
 
       //  Create the song
-      SongBase a = SongBase.createSongBase("A", "bob", "bsteele.com",
-          Key.getDefault(), 100, 4, 4, "v: A B C D x2", lyrics);
+      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com',
+          Key.getDefault(), 100, 4, 4, 'v: A B C D x2', lyrics);
       logger.d('lines: $lines');
       logger.d('lyrics: ${a.rawLyrics}');
 
@@ -58,20 +58,21 @@ void main() {
           }
 
           //  All moments in the row have the same lyrics
-          if (rowLyrics == null)
+          if (rowLyrics == null) {
             rowLyrics = songMoment.lyrics;
-          else
+          } else {
             expect(songMoment.lyrics, rowLyrics);
+          }
           logger.d('($r,$c) ${songMoment.toString()}: ${songMoment.lyrics}');
         }
       }
     }
   });
 
-  test("test After Midnight", () {
+  test('test After Midnight', () {
     //  Create the song
-    SongBase a = SongBase.createSongBase("After Midnight", "Eric Clapton",
-        "BMG", Key.get(KeyEnum.D), 110, 4, 4, '''I:
+    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton',
+        'BMG', Key.get(KeyEnum.D), 110, 4, 4, '''I:
 D FG D D x2
 V:
 D FG D D x2
@@ -141,9 +142,10 @@ We gonna let it all hang down
         for (int c = 0; c < cols; c++) {
           SongMoment songMoment = grid.get(r, c);
           if (songMoment == null) continue;
-          if (c == 1)
+          if (c == 1) {
             logger.i(
                 'expect( grid.get($r,$c)?.lyrics, ${Util.quote(songMoment.lyrics)});');
+          }
         }
       }
     }
@@ -218,10 +220,10 @@ We gonna let it all hang down
         '');
   });
 
-  test("test Allison Road", () {
+  test('test Allison Road', () {
     //  Create the song
-    SongBase a = SongBase.createSongBase("Allison Road", "Gin Blossoms, The",
-        "1994 A&M", Key.get(KeyEnum.C), 120, 4, 4, '''I1:
+    SongBase a = SongBase.createSongBase('Allison Road', 'Gin Blossoms, The',
+        '1994 A&M', Key.get(KeyEnum.C), 120, 4, 4, '''I1:
 AE DA AE DA
 AE DA G G
 I2:
@@ -391,7 +393,7 @@ On Allison Road
         '');
   });
 
-  test("test Allison Road from json", () {
+  test('test Allison Road from json', () {
     //  Create the song
     String jsonString = '''
 { "file": "Allison Road.songlyrics", "lastModifiedDate": 1541287717212, "song": 

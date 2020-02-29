@@ -14,11 +14,11 @@ class Chord implements Comparable<Chord> {
       ScaleNote slashScaleNote,
       ChordAnticipationOrDelay anticipationOrDelay,
       bool implicitBeats) {
-    this._scaleChord = scaleChord;
+    _scaleChord = scaleChord;
     this.beats = beats;
-    this._beatsPerBar = beatsPerBar;
+    _beatsPerBar = beatsPerBar;
     this.slashScaleNote = slashScaleNote;
-    this._anticipationOrDelay = anticipationOrDelay;
+    _anticipationOrDelay = anticipationOrDelay;
     this.implicitBeats = implicitBeats;
   }
 
@@ -48,11 +48,11 @@ class Chord implements Comparable<Chord> {
   }
 
   static Chord parseString(String s, int beatsPerBar) {
-    return parse(new MarkedString(s), beatsPerBar);
+    return parse(MarkedString(s), beatsPerBar);
   }
 
   static Chord parse(final MarkedString markedString, int beatsPerBar) {
-    if (markedString == null || markedString.isEmpty) throw "no data to parse";
+    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
     int beats = beatsPerBar; //  default only
     ScaleChord scaleChord = ScaleChord.parse(markedString);
@@ -82,9 +82,9 @@ class Chord implements Comparable<Chord> {
       }
     }
 
-    if (beats > beatsPerBar) throw "too many beats in the chord"; //  whoops
+    if (beats > beatsPerBar) throw 'too many beats in the chord'; //  whoops
 
-    Chord ret = new Chord(scaleChord, beats, beatsPerBar, slashScaleNote,
+    Chord ret = Chord(scaleChord, beats, beatsPerBar, slashScaleNote,
         anticipationOrDelay, (beats == beatsPerBar)); //  fixme
     return ret;
   }
@@ -98,7 +98,7 @@ class Chord implements Comparable<Chord> {
 //}
 
   Chord transpose(Key key, int halfSteps) {
-    return new Chord(
+    return Chord(
         _scaleChord.transpose(key, halfSteps),
         beats,
         _beatsPerBar,
@@ -125,8 +125,9 @@ class Chord implements Comparable<Chord> {
     if (beats != o.beats) return beats < o.beats ? -1 : 1;
     ret = _anticipationOrDelay.compareTo(o._anticipationOrDelay);
     if (ret != 0) return ret;
-    if (_beatsPerBar != o._beatsPerBar)
+    if (_beatsPerBar != o._beatsPerBar) {
       return _beatsPerBar < o._beatsPerBar ? -1 : 1;
+    }
     return 0;
   }
 
@@ -134,14 +135,16 @@ class Chord implements Comparable<Chord> {
   @override
   String toString() {
     String ret = _scaleChord.toString() +
-        (slashScaleNote == null ? "" : "/" + slashScaleNote.toString()) +
+        (slashScaleNote == null ? '' : '/' + slashScaleNote.toString()) +
         _anticipationOrDelay.toString();
     if (!implicitBeats && beats < _beatsPerBar) {
       if (beats == 1) {
-        ret += ".1";
+        ret += '.1';
       } else {
         int b = 1;
-        while (b++ < beats && b < 12) ret += ".";
+        while (b++ < beats && b < 12) {
+          ret += '.';
+        }
       }
     }
     return ret;
@@ -150,14 +153,16 @@ class Chord implements Comparable<Chord> {
   /// Returns a markup representation of the object.
   String toMarkup() {
     String ret = _scaleChord.toMarkup() +
-        (slashScaleNote == null ? "" : "/" + slashScaleNote.toMarkup()) +
+        (slashScaleNote == null ? '' : '/' + slashScaleNote.toMarkup()) +
         _anticipationOrDelay.toString();
     if (!implicitBeats && beats < _beatsPerBar) {
       if (beats == 1) {
-        ret += ".1";
+        ret += '.1';
       } else {
         int b = 1;
-        while (b++ < beats && b < 12) ret += ".";
+        while (b++ < beats && b < 12) {
+          ret += '.';
+        }
       }
     }
     return ret;
@@ -196,5 +201,5 @@ class Chord implements Comparable<Chord> {
   ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;
   ChordAnticipationOrDelay _anticipationOrDelay;
 
-  static final RegExp _beatSizeRegexp = new RegExp(r"^\.\d");
+  static final RegExp _beatSizeRegexp = RegExp(r'^\.\d');
 }

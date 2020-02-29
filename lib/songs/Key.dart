@@ -22,7 +22,7 @@ class Key implements Comparable<Key> {
 
   static Map<KeyEnum, Key> _keyMap;
   static List<Key> _keysByHalfStep;
-  static List<dynamic> _initialization = [
+  static final List<dynamic> _initialization = [
     [KeyEnum.Gb, -6, 9],
     [KeyEnum.Db, -5, 4],
     [KeyEnum.Ab, -4, 11],
@@ -50,7 +50,7 @@ class Key implements Comparable<Key> {
     return _keysByHalfStep;
   }
 
-  static Key byHalfStep({int offset: 0}) {
+  static Key byHalfStep({int offset = 0}) {
     return keysByHalfStep()[offset % halfStepsPerOctave];
   }
 
@@ -219,9 +219,9 @@ class Key implements Comparable<Key> {
         for (int i = 0; i < key._majorDiatonics.length; i++) {
           diatonic = key.getMajorDiatonicByDegree(i);
           diatonicScaleNote = diatonic.scaleNote;
-          if ((count = useMap[diatonicScaleNote]) != null)
+          if ((count = useMap[diatonicScaleNote]) != null) {
             score += count * guessWeights[i];
-          else {
+          } else {
             if ((diatonic = diatonic.getAlias()) != null) {
               diatonicScaleNote = diatonic.scaleNote;
               if (diatonic != null &&
@@ -305,10 +305,11 @@ class Key implements Comparable<Key> {
   }
 
   String sharpsFlatsToString() {
-    if (_keyValue < 0)
+    if (_keyValue < 0) {
       return _keyValue.abs().toString() + MusicConstants.flatChar;
+    }
     if (_keyValue > 0) return _keyValue.toString() + MusicConstants.sharpChar;
-    return "";
+    return '';
   }
 
   @override
@@ -330,14 +331,16 @@ class Key implements Comparable<Key> {
   }
 
   String toStringAsSharp(){
-    if ( _keyScaleNote.isFlat )
+    if ( _keyScaleNote.isFlat ) {
       return _keyScaleNote.alias.toString();
+    }
     return _keyScaleNote.toString();
   }
 
   String toStringAsFlat(){
-    if ( _keyScaleNote.isSharp )
+    if ( _keyScaleNote.isSharp ) {
       return _keyScaleNote.alias.toString();
+    }
     return _keyScaleNote.toString();
   }
 

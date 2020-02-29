@@ -26,13 +26,13 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     beatCount = measure.beatCount;
 
     //  deep copy
-    List<Chord> chords = List();
+    List<Chord> chords = [];
     for (Chord chord in measure.chords) {
       chords.add( Chord.copy(chord));
     }
     this.chords = chords;
 
-    this.endOfRow = measure.endOfRow;
+    endOfRow = measure.endOfRow;
   }
 
   /// for subclasses
@@ -42,7 +42,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   /// Convenience method for testing only
   static Measure parseString(String s, int beatsPerBar, {bool endOfRow}) {
-    return parse(new MarkedString(s), beatsPerBar, null, endOfRow: endOfRow);
+    return parse(MarkedString(s), beatsPerBar, null, endOfRow: endOfRow);
   }
 
   /// Parse a measure from the input string
@@ -50,9 +50,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       final Measure priorMeasure,
       {bool endOfRow}) {
     //  should not be white space, even leading, in a measure
-    if (markedString == null || markedString.isEmpty) throw "no data to parse";
+    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
-    List<Chord> chords = new List();
+    List<Chord> chords = [];
     Measure ret;
 
     for (int i = 0; i < 32; i++) //  safety
@@ -71,7 +71,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
         //  see if this is a chordless measure
         if (markedString.charAt(0) == 'X') {
-          ret = new Measure(beatsPerBar, emptyChordList);
+          ret = Measure(beatsPerBar, emptyChordList);
           markedString.getNextChar();
           break;
         }
@@ -80,16 +80,16 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         if (chords.isEmpty &&
             markedString.charAt(0) == '-' &&
             priorMeasure != null) {
-          ret = new Measure(beatsPerBar, priorMeasure.chords);
+          ret = Measure(beatsPerBar, priorMeasure.chords);
           markedString.getNextChar();
           break;
         }
         break;
       }
     }
-    if (ret == null && chords.isEmpty) throw "no chords found";
+    if (ret == null && chords.isEmpty) throw 'no chords found';
 
-    if (ret == null) ret = Measure(beatsPerBar, chords);
+    ret ??= Measure(beatsPerBar, chords);
 
     //  process end of row markers
     RegExpMatch mr = sectionRegexp.firstMatch(markedString.toString());
@@ -106,7 +106,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   void allocateTheBeats() {
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
-    if (chords != null && chords.length > 0) {
+    if (chords != null && chords.isNotEmpty) {
       //  find the total count of beats explicitly specified
       int explicitChords = 0;
       int explicitBeats = 0;
@@ -118,8 +118,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       }
       //  verify not over specified
       if (explicitBeats + (chords.length - explicitChords) >
-          beatCount) // fixme: better failure
+          beatCount) {
         return; //  too many beats!  even if the unspecified chords only got 1
+      }
 
       //  verify not under specified
       if (chords.length == explicitChords && explicitBeats < beatCount) {
@@ -152,7 +153,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
           for (Chord c in chords) {
             c.implicitBeats = false;
             if (c.beats == beatCount) {
-              if (firstUnspecifiedChord == null) firstUnspecifiedChord = c;
+              firstUnspecifiedChord ??= c;
               c.beats = beatsPerUnspecifiedChord;
               totalBeats += beatsPerUnspecifiedChord;
             }
@@ -168,13 +169,19 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         if (totalBeats == beatCount) {
           int b = chords[0].beats;
           bool allMatch = true;
-          for (Chord c in chords) allMatch &= (c.beats == b);
+          for (Chord c in chords) {
+            allMatch &= (c.beats == b);
+          }
           if (allMatch) {
             //  reduce the over specification
-            for (Chord c in chords) c.implicitBeats = true;
+            for (Chord c in chords) {
+              c.implicitBeats = true;
+            }
           } else if (totalBeats > 1) {
             //  reduce the over specification
-            for (Chord c in chords) if (c.beats == 1) c.implicitBeats = true;
+            for (Chord c in chords) {
+              if (c.beats == 1) c.implicitBeats = true;
+            }
           }
         }
       }
@@ -195,24 +202,24 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   @override
   String transpose(Key key, int halfSteps) {
     if (chords != null && chords.isNotEmpty) {
-      StringBuffer sb = new StringBuffer();
+      StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
         sb.write(chord.transpose(key, halfSteps).toString());
       }
       return sb.toString();
     }
-    return "X"; // no chords
+    return 'X'; // no chords
   }
 
   @override
   MeasureNode transposeToKey(Key key) {
     if (chords != null && chords.isNotEmpty) {
-      List<Chord> newChords = new List();
+      List<Chord> newChords = [];
       for (Chord chord in chords) {
         newChords.add(chord.transpose(key, 0));
       }
       if (newChords == chords) return this;
-      Measure ret = new Measure(beatCount, newChords);
+      Measure ret = Measure(beatCount, newChords);
       ret.endOfRow = endOfRow;
       return ret;
     }
@@ -254,8 +261,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       if (endOfRowChar!=null && endOfRow) sb.write(endOfRowChar);
       return sb.toString();
     }
-    if (endOfRowChar!=null && endOfRow) return "X" + endOfRowChar;
-    return "X"; // no chords
+    if (endOfRowChar!=null && endOfRow) return 'X' + endOfRowChar;
+    return 'X'; // no chords
   }
 
   @override
@@ -280,8 +287,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       //  compare the lists
       if (chords == null) return o.chords == null ? 0 : 1;
       if (o.chords == null) return -1;
-      if (chords.length != o.chords.length)
+      if (chords.length != o.chords.length) {
         return chords.length < o.chords.length ? -1 : 1;
+      }
       for (int i = 0; i < chords.length; i++) {
         int ret = chords[i].compareTo(o.chords[i]);
         if (ret != 0) return ret;
@@ -319,10 +327,10 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   bool endOfRow = false;
 
   /// The chords to be played over this measure.
-  List<Chord> chords = List();
+  List<Chord> chords = [];
 
-  static final List<Chord> emptyChordList = new List();
-  static final Measure defaultMeasure = new Measure(4, emptyChordList);
+  static final List<Chord> emptyChordList = [];
+  static final Measure defaultMeasure = Measure(4, emptyChordList);
 
-  static final RegExp sectionRegexp = RegExp("^\\s*(,|\\n)");
+  static final RegExp sectionRegexp = RegExp('^\\s*(,|\\n)');
 }
