@@ -196,13 +196,13 @@ void main() {
         for (int i = -18; i < 18; i++) {
           ScaleNote scaleNote = key.getScaleNoteByHalfStep(i);
           logger.i('\t' + i.toString() + ': ' + scaleNote.toString());
-          expect(true, !scaleNote.toString().contains('♭'));
+          expect(!scaleNote.toString().contains('♭'), true );
         }
       } else {
         for (int i = -18; i < 18; i++) {
           ScaleNote scaleNote = key.getScaleNoteByHalfStep(i);
           logger.i('\t' + i.toString() + ': ' + scaleNote.toString());
-          expect(true, !scaleNote.toString().contains('♯'));
+          expect(!scaleNote.toString().contains('♯'), true );
         }
       }
     }

@@ -287,7 +287,7 @@ class Key implements Comparable<Key> {
 
   ScaleNote getScaleNoteByHalfStep(int halfSteps) {
     halfSteps = halfSteps % halfStepsPerOctave;
-    ScaleNote ret = (_keyValue >= 0)
+    ScaleNote ret = isSharp
         ? ScaleNote.getSharpByHalfStep(halfSteps)
         : ScaleNote.getFlatByHalfStep(halfSteps);
 
@@ -317,7 +317,7 @@ class Key implements Comparable<Key> {
     return _keyEnum.index - other._keyEnum.index;
   }
 
-  bool get isSharp => _keyValue >= 0;
+  bool get isSharp => _keyValue > 0;
 
   /// Returns the name of this enum constant in a user friendly format,
   /// i.e. as UTF-8
