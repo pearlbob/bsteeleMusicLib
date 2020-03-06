@@ -1,0 +1,6 @@
+#!/bin/tcsh
+#set echo; set verbose
+
+bsteeleMusicUtil \
+	-url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics \
+	-copyright
