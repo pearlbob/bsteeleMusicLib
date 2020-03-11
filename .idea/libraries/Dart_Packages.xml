@@ -68,7 +68,7 @@
         <entry key="coverage">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/coverage-0.13.7/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/coverage-0.13.9/lib" />
             </list>
           </value>
         </entry>
@@ -205,13 +205,6 @@
             </list>
           </value>
         </entry>
-        <entry key="package_resolver">
-          <value>
-            <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/package_resolver-1.0.10/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="path">
           <value>
             <list>
@@ -264,7 +257,7 @@
         <entry key="shelf_packages_handler">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf_packages_handler-1.0.4/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf_packages_handler-2.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -285,7 +278,7 @@
         <entry key="source_map_stack_trace">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-1.1.5/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-2.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -334,21 +327,21 @@
         <entry key="test">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test-1.12.0/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test-1.14.2/lib" />
             </list>
           </value>
         </entry>
         <entry key="test_api">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.14/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.15/lib" />
             </list>
           </value>
         </entry>
         <entry key="test_core">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_core-0.3.0/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_core-0.3.3/lib" />
             </list>
           </value>
         </entry>
@@ -362,7 +355,7 @@
         <entry key="universal_html">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/universal_html-1.1.15/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/universal_html-1.1.18/lib" />
             </list>
           </value>
         </entry>
@@ -376,14 +369,14 @@
         <entry key="vm_service">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/vm_service-2.3.1/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/vm_service-4.0.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="watcher">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/watcher-0.9.7+13/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/watcher-0.9.7+14/lib" />
             </list>
           </value>
         </entry>
@@ -397,7 +390,7 @@
         <entry key="webkit_inspection_protocol">
           <value>
             <list>
-              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.5.0/lib" />
+              <option value="/mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.5.0+1/lib" />
             </list>
           </value>
         </entry>
@@ -434,7 +427,7 @@
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/charcode-1.1.3/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/collection-1.14.12/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/convert-2.1.1/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/coverage-0.13.7/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/coverage-0.13.9/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/crypto-2.1.4/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/csslib-0.16.1/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/glob-1.2.0/lib" />
@@ -454,7 +447,6 @@
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/node_io-1.0.1+2/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/node_preamble-1.4.8/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/package_config-1.9.1/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/package_resolver-1.0.10/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/path-1.6.4/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/petitparser-3.0.1/lib" />
@@ -462,26 +454,26 @@
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/pub_semver-1.4.3/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/quiver-2.1.3/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf-0.7.5/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf_packages_handler-1.0.4/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf_packages_handler-2.0.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf_static-0.2.8/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/shelf_web_socket-0.2.3/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-1.1.5/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-2.0.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/source_maps-0.10.9/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/source_span-1.6.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/stack_trace-1.9.3/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/stream_channel-2.0.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.0.5/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.1.0/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test-1.12.0/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.14/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_core-0.3.0/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test-1.14.2/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.15/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/test_core-0.3.3/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/universal_html-1.1.15/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/universal_html-1.1.18/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/universal_io-1.0.1/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/vm_service-2.3.1/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/watcher-0.9.7+13/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/vm_service-4.0.0/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/watcher-0.9.7+14/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/web_socket_channel-1.1.0/lib" />
-      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.5.0/lib" />
+      <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.5.0+1/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/xml-3.7.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/yaml-2.2.0/lib" />
       <root url="file:///mnt/disk4/home/bob/my/installs/flutter/latest/.pub-cache/hosted/pub.dartlang.org/zone_local-0.1.2/lib" />
