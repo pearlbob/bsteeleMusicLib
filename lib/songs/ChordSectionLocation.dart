@@ -5,17 +5,10 @@ import 'package:quiver/core.dart';
 import '../util/util.dart';
 import 'SectionVersion.dart';
 
-enum ChordSectionLocationMarker {
-  none,
-  repeatUpperRight,
-  repeatMiddleRight,
-  repeatLowerRight
-}
+enum ChordSectionLocationMarker { none, repeatUpperRight, repeatMiddleRight, repeatLowerRight }
 
 class ChordSectionLocation implements Comparable<ChordSectionLocation> {
-  ChordSectionLocation(this._sectionVersion,
-      {int phraseIndex, int measureIndex})
-      : _labelSectionVersions = null {
+  ChordSectionLocation(this._sectionVersion, {int phraseIndex, int measureIndex}) : _labelSectionVersions = null {
     if (phraseIndex == null || phraseIndex < 0) {
       _phraseIndex = -1;
       hasPhraseIndex = false;
@@ -36,8 +29,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     _marker = ChordSectionLocationMarker.none;
   }
 
-  ChordSectionLocation.byMultipleSectionVersion(
-      Set<SectionVersion> labelSectionVersions)
+  ChordSectionLocation.copy(ChordSectionLocation other)
+      : this(other?.sectionVersion, phraseIndex: other?.phraseIndex, measureIndex: other?._measureIndex);
+
+  ChordSectionLocation.byMultipleSectionVersion(Set<SectionVersion> labelSectionVersions)
       : _sectionVersion = null,
         _phraseIndex = -1,
         hasPhraseIndex = false,
@@ -57,9 +52,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     _marker = ChordSectionLocationMarker.none;
   }
 
-  ChordSectionLocation.withMarker(
-      this._sectionVersion, int phraseIndex, this._marker)
-      : _labelSectionVersions = null {
+  ChordSectionLocation.withMarker(this._sectionVersion, int phraseIndex, this._marker) : _labelSectionVersions = null {
     if (phraseIndex == null || phraseIndex < 0) {
       _phraseIndex = -1;
       hasPhraseIndex = false;
@@ -73,16 +66,14 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   ChordSectionLocation changeSectionVersion(SectionVersion sectionVersion) {
     if (sectionVersion == null || sectionVersion == _sectionVersion) {
-      return this;  //  no change
+      return this; //  no change
     }
 
     if (hasPhraseIndex) {
       if (_hasMeasureIndex) {
-        return ChordSectionLocation(sectionVersion,
-            phraseIndex: _phraseIndex, measureIndex: _measureIndex);
+        return ChordSectionLocation(sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex);
       } else {
-        return ChordSectionLocation(sectionVersion,
-            phraseIndex: _phraseIndex);
+        return ChordSectionLocation(sectionVersion, phraseIndex: _phraseIndex);
       }
     } else {
       return ChordSectionLocation(sectionVersion);
@@ -98,8 +89,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     SectionVersion sectionVersion = SectionVersion.parse(markedString);
 
     if (markedString.available() >= 3) {
-      RegExpMatch mr =
-          numberRangeRegexp.firstMatch(markedString.remainingStringLimited(6));
+      RegExpMatch mr = numberRangeRegexp.firstMatch(markedString.remainingStringLimited(6));
       if (mr != null) {
         try {
           int phraseIndex = int.parse(mr.group(1));
@@ -107,16 +97,14 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
           int measureIndex = int.parse(mr.group(2));
           measureIndex ??= -1;
           markedString.consume(mr.group(0).length);
-          return ChordSectionLocation(sectionVersion,
-              phraseIndex: phraseIndex, measureIndex: measureIndex);
+          return ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
         } catch (e) {
           throw e.getMessage();
         }
       }
     }
     if (markedString.isNotEmpty) {
-      RegExpMatch mr =
-          numberRegexp.firstMatch(markedString.remainingStringLimited(2));
+      RegExpMatch mr = numberRegexp.firstMatch(markedString.remainingStringLimited(2));
       if (mr != null) {
         try {
           int phraseIndex = int.parse(mr.group(1));
@@ -132,14 +120,12 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   ChordSectionLocation nextMeasureIndexLocation() {
     if (!hasPhraseIndex || !_hasMeasureIndex) return this;
-    return ChordSectionLocation(_sectionVersion,
-        phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
+    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
   }
 
   ChordSectionLocation nextPhraseIndexLocation() {
     if (!hasPhraseIndex) return this;
-    return ChordSectionLocation(_sectionVersion,
-        phraseIndex: _phraseIndex + 1);
+    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex + 1);
   }
 
   @override
@@ -151,10 +137,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     if (id == null) {
       if (_labelSectionVersions == null) {
         id = _sectionVersion.toString() +
-            (hasPhraseIndex
-                ? _phraseIndex.toString() +
-                    (_hasMeasureIndex ? ':' + _measureIndex.toString() : '')
-                : '');
+            (hasPhraseIndex ? _phraseIndex.toString() + (_hasMeasureIndex ? ':' + _measureIndex.toString() : '') : '');
       } else {
         StringBuffer sb = StringBuffer();
         for (SectionVersion sv in _labelSectionVersions) {
@@ -185,9 +168,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     if (ret != 0) return ret;
     if (_labelSectionVersions.isNotEmpty) {
       for (int i = 0; i < _labelSectionVersions.length; i++) {
-        ret = _labelSectionVersions
-            .elementAt(i)
-            .compareTo(other._labelSectionVersions.elementAt(i));
+        ret = _labelSectionVersions.elementAt(i).compareTo(other._labelSectionVersions.elementAt(i));
         if (ret != 0) return ret;
       }
     }
@@ -212,8 +193,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       return false;
     }
     for (int i = 0; i < _labelSectionVersions.length; i++) {
-      if (_labelSectionVersions.elementAt(i) !=
-          other._labelSectionVersions.elementAt(i)) {
+      if (_labelSectionVersions.elementAt(i) != other._labelSectionVersions.elementAt(i)) {
         return false;
       }
     }

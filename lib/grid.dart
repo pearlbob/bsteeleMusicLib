@@ -16,6 +16,7 @@ class Grid<T> {
   }
 
   bool get isEmpty => grid.isEmpty;
+
   bool get isNotEmpty => grid.isNotEmpty;
 
   void set(int x, int y, T t) {
@@ -45,6 +46,25 @@ class Grid<T> {
     return 'Grid{' + grid.toString() + '}';
   }
 
+  String toMultiLineString() {
+    StringBuffer sb = StringBuffer('Grid{\n');
+
+    if (grid != null) {
+      int rLimit = getRowCount();
+      for (int r = 0; r < rLimit; r++) {
+        List<T> row = getRow(r);
+        int colLimit = row.length;
+        sb.write('\t[');
+        for (int c = 0; c < colLimit; c++) {
+          sb.write('\t' + row[c].toString()+',');
+        }
+        sb.write('\t]\n');
+      }
+    }
+    sb.write('}');
+    return sb.toString();
+  }
+
   T get(int x, int y) {
     try {
       List<T> row = grid[x];
@@ -69,7 +89,7 @@ class Grid<T> {
     }
   }
 
-  int rowLength(int r ){
+  int rowLength(int r) {
     try {
       return grid[r].length;
     } catch (ex) {
@@ -85,8 +105,8 @@ class Grid<T> {
   }
 
   final List<List<T>> grid =
-  //  fixme: is this required for a dart bug?
-  List.generate(1, (a) {
+      //  fixme: is this required for a dart bug?
+      List.generate(1, (a) {
     return List.generate(1, (a) {
       return null;
     });

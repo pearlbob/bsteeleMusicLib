@@ -847,7 +847,7 @@ class SongBase {
 
   Grid<ChordSectionLocation> getChordSectionLocationGrid() {
     //  support lazy eval
-    if (chordSectionLocationGrid != null) return chordSectionLocationGrid;
+    if (_chordSectionLocationGrid != null) return _chordSectionLocationGrid;
 
     Grid<ChordSectionLocation> grid = Grid<ChordSectionLocation>();
     chordSectionGridCoorinateMap = HashMap<SectionVersion, GridCoordinate>();
@@ -1057,7 +1057,7 @@ class SongBase {
       }
     }
 
-    chordSectionLocationGrid = grid;
+    _chordSectionLocationGrid = grid;
     //logger.d(grid.toString());
 
     {
@@ -1087,7 +1087,7 @@ class SongBase {
       }
     }
 
-    return chordSectionLocationGrid;
+    return _chordSectionLocationGrid;
   }
 
   /// Find all matches to the given section version, including the given section version itself
@@ -1120,12 +1120,12 @@ class SongBase {
 
   HashMap<SectionVersion, GridCoordinate> getChordSectionGridCoorinateMap() {
     // force grid population from lazy eval
-    if (chordSectionLocationGrid == null) getChordSectionLocationGrid();
+    if (_chordSectionLocationGrid == null) getChordSectionLocationGrid();
     return chordSectionGridCoorinateMap;
   }
 
   void clearCachedValues() {
-    chordSectionLocationGrid = null;
+    _chordSectionLocationGrid = null;
     complexity = 0;
     chordsAsMarkup = null;
     _songMomentGrid = null;
@@ -1422,6 +1422,15 @@ class SongBase {
               //else ; // fixme: set location to empty location
             }
             break;
+          case MeasureEditType.replace:
+            //  i.e. rename the section
+            ChordSection oldChordSection = _getChordSectionMap().remove(chordSection.sectionVersion);
+            if (oldChordSection == null) return false;
+            newChordSection = ChordSection((measureNode as ChordSection).sectionVersion, oldChordSection.phrases );
+            _getChordSectionMap()[newChordSection.sectionVersion] = newChordSection;
+            ret = true;
+            location = ChordSectionLocation(newChordSection.sectionVersion);
+            break;
           default:
             //  all sections replace themselves
             newChordSection = measureNode as ChordSection;
@@ -1477,7 +1486,7 @@ class SongBase {
             ChordSectionLocation minLocation = getChordSectionLocation(minGridCoordinate);
             GridCoordinate maxGridCoordinate = getGridCoordinate(location);
             maxGridCoordinate = GridCoordinate(
-                maxGridCoordinate.row, chordSectionLocationGrid.getRow(maxGridCoordinate.row).length - 1);
+                maxGridCoordinate.row, _chordSectionLocationGrid.getRow(maxGridCoordinate.row).length - 1);
             MeasureNode maxMeasureNode = findMeasureNodeByGrid(maxGridCoordinate);
             ChordSectionLocation maxLocation = getChordSectionLocation(maxGridCoordinate);
             logger.d('min: ' +
@@ -2005,12 +2014,15 @@ class SongBase {
 
   Measure findMeasureByChordSectionLocation(ChordSectionLocation chordSectionLocation) {
     try {
-      return _getChordSectionMap()[chordSectionLocation.sectionVersion]
-          .getPhrase(chordSectionLocation.phraseIndex)
-          .getMeasure(chordSectionLocation.measureIndex);
+      if (chordSectionLocation.isMeasure) {
+        return _getChordSectionMap()[chordSectionLocation.sectionVersion]
+            .getPhrase(chordSectionLocation.phraseIndex)
+            .getMeasure(chordSectionLocation.measureIndex);
+      }
     } catch (e) {
       return null;
     }
+    return null;
   }
 
   Measure getCurrentChordSectionLocationMeasure() {
@@ -2360,7 +2372,7 @@ class SongBase {
       throw 'no BPM given!';
     }
 
-  //  check bpm
+    //  check bpm
     RegExp twoOrThreeDigitsRegexp = RegExp('^\\d{2,3}\$');
     if (!twoOrThreeDigitsRegexp.hasMatch(bpmEntry)) {
       throw 'BPM has to be a number from ' +
@@ -3132,7 +3144,9 @@ class SongBase {
 
   ChordSectionLocation currentChordSectionLocation;
   MeasureEditType currentMeasureEditType = MeasureEditType.append;
-  Grid<ChordSectionLocation> chordSectionLocationGrid;
+
+  Grid<ChordSectionLocation> get chordSectionLocationGrid => getChordSectionLocationGrid();
+  Grid<ChordSectionLocation> _chordSectionLocationGrid;
 
   int complexity;
   String chordsAsMarkup;
