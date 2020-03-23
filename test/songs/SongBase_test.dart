@@ -18,7 +18,7 @@ import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Logger.level = Level.info;
+  Logger.level = Level.debug;
 
   test('testEquals', () {
     SongBase a = SongBase.createSongBase(
@@ -1112,5 +1112,37 @@ void main() {
         'I: [A B C D] x2 V: [A B C D] x4', 'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: [A B C D ] x2  V: [A B C D ] x4  ');
+  });
+
+  test('test chord Grid repeats', () {
+    int beatsPerBar = 4;
+    SongBase a;
+    Grid<ChordSectionLocation> grid;
+    ChordSectionLocation location;
+    GridCoordinate gridCoordinate;
+
+    //  see that section identifiers are on first phrase row
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+
+    logger.v(a.toMarkup());
+    logger.i('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
+    logger.i('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
+
+    grid = a.getChordSectionLocationGrid();
+
+    List<ChordSectionLocation> row = grid.getRow(0);
+    logger.i(row.length.toString());
+
+
   });
 }

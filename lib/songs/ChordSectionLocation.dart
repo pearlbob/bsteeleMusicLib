@@ -130,7 +130,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   @override
   String toString() {
-    return getId();
+    return getId() + (_marker != null && _marker != ChordSectionLocationMarker.none ? ':x' : '');
   }
 
   String getId() {

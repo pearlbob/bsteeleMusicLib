@@ -923,7 +923,7 @@ class SongBase {
           Phrase phrase = chordSection.getPhrase(phraseIndex);
 
           //  default to max measures per row
-          final int measuresPerline = 8;
+          final int measuresPerLine = 8;
 
           //  grid each measure of the phrase
           bool repeatExtensionUsed = false;
@@ -931,7 +931,7 @@ class SongBase {
           if (phraseSize == 0 && phrase.isRepeat()) {
             //  special case: deal with empty repeat
             //  fill row to measures per line
-            col = offset + measuresPerline - 1;
+            col = offset + measuresPerLine - 1;
             {
               //  add repeat indicator
               ChordSectionLocation loc = ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex);
@@ -959,7 +959,7 @@ class SongBase {
                 }
               }
               if (currentCol > maxCol) maxCol = currentCol;
-              maxCol = min(maxCol, measuresPerline + 1);
+              maxCol = min(maxCol, measuresPerLine + 1);
             }
 
             //  place each measure in the grid
@@ -980,13 +980,13 @@ class SongBase {
                 if (measureIndex < phraseSize - 1) {
                   row++;
                 } else {
-                  col = offset + measuresPerline;
+                  col = offset + measuresPerLine;
                 } //  prep for next phrase
                 continue;
               }
 
               if ((lastMeasure != null && lastMeasure.endOfRow) ||
-                      col >= offset + measuresPerline //  limit line length to the measures per line
+                      col >= offset + measuresPerLine //  limit line length to the measures per line
                   ) {
                 //  fill the row with nulls if the row is shorter then the others in this phrase
                 while (col < maxCol) {
@@ -1040,7 +1040,7 @@ class SongBase {
 
                 {
                   //  add repeat indicator
-                  ChordSectionLocation loc = ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex);
+                  ChordSectionLocation loc = ChordSectionLocation.withMarker(sectionVersion, phraseIndex, ChordSectionLocationMarker.repeatLowerRight);
                   GridCoordinate coordinate = GridCoordinate(row, col);
                   gridCoordinateChordSectionLocationMap[coordinate] = loc;
                   gridChordSectionLocationCoordinateMap[loc] = coordinate;
@@ -1421,15 +1421,6 @@ class SongBase {
               }
               //else ; // fixme: set location to empty location
             }
-            break;
-          case MeasureEditType.replace:
-            //  i.e. rename the section
-            ChordSection oldChordSection = _getChordSectionMap().remove(chordSection.sectionVersion);
-            if (oldChordSection == null) return false;
-            newChordSection = ChordSection((measureNode as ChordSection).sectionVersion, oldChordSection.phrases );
-            _getChordSectionMap()[newChordSection.sectionVersion] = newChordSection;
-            ret = true;
-            location = ChordSectionLocation(newChordSection.sectionVersion);
             break;
           default:
             //  all sections replace themselves
