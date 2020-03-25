@@ -3,8 +3,8 @@ import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:quiver/core.dart';
 
-import 'ChordAnticipationOrDelay.dart';
-import 'Key.dart';
+import 'chordAnticipationOrDelay.dart';
+import 'key.dart';
 
 class Chord implements Comparable<Chord> {
   Chord(

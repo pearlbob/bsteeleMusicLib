@@ -2,8 +2,8 @@ import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
 import '../appLogger.dart';
-import 'LegacyDrumSection.dart';
-import 'SectionVersion.dart';
+import 'legacyDrumSection.dart';
+import 'sectionVersion.dart';
 
 /// A _sectionVersion of a song that carries the lyrics, any special drum _sectionVersion,
 /// and the chord changes on a measure basis

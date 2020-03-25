@@ -5,11 +5,11 @@ import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
 import '../util/util.dart';
-import 'Measure.dart';
-import 'MeasureComment.dart';
-import 'MeasureNode.dart';
-import 'Section.dart';
-import 'Key.dart';
+import 'measure.dart';
+import 'measureComment.dart';
+import 'measureNode.dart';
+import 'section.dart';
+import 'key.dart';
 
 class Phrase extends MeasureNode {
   Phrase(List<Measure> measures, int phraseIndex) {
@@ -61,7 +61,7 @@ class Phrase extends MeasureNode {
           rowMark = markedString.mark();
         }
         continue;
-      } catch (e) {}
+      } catch (e) {;}
 
       if (!hasBracket) {
         //  look for repeat marker
@@ -84,7 +84,7 @@ class Phrase extends MeasureNode {
         lineMeasures.clear();
         priorMeasure = null;
         continue;
-      } catch (e) {}
+      } catch (e) {;}
 
       //  end of bracketed phrase
       if (hasBracket && markedString.charAt(0) == ']') {

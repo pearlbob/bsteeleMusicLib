@@ -1,6 +1,6 @@
 import '../util/util.dart';
-import 'ChordComponent.dart';
-import 'MusicConstants.dart';
+import 'chordComponent.dart';
+import 'musicConstants.dart';
 
 ///
 // The modifier to a chord specification that describes the basic type of chord.

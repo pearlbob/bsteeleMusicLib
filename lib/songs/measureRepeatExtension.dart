@@ -1,7 +1,7 @@
-import 'ChordSectionLocation.dart';
-import 'MeasureComment.dart';
-import 'MeasureNode.dart';
-import 'Key.dart';
+import 'chordSectionLocation.dart';
+import 'measureComment.dart';
+import 'measureNode.dart';
+import 'key.dart';
 
 class MeasureRepeatExtension extends MeasureComment {
   static MeasureRepeatExtension get(ChordSectionLocationMarker marker) {

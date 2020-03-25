@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/songs/MeasureComment.dart';
+import 'package:bsteeleMusicLib/songs/measureComment.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

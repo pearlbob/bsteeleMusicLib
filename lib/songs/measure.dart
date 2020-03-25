@@ -4,10 +4,10 @@ import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
 import '../util/util.dart';
-import 'Chord.dart';
-import 'MeasureNode.dart';
-import 'Section.dart';
-import 'Key.dart';
+import 'chord.dart';
+import 'measureNode.dart';
+import 'section.dart';
+import 'key.dart';
 
 /// A measure in a section of a song.
 /// Holds the lyrics, the chord changes and their beats.

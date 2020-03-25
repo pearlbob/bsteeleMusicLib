@@ -1,11 +1,11 @@
 import 'package:quiver/core.dart';
 
-import 'ChordSection.dart';
-import 'ChordSectionLocation.dart';
-import 'LyricSection.dart';
-import 'Measure.dart';
-import 'MeasureNode.dart';
-import 'Phrase.dart';
+import 'chordSection.dart';
+import 'chordSectionLocation.dart';
+import 'lyricSection.dart';
+import 'measure.dart';
+import 'measureNode.dart';
+import 'phrase.dart';
 
 class SongMoment implements Comparable<SongMoment> {
   SongMoment(

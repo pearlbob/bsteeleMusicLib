@@ -1,4 +1,4 @@
-import 'MusicConstants.dart';
+import 'musicConstants.dart';
 
 ///
 // Components of a chord expressed in a structured single note form.

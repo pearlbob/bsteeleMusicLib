@@ -1,8 +1,8 @@
 import 'dart:core';
 
-import 'Measure.dart';
-import 'MeasureNode.dart';
-import 'Key.dart';
+import 'measure.dart';
+import 'measureNode.dart';
+import 'key.dart';
 
 class MeasureRepeatMarker extends Measure {
   MeasureRepeatMarker(this.repeats) : super.zeroArgs();

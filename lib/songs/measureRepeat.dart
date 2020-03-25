@@ -1,12 +1,12 @@
 import '../appLogger.dart';
 import '../util/util.dart';
-import 'Measure.dart';
-import 'MeasureComment.dart';
-import 'MeasureNode.dart';
-import 'MeasureRepeatMarker.dart';
-import 'Phrase.dart';
-import 'Section.dart';
-import 'Key.dart';
+import 'measure.dart';
+import 'measureComment.dart';
+import 'measureNode.dart';
+import 'measureRepeatMarker.dart';
+import 'phrase.dart';
+import 'section.dart';
+import 'key.dart';
 
 class MeasureRepeat extends Phrase {
   MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats)

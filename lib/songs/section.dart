@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import '../util/util.dart';
-import 'SectionVersion.dart';
+import 'sectionVersion.dart';
 
 enum SectionEnum {
   /// A section that introduces the song.

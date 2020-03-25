@@ -1,7 +1,7 @@
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
-import 'LegacyDrumMeasure.dart';
+import 'legacyDrumMeasure.dart';
 
 /// Definition of drum section for one or more measures
 /// to be used either as the song's default drums or

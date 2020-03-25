@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:core';
 
 import '../util/util.dart';
-import 'Key.dart';
-import 'SongBase.dart';
+import 'key.dart';
+import 'songBase.dart';
 
 enum SongComparatorType {
   title,

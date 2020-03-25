@@ -3,22 +3,57 @@ import 'dart:collection';
 import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/gridCoordinate.dart';
 import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/songs/ChordSection.dart';
-import 'package:bsteeleMusicLib/songs/ChordSectionLocation.dart';
-import 'package:bsteeleMusicLib/songs/Measure.dart';
-import 'package:bsteeleMusicLib/songs/MeasureNode.dart';
-import 'package:bsteeleMusicLib/songs/Phrase.dart';
-import 'package:bsteeleMusicLib/songs/Section.dart';
-import 'package:bsteeleMusicLib/songs/SectionVersion.dart';
-import 'package:bsteeleMusicLib/songs/SongBase.dart';
-import 'package:bsteeleMusicLib/songs/SongMoment.dart';
-import 'package:bsteeleMusicLib/songs/Key.dart';
+import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
+import 'package:bsteeleMusicLib/songs/measure.dart';
+import 'package:bsteeleMusicLib/songs/measureNode.dart';
+import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteeleMusicLib/songs/section.dart';
+import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
+import 'package:bsteeleMusicLib/songs/songBase.dart';
+import 'package:bsteeleMusicLib/songs/songMoment.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
+String chordSectionToMultiLineString(SongBase song) {
+  Grid<ChordSectionLocation> grid = song.getChordSectionLocationGrid();
+  StringBuffer sb = StringBuffer('Grid{\n');
+
+  if (grid != null) {
+    int rLimit = grid.getRowCount();
+    for (int r = 0; r < rLimit; r++) {
+      List<ChordSectionLocation> row = grid.getRow(r);
+      int colLimit = row.length;
+      sb.write('\t[');
+      for (int c = 0; c < colLimit; c++) {
+        ChordSectionLocation loc = row[c];
+        if (loc == null) {
+          sb.write('\tnull\n');
+          continue;
+        }
+
+        sb.write('\t' + loc.toString() + ' ');
+        if (loc.isMeasure) {
+          Measure measure = song.findMeasureByChordSectionLocation(loc);
+          sb.write('measure: "${measure.toMarkup()}"'
+              '${measure.endOfRow ? ', endOfRow' : ''}'
+              '${measure.isRepeat() ? ', repeat' : ''}'
+              //
+              );
+        }
+        sb.write('\n');
+      }
+      sb.write('\t]\n');
+    }
+  }
+  sb.write('}');
+  return sb.toString();
+}
+
 void main() {
-  Logger.level = Level.debug;
+  Logger.level = Level.info;
 
   test('testEquals', () {
     SongBase a = SongBase.createSongBase(
@@ -240,8 +275,11 @@ void main() {
             if (row == 0) {
               expect(s, 'I: [A B C D ] x' + r.toString() + '  V: E F G A#');
             } else {
-              expect(s, 'I: A B C D'
-                  '  V: [E F G A# ] x' + r.toString());
+              expect(
+                  s,
+                  'I: A B C D'
+                          '  V: [E F G A# ] x' +
+                      r.toString());
             }
           }
         }
@@ -278,7 +316,14 @@ void main() {
     SongBase a;
     Measure measure;
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        4,
+        4,
         'v: A B C D, E F G A C: D D GD E\n'
             'A B C D x3\n'
             'Ab G Gb F',
@@ -542,10 +587,18 @@ void main() {
     int beatsPerBar = 4;
     ChordSectionLocation location;
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
         'O:'
             'D..Dm7 Dm7 C..B♭maj7 B♭maj7\n'
-            ' x12', 'o: nothing');
+            ' x12',
+        'o: nothing');
     logger.v('grid: ' + a.logGrid());
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
     MeasureNode measureNode = a.findMeasureNodeByLocation(location);
@@ -573,7 +626,7 @@ void main() {
         4,
         4,
         'I1:\n'
-            'CD CD CD A\n'  //  toss the dot as a comment
+            'CD CD CD A\n' //  toss the dot as a comment
             'D X\n'
             '\n'
             'V:\n'
@@ -1118,8 +1171,8 @@ void main() {
     int beatsPerBar = 4;
     SongBase a;
     Grid<ChordSectionLocation> grid;
-    ChordSectionLocation location;
-    GridCoordinate gridCoordinate;
+//    ChordSectionLocation location;
+//    GridCoordinate gridCoordinate;
 
     //  see that section identifiers are on first phrase row
     a = SongBase.createSongBase(
@@ -1133,16 +1186,16 @@ void main() {
         'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
 
-    logger.v(a.toMarkup());
-    logger.i('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
-    logger.i('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
+//    logger.v(a.toMarkup());
+//    logger.i('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
+//    logger.i('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
 
     grid = a.getChordSectionLocationGrid();
 
     List<ChordSectionLocation> row = grid.getRow(0);
     logger.i(row.length.toString());
-
-
+    logger.i(grid.toMultiLineString());
+    logger.i(chordSectionToMultiLineString(a));
   });
 }

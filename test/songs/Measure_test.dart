@@ -1,9 +1,9 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/songs/Chord.dart';
-import 'package:bsteeleMusicLib/songs/ChordAnticipationOrDelay.dart';
-import 'package:bsteeleMusicLib/songs/ChordDescriptor.dart';
-import 'package:bsteeleMusicLib/songs/Measure.dart';
-import 'package:bsteeleMusicLib/songs/Key.dart';
+import 'package:bsteeleMusicLib/songs/chord.dart';
+import 'package:bsteeleMusicLib/songs/chordAnticipationOrDelay.dart';
+import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
+import 'package:bsteeleMusicLib/songs/measure.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/util/util.dart';

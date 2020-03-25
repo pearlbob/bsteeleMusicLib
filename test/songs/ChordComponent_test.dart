@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/songs/ChordComponent.dart';
+import 'package:bsteeleMusicLib/songs/chordComponent.dart';
 import 'package:test/test.dart';
 
 void main() {

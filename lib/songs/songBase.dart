@@ -9,25 +9,25 @@ import '../grid.dart';
 import '../gridCoordinate.dart';
 import '../appLogger.dart';
 import '../util/util.dart';
-import 'Chord.dart';
-import 'ChordDescriptor.dart';
-import 'ChordSection.dart';
-import 'ChordSectionLocation.dart';
-import 'LyricSection.dart';
-import 'Measure.dart';
-import 'MeasureComment.dart';
-import 'MeasureNode.dart';
-import 'MeasureRepeat.dart';
-import 'MeasureRepeatExtension.dart';
-import 'MeasureRepeatMarker.dart';
-import 'MusicConstants.dart';
-import 'Phrase.dart';
-import 'Section.dart';
-import 'SectionVersion.dart';
-import 'Song.dart';
-import 'SongId.dart';
-import 'SongMoment.dart';
-import 'Key.dart';
+import 'chord.dart';
+import 'chordDescriptor.dart';
+import 'chordSection.dart';
+import 'chordSectionLocation.dart';
+import 'lyricSection.dart';
+import 'measure.dart';
+import 'measureComment.dart';
+import 'measureNode.dart';
+import 'measureRepeat.dart';
+import 'measureRepeatExtension.dart';
+import 'measureRepeatMarker.dart';
+import 'musicConstants.dart';
+import 'phrase.dart';
+import 'section.dart';
+import 'sectionVersion.dart';
+import 'song.dart';
+import 'songId.dart';
+import 'songMoment.dart';
+import 'key.dart';
 import 'scaleChord.dart';
 
 enum UpperCaseState {
@@ -923,15 +923,29 @@ class SongBase {
           Phrase phrase = chordSection.getPhrase(phraseIndex);
 
           //  default to max measures per row
-          final int measuresPerLine = 8;
+          int measuresPerRow = 8;
+
+          //  adjust the measures per row for songs without apparent control of the length
+          int phraseSize = phrase.measures.length;
+          {
+            bool endOfRowControlled = false;
+            for (int measureIndex = 0; measureIndex < phraseSize; measureIndex++) {
+              if (phrase.measures[measureIndex].endOfRow) {
+                endOfRowControlled = true;
+                break;
+              }
+            }
+            if (!endOfRowControlled) {
+              measuresPerRow = 4;
+            }
+          }
 
           //  grid each measure of the phrase
           bool repeatExtensionUsed = false;
-          int phraseSize = phrase.measures.length;
           if (phraseSize == 0 && phrase.isRepeat()) {
             //  special case: deal with empty repeat
             //  fill row to measures per line
-            col = offset + measuresPerLine - 1;
+            col = offset + measuresPerRow - 1;
             {
               //  add repeat indicator
               ChordSectionLocation loc = ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex);
@@ -959,7 +973,7 @@ class SongBase {
                 }
               }
               if (currentCol > maxCol) maxCol = currentCol;
-              maxCol = min(maxCol, measuresPerLine + 1);
+              maxCol = min(maxCol, measuresPerRow + 1);
             }
 
             //  place each measure in the grid
@@ -980,13 +994,13 @@ class SongBase {
                 if (measureIndex < phraseSize - 1) {
                   row++;
                 } else {
-                  col = offset + measuresPerLine;
+                  col = offset + measuresPerRow;
                 } //  prep for next phrase
                 continue;
               }
 
               if ((lastMeasure != null && lastMeasure.endOfRow) ||
-                      col >= offset + measuresPerLine //  limit line length to the measures per line
+                      col >= offset + measuresPerRow //  limit line length to the measures per line
                   ) {
                 //  fill the row with nulls if the row is shorter then the others in this phrase
                 while (col < maxCol) {
@@ -1040,7 +1054,8 @@ class SongBase {
 
                 {
                   //  add repeat indicator
-                  ChordSectionLocation loc = ChordSectionLocation.withMarker(sectionVersion, phraseIndex, ChordSectionLocationMarker.repeatLowerRight);
+                  ChordSectionLocation loc = ChordSectionLocation.withMarker(
+                      sectionVersion, phraseIndex, ChordSectionLocationMarker.repeatLowerRight);
                   GridCoordinate coordinate = GridCoordinate(row, col);
                   gridCoordinateChordSectionLocationMap[coordinate] = loc;
                   gridChordSectionLocationCoordinateMap[loc] = coordinate;
@@ -1252,7 +1267,9 @@ class SongBase {
     if (location.hasPhraseIndex) {
       try {
         phrase = chordSection.getPhrase(location.phraseIndex);
-      } catch (e) {}
+      } catch (e) {
+        ;
+      }
     }
     phrase ??= chordSection.phrases[0]; //  use the default empty list
 
@@ -1393,7 +1410,9 @@ class SongBase {
     if (location.hasPhraseIndex) {
       try {
         phrase = chordSection.getPhrase(location.phraseIndex);
-      } catch (e) {}
+      } catch (e) {
+        ;
+      }
     }
     if (phrase == null && !chordSection.isEmpty()) phrase = chordSection.phrases[0]; //  use the default empty list
 
@@ -2087,7 +2106,9 @@ class SongBase {
         setCurrentChordSectionLocation(chordSectionLocation);
         return true;
       }
-    } catch (e) {}
+    } catch (e) {
+      ;
+    }
     return false;
   }
 

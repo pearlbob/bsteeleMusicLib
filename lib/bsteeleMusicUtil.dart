@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
-import 'package:bsteeleMusicLib/songs/Song.dart';
+import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 

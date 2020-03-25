@@ -1,5 +1,5 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/songs/Phrase.dart';
+import 'package:bsteeleMusicLib/songs/phrase.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -16,7 +16,7 @@ void main() {
       s = 'G F E D x2';
       phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
       fail('a repeat is not a phrase');
-    } catch (e) {}
+    } catch (e) {;}
 
     s = 'A B C D, G F E D x2';
     phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);

@@ -1,10 +1,10 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/songs/ChordSection.dart';
-import 'package:bsteeleMusicLib/songs/Measure.dart';
-import 'package:bsteeleMusicLib/songs/MeasureComment.dart';
-import 'package:bsteeleMusicLib/songs/Phrase.dart';
-import 'package:bsteeleMusicLib/songs/Section.dart';
-import 'package:bsteeleMusicLib/songs/SectionVersion.dart';
+import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/measure.dart';
+import 'package:bsteeleMusicLib/songs/measureComment.dart';
+import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteeleMusicLib/songs/section.dart';
+import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:logger/logger.dart';

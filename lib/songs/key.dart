@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
-import 'ChordDescriptor.dart';
-import 'MusicConstants.dart';
+import 'chordDescriptor.dart';
+import 'musicConstants.dart';
 
 enum KeyEnum { Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, Fs }
 

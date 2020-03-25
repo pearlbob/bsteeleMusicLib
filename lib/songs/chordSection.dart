@@ -3,14 +3,14 @@ import 'package:quiver/core.dart';
 
 import '../appLogger.dart';
 import '../util/util.dart';
-import 'Key.dart';
-import 'Measure.dart';
-import 'MeasureComment.dart';
-import 'MeasureNode.dart';
-import 'MeasureRepeat.dart';
-import 'Phrase.dart';
-import 'Section.dart';
-import 'SectionVersion.dart';
+import 'key.dart';
+import 'measure.dart';
+import 'measureComment.dart';
+import 'measureNode.dart';
+import 'measureRepeat.dart';
+import 'phrase.dart';
+import 'section.dart';
+import 'sectionVersion.dart';
 
 /// A chord section of a song is typically a collection of measures
 /// that constitute a portion of the song that is considered musically a unit.

@@ -1,13 +1,13 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/songs/ChordSection.dart';
-import 'package:bsteeleMusicLib/songs/ChordSectionLocation.dart';
-import 'package:bsteeleMusicLib/songs/Measure.dart';
-import 'package:bsteeleMusicLib/songs/MeasureNode.dart';
-import 'package:bsteeleMusicLib/songs/MeasureRepeat.dart';
-import 'package:bsteeleMusicLib/songs/Phrase.dart';
-import 'package:bsteeleMusicLib/songs/SectionVersion.dart';
-import 'package:bsteeleMusicLib/songs/SongBase.dart';
-import 'package:bsteeleMusicLib/songs/Key.dart';
+import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
+import 'package:bsteeleMusicLib/songs/measure.dart';
+import 'package:bsteeleMusicLib/songs/measureNode.dart';
+import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
+import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
+import 'package:bsteeleMusicLib/songs/songBase.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -271,18 +271,18 @@ void main() {
     ts.post(MeasureEditType.replace, 'V:0:3', 'C');
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    //                 0 1 2 3 4 5 6 7 8 9 0 1
+    //                    0 1 2 3  4 5 6 7 8 9 0 1
     ts.pre(MeasureEditType.replace, 'V:0:6', 'C', '[] x2 ');
-    ts.resultChords('V: [C F C C F F C C ] x2 G F C G  ');
+    ts.resultChords('V: C F C C [F F C C ] x2 G F C G ');
     //               0 1 2 3  4 5 6 7      8 9 0 1
     //               0 1 2 3  0 1 2 3      0 1 2 3
-    ts.post(MeasureEditType.append, 'V:0', '[C F C C F F C C ] x2');
+    ts.post(MeasureEditType.append, 'V:1', '[F F C C ] x2');
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
     //                 0 1 2 3 4 5 6 7 8 9 0 1
     ts.pre(MeasureEditType.replace, 'V:0:6', 'C', '[] x3 ');
-    ts.resultChords('V: [C F C C F F C C ] x3 G F C G  ');
-    ts.post(MeasureEditType.append, 'V:0', '[C F C C F F C C ] x3');
+    ts.resultChords('V: C F C C [F F C C ] x3 G F C G  ');
+    ts.post(MeasureEditType.append, 'V:1', '[F F C C ] x3');
 
     ts.startingChords('I:  V:  ');
     ts.pre(MeasureEditType.append, 'V:', 'V: []', 'Dm ');

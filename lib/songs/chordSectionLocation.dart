@@ -3,10 +3,15 @@ import 'dart:collection';
 import 'package:quiver/core.dart';
 
 import '../util/util.dart';
-import 'SectionVersion.dart';
+import 'sectionVersion.dart';
 
-enum ChordSectionLocationMarker { none, repeatUpperRight, repeatMiddleRight, repeatLowerRight }
+enum ChordSectionLocationMarker { none, repeatUpperRight, repeatMiddleRight, repeatLowerRight, repeatOnOneLineRight }
 
+/// identify a section, phrase, or measure in the chord definitions
+/// by it's unique section id, phrase index, and measure index.
+/// Phrase index is the running count from zero of the phrases or repeats in the section.
+/// Measure index is the running count from zero of the measure within the phrase.
+/// Note that measures within repeats are counted in the repeat's compact form.
 class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocation(this._sectionVersion, {int phraseIndex, int measureIndex}) : _labelSectionVersions = null {
     if (phraseIndex == null || phraseIndex < 0) {
