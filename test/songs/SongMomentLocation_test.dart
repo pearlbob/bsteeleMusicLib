@@ -80,7 +80,8 @@ void main() {
 
     Grid<SongMoment> songMomentGrid = _a.songMomentGrid;
 
-    expect(songMomentGrid.getRowCount(), 7);
+    logger.v(songMomentGrid.toString());
+    expect(songMomentGrid.getRowCount(), 8);
 
     {
       SongMoment lastSongMoment;

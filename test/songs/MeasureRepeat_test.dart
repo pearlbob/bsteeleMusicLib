@@ -260,8 +260,8 @@ void main() {
         100,
         beatsPerBar,
         4,
-        'v: E F F# G [A B C D Ab Bb Eb Db D C G Gb D C G# A#] x3 T: A',
-        //         1 2 3  4  1 2 3 4 5  6  7  8  1 2 3 4  5 6 7  8
+        'v: E F F# G [A B C D Ab Bb Eb Db, D C G Gb D C G# A#] x3 T: A',
+        //  1 2 3  4  1 2 3 4 5  6  7  8  1 2 3 4  5 6 7  8
         //                                       9 101112 131415 16
         'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
@@ -277,23 +277,23 @@ void main() {
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 1));
     expect(measureNode, isNotNull);
-    expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
+    expect(measureNode, Measure.parseString('A', a.getBeatsPerBar()) );
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 1));
     expect(measureNode, isNotNull);
-    expect(Measure.parseString('D', a.getBeatsPerBar()), measureNode);
+    expect(measureNode, Measure.parseString('D', a.getBeatsPerBar()) );
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
-    expect(Measure.parseString('Gb', a.getBeatsPerBar()), measureNode);
+    expect(measureNode, Measure.parseString('Gb', a.getBeatsPerBar()) );
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 7));
     expect(measureNode, isNotNull);
-    expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
+    expect(measureNode, Measure.parseString('G#', a.getBeatsPerBar()) );
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 8));
     expect(measureNode, isNotNull);
-    expect(Measure.parseString('A#', a.getBeatsPerBar()), measureNode);
+    expect(measureNode, Measure.parseString('A#', a.getBeatsPerBar()) );
 
     chordSectionLocation =
         a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
