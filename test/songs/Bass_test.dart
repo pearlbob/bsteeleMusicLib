@@ -19,7 +19,7 @@ void main() {
 
   test('pitch mapping testing', () {
     for (Pitch pitch in Pitch.flats) {
-      logger.i('${pitch.toString()}: ${Bass.mapPitchToBass(pitch)}');
+      logger.i('${pitch.toString()}: ${Bass.mapPitchToBassFret(pitch)}');
     }
   });
 }

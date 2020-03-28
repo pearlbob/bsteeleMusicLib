@@ -214,10 +214,18 @@ class Pitch {
   static Map<PitchEnum, Pitch> _pitchMap;
   static List<Pitch> _pitches;
 
-  static List<Pitch> get sharps { getPitches(); return _sharps; }
+  static List<Pitch> get sharps {
+    getPitches();
+    return _sharps;
+  }
+
   static final List<Pitch> _sharps = [];
 
-  static List<Pitch> get flats { getPitches(); return _flats; }
+  static List<Pitch> get flats {
+    getPitches();
+    return _flats;
+  }
+
   static final List<Pitch> _flats = [];
 
   static List<Pitch> getPitches() {
@@ -299,12 +307,16 @@ class Pitch {
     return list[n];
   }
 
-  @override
-  String toString() {
+  String toDebug() {
     return '${_scaleNote.toString()}${isNatural() ? ' ' : ''}${_labelNumber.toString()} '
         '${isSharp() ? MusicConstants.sharpChar : ' '}'
         '${isNatural() ? MusicConstants.naturalChar : ' '}'
         '${isFlat() ? MusicConstants.flatChar : ' '}';
+  }
+
+  @override
+  String toString() {
+    return '${_scaleNote.toString()}${_labelNumber.toString()} ';
   }
 
   bool isSharp() {

@@ -32,7 +32,7 @@ enum ScaleNoteEnum {
 }
 
 ///
-class ScaleNote {
+class ScaleNote implements Comparable<ScaleNote>{
   ScaleNote._(ScaleNoteEnum scaleNoteE) {
     _enum = scaleNoteE;
     switch (scaleNoteE) {
@@ -249,7 +249,9 @@ class ScaleNote {
   }
 
   static Iterable<ScaleNote> get values {
-    return _map().values;
+    SplayTreeSet<ScaleNote> sortedValues = SplayTreeSet();
+    sortedValues.addAll(_map().values);
+    return sortedValues;
   }
 
   static HashMap<ScaleNoteEnum, ScaleNote> _map() {
@@ -299,6 +301,7 @@ class ScaleNote {
     return _parseMap[name];
   }
 
+  @override
   int compareTo(ScaleNote other) {
     return getEnum().index - other.getEnum().index;
   }
