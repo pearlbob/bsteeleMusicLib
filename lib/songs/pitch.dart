@@ -213,9 +213,12 @@ class Pitch {
 
   static Map<PitchEnum, Pitch> _pitchMap;
   static List<Pitch> _pitches;
-  static List<Pitch> sharps = [];
 
-  static List<Pitch> flats = [];
+  static List<Pitch> get sharps { getPitches(); return _sharps; }
+  static final List<Pitch> _sharps = [];
+
+  static List<Pitch> get flats { getPitches(); return _flats; }
+  static final List<Pitch> _flats = [];
 
   static List<Pitch> getPitches() {
     if (_pitches == null) {
@@ -236,21 +239,21 @@ class Pitch {
 
       for (Pitch pitch in _pitches) {
         if (pitch.isSharp()) {
-          sharps.add(pitch);
+          _sharps.add(pitch);
         } else if (pitch.isFlat()) {
-          if (flats.isNotEmpty && flats[flats.length - 1].getNumber() != pitch.getNumber()) {
-            flats.add(pitch); //    the natural didn't get there first
+          if (_flats.isNotEmpty && _flats[_flats.length - 1].getNumber() != pitch.getNumber()) {
+            _flats.add(pitch); //    the natural didn't get there first
           }
         } else {
           //  natural
           //  remove duplicates
-          if (sharps.isNotEmpty && sharps[sharps.length - 1].getNumber() == pitch.getNumber()) {
-            sharps.remove(sharps.length - 1);
+          if (_sharps.isNotEmpty && _sharps[_sharps.length - 1].getNumber() == pitch.getNumber()) {
+            _sharps.remove(_sharps.length - 1);
           }
           //                if (!flats.isEmpty() && flats.get(flats.size() - 1).getNumber() == pitch.getNumber())
           //                    flats.remove(flats.size() - 1);
-          sharps.add(pitch);
-          flats.add(pitch);
+          _sharps.add(pitch);
+          _flats.add(pitch);
         }
       }
     }
@@ -288,7 +291,7 @@ class Pitch {
     if (halfSteps == 0) {
       return this;
     }
-    List<Pitch> list = _scaleNote.isSharp ? sharps : flats;
+    List<Pitch> list = _scaleNote.isSharp ? _sharps : _flats;
     int n = _number + halfSteps;
     if (n < 0 || n >= list.length) {
       return null;
