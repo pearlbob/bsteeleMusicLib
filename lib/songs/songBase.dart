@@ -2825,6 +2825,7 @@ class SongBase {
     return songBeat;
   }
 
+  /// determine the song's current moment given the time from the beginning to the current time
   int getSongMomentNumberAtSongTime(double songTime) {
     if (getBeatsPerMinute() <= 0) return null; //  we're done with this song play
 

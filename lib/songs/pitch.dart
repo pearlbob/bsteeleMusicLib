@@ -230,7 +230,7 @@ class Pitch {
 
   static List<Pitch> getPitches() {
     if (_pitches == null) {
-      _getPitchMap();
+      _getPitchMap();     //  note that the alignment in pitch map requires the singletons be generated there
     }
     return _pitches;
   }
@@ -241,6 +241,7 @@ class Pitch {
       _pitches = [];
       for (PitchEnum e in PitchEnum.values) {
         Pitch p = Pitch._(e);
+        //  note the alignment with the enum
         _pitchMap[e] = p;
         _pitches.add(p);
       }
@@ -273,6 +274,14 @@ class Pitch {
       if (p.scaleNote == scaleNote && p.getNumber() >= atOrAbove.getNumber()) return p;
     }
     return null;
+  }
+
+  Pitch octaveLower() {
+    int retNumber = _number - MusicConstants.halfStepsPerOctave;
+    if (retNumber < 0) {
+      return this;
+    }
+    return getPitches()[retNumber];
   }
 
   int getLabelNumber() {
