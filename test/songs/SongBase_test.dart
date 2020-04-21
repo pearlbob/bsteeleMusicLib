@@ -1198,4 +1198,25 @@ void main() {
     logger.i(grid.toMultiLineString());
     logger.i(chordSectionToMultiLineString(a));
   });
+
+  test('test entryToUppercase', () {
+    expect(SongBase.entryToUppercase('emaj9'), 'Emaj9');
+    expect(SongBase.entryToUppercase('bbdim7'), 'Bbdim7');
+    expect(SongBase.entryToUppercase('abdim7'), 'Abdim7');
+    expect(SongBase.entryToUppercase('ddim7'), 'Ddim7');
+    expect(SongBase.entryToUppercase('dbdim7'), 'Dbdim7');
+    expect(SongBase.entryToUppercase('adadd9'), 'ADadd9');
+    expect(SongBase.entryToUppercase('aadd9'), 'Aadd9');
+    expect(SongBase.entryToUppercase('addadd9'), 'ADDadd9');
+    expect(SongBase.entryToUppercase('aadd9dadd9'), 'Aadd9Dadd9');
+    expect(SongBase.entryToUppercase('aaddadd9'), 'AADDadd9');
+    expect(SongBase.entryToUppercase('afaflat5'), 'AFAflat5');
+    expect(SongBase.entryToUppercase('a9'), 'A9');
+    expect(SongBase.entryToUppercase('a9b'), 'A9B');
+    expect(SongBase.entryToUppercase('a9b5ab9'), 'A9B5Ab9');
+    expect(SongBase.entryToUppercase('a7bb5a7b9'), 'A7Bb5A7b9');
+    expect(SongBase.entryToUppercase('a7b9b7b9'), 'A7b9B7b9');
+    expect(SongBase.entryToUppercase('a7b9b7B9'), 'A7b9B7B9');
+    expect(SongBase.entryToUppercase('a7B9bb7b9'), 'A7B9Bb7b9');
+  });
 }

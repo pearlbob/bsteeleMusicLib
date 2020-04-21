@@ -547,7 +547,7 @@ class SongBase {
                 String test = entry.substring(i + 1);
                 bool isChordDescriptor = false;
                 String cdString = '';
-                for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
+                for (ChordDescriptor chordDescriptor in ChordDescriptor.parseOrderedValues) {
                   cdString = chordDescriptor.toString();
                   if (cdString.isNotEmpty && test.startsWith(cdString)) {
                     isChordDescriptor = true;

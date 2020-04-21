@@ -96,15 +96,15 @@ void main() {
     Phrase newPhrase;
     Measure newMeasure;
 
-//    ts.startingChords('');
-//    ts.pre(MeasureEditType.append, '', '', 'i: [A B C D]');
-//    ts.resultChords('I: A B C D ');
-//    ts.post(MeasureEditType.append, 'I:', 'I: A B C D');
-//
-//    ts.startingChords('');
-//    ts.pre(MeasureEditType.append, '', '', SongBase.entryToUppercase('i: [a b c d]'));
-//    ts.resultChords('I: A B C D ');
-//    ts.post(MeasureEditType.append, 'I:', 'I: A B C D');
+    ts.startingChords('');
+    ts.pre(MeasureEditType.append, '', '', 'i: [A B C D]');
+    ts.resultChords('I: A B C D ');
+    ts.post(MeasureEditType.append, 'I:', 'I: A B C D');
+
+    ts.startingChords('');
+    ts.pre(MeasureEditType.append, '', '', SongBase.entryToUppercase('i: [a b c d]'));
+    ts.resultChords('I: A B C D ');
+    ts.post(MeasureEditType.append, 'I:', 'I: A B C D');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
     ts.pre(MeasureEditType.replace, 'C:', 'C: F F C C G G F F ', 'C: F F C C G G C B F F ');

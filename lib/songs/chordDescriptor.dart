@@ -445,6 +445,8 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _major,
   ];
 
+  static List<ChordDescriptor> get parseOrderedValues => _parseOrderedChordDescriptorsOrdered;
+
   static List<ChordDescriptor> get values {
     if (_allChordDescriptorsOrdered == null) {
       // lazy eval
