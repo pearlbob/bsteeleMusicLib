@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:math';
 
+import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -1075,30 +1076,32 @@ class SongBase {
     _chordSectionLocationGrid = grid;
     //logger.d(grid.toString());
 
-    {
-      logger.d('gridCoordinateChordSectionLocationMap: ');
-      SplayTreeSet set = SplayTreeSet<GridCoordinate>();
-      set.addAll(gridCoordinateChordSectionLocationMap.keys);
-      for (GridCoordinate coordinate in set) {
-        logger.d(' ' +
-            coordinate.toString() +
-            ' ' +
-            gridCoordinateChordSectionLocationMap[coordinate].toString() +
-            ' -> ' +
-            findMeasureNodeByLocation(gridCoordinateChordSectionLocationMap[coordinate])?.toMarkup().toString());
+    if (Logger.level.index >= Level.verbose.index) {
+      {
+        logger.d('gridCoordinateChordSectionLocationMap: ');
+        SplayTreeSet set = SplayTreeSet<GridCoordinate>();
+        set.addAll(gridCoordinateChordSectionLocationMap.keys);
+        for (GridCoordinate coordinate in set) {
+          logger.d(' ' +
+              coordinate.toString() +
+              ' ' +
+              gridCoordinateChordSectionLocationMap[coordinate].toString() +
+              ' -> ' +
+              findMeasureNodeByLocation(gridCoordinateChordSectionLocationMap[coordinate])?.toMarkup().toString());
+        }
       }
-    }
-    {
-      logger.d('gridChordSectionLocationCoordinateMap: ');
-      SplayTreeSet set = SplayTreeSet<ChordSectionLocation>();
-      set.addAll(gridChordSectionLocationCoordinateMap.keys);
-      for (ChordSectionLocation loc in set) {
-        logger.d(' ' +
-            loc.toString() +
-            ' ' +
-            gridChordSectionLocationCoordinateMap[loc].toString() +
-            ' -> ' +
-            findMeasureNodeByGrid(gridChordSectionLocationCoordinateMap[loc])?.toMarkup().toString());
+      {
+        logger.d('gridChordSectionLocationCoordinateMap: ');
+        SplayTreeSet set = SplayTreeSet<ChordSectionLocation>();
+        set.addAll(gridChordSectionLocationCoordinateMap.keys);
+        for (ChordSectionLocation loc in set) {
+          logger.d(' ' +
+              loc.toString() +
+              ' ' +
+              gridChordSectionLocationCoordinateMap[loc].toString() +
+              ' -> ' +
+              findMeasureNodeByGrid(gridChordSectionLocationCoordinateMap[loc])?.toMarkup().toString());
+        }
       }
     }
 

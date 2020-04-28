@@ -5,9 +5,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
+import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:quiver/collection.dart';
 
 import 'appLogger.dart';
 
@@ -112,6 +116,71 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-h':
           _help();
+          break;
+
+        case '-ninjam':
+          {
+          Map<Song,int>  ninjams= {};
+          for (Song song in allSongs) {
+            ChordSection lastChordSection;
+            bool allSignificantChordSectionsMatch = true;
+
+            if (song
+                .getChordSections()
+                .length == 1) {
+              lastChordSection = song
+                  .getChordSections()
+                  .first;
+            }
+
+            for (ChordSection chordSection in song.getChordSections()) {
+              switch (chordSection.sectionVersion.section.sectionEnum) {
+                case SectionEnum.intro:
+                case SectionEnum.outro:
+                case SectionEnum.tag:
+                case SectionEnum.coda:
+                  break;
+                default:
+                  if (lastChordSection == null) {
+                    lastChordSection = chordSection;
+                  } else {
+                    if (!listsEqual(lastChordSection.phrases, chordSection.phrases)) {
+                      allSignificantChordSectionsMatch = false;
+                      break;
+                    }
+                  }
+                  break;
+              }
+              if (!allSignificantChordSectionsMatch) {
+                break;
+              }
+            }
+            if (lastChordSection != null && allSignificantChordSectionsMatch) {
+              int bars = lastChordSection.getTotalMoments();
+              if ( lastChordSection.phrases.length == 1 && lastChordSection.phrases[0].isRepeat()){
+                bars = lastChordSection.phrases[0].measures.length;
+              }
+              ninjams[song] = song.beatsPerBar * bars;
+            }
+          }
+
+          SplayTreeSet<int> sortedValues = SplayTreeSet();
+          sortedValues.addAll(ninjams.values);
+          for ( int i in sortedValues ){
+            SplayTreeSet<Song> sortedSongs = SplayTreeSet();
+            for ( Song song in ninjams.keys){
+              if ( ninjams[song] == i ){
+                sortedSongs.add(song);
+              }
+            }
+            for ( Song song in sortedSongs) {
+              print('"${song.title}" by "${song.artist}"'
+                  '${song.coverArtist != null ? ' cover by "${song.coverArtist}' : ''}'
+                  ':  /bpi ${i}');
+            }
+          }
+
+          }
           break;
 
         case '-o':
@@ -287,6 +356,11 @@ coerced to reflect the songlist's last modification for that song.
             //  force the modification date
             await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
           }
+          break;
+
+        default:
+          logger.e('command not understood: "$arg"');
+          exit(-1);
           break;
       }
     }
