@@ -3,15 +3,16 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
-import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
+import 'package:string_similarity/string_similarity.dart';
 
 import 'appLogger.dart';
 
@@ -32,9 +33,11 @@ bsteeleMusicUtil:
 //  a utility for the bsteele Music App
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
+-csv                format the song data, short of chords and lyrics, into a comma seperated values (CSV) file
 -f                  force file writes over existing files
 -h                  this help message
 -o {output dir}     select the output directory, must be specified prior to -x
+-similar            list similar titled/artist songs
 -url {url}          read the given url into the utility's allSongs list
 -v                  verbose output utility's allSongs list
 -V                  very verbose output
@@ -110,6 +113,10 @@ coerced to reflect the songlist's last modification for that song.
           _copyright();
           break;
 
+        case '-csv':
+          _csv();
+          break;
+
         case '-f':
           _force = true;
           break;
@@ -120,66 +127,61 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-ninjam':
           {
-          Map<Song,int>  ninjams= {};
-          for (Song song in allSongs) {
-            ChordSection lastChordSection;
-            bool allSignificantChordSectionsMatch = true;
+            Map<Song, int> ninjams = {};
+            for (Song song in allSongs) {
+              ChordSection lastChordSection;
+              bool allSignificantChordSectionsMatch = true;
 
-            if (song
-                .getChordSections()
-                .length == 1) {
-              lastChordSection = song
-                  .getChordSections()
-                  .first;
-            }
+              if (song.getChordSections().length == 1) {
+                lastChordSection = song.getChordSections().first;
+              }
 
-            for (ChordSection chordSection in song.getChordSections()) {
-              switch (chordSection.sectionVersion.section.sectionEnum) {
-                case SectionEnum.intro:
-                case SectionEnum.outro:
-                case SectionEnum.tag:
-                case SectionEnum.coda:
-                  break;
-                default:
-                  if (lastChordSection == null) {
-                    lastChordSection = chordSection;
-                  } else {
-                    if (!listsEqual(lastChordSection.phrases, chordSection.phrases)) {
-                      allSignificantChordSectionsMatch = false;
-                      break;
+              for (ChordSection chordSection in song.getChordSections()) {
+                switch (chordSection.sectionVersion.section.sectionEnum) {
+                  case SectionEnum.intro:
+                  case SectionEnum.outro:
+                  case SectionEnum.tag:
+                  case SectionEnum.coda:
+                    break;
+                  default:
+                    if (lastChordSection == null) {
+                      lastChordSection = chordSection;
+                    } else {
+                      if (!listsEqual(lastChordSection.phrases, chordSection.phrases)) {
+                        allSignificantChordSectionsMatch = false;
+                        break;
+                      }
                     }
-                  }
+                    break;
+                }
+                if (!allSignificantChordSectionsMatch) {
                   break;
+                }
               }
-              if (!allSignificantChordSectionsMatch) {
-                break;
+              if (lastChordSection != null && allSignificantChordSectionsMatch) {
+                int bars = lastChordSection.getTotalMoments();
+                if (lastChordSection.phrases.length == 1 && lastChordSection.phrases[0].isRepeat()) {
+                  bars = lastChordSection.phrases[0].measures.length;
+                }
+                ninjams[song] = song.beatsPerBar * bars;
               }
             }
-            if (lastChordSection != null && allSignificantChordSectionsMatch) {
-              int bars = lastChordSection.getTotalMoments();
-              if ( lastChordSection.phrases.length == 1 && lastChordSection.phrases[0].isRepeat()){
-                bars = lastChordSection.phrases[0].measures.length;
-              }
-              ninjams[song] = song.beatsPerBar * bars;
-            }
-          }
 
-          SplayTreeSet<int> sortedValues = SplayTreeSet();
-          sortedValues.addAll(ninjams.values);
-          for ( int i in sortedValues ){
-            SplayTreeSet<Song> sortedSongs = SplayTreeSet();
-            for ( Song song in ninjams.keys){
-              if ( ninjams[song] == i ){
-                sortedSongs.add(song);
+            SplayTreeSet<int> sortedValues = SplayTreeSet();
+            sortedValues.addAll(ninjams.values);
+            for (int i in sortedValues) {
+              SplayTreeSet<Song> sortedSongs = SplayTreeSet();
+              for (Song song in ninjams.keys) {
+                if (ninjams[song] == i) {
+                  sortedSongs.add(song);
+                }
+              }
+              for (Song song in sortedSongs) {
+                print('"${song.title}" by "${song.artist}"'
+                    '${song.coverArtist != null ? ' cover by "${song.coverArtist}' : ''}'
+                    ':  /bpi ${i}');
               }
             }
-            for ( Song song in sortedSongs) {
-              print('"${song.title}" by "${song.artist}"'
-                  '${song.coverArtist != null ? ' cover by "${song.coverArtist}' : ''}'
-                  ':  /bpi ${i}');
-            }
-          }
-
           }
           break;
 
@@ -211,6 +213,47 @@ coerced to reflect the songlist's last modification for that song.
             logger.e('missing output path for -o');
             _help();
             exit(-1);
+          }
+          break;
+
+        case '-similar':
+          {
+            Map<String, Song> map = {};
+            for (Song song in allSongs) {
+              map[song.songId.songId] = song;
+            }
+            List<String> keys = [];
+
+            keys.addAll(map.keys);
+            List<String> listed =[];
+            for (Song song in allSongs) {
+              if ( listed.contains(song.songId.songId)){
+                continue;
+              }
+              BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
+
+              SplayTreeSet<Rating> ratingsOrdered = SplayTreeSet((Rating rating1, Rating rating2) {
+                if (rating1.rating == rating2.rating) {
+                  return 0;
+                }
+                return rating1.rating < rating2.rating ? 1 : -1;
+              });
+              ratingsOrdered.addAll(bestMatch.ratings);
+
+              for (Rating rating in ratingsOrdered) {
+                if (rating.rating >= 1.0) {
+                  continue;
+                }
+                if (rating.rating >= 0.8) {
+                  print('"${song.title.toString()}" by ${song.artist.toString()}');
+                  Song similar = map[rating.target];
+                  print('"${similar.title.toString()}" by ${similar.artist.toString()}');
+                  print(' ');
+                  listed.add(rating.target);
+                }
+                break;
+              }
+            }
           }
           break;
 
@@ -432,6 +475,32 @@ coerced to reflect the songlist's last modification for that song.
     }
   }
 
+  void _csv() {
+    StringBuffer sb = StringBuffer();
+    sb.write('Title, Artist, Cover Artist'
+        ',User'
+        // ',Modified'
+        ',Copyright'
+        ',Key'
+        ',BPM'
+        ',Time'
+        '\n');
+    for (Song song in allSongs) {
+      sb.write('"${song.title}","${song.artist ?? ''}","${song.coverArtist ?? ''}"'
+          ',"${song.user ?? ''}"'
+          //  ',"${song.lastModifiedTime??''}"'
+          ',"${song.copyright?.substring(0, min(song.copyright?.length ?? 0, 80)) ?? ''}"'
+          ',"${song.key ?? ''}"'
+          ',"${song.defaultBpm ?? ''}"'
+          ',"${song.beatsPerBar ?? '4'}/${song.unitsPerMeasure ?? '4'}"'
+          '\n');
+    }
+
+    //print(sb.toString());
+    File writeTo = File(homePath() + '/allSongs.csv');
+    writeTo.writeAsStringSync(sb.toString(), flush: true);
+  }
+
   Directory _outputDirectory = Directory.current;
   SplayTreeSet<Song> allSongs = SplayTreeSet();
   File _file;
@@ -440,4 +509,17 @@ coerced to reflect the songlist's last modification for that song.
   bool _force = false; //  force a file write, even if it already exists
   int _updateCount = 0;
   static RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
+}
+
+String homePath() {
+  String home = '';
+  Map<String, String> envVars = Platform.environment;
+  if (Platform.isMacOS) {
+    home = envVars['HOME'];
+  } else if (Platform.isLinux) {
+    home = envVars['HOME'];
+  } else if (Platform.isWindows) {
+    home = envVars['UserProfile'];
+  }
+  return home;
 }

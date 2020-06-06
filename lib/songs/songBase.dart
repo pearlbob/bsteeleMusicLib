@@ -2082,7 +2082,7 @@ class SongBase {
       }
 
       return phrase.getMeasure(chordSectionLocation.measureIndex);
-    } catch (RangeError) {
+    } catch (rangeError) {
       return null;
     }
   }
@@ -2627,22 +2627,7 @@ class SongBase {
   }
 
   void computeSongIdFromSongData() {
-    songId = computeSongId(title, artist, coverArtist);
-  }
-
-  static SongId computeSongId(String title, String artist, String coverArtist) {
-    return SongId('Song_' +
-        toSongId(title) +
-        '_by_' +
-        toSongId(artist) +
-        (coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_' + toSongId(coverArtist)));
-  }
-
-  static String toSongId(String s) {
-    return s
-        .trim()
-        .replaceAllMapped(notWordOrSpaceRegExp, (Match m) => '')
-        .replaceAllMapped(dupUnderscoreOrSpaceRegExp, (Match m) => '_');
+    songId = SongId.computeSongId(title, artist, coverArtist);
   }
 
   /// Sets the copyright for the song.  All songs should have a copyright.
@@ -3175,7 +3160,4 @@ class SongBase {
 //SplayTreeSet<Metadata> metadata = new SplayTreeSet();
   static final String defaultUser = 'Unknown';
   static final bool _debugging = false;
-
-  static RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
-  static RegExp dupUnderscoreOrSpaceRegExp = RegExp('[ _]+');
 }

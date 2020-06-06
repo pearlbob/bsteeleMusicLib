@@ -1,29 +1,29 @@
 import 'dart:collection';
+import 'dart:convert';
 
+import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/songs/songId.dart';
 import 'package:bsteeleMusicLib/util/metadata.dart';
+import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
 void main() {
+  Logger.level = Level.info;
+
   test('test Metadata', () {
     final String id0 = 'id0';
     {
-      expect(IdMetadata(id0, metadata: [NameValue('genre', 'rock')]).toString(),
-          '{ "id": "id0", "metadata": [ { "genre": "rock" } ] }');
-      expect(IdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('genre', 'rock')]).toString(),
-          '{ "id": "id0", "metadata": [ { "genre": "rock" } ] }');
+      expect(IdMetadata(id0, metadata: [NameValue('genre', 'rock')]).toJson(),
+          '{"id":"id0","metadata":[{"genre":"rock"}]}');
+      expect(IdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('genre', 'rock')]).toJson(),
+          '{"id":"id0","metadata":[{"genre":"rock"}]}');
 
       IdMetadata md = IdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
-      expect(
-          md.toString(),
-          '{ "id": "id0", "metadata": [ { "genre": "rock" },\n'
-          '\t{ "jam": "casual" } ] }');
+      expect(md.toJson(), '{"id":"id0","metadata":[{"genre":"rock"},{"jam":"casual"}]}');
       md.remove(NameValue('jam', 'casual'));
-      expect(md.toString(), '{ "id": "id0", "metadata": [ { "genre": "rock" } ] }');
+      expect(md.toJson(), '{"id":"id0","metadata":[{"genre":"rock"}]}');
       md.add(NameValue('jam', 'casual'));
-      expect(
-          md.toString(),
-          '{ "id": "id0", "metadata": [ { "genre": "rock" },\n'
-          '\t{ "jam": "casual" } ] }');
+      expect(md.toJson(), '{"id":"id0","metadata":[{"genre":"rock"},{"jam":"casual"}]}');
     }
 
     //  metadata
@@ -35,10 +35,10 @@ void main() {
     SplayTreeSet<IdMetadata> set = Metadata.where(idIsLike: id0);
     expect(set.isEmpty, true);
 
-    Metadata.add(md0);
-    Metadata.add(md1);
-    Metadata.add(md2);
-    Metadata.add(md3);
+    Metadata.set(md0);
+    Metadata.set(md1);
+    Metadata.set(md2);
+    Metadata.set(md3);
     set = Metadata.where(idIsLike: md0.id);
     expect(set.isEmpty, false);
     expect(set.length, 1);
@@ -97,13 +97,50 @@ void main() {
     expect(set.contains(md2), false);
     expect(set.contains(md3), true);
 
-    SplayTreeSet<String> names = Metadata.namesOf(set);
-    for (String name in names) {
-      print('name: $name');
-      SplayTreeSet<String> values = Metadata.valuesOf(set, name);
-      for (String value in values) {
-        print('\tvalue: $value');
+    if (Logger.level.index <= Level.debug.index) {
+      SplayTreeSet<String> names = Metadata.namesOf(set);
+      for (String name in names) {
+        logger.d('name: $name');
+        SplayTreeSet<String> values = Metadata.valuesOf(set, name);
+        for (String value in values) {
+          logger.d('\tvalue: $value');
+        }
       }
+
+      //  list all
+      logger.d('');
+      for (IdMetadata idMetadata in Metadata.idMetadata) {
+        logger.d('${idMetadata.toString()}');
+      }
+    }
+  });
+
+  test('test json', () {
+    final String id0 = SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId;
+
+    //  metadata
+    IdMetadata md0 = IdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
+    IdMetadata md1 = IdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
+        metadata: [NameValue('genre', 'rock'), NameValue('jam', 'advanced')]);
+    IdMetadata md2 = IdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
+        metadata: [NameValue('jam', 'advanced')]);
+    IdMetadata md3 = IdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
+        metadata: [NameValue('christmas', '')]);
+    Metadata.clear();
+    Metadata.set(md0);
+    Metadata.set(md1);
+    Metadata.set(md2);
+    Metadata.set(md3);
+    String original = Metadata.toJson();
+    logger.d(original);
+    {
+     String s = Metadata.toJson();
+      Metadata.clear();
+      Metadata.fromJson(s);
+
+      logger.i('$original');
+      //logger.d('${Metadata.toJson()}');
+      expect(Metadata.toJson(), original);
     }
   });
 }
