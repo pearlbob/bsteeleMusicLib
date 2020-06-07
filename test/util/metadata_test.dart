@@ -134,7 +134,7 @@ void main() {
     String original = Metadata.toJson();
     logger.d(original);
     {
-     String s = Metadata.toJson();
+      String s = Metadata.toJson();
       Metadata.clear();
       Metadata.fromJson(s);
 
@@ -143,4 +143,85 @@ void main() {
       expect(Metadata.toJson(), original);
     }
   });
+
+  bool _rockMatch(IdMetadata idMetadata) {
+    for (NameValue nameValue in idMetadata.nameValues) {
+      if (nameValue.name == 'genre' && nameValue.value == 'rock') return true;
+    }
+    return false;
+  }
+
+  bool _christmasMatch(IdMetadata idMetadata) {
+    if (christmasRegExp.hasMatch(idMetadata.id)) {
+      return true;
+    }
+    for (NameValue nameValue in idMetadata.nameValues) {
+      if (christmasRegExp.hasMatch(nameValue.name)) return true;
+    }
+    return false;
+  }
+
+  bool _notChristmasMatch(IdMetadata idMetadata) {
+    return !_christmasMatch(idMetadata);
+  }
+
+  bool _cjRanking(IdMetadata idMetadata, CjRankingEnum ranking) {
+    for (NameValue nameValue in idMetadata.nameValues) {
+      if (nameValue.name == 'cj') {
+        CjRankingEnum r = nameValue.value.toCjRankingEnum();
+        if (r != null && r.index >= ranking.index) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool _cjRankingBest(IdMetadata idMetadata) {
+    return _cjRanking(idMetadata, CjRankingEnum.best);
+  }
+
+  test('test match', () {
+    //  metadata
+    Metadata.clear();
+    SplayTreeSet<IdMetadata> matches = Metadata.match(_rockMatch);
+    expect(matches, isNotNull);
+    expect(matches, isEmpty);
+
+    Metadata.set(IdMetadata(SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId,
+        metadata: [NameValue('genre', 'rock'), NameValue('cj', 'best')]));
+    Metadata.set(IdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
+        metadata: [NameValue('genre', 'rock'), NameValue('cj', 'ok')]));
+    Metadata.set(
+        IdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId, metadata: [NameValue('cj', 'best')]));
+    Metadata.set(IdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
+        metadata: [NameValue('christmas', '')]));
+
+    matches = Metadata.match(_rockMatch);
+    expect(matches, isNotNull);
+    expect(matches.length, 2);
+    expect(matches.first.id, 'Song_39_by_Queen');
+
+    matches = Metadata.match(_christmasMatch);
+    expect(matches, isNotNull);
+    expect(matches.length, 1);
+    expect(matches.first.id, 'Song_Holly_Jolly_Christmas_by_Burl_Ives');
+
+    matches = Metadata.match(_cjRankingBest);
+    expect(matches, isNotNull);
+    expect(matches.length, 2);
+    expect(matches.first.id, 'Song_Boxer_The_by_Boxer_The');
+
+    matches = Metadata.match(_rockMatch, from: Metadata.match(_christmasMatch));
+    expect(matches, isNotNull);
+    expect(matches, isEmpty);
+
+    matches =
+        Metadata.match(_rockMatch, from: Metadata.match(_cjRankingBest, from: Metadata.match(_notChristmasMatch)));
+    expect(matches, isNotNull);
+    expect(matches.length, 1);
+    expect(matches.first.id, 'Song_Hey_Joe_by_Jimi_Hendrix');
+  });
 }
+
+final RegExp christmasRegExp = RegExp(r'.*christmas.*', caseSensitive: false);

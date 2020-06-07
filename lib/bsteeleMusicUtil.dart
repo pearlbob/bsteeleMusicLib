@@ -43,6 +43,7 @@ arguments:
 -V                  very verbose output
 -w {file}           write the utility's allSongs list to the given file
 -x {file}           expand a songlyrics list file to the output directory
+-xmas               filter for christmas songs
 
 note: the output directory will NOT be cleaned prior to the expansion.
 this means old and stale songs might remain in the directory.
@@ -398,6 +399,15 @@ coerced to reflect the songlist's last modification for that song.
 
             //  force the modification date
             await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
+          }
+          break;
+
+        case '-xmas':
+          final RegExp christmasRegExp = RegExp(r'.*christmas.*', caseSensitive: false);
+          for (Song song in allSongs) {
+            if ( christmasRegExp.hasMatch(song.songId.songId)){
+              print( '${song.toString()}');
+            }
           }
           break;
 

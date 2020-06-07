@@ -3,6 +3,21 @@ import 'dart:convert';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
 
+enum CjRankingEnum {
+  bad,
+  poor,
+  ok,
+  good,
+  best,
+}
+
+extension CjRankingEnumParser on String {
+  CjRankingEnum toCjRankingEnum() {
+    return CjRankingEnum.values
+        .firstWhere((e) => e.toString() == 'CjRankingEnum.$this', orElse: () => null); //return null if not found
+  }
+}
+
 /// name and value pair
 class NameValue implements Comparable<NameValue> {
   NameValue(this._name, this._value);
@@ -134,6 +149,18 @@ class Metadata {
     }
   }
 
+  static SplayTreeSet<IdMetadata> match(bool Function(IdMetadata idMetadata) doesMatch, {SplayTreeSet<IdMetadata> from}) {
+    SplayTreeSet<IdMetadata> ret = SplayTreeSet();
+    if (doesMatch != null) {
+      for (IdMetadata idMetadata in from ?? _singleton._idMetadata) {
+        if (doesMatch(idMetadata)) {
+          ret.add(idMetadata);
+        }
+      }
+    }
+    return ret;
+  }
+
   static SplayTreeSet<IdMetadata> where({String idIsLike, String nameIsLike, String valueIsLike}) {
     if (idIsLike == null && nameIsLike == null && valueIsLike == null) {
       return _singleton._shallowCopyIdMetadata();
@@ -238,7 +265,7 @@ class Metadata {
     return '[\n$sb\n]';
   }
 
-  static void fromJson( String jsonString) {
+  static void fromJson(String jsonString) {
     var decoded = json.decode(jsonString);
     Metadata.clear();
     if (decoded != null) {
