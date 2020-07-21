@@ -7,9 +7,11 @@ void main() {
   Logger.level = Level.info;
 
   test('test counts', () {
-    expect(Pitch.getPitches().length,
-        7 /* octaves */ * (12 /* notes */ + 9 /* aliases/octave */)
-            + 4 /* high notes (A7 or higher) */+ 3 /* high note aliases */);
+    expect(
+        Pitch.getPitches().length,
+        7 /* octaves */ * (12 /* notes */ + 9 /* aliases/octave */) +
+            4 /* high notes (A7 or higher) */ +
+            3 /* high note aliases */);
   });
 
   test('testParsing', () {
@@ -26,21 +28,21 @@ void main() {
         }
         sb.write(p.getNumber());
         sb.write(' ');
-        sb.write(p.getFrequency().toStringAsFixed(6));
+        sb.write(p.frequency.toStringAsFixed(6));
         print(sb.toString());
       }
     }
-    expect(Pitch.get(PitchEnum.A1).getFrequency(), closeTo(55.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E1).getFrequency(), closeTo(41.2034, 1e-4));
-    expect(Pitch.get(PitchEnum.A2).getFrequency(), closeTo(110.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E2).getFrequency(), closeTo(Pitch.get(PitchEnum.E1).getFrequency() * 2, 1e-20));
-    expect(Pitch.get(PitchEnum.A3).getFrequency(), closeTo(220.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E3).getFrequency(), closeTo(Pitch.get(PitchEnum.E1).getFrequency() * 4, 1e-12));
-    expect(Pitch.get(PitchEnum.A4).getFrequency(), closeTo(440.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E4).getFrequency(), closeTo(Pitch.get(PitchEnum.E1).getFrequency() * 8, 1e-12));
-    expect(Pitch.get(PitchEnum.A5).getFrequency(), closeTo(880.0, 1e-20));
-    expect(Pitch.get(PitchEnum.C6).getFrequency(), closeTo(1046.5022612023945, 1e-20)); // human voice, saprano
-    expect(Pitch.get(PitchEnum.C8).getFrequency(), closeTo(4186.009044809578, 1e-20)); //  piano
+    expect(Pitch.get(PitchEnum.A1).frequency, closeTo(55.0, 1e-20));
+    expect(Pitch.get(PitchEnum.E1).frequency, closeTo(41.2034, 1e-4));
+    expect(Pitch.get(PitchEnum.A2).frequency, closeTo(110.0, 1e-20));
+    expect(Pitch.get(PitchEnum.E2).frequency, closeTo(Pitch.get(PitchEnum.E1).frequency * 2, 1e-20));
+    expect(Pitch.get(PitchEnum.A3).frequency, closeTo(220.0, 1e-20));
+    expect(Pitch.get(PitchEnum.E3).frequency, closeTo(Pitch.get(PitchEnum.E1).frequency * 4, 1e-12));
+    expect(Pitch.get(PitchEnum.A4).frequency, closeTo(440.0, 1e-20));
+    expect(Pitch.get(PitchEnum.E4).frequency, closeTo(Pitch.get(PitchEnum.E1).frequency * 8, 1e-12));
+    expect(Pitch.get(PitchEnum.A5).frequency, closeTo(880.0, 1e-20));
+    expect(Pitch.get(PitchEnum.C6).frequency, closeTo(1046.5022612023945, 1e-20)); // human voice, saprano
+    expect(Pitch.get(PitchEnum.C8).frequency, closeTo(4186.009044809578, 1e-20)); //  piano
   });
 
   test('testIsSharp', () {
@@ -101,6 +103,36 @@ void main() {
     expect(naturals, 52);
     expect(flats, 51);
   });
+
+  test('testfromFrequency', () {
+    expect(Pitch.findFlatFromFrequency(1), Pitch.get(PitchEnum.A0));
+    expect(Pitch.findSharpFromFrequency(1), Pitch.get(PitchEnum.A0));
+    expect(Pitch.findFlatFromFrequency(41), Pitch.get(PitchEnum.E1));
+    expect(Pitch.findFlatFromFrequency(42), Pitch.get(PitchEnum.E1));
+    expect(Pitch.findFlatFromFrequency(43), Pitch.get(PitchEnum.F1));
+    expect(Pitch.findFlatFromFrequency(880), Pitch.get(PitchEnum.A5));
+    expect(Pitch.findFlatFromFrequency(906), Pitch.get(PitchEnum.A5));
+    expect(Pitch.findFlatFromFrequency(907), Pitch.get(PitchEnum.Bb5));
+    expect(Pitch.findFlatFromFrequency(933), Pitch.get(PitchEnum.Bb5));
+    expect(Pitch.findSharpFromFrequency(933), Pitch.get(PitchEnum.As5));
+    expect(Pitch.findFlatFromFrequency(7030), Pitch.get(PitchEnum.C8));
+  });
+
+  test('testNextPitch', () {
+    Pitch p = Pitch.get(PitchEnum.E2);
+
+    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.F2));
+    p = Pitch.findFlatFromFrequency(82);
+    expect(p, Pitch.get(PitchEnum.E2));
+    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.F2));
+    p = Pitch.findFlatFromFrequency(92);
+    expect(p, Pitch.get(PitchEnum.Gb2));
+    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.G2));
+    p = Pitch.findSharpFromFrequency(92);
+    expect(p, Pitch.get(PitchEnum.Fs2));
+    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.G2));
+  });
+
 }
 /*
 A0   0 27.5

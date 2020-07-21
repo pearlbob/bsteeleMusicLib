@@ -230,7 +230,7 @@ class Pitch {
 
   static List<Pitch> getPitches() {
     if (_pitches == null) {
-      _getPitchMap();     //  note that the alignment in pitch map requires the singletons be generated there
+      _getPitchMap(); //  note that the alignment in pitch map requires the singletons be generated there
     }
     return _pitches;
   }
@@ -248,21 +248,26 @@ class Pitch {
 
       for (Pitch pitch in _pitches) {
         if (pitch.isSharp()) {
-          _sharps.add(pitch);
+          _sharps.add(pitch); //    the natural didn't get there first
         } else if (pitch.isFlat()) {
           if (_flats.isNotEmpty && _flats[_flats.length - 1].getNumber() != pitch.getNumber()) {
             _flats.add(pitch); //    the natural didn't get there first
           }
         } else {
           //  natural
-          //  remove duplicates
+
           if (_sharps.isNotEmpty && _sharps[_sharps.length - 1].getNumber() == pitch.getNumber()) {
-            _sharps.remove(_sharps.length - 1);
+            //  remove sharp duplicates
+            _sharps[_sharps.length - 1] = pitch;
+          } else {
+            _sharps.add(pitch);
           }
-          //                if (!flats.isEmpty() && flats.get(flats.size() - 1).getNumber() == pitch.getNumber())
-          //                    flats.remove(flats.size() - 1);
-          _sharps.add(pitch);
-          _flats.add(pitch);
+
+          if (!flats.isEmpty && flats[flats.length - 1].getNumber() == pitch.getNumber()) {
+            //  remove flat duplicates
+            flats[flats.length - 1] = pitch;
+          } else
+            _flats.add(pitch);
         }
       }
     }
@@ -276,12 +281,40 @@ class Pitch {
     return null;
   }
 
+  static Pitch findFlatFromFrequency(double frequency) {
+    Pitch ret = flats[0];
+    double bestError = (ret.frequency - frequency).abs();
+    for (Pitch p in flats) {
+      double e = (p.frequency - frequency).abs();
+      if (p.frequency > frequency) {
+        return bestError < e ? ret : p;
+      }
+      ret = p;
+      bestError = e;
+    }
+    return ret;
+  }
+
+  static Pitch findSharpFromFrequency(double frequency) {
+    Pitch ret = sharps[0];
+    double bestError = (ret.frequency - frequency).abs();
+    for (Pitch p in sharps) {
+      double e = (p.frequency - frequency).abs();
+      if (p.frequency > frequency) {
+        return bestError < e ? ret : p;
+      }
+      ret = p;
+      bestError = e;
+    }
+    return ret;
+  }
+
   Pitch octaveLower() {
     int retNumber = _number - MusicConstants.halfStepsPerOctave;
     if (retNumber < 0) {
       return this;
     }
-    return getPitches()[retNumber];
+    return (isSharp() ? sharps : flats)[retNumber];
   }
 
   int getLabelNumber() {
@@ -293,10 +326,15 @@ class Pitch {
     return _number;
   }
 
-  /// Return the frequency of the pitch.
-  double getFrequency() {
-    return _frequency;
+  Pitch nextHigherPitch() {
+    List<Pitch> list = (isSharp() ? sharps : flats);
+    int n = _number + 1;
+    if (n >= list.length) return null;
+    return list[n];
   }
+
+  /// Return the frequency of the pitch.
+  double get frequency => _frequency;
 
   /// Return the scale note represented by this pitch.
   ScaleNote getScaleNote() {

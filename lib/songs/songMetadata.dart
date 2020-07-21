@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:bsteeleMusicLib/appLogger.dart';
 
 enum CjRankingEnum {
-  bad,
+  all,
   poor,
   ok,
   good,
@@ -25,6 +25,10 @@ class NameValue implements Comparable<NameValue> {
   @override
   String toString() {
     return '{"$name":"$value"}';
+  }
+
+  String toJson() {
+    return '{"name":"$name","value":"$value"}';
   }
 
   @override
@@ -57,8 +61,8 @@ class NameValue implements Comparable<NameValue> {
 }
 
 /// name value pairs attached to an id
-class IdMetadata implements Comparable<IdMetadata> {
-  IdMetadata(this._id, {List<NameValue> metadata}) {
+class SongIdMetadata implements Comparable<SongIdMetadata> {
+  SongIdMetadata(this._id, {List<NameValue> metadata}) {
     if (metadata != null) {
       for (NameValue nameValue in metadata) {
         add(nameValue);
@@ -77,7 +81,7 @@ class IdMetadata implements Comparable<IdMetadata> {
   }
 
   @override
-  int compareTo(IdMetadata other) {
+  int compareTo(SongIdMetadata other) {
     int ret = _id.compareTo(other._id);
     if (ret != 0) {
       return ret;
@@ -111,9 +115,9 @@ class IdMetadata implements Comparable<IdMetadata> {
       } else {
         sb.write(',');
       }
-      sb.write(nv.toString());
+      sb.write(nv.toJson());
     }
-    return '{"id":"$id","metadata":[$sb]}';
+    return '{"id":"$id","metadata":[${sb.toString()}]}';
   }
 
   String get id => _id;
@@ -124,24 +128,24 @@ class IdMetadata implements Comparable<IdMetadata> {
 }
 
 /// system metadata registry that is a set of id metadata
-class Metadata {
-  static final Metadata _singleton = Metadata._internal();
+class SongMetadata {
+  static final SongMetadata _singleton = SongMetadata._internal();
 
-  factory Metadata() {
+  factory SongMetadata() {
     return _singleton;
   }
 
-  Metadata._internal();
+  SongMetadata._internal();
 
-  static void set(IdMetadata idMetadata) {
+  static void set(SongIdMetadata idMetadata) {
     if (!_singleton._idMetadata.add(idMetadata)) {
       _singleton._idMetadata.remove(idMetadata);
       _singleton._idMetadata.add(idMetadata);
     }
   }
 
-  static void add(IdMetadata idMetadata) {
-    IdMetadata value;
+  static void add(SongIdMetadata idMetadata) {
+    SongIdMetadata value;
     if ((value = _singleton._idMetadata.lookup(idMetadata)) != null) {
       value._nameValues.addAll(idMetadata._nameValues);
     } else {
@@ -149,10 +153,11 @@ class Metadata {
     }
   }
 
-  static SplayTreeSet<IdMetadata> match(bool Function(IdMetadata idMetadata) doesMatch, {SplayTreeSet<IdMetadata> from}) {
-    SplayTreeSet<IdMetadata> ret = SplayTreeSet();
+  static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata idMetadata) doesMatch,
+      {SplayTreeSet<SongIdMetadata> from}) {
+    SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
     if (doesMatch != null) {
-      for (IdMetadata idMetadata in from ?? _singleton._idMetadata) {
+      for (SongIdMetadata idMetadata in from ?? _singleton._idMetadata) {
         if (doesMatch(idMetadata)) {
           ret.add(idMetadata);
         }
@@ -161,12 +166,27 @@ class Metadata {
     return ret;
   }
 
-  static SplayTreeSet<IdMetadata> where({String idIsLike, String nameIsLike, String valueIsLike}) {
+  static NameValue songMetadataAt(final String id, final String name, {SplayTreeSet<SongIdMetadata> from}) {
+    if (id != null && name != null) {
+      for (SongIdMetadata idMetadata in from ?? _singleton._idMetadata) {
+        if (idMetadata.id == id) {
+          for (NameValue nameValue in idMetadata.nameValues) {
+            if (nameValue.name == name) {
+              return nameValue;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  static SplayTreeSet<SongIdMetadata> where({String idIsLike, String nameIsLike, String valueIsLike}) {
     if (idIsLike == null && nameIsLike == null && valueIsLike == null) {
       return _singleton._shallowCopyIdMetadata();
     }
 
-    SplayTreeSet<IdMetadata> ret = SplayTreeSet();
+    SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
     RegExp idIsLikeReg;
     RegExp nameIsLikeReg;
     RegExp valueIsLikeReg;
@@ -182,7 +202,7 @@ class Metadata {
     }
 
     loop:
-    for (IdMetadata idm in _singleton._idMetadata) {
+    for (SongIdMetadata idm in _singleton._idMetadata) {
       if (idIsLikeReg != null && idIsLikeReg.hasMatch(idm._id)) {
         ret.add(idm);
         continue;
@@ -217,17 +237,17 @@ class Metadata {
     return ret;
   }
 
-  SplayTreeSet<IdMetadata> _shallowCopyIdMetadata() {
-    SplayTreeSet<IdMetadata> ret = SplayTreeSet();
-    for (IdMetadata idMetadata in _idMetadata) {
+  SplayTreeSet<SongIdMetadata> _shallowCopyIdMetadata() {
+    SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
+    for (SongIdMetadata idMetadata in _idMetadata) {
       ret.add(idMetadata);
     }
     return ret;
   }
 
-  static SplayTreeSet<String> namesOf(SplayTreeSet<IdMetadata> idMetadata) {
+  static SplayTreeSet<String> namesOf(SplayTreeSet<SongIdMetadata> idMetadata) {
     SplayTreeSet<String> ret = SplayTreeSet();
-    for (IdMetadata idMetadata in _singleton._idMetadata) {
+    for (SongIdMetadata idMetadata in _singleton._idMetadata) {
       for (NameValue nameValue in idMetadata.nameValues) {
         ret.add(nameValue.name);
       }
@@ -235,9 +255,9 @@ class Metadata {
     return ret;
   }
 
-  static SplayTreeSet<String> valuesOf(SplayTreeSet<IdMetadata> idMetadata, String name) {
+  static SplayTreeSet<String> valuesOf(SplayTreeSet<SongIdMetadata> idMetadata, String name) {
     SplayTreeSet<String> ret = SplayTreeSet();
-    for (IdMetadata idMetadata in _singleton._idMetadata) {
+    for (SongIdMetadata idMetadata in _singleton._idMetadata) {
       for (NameValue nameValue in idMetadata.nameValues) {
         if (nameValue.name == name) {
           ret.add(nameValue.value);
@@ -254,7 +274,7 @@ class Metadata {
   static String toJson() {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (IdMetadata idMetadata in _singleton._idMetadata) {
+    for (SongIdMetadata idMetadata in _singleton._idMetadata) {
       if (first) {
         first = false;
       } else {
@@ -262,12 +282,11 @@ class Metadata {
       }
       sb.write(idMetadata.toJson());
     }
-    return '[\n$sb\n]';
+    return '[${sb.toString()}]';
   }
 
   static void fromJson(String jsonString) {
     var decoded = json.decode(jsonString);
-    Metadata.clear();
     if (decoded != null) {
       for (var item in decoded) {
         String id;
@@ -279,12 +298,9 @@ class Metadata {
               logger.d('\t\t$id');
               break;
             case 'metadata':
-              for (var value in item[key]) {
-                if (value is Map) {
-                  for (var k in value.keys) {
-                    //  fixme: id has to be first!
-                    Metadata.add(IdMetadata(id, metadata: [NameValue(k.toString(), value[k].toString())]));
-                  }
+              for (var nv in item[key]) {
+                if (nv is Map) {
+                  SongMetadata.add(SongIdMetadata(id, metadata: [NameValue(nv['name'], nv['value'])]));
                 }
               }
               break;
@@ -296,6 +312,6 @@ class Metadata {
     }
   }
 
-  static SplayTreeSet<IdMetadata> get idMetadata => _singleton._idMetadata;
-  final SplayTreeSet<IdMetadata> _idMetadata = SplayTreeSet();
+  static SplayTreeSet<SongIdMetadata> get idMetadata => _singleton._idMetadata;
+  final SplayTreeSet<SongIdMetadata> _idMetadata = SplayTreeSet();
 }

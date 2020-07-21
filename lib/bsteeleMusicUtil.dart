@@ -9,6 +9,7 @@ import 'package:archive/archive.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
@@ -33,7 +34,10 @@ bsteeleMusicUtil:
 //  a utility for the bsteele Music App
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
--csv                format the song data, short of chords and lyrics, into a comma seperated values (CSV) file
+-cjwrite {file)     format the song metada data
+-cjread {file)     add song metada data
+-cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
+-cjcsvread {file}   read a cj csv format the song metadata file
 -f                  force file writes over existing files
 -h                  this help message
 -o {output dir}     select the output directory, must be specified prior to -x
@@ -114,8 +118,100 @@ coerced to reflect the songlist's last modification for that song.
           _copyright();
           break;
 
-        case '-csv':
-          _csv();
+//        case '-csv':
+//          _csv();
+//          break;
+
+        case '-cjread': // {file}
+        //  insist there is another arg
+          if (i >= args.length - 1) {
+            logger.e('missing directory path for -a');
+            _help();
+            exit(-1);
+          }
+          i++;
+          {
+            Directory inputDirectory = Directory(args[i]);
+
+            if (inputDirectory.statSync().type == FileSystemEntityType.directory) {
+              if (!(await inputDirectory.exists())) {
+                logger.e('missing directory for -a');
+                _help();
+                exit(-1);
+              }
+              _addAllSongsFromDir(inputDirectory);
+              continue;
+            }
+          }
+          File inputFile = File(args[i]);
+          logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
+
+          if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
+            logger.e('missing input file/directory for -a: ${inputFile.path}');
+            exit(-1);
+          }
+          SongMetadata.fromJson(inputFile.readAsStringSync());
+          break;
+
+        case '-cjwrite': // {file)     format the song metada data
+          //  assert there is another arg
+          if (i >= args.length - 1) {
+            logger.e('missing directory path for -a');
+            exit(-1);
+          }
+          i++;
+          File outputFile = File(args[i]);
+
+          if (await outputFile.exists() && !_force) {
+            logger.e('"${outputFile.path}" already exists for -w without -f');
+            exit(-1);
+          }
+          await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
+          break;
+        case '-cjcsvwrite': // {file}  format the song data as a CSV version of the CJ ranking metadata
+          //  assert there is another arg
+          if (i >= args.length - 1) {
+            logger.e('missing directory path for -a');
+            exit(-1);
+          }
+          i++;
+          File outputFile = File(args[i]);
+
+          if (await outputFile.exists() && !_force) {
+            logger.e('"${outputFile.path}" already exists for -w without -f');
+            exit(-1);
+          }
+          await outputFile.writeAsString(_cjCsvRanking(), flush: true);
+          break;
+        case '-cjcsvread': // {file}
+          //  insist there is another arg
+          if (i >= args.length - 1) {
+            logger.e('missing directory path for -a');
+            _help();
+            exit(-1);
+          }
+          i++;
+          {
+            Directory inputDirectory = Directory(args[i]);
+
+            if (inputDirectory.statSync().type == FileSystemEntityType.directory) {
+              if (!(await inputDirectory.exists())) {
+                logger.e('missing directory for -a');
+                _help();
+                exit(-1);
+              }
+              _addAllSongsFromDir(inputDirectory);
+              continue;
+            }
+          }
+          File inputFile = File(args[i]);
+          logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
+
+          if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
+            logger.e('missing input file/directory for -a: ${inputFile.path}');
+            exit(-1);
+          }
+          _cjCsvRead(inputFile.readAsStringSync());
           break;
 
         case '-f':
@@ -226,9 +322,9 @@ coerced to reflect the songlist's last modification for that song.
             List<String> keys = [];
 
             keys.addAll(map.keys);
-            List<String> listed =[];
+            List<String> listed = [];
             for (Song song in allSongs) {
-              if ( listed.contains(song.songId.songId)){
+              if (listed.contains(song.songId.songId)) {
                 continue;
               }
               BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
@@ -276,7 +372,7 @@ coerced to reflect the songlist's last modification for that song.
           File outputFile = File(args[i]);
 
           if (await outputFile.exists() && !_force) {
-            logger.e('"${outputFile.path}" alreday exists for -w without -f');
+            logger.e('"${outputFile.path}" already exists for -w without -f');
             exit(-1);
           }
           if (allSongs.isEmpty) {
@@ -404,11 +500,13 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-xmas':
           final RegExp christmasRegExp = RegExp(r'.*christmas.*', caseSensitive: false);
+          SongMetadata.clear();
           for (Song song in allSongs) {
-            if ( christmasRegExp.hasMatch(song.songId.songId)){
-              print( '${song.toString()}');
+            if (christmasRegExp.hasMatch(song.songId.songId)) {
+              SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [NameValue('christmas', '')]));
             }
           }
+          print(SongMetadata.toJson());
           break;
 
         default:
@@ -485,6 +583,34 @@ coerced to reflect the songlist's last modification for that song.
     }
   }
 
+  String _cjCsvRanking() {
+    StringBuffer sb = StringBuffer();
+    sb.write('Id'
+        ',ranking'
+        '\n');
+    for (Song song in allSongs) {
+      NameValue nameValue = SongMetadata.songMetadataAt(song.songId.songId, 'cj');
+      sb.write('"${song.songId.songId}","${nameValue?.value ?? ''}"\n');
+    }
+    return sb.toString();
+  }
+
+  void _cjCsvRead(String input) {
+    int i = 0;
+    for (String line in input.split('\n')) {
+      if (i > 0) {
+        List<String> ranking = line.split(_csvLineSplit);
+        if (ranking[1] != null && ranking[1].isNotEmpty) {
+          logger.v('$i: ${ranking[0]}, ${ranking[1]}');
+          SongMetadata.add(SongIdMetadata(ranking[0],metadata: <NameValue>[]..add(NameValue('cj',ranking[1]))));
+        }
+      }
+      i++;
+    }
+    logger.d( SongMetadata.toJson());
+  }
+
+
   void _csv() {
     StringBuffer sb = StringBuffer();
     sb.write('Title, Artist, Cover Artist'
@@ -533,3 +659,6 @@ String homePath() {
   }
   return home;
 }
+
+
+final RegExp _csvLineSplit = RegExp(r'[\,\r]');
