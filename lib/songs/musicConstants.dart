@@ -18,8 +18,11 @@ class MusicConstants {
   static const String whiteBulletHtml = '&#25e6;';
   static const String diminishedCircleHtml = whiteBulletHtml;
 
-  static const String bassClef = '\uD834\uDD22';
+
+  static const String fClef = '\uD834\uDD22';
+  static const String bassClef = fClef;
   static const String gClef = '\uD834\uDD1E';
+  static const String trebleClef = gClef;
 
   static const int halfStepsPerOctave = 12;
   static const int notesPerScale = 7;

@@ -176,11 +176,11 @@ enum PitchEnum {
   C8,
 }
 
-class Pitch {
-  Pitch._(PitchEnum pe) {
+class Pitch implements Comparable<Pitch> {
+  Pitch._(this._pitchEnum) {
     //  initialize the final values
 
-    RegExpMatch mr = pitchRegExp.firstMatch(pe.toString());
+    RegExpMatch mr = pitchRegExp.firstMatch(_pitchEnum.toString());
     //   fail early on null!
     _name = mr.group(1) + mr.group(2);
     _scaleNote = ScaleNote.valueOf(mr.group(1));
@@ -333,6 +333,13 @@ class Pitch {
     return list[n];
   }
 
+  Pitch nextLowerPitch() {
+    List<Pitch> list = (isSharp() ? sharps : flats);
+    int n = _number - 1;
+    if (n < 0) return null;
+    return list[n];
+  }
+
   /// Return the frequency of the pitch.
   double get frequency => _frequency;
 
@@ -378,6 +385,14 @@ class Pitch {
     return _scaleNote.isFlat;
   }
 
+  get index => _pitchEnum.index;
+
+  @override
+  int compareTo(Pitch other) {
+    return _pitchEnum.index.compareTo(other._pitchEnum.index);
+  }
+
+  final PitchEnum _pitchEnum;
   String get name => _name;
   String _name;
 
@@ -388,4 +403,5 @@ class Pitch {
   double _frequency;
 
   final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');
+
 }
