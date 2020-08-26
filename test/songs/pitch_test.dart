@@ -23,10 +23,10 @@ void main() {
         while (sb.length < 4) {
           sb.write(' ');
         }
-        if (p.getNumber() <= 9) {
+        if (p.number <= 9) {
           sb.write(' ');
         }
-        sb.write(p.getNumber());
+        sb.write(p.number);
         sb.write(' ');
         sb.write(p.frequency.toStringAsFixed(6));
         print(sb.toString());

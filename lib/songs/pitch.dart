@@ -13,7 +13,7 @@ import 'musicConstants.dart';
 /// <p>Black key pitches will have an alias at the same frequency.  This
 /// is done to help ease the mapping from keys to pitches.</p>
 enum PitchEnum {
-  // First tone
+  // First tone on 88 key piano
   A0,
   As0,
   Bb0,
@@ -184,22 +184,25 @@ class Pitch implements Comparable<Pitch> {
     //   fail early on null!
     _name = mr.group(1) + mr.group(2);
     _scaleNote = ScaleNote.valueOf(mr.group(1));
-    _labelNumber = int.parse(mr.group(2));
+    _scaleNumber = _name.codeUnitAt(0) - 'A'.codeUnitAt(0);
+    _octaveNumber = int.parse(mr.group(2));
 
     //  cope with the piano numbers stepping forward on C
     //  and the label numbers not stepping with sharps and flats,
     //  making the unusual B sharp and C flat very special
     int n = _scaleNote.halfStep;
     if (_name.startsWith('Bs')) {
-      n += _labelNumber * MusicConstants.halfStepsPerOctave;
+      n += _octaveNumber * MusicConstants.halfStepsPerOctave;
     } else if (_name.startsWith('Cb')) {
-      n += (_labelNumber - 1) * MusicConstants.halfStepsPerOctave;
+      n += (_octaveNumber - 1) * MusicConstants.halfStepsPerOctave;
     } else {
       //  offset from A to C
       final int offsetFromAtoC = 3;
       int fromC = (n - offsetFromAtoC) % MusicConstants.halfStepsPerOctave;
       //  compute halfSteps from A0
-      n += ((fromC >= (MusicConstants.halfStepsPerOctave - offsetFromAtoC)) ? _labelNumber : _labelNumber - 1) *
+      n += ((fromC >= (MusicConstants.halfStepsPerOctave - offsetFromAtoC))
+              ? _octaveNumber
+              : _octaveNumber - 1) *
           MusicConstants.halfStepsPerOctave;
     }
     _number = n;
@@ -250,24 +253,28 @@ class Pitch implements Comparable<Pitch> {
         if (pitch.isSharp()) {
           _sharps.add(pitch); //    the natural didn't get there first
         } else if (pitch.isFlat()) {
-          if (_flats.isNotEmpty && _flats[_flats.length - 1].getNumber() != pitch.getNumber()) {
+          if (_flats.isNotEmpty &&
+              _flats[_flats.length - 1].number != pitch.number) {
             _flats.add(pitch); //    the natural didn't get there first
           }
         } else {
           //  natural
 
-          if (_sharps.isNotEmpty && _sharps[_sharps.length - 1].getNumber() == pitch.getNumber()) {
+          if (_sharps.isNotEmpty &&
+              _sharps[_sharps.length - 1].number == pitch.number) {
             //  remove sharp duplicates
             _sharps[_sharps.length - 1] = pitch;
           } else {
             _sharps.add(pitch);
           }
 
-          if (!flats.isEmpty && flats[flats.length - 1].getNumber() == pitch.getNumber()) {
+          if (flats.isNotEmpty &&
+              flats[flats.length - 1].number == pitch.number) {
             //  remove flat duplicates
             flats[flats.length - 1] = pitch;
-          } else
+          } else {
             _flats.add(pitch);
+          }
         }
       }
     }
@@ -276,7 +283,7 @@ class Pitch implements Comparable<Pitch> {
 
   static Pitch findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
     for (Pitch p in getPitches()) {
-      if (p.scaleNote == scaleNote && p.getNumber() >= atOrAbove.getNumber()) return p;
+      if (p.scaleNote == scaleNote && p.number >= atOrAbove.number) return p;
     }
     return null;
   }
@@ -317,15 +324,6 @@ class Pitch implements Comparable<Pitch> {
     return (isSharp() ? sharps : flats)[retNumber];
   }
 
-  int getLabelNumber() {
-    return _labelNumber;
-  }
-
-  /// Get an integer the represents this pitch.
-  int getNumber() {
-    return _number;
-  }
-
   Pitch nextHigherPitch() {
     List<Pitch> list = (isSharp() ? sharps : flats);
     int n = _number + 1;
@@ -362,7 +360,7 @@ class Pitch implements Comparable<Pitch> {
   }
 
   String toDebug() {
-    return '${_scaleNote.toString()}${isNatural() ? ' ' : ''}${_labelNumber.toString()} '
+    return '${_scaleNote.toString()}${isNatural() ? ' ' : ''}${_octaveNumber.toString()} '
         '${isSharp() ? MusicConstants.sharpChar : ' '}'
         '${isNatural() ? MusicConstants.naturalChar : ' '}'
         '${isFlat() ? MusicConstants.flatChar : ' '}';
@@ -370,7 +368,7 @@ class Pitch implements Comparable<Pitch> {
 
   @override
   String toString() {
-    return '${_scaleNote.toString()}${_labelNumber.toString()} ';
+    return '${_scaleNote.toString()}${_octaveNumber.toString()} ';
   }
 
   bool isSharp() {
@@ -385,23 +383,28 @@ class Pitch implements Comparable<Pitch> {
     return _scaleNote.isFlat;
   }
 
-  get index => _pitchEnum.index;
-
   @override
   int compareTo(Pitch other) {
     return _pitchEnum.index.compareTo(other._pitchEnum.index);
   }
 
   final PitchEnum _pitchEnum;
+
   String get name => _name;
   String _name;
 
   ScaleNote get scaleNote => _scaleNote;
   ScaleNote _scaleNote;
-  int _labelNumber;
+
+  int get scaleNumber => _scaleNumber;
+  int _scaleNumber;
+
+  int get octaveNumber => _octaveNumber;
+  int _octaveNumber;
+
+  int get number => _number;
   int _number;
   double _frequency;
 
-  final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');
-
+  static final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');
 }

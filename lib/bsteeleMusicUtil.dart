@@ -424,7 +424,6 @@ coerced to reflect the songlist's last modification for that song.
                 (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
 
             exit(-1);
-            return;
           }
 
           if (_verbose) {

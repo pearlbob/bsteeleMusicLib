@@ -66,3 +66,9 @@ class MusicConstants {
         degree % _minorDiatonicChordModifiers.length];
   }
 }
+
+enum Clef {
+  treble,
+  bass,
+}
+

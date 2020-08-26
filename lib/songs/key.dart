@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'chordDescriptor.dart';
@@ -55,7 +56,7 @@ class Key implements Comparable<Key> {
   }
 
   static List<Key> keysByHalfStepFrom(Key key) {
-    List<Key> ret = List(halfStepsPerOctave+1);
+    List<Key> ret = List(halfStepsPerOctave + 1);
     for (int i = 0; i <= halfStepsPerOctave; i++) {
       ret[i] = byHalfStep(offset: key._halfStep + i);
     }
@@ -80,7 +81,7 @@ class Key implements Comparable<Key> {
 
         key._minorDiatonics = List<ScaleChord>(notesPerScale);
         for (int i = 0; i < notesPerScale; i++) {
-          key._minorDiatonics[i]= ScaleChord(key.getMinorScaleByNote(i),
+          key._minorDiatonics[i] = ScaleChord(key.getMinorScaleByNote(i),
               MusicConstants.getMinorDiatonicChordModifier(i));
         }
       }
@@ -119,6 +120,30 @@ class Key implements Comparable<Key> {
     return get(keyEnum);
   }
 
+  static final trebleStaffTopPitch = Pitch.get(PitchEnum.F5);
+  static final double trebleStaffTop = _staffSpacesFromA0(trebleStaffTopPitch);
+  static final bassStaffTopPitch = Pitch.get(PitchEnum.A2); //fixme: should be a3 for piano!
+  static final double bassStaffTop = _staffSpacesFromA0(bassStaffTopPitch);
+
+  static double _staffSpacesFromA0(Pitch pitch) {
+    return (pitch.scaleNumber +
+            (pitch.scaleNumber >= _notesFromAtoC
+                    ? pitch.octaveNumber - 1
+                    : pitch.octaveNumber) *
+                MusicConstants.notesPerScale) /
+        2;
+  }
+
+  static double getStaffPosition(Clef clef, Pitch pitch) {
+    switch (clef) {
+      case Clef.treble:
+        return trebleStaffTop - _staffSpacesFromA0(pitch);
+      case Clef.bass:
+        return bassStaffTop - _staffSpacesFromA0(pitch);
+    }
+    return null;
+  }
+
   /// Return the next key that is one half step higher.
   Key nextKeyByHalfStep() {
     return _getKeys()[
@@ -131,8 +156,9 @@ class Key implements Comparable<Key> {
   }
 
   Key nextKeyByFifth() {
-    return _getKeys()[
-        keyEnumsByHalfStep[(_halfStep + 7) % keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[
+        (_halfStep + MusicConstants.notesPerScale) %
+            keyEnumsByHalfStep.length]];
   }
 
   /// Return the next key that is one half step lower.
@@ -142,8 +168,9 @@ class Key implements Comparable<Key> {
   }
 
   Key previousKeyByFifth() {
-    return _getKeys()[
-        keyEnumsByHalfStep[(_halfStep - 7) % keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[
+        (_halfStep - MusicConstants.notesPerScale) %
+            keyEnumsByHalfStep.length]];
   }
 
   /// Transpose the given scale note by the requested offset.
@@ -330,15 +357,15 @@ class Key implements Comparable<Key> {
     return _keyScaleNote.toMarkup();
   }
 
-  String toStringAsSharp(){
-    if ( _keyScaleNote.isFlat ) {
+  String toStringAsSharp() {
+    if (_keyScaleNote.isFlat) {
       return _keyScaleNote.alias.toString();
     }
     return _keyScaleNote.toString();
   }
 
-  String toStringAsFlat(){
-    if ( _keyScaleNote.isSharp ) {
+  String toStringAsFlat() {
+    if (_keyScaleNote.isSharp) {
       return _keyScaleNote.alias.toString();
     }
     return _keyScaleNote.toString();
@@ -347,6 +374,22 @@ class Key implements Comparable<Key> {
   //                                   1  2  3  4  5  6  7
   //                                   0  1  2  3  4  5  6
   static const List<int> majorScale = [0, 2, 4, 5, 7, 9, 11];
+  static const List<int> majorScaleHalfstepsToScale = [
+    0, // 0
+    0, // 1
+    2 - 1, // 2
+    2 - 1, // 3
+    3 - 1, // 4
+    4 - 1, // 5
+    4 - 1, // 6
+    5 - 1, // 7
+    5 - 1, // 8
+    6 - 1, // 9
+    6 - 1, // 10
+    7 - 1, // 11
+  ];
+
+  //                                                   0  1  2  3  3  4  5  6  7  8  9 10  11
   static const List<int> minorScale = [0, 2, 3, 5, 7, 8, 10];
 
   static final List<ChordDescriptor> diatonic7ChordModifiers = [
@@ -380,6 +423,7 @@ class Key implements Comparable<Key> {
   static const List<int> guessWeights = [9, 1, 1, 4, 4, 1, 3];
   static const int halfStepsToFifth = 7;
   static const int halfStepsFromAtoC = 3;
+  static const int _notesFromAtoC = 2;
 
   KeyEnum get keyEnum => _keyEnum;
   final KeyEnum _keyEnum;
