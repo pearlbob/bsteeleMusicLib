@@ -50,13 +50,13 @@ void main() {
     int naturalCount = 0;
     int flatCount = 0;
     for (Pitch p in Pitch.getPitches()) {
-      if (p.isSharp()) {
+      if (p. isSharp) {
         sharpCount++;
       }
-      if (p.isFlat()) {
+      if (p. isFlat) {
         flatCount++;
       }
-      if (p.isSharp() && !p.isFlat()) {
+      if (p. isSharp && !p. isFlat) {
         naturalCount++;
       }
     }
@@ -65,9 +65,9 @@ void main() {
     expect(7 * 7 + 2, naturalCount);
 
     Pitch p = Pitch.get(PitchEnum.A0);
-    expect(false, p.isSharp());
-    expect(false, p.isFlat());
-    expect(true, p.isNatural());
+    expect(false, p. isSharp);
+    expect(false, p. isFlat);
+    expect(true, p. isNatural);
     int sharps = 0;
     int naturals = 1;
     int flats = 0;
@@ -76,18 +76,18 @@ void main() {
       //System.out.println(p.toString());
       p = p.offsetByHalfSteps(1);
       if (p == null) break;
-      if (p.isSharp()) sharps++;
-      if (p.isNatural()) naturals++;
-      if (p.isFlat()) flats++;
+      if (p. isSharp) sharps++;
+      if (p. isNatural) naturals++;
+      if (p. isFlat) flats++;
     }
     expect(0, sharps);
     expect(52, naturals);
     expect(36, flats);
 
     p = Pitch.get(PitchEnum.As0);
-    expect(true, p.isSharp());
-    expect(false, p.isFlat());
-    expect(false, p.isNatural());
+    expect(true, p. isSharp);
+    expect(false, p. isFlat);
+    expect(false, p. isNatural);
 
     sharps = 0;
     naturals = 0;
@@ -95,9 +95,9 @@ void main() {
 
     for (Pitch p in Pitch.getPitches()) {
       logger.v(p.toString());
-      if (p.isSharp()) sharps++;
-      if (p.isNatural()) naturals++;
-      if (p.isFlat()) flats++;
+      if (p. isSharp) sharps++;
+      if (p. isNatural) naturals++;
+      if (p. isFlat) flats++;
     }
     expect(sharps, 51);
     expect(naturals, 52);
@@ -131,6 +131,34 @@ void main() {
     p = Pitch.findSharpFromFrequency(92);
     expect(p, Pitch.get(PitchEnum.Fs2));
     expect(p.nextHigherPitch(), Pitch.get(PitchEnum.G2));
+  });
+
+  test('test asSharp and asFlat', () {
+    Pitch p;
+
+    p = Pitch.get(PitchEnum.E2);
+    expect(p.asSharp(), p);
+    expect(p.asFlat(), p);
+
+    p = Pitch.get(PitchEnum.Eb2);
+    expect(p.asSharp(), Pitch.get(PitchEnum.Ds2));
+    expect(p.asFlat(), p);
+
+    p = Pitch.get(PitchEnum.Cs2);
+    expect(p.asSharp(), p);
+    expect(p.asFlat(),Pitch.get(PitchEnum.Db2));
+
+    p = Pitch.get(PitchEnum.Es2);
+    expect(p.asSharp(), p);
+    expect(p.asFlat(), Pitch.get(PitchEnum.F2));
+
+    p = Pitch.get(PitchEnum.Gs2);
+    expect(p.asSharp(), p);
+    expect(p.asFlat(), Pitch.get(PitchEnum.Ab2));
+
+    p = Pitch.get(PitchEnum.Bs2);
+    expect(p.asSharp(), p);
+    expect(p.asFlat(), Pitch.get(PitchEnum.C3));
   });
 
 }

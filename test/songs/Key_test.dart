@@ -519,5 +519,140 @@ void main() {
     expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Fb1)), 9 / 2);
     expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Es1)), 10 / 2);
     expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E1)), 10 / 2);
+
+    int i = 0;
+    for (Pitch pitch in Pitch.flats) {
+      Pitch sharp = pitch.asSharp();
+      expect(sharp.isFlat, false);
+      if (pitch.isNatural) {
+        expect(sharp.isNatural, true);
+      } else {
+        expect(sharp.isSharp, true);
+      }
+      expect(sharp.number, pitch.number);
+      expect(pitch.number, i++);
+    }
+    i = 0;
+    for (Pitch pitch in Pitch.sharps) {
+      Pitch flat = pitch.asFlat();
+      expect(flat.isSharp, false);
+      if (pitch.isNatural) {
+        expect(flat.isNatural, true);
+      } else {
+        expect(flat.isFlat, true);
+      }
+      expect(flat.number, pitch.number);
+      expect(pitch.number, i++);
+    }
+  });
+
+  test('test key clef scale notes', () {
+    // for (KeyEnum keyEnum in KeyEnum.values) {
+    //   Key key = Key.get(keyEnum);
+    //   for (int i = 0; i < MusicConstants.notesPerScale; i++) {
+    //     logger.i(
+    //         '${key.toString().padLeft(2)} ${key.getKeyValue()}: $i: ${key.getMajorScaleByNote(i)}');
+    //   }
+    //   for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
+    //     Pitch pitch = Pitch.sharps[
+    //         (i + MusicConstants.halfStepsFromAtoC + key.getKeyValue() * 7) %
+    //             MusicConstants.halfStepsPerOctave];
+    //     pitch = key.isSharp ? pitch.asSharp() : pitch.asFlat();
+    //     ScaleNote keyScaleNote = key.getKeyScaleNoteFor(pitch.scaleNote);
+    //     logger.i(
+    //         '\t${key.toString().padLeft(2)} ${key.getKeyScaleNote()}: ${key.getKeyScaleNote().halfStep}:'
+    //         ' ${pitch.scaleNote.toString().padLeft(2)} $i  $keyScaleNote  ${accidentalString(key, pitch)}');
+    //   }
+    // }
+
+    logger.i('scale     1   2   3   4   5   6   7');
+    for (KeyEnum keyEnum in KeyEnum.values) {
+      Key key = Key.get(keyEnum);
+      String s = '';
+      for (int i = 0; i < MusicConstants.notesPerScale; i++) {
+        s += '  ${key.getMajorScaleByNote(i).toString().padLeft(2)}';
+      }
+      logger.i('key ${key.toString().padLeft(2)}: $s');
+    }
+    logger.i('');
+    logger.i('');
+
+    for (KeyEnum keyEnum in KeyEnum.values) {
+      Key key = Key.get(keyEnum);
+      logger.i('');
+      logger.i(
+          'key ${key.toString().padLeft(2)}:     1   2   3   4   5   6   7   8   9  10  11  12');
+
+      String s = '';
+      // key.getKeyScaleNoteByHalfStep(i).toString().padLeft(2)
+      for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
+        Pitch pitch = key.isSharp
+            ? Pitch.sharps[i + key.halfStep]
+            : Pitch.flats[i + key.halfStep];
+        s += '  ${pitch.scaleNote.toString().padLeft(2)}';
+      }
+
+      logger.i('pitches: $s');
+
+      s = '';
+      for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
+        Pitch pitch = Pitch.sharps[i + key.halfStep];
+        s += '  ${key.accidentalString(pitch).padLeft(2)}';
+      }
+      logger.i('shown as:$s');
+    }
+
+    for (KeyEnum keyEnum in KeyEnum.values) {
+      Key key = Key.get(keyEnum);
+
+      Pitch pitch;
+      ScaleNote scaleNote;
+      for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
+        pitch = key.isSharp
+            ? Pitch.sharps[i + key.halfStep]
+            : Pitch.flats[i + key.halfStep];
+        if (scaleNote != null) {
+          expect(
+              (pitch.scaleNote.halfStep - scaleNote.halfStep) %
+                  MusicConstants.halfStepsPerOctave,
+              1);
+        }
+        scaleNote = pitch.scaleNote;
+      }
+      //  around the loop
+      expect(
+          (key.halfStep - scaleNote.halfStep) %
+              MusicConstants.halfStepsPerOctave,
+          1);
+
+      String lastAccidental;
+      for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
+        Pitch pitch = Pitch.sharps[i + key.halfStep];
+        String accidental = key.accidentalString(pitch);
+        if (key.isSharp) {
+          expect(accidental.contains(MusicConstants.flatChar), false);
+        } else {
+          expect(accidental.contains(MusicConstants.sharpChar), false);
+        }
+        if (lastAccidental != null) {
+          logger.v(
+              'acc: "$accidental" ${accidental[0].codeUnitAt(0).toString()}'
+              ', last: "${lastAccidental.toString()}"  ${lastAccidental[0].codeUnitAt(0).toString()}');
+
+          //  same scale letter or the next one
+          expect(
+              accidental[0] == lastAccidental[0] ||
+                  (accidental.codeUnitAt(0) ==
+                      lastAccidental.codeUnitAt(0) + 1) ||
+                  (accidental.codeUnitAt(0) == 'A'.codeUnitAt(0) &&
+                      lastAccidental.codeUnitAt(0) == 'G'.codeUnitAt(0)),
+              true);
+        }
+
+        //  todo: check that sharps are following
+        //  todo: check that flats are leading
+        lastAccidental = accidental;
+      }
+    }
   });
 }

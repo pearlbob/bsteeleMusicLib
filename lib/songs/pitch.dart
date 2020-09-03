@@ -184,7 +184,6 @@ class Pitch implements Comparable<Pitch> {
     //   fail early on null!
     _name = mr.group(1) + mr.group(2);
     _scaleNote = ScaleNote.valueOf(mr.group(1));
-    _scaleNumber = _name.codeUnitAt(0) - 'A'.codeUnitAt(0);
     _octaveNumber = int.parse(mr.group(2));
 
     //  cope with the piano numbers stepping forward on C
@@ -197,10 +196,12 @@ class Pitch implements Comparable<Pitch> {
       n += (_octaveNumber - 1) * MusicConstants.halfStepsPerOctave;
     } else {
       //  offset from A to C
-      final int offsetFromAtoC = 3;
-      int fromC = (n - offsetFromAtoC) % MusicConstants.halfStepsPerOctave;
+      int fromC = (n - MusicConstants.halfStepsFromAtoC) %
+          MusicConstants.halfStepsPerOctave;
       //  compute halfSteps from A0
-      n += ((fromC >= (MusicConstants.halfStepsPerOctave - offsetFromAtoC))
+      n += ((fromC >=
+                  (MusicConstants.halfStepsPerOctave -
+                      MusicConstants.halfStepsFromAtoC))
               ? _octaveNumber
               : _octaveNumber - 1) *
           MusicConstants.halfStepsPerOctave;
@@ -240,6 +241,7 @@ class Pitch implements Comparable<Pitch> {
 
   static Map<PitchEnum, Pitch> _getPitchMap() {
     if (_pitchMap == null) {
+      //  instantiate all the pitches
       _pitchMap = Map<PitchEnum, Pitch>.identity();
       _pitches = [];
       for (PitchEnum e in PitchEnum.values) {
@@ -249,10 +251,11 @@ class Pitch implements Comparable<Pitch> {
         _pitches.add(p);
       }
 
+      //  populate the sharps and flats
       for (Pitch pitch in _pitches) {
-        if (pitch.isSharp()) {
+        if (pitch.isSharp) {
           _sharps.add(pitch); //    the natural didn't get there first
-        } else if (pitch.isFlat()) {
+        } else if (pitch.isFlat) {
           if (_flats.isNotEmpty &&
               _flats[_flats.length - 1].number != pitch.number) {
             _flats.add(pitch); //    the natural didn't get there first
@@ -275,6 +278,21 @@ class Pitch implements Comparable<Pitch> {
           } else {
             _flats.add(pitch);
           }
+        }
+      }
+
+      //  load all the "as" alternatives
+      for (Pitch pitch in _pitches) {
+        if (pitch.isSharp) {
+          pitch._asSharp = pitch;
+          pitch._asFlat = _flats[pitch._number];
+        } else if (pitch.isFlat) {
+          pitch._asSharp = _sharps[pitch._number];
+          pitch._asFlat = pitch;
+        } else {
+          //  natural
+          pitch._asSharp = pitch;
+          pitch._asFlat = pitch;
         }
       }
     }
@@ -321,18 +339,18 @@ class Pitch implements Comparable<Pitch> {
     if (retNumber < 0) {
       return this;
     }
-    return (isSharp() ? sharps : flats)[retNumber];
+    return (isSharp ? sharps : flats)[retNumber];
   }
 
   Pitch nextHigherPitch() {
-    List<Pitch> list = (isSharp() ? sharps : flats);
+    List<Pitch> list = (isSharp ? sharps : flats);
     int n = _number + 1;
     if (n >= list.length) return null;
     return list[n];
   }
 
   Pitch nextLowerPitch() {
-    List<Pitch> list = (isSharp() ? sharps : flats);
+    List<Pitch> list = (isSharp ? sharps : flats);
     int n = _number - 1;
     if (n < 0) return null;
     return list[n];
@@ -360,27 +378,33 @@ class Pitch implements Comparable<Pitch> {
   }
 
   String toDebug() {
-    return '${_scaleNote.toString()}${isNatural() ? ' ' : ''}${_octaveNumber.toString()} '
-        '${isSharp() ? MusicConstants.sharpChar : ' '}'
-        '${isNatural() ? MusicConstants.naturalChar : ' '}'
-        '${isFlat() ? MusicConstants.flatChar : ' '}';
+    return '${_scaleNote.toString()}${isNatural ? ' ' : ''}${_octaveNumber.toString()} '
+        '${isSharp ? MusicConstants.sharpChar : ' '}'
+        '${isNatural ? MusicConstants.naturalChar : ' '}'
+        '${isFlat ? MusicConstants.flatChar : ' '}';
   }
 
   @override
   String toString() {
-    return '${_scaleNote.toString()}${_octaveNumber.toString()} ';
+    return '${_scaleNote.toString()}${_octaveNumber.toString()}';
   }
 
-  bool isSharp() {
-    return _scaleNote.isSharp;
+  bool get isSharp => _scaleNote.isSharp;
+
+  bool get isNatural => _scaleNote.isNatural;
+
+  bool get isFlat => _scaleNote.isFlat;
+
+  /// return matching sharp accidental
+  /// Naturals and sharps return themselves
+  Pitch asSharp() {
+    return _asSharp;
   }
 
-  bool isNatural() {
-    return _scaleNote.isNatural;
-  }
-
-  bool isFlat() {
-    return _scaleNote.isFlat;
+  /// return matching flat accidental
+  /// Naturals and flats return themselves
+  Pitch asFlat() {
+    return _asFlat;
   }
 
   @override
@@ -396,8 +420,7 @@ class Pitch implements Comparable<Pitch> {
   ScaleNote get scaleNote => _scaleNote;
   ScaleNote _scaleNote;
 
-  int get scaleNumber => _scaleNumber;
-  int _scaleNumber;
+  int get scaleNumber => _scaleNote?.scaleNumber;
 
   int get octaveNumber => _octaveNumber;
   int _octaveNumber;
@@ -405,6 +428,9 @@ class Pitch implements Comparable<Pitch> {
   int get number => _number;
   int _number;
   double _frequency;
+
+  Pitch _asSharp;
+  Pitch _asFlat;
 
   static final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');
 }

@@ -29,16 +29,24 @@ void main() {
     int beatsPerBar = 4;
 
     //  sample a few from the print below
-    expect(_stringChord(Chord.parseString('A/A', beatsPerBar)), 'A/A: A3  D♭4  E4  bass: A1 ');
-    expect(_stringChord(Chord.parseString('A', beatsPerBar)), 'A: A3  D♭4  E4  bass: A1 ');
-    expect(_stringChord(Chord.parseString('Fb5/Fb', beatsPerBar)), 'Fb5/Fb: F♭4  B4  bass: E1 ');
-    expect(_stringChord(Chord.parseString('Fb69', beatsPerBar)), 'Fb69: F♭4  G♭4  A♭4  B4  D♭5  bass: E1 ');
-    expect(_stringChord(Chord.parseString('Em6', beatsPerBar)), 'Em6: E4  G4  B4  D♭5  bass: E1 ');
-    expect(_stringChord(Chord.parseString('C/C', beatsPerBar)), 'C/C: C4  E4  G4  bass: C2 ');
+    expect(_stringChord(Chord.parseString('A/A', beatsPerBar)),
+        'A/A: A3 D♭4 E4 bass: A1');
+    expect(_stringChord(Chord.parseString('A', beatsPerBar)),
+        'A: A3 D♭4 E4 bass: A1');
+    expect(_stringChord(Chord.parseString('Fb5/Fb', beatsPerBar)),
+        'Fb5/Fb: F♭4 B4 bass: E1');
+    expect(_stringChord(Chord.parseString('Fb69', beatsPerBar)),
+        'Fb69: F♭4 G♭4 A♭4 B4 D♭5 bass: E1');
+    expect(_stringChord(Chord.parseString('Em6', beatsPerBar)),
+        'Em6: E4 G4 B4 D♭5 bass: E1');
+    expect(_stringChord(Chord.parseString('C/C', beatsPerBar)),
+        'C/C: C4 E4 G4 bass: C2');
 
-    //  invent some
-    expect(_stringChord(Chord.parseString('C/G', beatsPerBar)), 'C/G: C4  E4  G4  bass: G1 ');
-    expect(_stringChord(Chord.parseString('Am7/G', beatsPerBar)), 'Am7/G: A3  C4  E4  G4  bass: G1 ');
+    // invent some
+    expect(_stringChord(Chord.parseString('C/G', beatsPerBar)),
+        'C/G: C4 E4 G4 bass: G1');
+    expect(_stringChord(Chord.parseString('Am7/G', beatsPerBar)),
+        'Am7/G: A3 C4 E4 G4 bass: G1');
   });
 
   test('chord playback printing', () {
@@ -54,7 +62,8 @@ void main() {
         int beats = beatsPerBar; //  default only
 
         for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
-          ScaleChord scaleChord = ScaleChord(pitch.getScaleNote(), chordDescriptor);
+          ScaleChord scaleChord =
+              ScaleChord(pitch.getScaleNote(), chordDescriptor);
 
           assert(scaleChord != null);
 
@@ -63,8 +72,8 @@ void main() {
 
           ScaleNote slashScaleNote = pitch.getScaleNote();
 
-          Chord chord = Chord(
-              scaleChord, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, (beats == beatsPerBar)); //  fixme
+          Chord chord = Chord(scaleChord, beats, beatsPerBar, slashScaleNote,
+              anticipationOrDelay, (beats == beatsPerBar)); //  fixme
 
           logger.i(_stringChord(chord));
         }

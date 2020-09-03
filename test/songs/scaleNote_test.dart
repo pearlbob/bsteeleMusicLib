@@ -1,4 +1,5 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/songs/musicConstants.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
@@ -33,12 +34,12 @@ void main() {
   });
 
   test('get By HalfStep', () {
-    for (int i = 0; i < ScaleNote.halfStepsPerOctave * 3; i++) {
+    for (int i = 0; i < MusicConstants.halfStepsPerOctave * 3; i++) {
       ScaleNote sn = ScaleNote.getSharpByHalfStep(i);
       expect(sn.isFlat, false);
       expect(sn.isSilent, false);
     }
-    for (int i = -3; i < ScaleNote.halfStepsPerOctave * 2; i++) {
+    for (int i = -3; i < MusicConstants.halfStepsPerOctave * 2; i++) {
       ScaleNote sn = ScaleNote.getFlatByHalfStep(i);
       expect(sn.isSharp, false);
       expect(sn.isSilent, false);

@@ -26,6 +26,8 @@ class MusicConstants {
 
   static const int halfStepsPerOctave = 12;
   static const int notesPerScale = 7;
+  static const int halfStepsFromAtoC = 3;
+  static const int halfStepsToFifth = 7;
 
   static const int measuresPerDisplayRow = 4;
 

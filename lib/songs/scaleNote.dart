@@ -31,8 +31,14 @@ enum ScaleNoteEnum {
   X //  No scale note!  Used to avoid testing for null
 }
 
+enum Accidental {
+  sharp,
+  flat,
+  natural,
+}
+
 ///
-class ScaleNote implements Comparable<ScaleNote>{
+class ScaleNote implements Comparable<ScaleNote> {
   ScaleNote._(ScaleNoteEnum scaleNoteE) {
     _enum = scaleNoteE;
     switch (scaleNoteE) {
@@ -102,6 +108,7 @@ class ScaleNote implements Comparable<ScaleNote>{
       case ScaleNoteEnum.G:
         //mod += '\u266E';  //  fixme: natural sign on scale not is overkill?
         _isNatural = true;
+        _accidental = Accidental.natural;
         break;
       case ScaleNoteEnum.X:
         _isSilent = true;
@@ -116,6 +123,7 @@ class ScaleNote implements Comparable<ScaleNote>{
         mod += '\u266F';
         modMarkup = '#';
         _isSharp = true;
+        _accidental = Accidental.sharp;
         break;
       case ScaleNoteEnum.Ab:
       case ScaleNoteEnum.Bb:
@@ -127,10 +135,13 @@ class ScaleNote implements Comparable<ScaleNote>{
         mod += '\u266D';
         modMarkup = 'b';
         _isFlat = true;
+        _accidental = Accidental.flat;
         break;
     }
     String base = scaleNoteE.toString().split('.').last;
     base = base.substring(0, 1);
+    _scaleString = base;
+    _scaleNumber = base.codeUnitAt(0) - 'A'.codeUnitAt(0);
     _scaleNoteString = base + mod;
     _scaleNoteMarkup = base + modMarkup;
 
@@ -147,7 +158,7 @@ class ScaleNote implements Comparable<ScaleNote>{
   /// @param step the number of half steps from A
   /// @return the sharp scale note
   static ScaleNote getSharpByHalfStep(int step) {
-    return get(_sharps[step % halfStepsPerOctave]);
+    return get(_sharps[step % MusicConstants.halfStepsPerOctave]);
   }
 
   /// A utility to map the flat scale notes to their half step offset.
@@ -156,7 +167,7 @@ class ScaleNote implements Comparable<ScaleNote>{
   /// @param step the number of half steps from A
   /// @return the sharp scale note
   static ScaleNote getFlatByHalfStep(int step) {
-    return get(_flats[step % halfStepsPerOctave]);
+    return get(_flats[step % MusicConstants.halfStepsPerOctave]);
   }
 
   static ScaleNote parseString(String s) {
@@ -319,16 +330,20 @@ class ScaleNote implements Comparable<ScaleNote>{
     return _enum.hashCode;
   }
 
-  static final int halfStepsPerOctave = 12;
-
   ScaleNoteEnum _enum;
 
   int get halfStep => _halfStep;
   int _halfStep;
 
+  int get scaleNumber => _scaleNumber;
+  int _scaleNumber;
+
   String get scaleNoteString => _scaleNoteString;
   String _scaleNoteString;
   String _scaleNoteMarkup;
+
+  String get scaleString => _scaleString;
+  String _scaleString;
 
   ScaleNote _alias;
 
@@ -349,6 +364,9 @@ class ScaleNote implements Comparable<ScaleNote>{
   bool _isSilent;
 
   bool get isSilent => _isSilent;
+
+  Accidental get accidental => _accidental;
+  Accidental _accidental;
 
   ///  Returns the name of this scale note in a user friendly text format,
   //  i.e. as UTF-8
