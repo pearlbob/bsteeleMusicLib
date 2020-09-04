@@ -547,35 +547,36 @@ void main() {
   });
 
   test('test key clef scale notes', () {
-    // for (KeyEnum keyEnum in KeyEnum.values) {
-    //   Key key = Key.get(keyEnum);
-    //   for (int i = 0; i < MusicConstants.notesPerScale; i++) {
-    //     logger.i(
-    //         '${key.toString().padLeft(2)} ${key.getKeyValue()}: $i: ${key.getMajorScaleByNote(i)}');
-    //   }
-    //   for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
-    //     Pitch pitch = Pitch.sharps[
-    //         (i + MusicConstants.halfStepsFromAtoC + key.getKeyValue() * 7) %
-    //             MusicConstants.halfStepsPerOctave];
-    //     pitch = key.isSharp ? pitch.asSharp() : pitch.asFlat();
-    //     ScaleNote keyScaleNote = key.getKeyScaleNoteFor(pitch.scaleNote);
-    //     logger.i(
-    //         '\t${key.toString().padLeft(2)} ${key.getKeyScaleNote()}: ${key.getKeyScaleNote().halfStep}:'
-    //         ' ${pitch.scaleNote.toString().padLeft(2)} $i  $keyScaleNote  ${accidentalString(key, pitch)}');
-    //   }
-    // }
+    for (KeyEnum keyEnum in KeyEnum.values) {
+      Key key = Key.get(keyEnum);
+      for (int i = 0; i < MusicConstants.notesPerScale; i++) {
+        logger.d(
+            '${key.toString().padLeft(2)} ${key.getKeyValue()}: $i: ${key.getMajorScaleByNote(i)}');
+      }
+      for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
+        Pitch pitch = Pitch.sharps[
+            (i + MusicConstants.halfStepsFromAtoC + key.getKeyValue() * 7) %
+                MusicConstants.halfStepsPerOctave];
+        pitch = key.isSharp ? pitch.asSharp() : pitch.asFlat();
+        ScaleNote keyScaleNote = key.getKeyScaleNoteFor(pitch.scaleNote);
+        logger.d(
+            '\t${key.toString().padLeft(2)} ${key.getKeyScaleNote()}: ${key.getKeyScaleNote().halfStep}:'
+            ' ${pitch.scaleNote.toString().padLeft(2)} $i  $keyScaleNote  ${key.accidentalString(pitch)}'
+            '  ${key.accidental(pitch)}');
+      }
+    }
 
-    logger.i('scale     1   2   3   4   5   6   7');
+    logger.d('scale     1   2   3   4   5   6   7');
     for (KeyEnum keyEnum in KeyEnum.values) {
       Key key = Key.get(keyEnum);
       String s = '';
       for (int i = 0; i < MusicConstants.notesPerScale; i++) {
         s += '  ${key.getMajorScaleByNote(i).toString().padLeft(2)}';
       }
-      logger.i('key ${key.toString().padLeft(2)}: $s');
+      logger.d('key ${key.toString().padLeft(2)}: $s');
     }
-    logger.i('');
-    logger.i('');
+    logger.d('');
+    logger.d('');
 
     for (KeyEnum keyEnum in KeyEnum.values) {
       Key key = Key.get(keyEnum);
@@ -649,10 +650,76 @@ void main() {
               true);
         }
 
-        //  todo: check that sharps are following
-        //  todo: check that flats are leading
+        //  check that sharps are following
+        if (accidental.contains(MusicConstants.sharpChar)) {
+          expect(lastAccidental.contains(MusicConstants.naturalChar), isFalse);
+          expect(lastAccidental.contains(MusicConstants.flatChar), isFalse);
+        }
+
+        //  check that flats are leading
+        if (lastAccidental?.contains(MusicConstants.flatChar) ?? false) {
+          expect(accidental.contains(MusicConstants.naturalChar), isFalse);
+          expect(accidental.contains(MusicConstants.sharpChar), isFalse);
+        }
+
         lastAccidental = accidental;
       }
     }
   });
 }
+/*
+Bodhi approved:
+
+ key G♭:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:   G♭   G  A♭   A  B♭   B   C  D♭   D  E♭   E   F
+shown as:   G  G♮   A  A♮   B   C  C♮   D  D♮   E  E♮   F
+
+key D♭:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:   D♭   D  E♭   E   F  G♭   G  A♭   A  B♭   B   C
+shown as:   D  D♮   E  E♮   F   G  G♮   A  A♮   B  B♮   C
+
+key A♭:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:   A♭   A  B♭   B   C  D♭   D  E♭   E   F  G♭   G
+shown as:   A  A♮   B  B♮   C   D  D♮   E  E♮   F  G♭   G
+
+key E♭:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:   E♭   E   F  G♭   G  A♭   A  B♭   B   C  D♭   D
+shown as:   E  E♮   F  G♭   G   A  A♮   B  B♮   C  D♭   D
+
+key B♭:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:   B♭   B   C  D♭   D  E♭   E   F  G♭   G  A♭   A
+shown as:   B  B♮   C  D♭   D   E  E♮   F  G♭   G  A♭   A
+
+key  F:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    F  G♭   G  A♭   A  B♭   B   C  D♭   D  E♭   E
+shown as:   F  G♭   G  A♭   A   B  B♮   C  D♭   D  E♭   E
+
+key  C:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    C  D♭   D  E♭   E   F  G♭   G  A♭   A  B♭   B
+shown as:   C  D♭   D  E♭   E   F  G♭   G  A♭   A  B♭   B
+
+key  G:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    G  G♯   A  A♯   B   C  C♯   D  D♯   E   F  F♯
+shown as:   G  G♯   A  A♯   B   C  C♯   D  D♯   E  F♮   F
+
+key  D:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    D  D♯   E   F  F♯   G  G♯   A  A♯   B   C  C♯
+shown as:   D  D♯   E  F♮   F   G  G♯   A  A♯   B  C♮   C
+
+key  A:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    A  A♯   B   C  C♯   D  D♯   E   F  F♯   G  G♯
+shown as:   A  A♯   B  C♮   C   D  D♯   E  F♮   F  G♮   G
+
+key  E:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    E   F  F♯   G  G♯   A  A♯   B   C  C♯   D  D♯
+shown as:   E  F♮   F  G♮   G   A  A♯   B  C♮   C  D♮   D
+
+key  B:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:    B   C  C♯   D  D♯   E   F  F♯   G  G♯   A  A♯
+shown as:   B  C♮   C  D♮   D   E  F♮   F  G♮   G  A♮   A
+
+key F♯:     1   2   3   4   5   6   7   8   9  10  11  12
+pitches:   F♯   G  G♯   A  A♯   B   C  C♯   D  D♯   E   F
+shown as:   F  G♮   G  A♮   A   B  C♮   C  D♮   D  E♮   E
+
+ */

@@ -316,11 +316,73 @@ class Key implements Comparable<Key> {
         note.scaleNumber - getKeyScaleNote().scaleNumber);
   }
 
+  /// required accidental for this pitch in terms of the key
+  /// Note that a null return means that no accidental should be applied.
+  Accidental accidental(final Pitch pitch) {
+    //  adjust the pitch to the key's accidental
+    ScaleNote scaleNote = mappedPitch(pitch).scaleNote;
+
+    //  get the key's scale note for the pitch
+    ScaleNote keyScaleNote = getKeyScaleNoteFor(scaleNote);
+
+    //  deal with exceptions
+    switch (keyEnum) {
+      case KeyEnum.Gb:
+        if (scaleNote == ScaleNote.get(ScaleNoteEnum.B)) {
+          return null;
+        }
+        break;
+      case KeyEnum.Fs:
+        if (scaleNote == ScaleNote.get(ScaleNoteEnum.F)) {
+          return null;
+        }
+        break;
+      default:
+        break;
+    }
+
+    //  adjust the expressed accidental as required (i.e. if different)
+    if ( keyScaleNote.accidental == scaleNote.accidental){
+      return null;
+    }
+    return  scaleNote.accidental;
+    switch (keyScaleNote.accidental) {
+      case Accidental.natural:
+        switch (scaleNote.accidental) {
+          case Accidental.natural:
+            return null;
+          case Accidental.sharp:
+          case Accidental.flat:
+            return scaleNote.accidental;
+        }
+        break;
+      case Accidental.sharp:
+        switch (scaleNote.accidental) {
+          case Accidental.natural:
+          case Accidental.flat:
+            return scaleNote.accidental;
+          case Accidental.sharp:
+            return null;
+        }
+        break;
+      case Accidental.flat:
+        switch (scaleNote.accidental) {
+          case Accidental.natural:
+          case Accidental.sharp:
+            return scaleNote.accidental;
+          case Accidental.flat:
+            return null;
+        }
+        break;
+    }
+    return null; //  should never get here
+  }
+
+
   /// return an expression of the pitch in terms of the key
   String accidentalString(final Pitch pitch) {
     //  adjust the pitch to the key's accidental
-    ScaleNote scaleNote =
-        (isSharp ? pitch.asSharp() : pitch.asFlat()).scaleNote;
+    ScaleNote scaleNote = mappedPitch(pitch).scaleNote;
 
     //  get the key's scale note for the pitch
     ScaleNote keyScaleNote = getKeyScaleNoteFor(scaleNote);
