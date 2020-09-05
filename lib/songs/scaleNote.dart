@@ -312,6 +312,17 @@ class ScaleNote implements Comparable<ScaleNote> {
     return _parseMap[name];
   }
 
+  String asMusicXml(){
+    String ret = '<step>$_scaleString</step>';
+    if ( isSharp){
+      return ret + '<alter>1</alter>';
+    }
+    if ( isFlat){
+      return ret + '<alter>-1</alter>';
+    }
+    return ret;
+  }
+
   @override
   int compareTo(ScaleNote other) {
     return getEnum().index - other.getEnum().index;

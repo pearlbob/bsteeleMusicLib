@@ -422,6 +422,8 @@ class Pitch implements Comparable<Pitch> {
 
   int get scaleNumber => _scaleNote?.scaleNumber;
 
+  Accidental get accidental => _scaleNote.accidental;
+
   int get octaveNumber => _octaveNumber;
   int _octaveNumber;
 
