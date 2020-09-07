@@ -292,9 +292,9 @@ class Key implements Comparable<Key> {
     return _majorDiatonics[0];
   }
 
-  ScaleChord getMinorDiatonicByDegree(int note) {
-    note = note % _minorDiatonics.length;
-    return _minorDiatonics[note];
+  ScaleChord getMinorDiatonicByDegree(int degree) {
+    degree = degree % _minorDiatonics.length;
+    return _minorDiatonics[degree];
   }
 
   ScaleChord getMinorScaleChord() {
@@ -346,36 +346,6 @@ class Key implements Comparable<Key> {
       return null;
     }
     return  scaleNote.accidental;
-    switch (keyScaleNote.accidental) {
-      case Accidental.natural:
-        switch (scaleNote.accidental) {
-          case Accidental.natural:
-            return null;
-          case Accidental.sharp:
-          case Accidental.flat:
-            return scaleNote.accidental;
-        }
-        break;
-      case Accidental.sharp:
-        switch (scaleNote.accidental) {
-          case Accidental.natural:
-          case Accidental.flat:
-            return scaleNote.accidental;
-          case Accidental.sharp:
-            return null;
-        }
-        break;
-      case Accidental.flat:
-        switch (scaleNote.accidental) {
-          case Accidental.natural:
-          case Accidental.sharp:
-            return scaleNote.accidental;
-          case Accidental.flat:
-            return null;
-        }
-        break;
-    }
-    return null; //  should never get here
   }
 
 
