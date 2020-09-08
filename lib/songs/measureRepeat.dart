@@ -9,18 +9,15 @@ import 'section.dart';
 import 'key.dart';
 
 class MeasureRepeat extends Phrase {
-  MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats)
-      : super(measures, phraseIndex) {
+  MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats) : super(measures, phraseIndex) {
     _repeatMarker = MeasureRepeatMarker(repeats);
   }
 
-  static MeasureRepeat parseString(
-      String s, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
+  static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static MeasureRepeat parse(MarkedString markedString, int phraseIndex,
-      int beatsPerBar, Measure priorMeasure) {
+  static MeasureRepeat parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
     if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
     int initialMark = markedString.mark();
@@ -69,8 +66,7 @@ class MeasureRepeat extends Phrase {
 
       int mark = markedString.mark();
       try {
-        Measure measure =
-            Measure.parse(markedString, beatsPerBar, priorMeasure);
+        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
         if (!hasBracket && measure.endOfRow) {
           throw 'repeat not found'; //  this is not a repeat!
         }
@@ -95,8 +91,7 @@ class MeasureRepeat extends Phrase {
       break;
     }
 
-    final RegExp repeatExp =
-        RegExp('^' + (hasBracket ? '\\s*]' : '') + '\\s*x(\\d+)\\s*');
+    final RegExp repeatExp = RegExp('^' + (hasBracket ? '\\s*]' : '') + '\\s*x(\\d+)\\s*');
     RegExpMatch mr = repeatExp.firstMatch(markedString.toString());
     if (mr != null) {
       int repeats = int.parse(mr.group(1));
@@ -175,27 +170,17 @@ class MeasureRepeat extends Phrase {
 
   @override
   int get chordRowCount {
-    return (super.chordRowCount + 1) //  last end of row not marked on repeats
-        *
-        _repeatMarker.repeats;
+    return super.chordRowCount * _repeatMarker.repeats;
   }
 
   @override
   String toMarkup() {
-    return '[' +
-        (measures.isEmpty ? '' : super.toMarkup()) +
-        '] x' +
-        repeats.toString() +
-        ' ';
+    return '[' + (measures.isEmpty ? '' : super.toMarkup()) + '] x' + repeats.toString() + ' ';
   }
 
   @override
   String toEntry() {
-    return '[' +
-        (measures.isEmpty ? '' : super.toEntry()) +
-        '] x' +
-        repeats.toString() +
-        '\n ';
+    return '[' + (measures.isEmpty ? '' : super.toEntry()) + '] x' + repeats.toString() + '\n ';
   }
 
   @override
@@ -247,9 +232,7 @@ class MeasureRepeat extends Phrase {
     if (identical(this, other)) {
       return true;
     }
-    return other is MeasureRepeat &&
-        super == (other) &&
-        _repeatMarker == other._repeatMarker;
+    return other is MeasureRepeat && super == (other) && _repeatMarker == other._repeatMarker;
   }
 
   @override

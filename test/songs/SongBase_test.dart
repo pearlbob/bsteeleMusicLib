@@ -1,19 +1,19 @@
 import 'dart:collection';
 
+import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/gridCoordinate.dart';
-import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -1218,5 +1218,87 @@ void main() {
     expect(SongBase.entryToUppercase('a7b9b7b9'), 'A7b9B7b9');
     expect(SongBase.entryToUppercase('a7b9b7B9'), 'A7b9B7B9');
     expect(SongBase.entryToUppercase('a7B9bb7b9'), 'A7B9Bb7b9');
+  });
+
+  test('test lyrics to moment mapping', () {
+    int beatsPerBar = 4;
+    SongBase a;
+
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G F F  O: Dm C B B♭ A  ', '''
+c: cMake me an angel that flies from Montgomery
+	cMake me a poster of an old rodeo
+	cJust give me one thing that I can hold on to
+	cTo believe in this living is just a hard way to go
+o: end here''');
+
+    //induce grid generation
+    //Grid<SongMoment> grid =
+    a.songMomentGrid;
+
+    //     logger.i('a.lyricSections: ${a.lyricSections}');
+//     // for (LyricSection lyricSection in a.lyricSections) {
+//     //   logger.i('${lyricSection}');
+//     //   for (String line in lyricSection.getLyricsLines()) {
+//     //     logger.i('  "$line"');
+//     //   }
+//     // }
+
+    for (SongMoment songMoment in a.songMoments) {
+      logger.i('  ${songMoment}');
+      logger.i('      ${songMoment.lyrics}');
+    }
+
+    // for (int measures = 2; measures <= 5; measures++) {
+    //   for (int rows = 1; rows <= 2* 5; rows++) {
+    //     for (int words = 1; words < 2; words++) {
+    //       List<String> lines = [];
+    //       for (int row = 1; row <= rows; row++) {
+    //         String s = '';
+    //         for (int word = 1; word <= words; word++) {
+    //           s += ' r${row}_w$word';
+    //         }
+    //         lines.add(s);
+    //       }
+    //       logger.i('\nmeasures: $measures, row: $rows, word: $words:');
+    //       logger.i(lines.toString());
+    //
+    //       for (int m = 0; m < measures; m++) {
+    //         logger.i('     $m: ${splitWordsToMeasure(measures, m, lines)}');
+    //       }
+    //     }
+    //   }
+    // }
+
+    // for (int measureRows = 3; measureRows <= 3; measureRows++) {
+    //   for (int lyricRows = 2; lyricRows <= 4; lyricRows++) {
+    //     for (int words = 1; words <= 5; words++) {
+    //       List<String> lines = [];
+    //       for (int row = 0; row <= lyricRows; row++) {
+    //         String s = '';
+    //         for (int word = 0; word < words; word++) {
+    //           s += 'r${row}_w$word '; // right space is significant
+    //         }
+    //         lines.add(s.trimRight());
+    //       }
+    //       logger.i(
+    //           '\nmeasureRows: $measureRows, lyricRows: $lyricRows'
+    //               ', words: $words: ${lines.toString()}');
+    //
+    //       for (int mr = 0; mr < measureRows; mr++) {
+    //         String rowString = shareLinesToRow(measureRows, mr, lines);
+    //         logger.i('     measureRow $mr: $rowString');
+    //
+    //         for (int measures = 1; measures <= 6; measures++) {
+    //           logger.i('       measures $measures:');
+    //           for (int m = 0; m < measures; m++) {
+    //             String s = splitWordsToMeasure(measures, m, rowString);
+    //             logger.i('          mr $mr: m:$m $s');
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   });
 }

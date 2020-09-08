@@ -21,7 +21,8 @@ class SongMoment implements Comparable<SongMoment> {
       this.repeat,
       this.repeatCycleBeats,
       this.repeatMax,
-      this.sectionCount);
+      this.sectionCount,
+      this.chordSectionSongMomentNumber);
 
   int getMomentNumber() {
     return momentNumber;
@@ -77,15 +78,12 @@ class SongMoment implements Comparable<SongMoment> {
   }
 
   ChordSectionLocation getChordSectionLocation() {
-    chordSectionLocation ??= ChordSectionLocation(
-          chordSection.getSectionVersion(),
-          phraseIndex: phraseIndex,
-          measureIndex: measureIndex);
+    chordSectionLocation ??=
+        ChordSectionLocation(chordSection.getSectionVersion(), phraseIndex: phraseIndex, measureIndex: measureIndex);
     return chordSectionLocation;
   }
 
-  String get momentLocation =>
-      getChordSectionLocation().toString() + '#' + sectionCount.toString();
+  String get momentLocation => getChordSectionLocation().toString() + '#' + sectionCount.toString();
 
   @override
   String toString() {
@@ -96,9 +94,7 @@ class SongMoment implements Comparable<SongMoment> {
         measure.toMarkup() +
         ' beat ' +
         getBeatNumber().toString() +
-        (repeatMax > 1
-            ? ' ' + repeat.toString() + '/' + repeatMax.toString()
-            : '');
+        (repeatMax > 1 ? ' ' + repeat.toString() + '/' + repeatMax.toString() : '');
   }
 
   @override
@@ -169,6 +165,7 @@ class SongMoment implements Comparable<SongMoment> {
     ret = ret * 31 + phrase.hashCode;
     ret = ret * 37 + measure.hashCode;
     ret = ret * 41 + row.hashCode;
+    ret = ret * 41 + col.hashCode;
 
     return ret;
   }
@@ -196,7 +193,9 @@ class SongMoment implements Comparable<SongMoment> {
   final int measureIndex;
   final Measure measure;
   final int sectionCount;
+  final int chordSectionSongMomentNumber;
 
   String lyrics;
   int row;
+  int col;
 }

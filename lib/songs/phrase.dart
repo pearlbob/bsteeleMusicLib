@@ -61,7 +61,9 @@ class Phrase extends MeasureNode {
           rowMark = markedString.mark();
         }
         continue;
-      } catch (e) {;}
+      } catch (e) {
+        ;
+      }
 
       if (!hasBracket) {
         //  look for repeat marker
@@ -84,7 +86,9 @@ class Phrase extends MeasureNode {
         lineMeasures.clear();
         priorMeasure = null;
         continue;
-      } catch (e) {;}
+      } catch (e) {
+        ;
+      }
 
       //  end of bracketed phrase
       if (hasBracket && markedString.charAt(0) == ']') {
@@ -202,7 +206,9 @@ class Phrase extends MeasureNode {
       List<Measure> replacementList = [];
       if (index > 0) replacementList.addAll(_measures.sublist(0, index));
       replacementList.add(newMeasure);
-      if (index < _measures.length - 1) replacementList.addAll(_measures.sublist(index + 1, _measures.length));
+      if (index < _measures.length - 1) {
+        replacementList.addAll(_measures.sublist(index + 1, _measures.length));
+      }
       _measures = replacementList;
     } catch (ex) {
       _measures.add(newMeasure); //  default to the end!
@@ -457,7 +463,7 @@ class Phrase extends MeasureNode {
       Measure lastMeasure = _measures[_measures.length - 1];
       for (Measure measure in _measures) {
         if (measure.isComment()) {
-          continue;//  comments get their own row
+          continue; //  comments get their own row
         }
         if (i == measuresPerRow - 1 && measure != lastMeasure) {
           //  new row required
@@ -485,6 +491,8 @@ class Phrase extends MeasureNode {
     for (Measure measure in _measures) {
       chordRowCount += (measure.endOfRow ? 1 : 0);
     }
+    if (!_measures[_measures.length - 1].endOfRow)
+      chordRowCount++; //  fixme: shouldn't be needed?  last measure doesn't have endOfRow
     return chordRowCount;
   }
 
@@ -535,7 +543,9 @@ class Phrase extends MeasureNode {
       int ret = _measures[i].compareTo(other._measures[i]);
       if (ret != 0) return ret;
     }
-    if (_measures.length != other._measures.length) return _measures.length < other._measures.length ? -1 : 1;
+    if (_measures.length != other._measures.length) {
+      return _measures.length < other._measures.length ? -1 : 1;
+    }
     return 0;
   }
 
