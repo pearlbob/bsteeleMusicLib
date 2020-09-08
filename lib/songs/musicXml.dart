@@ -9,8 +9,6 @@ import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
 import 'package:xml/xml.dart';
 
-import 'musicConstants.dart';
-
 class MusicXml {
   static XmlDocument parse(String musicXml) {
     return XmlDocument.parse(musicXml);
@@ -54,11 +52,11 @@ class MusicXml {
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
       highRoot = key.mappedPitch(highRoot); // required once only
 
+      song.songMomentGrid;//  fixme: shouldn't be required!
+
       for (SongMoment songMoment in song.songMoments) {
         int measureNumber = songMoment.momentNumber;
-
-        //  List<String>  lines =    songMoment.getLyricSection().getLyricsLines();
-        String lyric = 'oh baby';
+        _lyricsHaveBeenWritten=false;
 
         //  start the measure
         sb.write('''
@@ -72,7 +70,7 @@ class MusicXml {
           sb.write('''
     <attributes>
           <!--    allow up to 16th notes  -->
-          <divisions>$divisionsPerBeat</divisions>
+          <divisions>$_divisionsPerBeat</divisions>
           <key>
               <fifths>${key.getKeyValue()}</fifths>
           </key>
@@ -98,8 +96,7 @@ class MusicXml {
             sb.write('''
   <!--   $chord for ${chord.beats} beats  -->
 ''');
-            sb.write('${_chordAsMusicXml(songMoment, chord, lyric)}\n');
-            lyric = null;
+            sb.write('${_chordAsMusicXml(songMoment, chord)}\n');
           }
         }
 
@@ -148,7 +145,7 @@ class MusicXml {
     return ret;
   }
 
-  String _chordAsMusicXml(SongMoment songMoment, Chord chord, String lyrics) {
+  String _chordAsMusicXml(SongMoment songMoment, Chord chord) {
     ScaleNote scaleNote = chord.scaleChord.scaleNote;
 
     String ret = '\t<harmony><root>'
@@ -194,17 +191,17 @@ class MusicXml {
           break;
       }
       ret += '''\t\t${_pitchAsMusicXml(pitch)}
-\t\t<duration>${chord.beats * divisionsPerBeat}</duration>
+\t\t<duration>${chord.beats * _divisionsPerBeat}</duration>
 \t\t<type>$type</type>
 \t\t<staff>1</staff>
 ''';
-      if (lyrics != null) {
+      if (!_lyricsHaveBeenWritten  && songMoment.lyrics != null && songMoment.lyrics.isNotEmpty) {
         ret += '''
 \t\t<lyric name="${songMoment.lyricSection.sectionVersion.getFormalName()}" number="1">
-\t\t\t<text>$lyrics</text>
+\t\t\t<text>${songMoment.lyrics}</text>
 \t\t</lyric>
 ''';
-        lyrics = null;  //  use on first chord for the measure
+        _lyricsHaveBeenWritten=true;
       }
 
       ret += '''
@@ -217,7 +214,7 @@ class MusicXml {
 
   String _getChordDescriptorName(ScaleChord scaleChord) {
     //  lazy eval, map internal names to musicXml names
-    if (chordDescriptorMap.isEmpty) {
+    if (_chordDescriptorMap.isEmpty) {
       for (ChordDescriptor cd in ChordDescriptor.values) {
         String value = cd.name;
         switch (cd.name) {
@@ -307,7 +304,7 @@ class MusicXml {
             value = 'other';
             break;
         }
-        chordDescriptorMap[cd.name] = value;
+        _chordDescriptorMap[cd.name] = value;
 
         // <xs:enumeration value="half-diminished" />
         //<xs:enumeration value="major-minor" />
@@ -315,12 +312,14 @@ class MusicXml {
         // <xs:enumeration value="major-13th" />
       }
     }
-    return chordDescriptorMap[scaleChord.chordDescriptor.name];
+    return _chordDescriptorMap[scaleChord.chordDescriptor.name];
   }
 
   Song _song;
 
-  static const int divisionsPerBeat = 4; //  16th note resolution only
+  bool _lyricsHaveBeenWritten = false;
+
+  static const int _divisionsPerBeat = 4; //  16th note resolution only, funny timing concept from MusicXml
   static final Pitch _chordBase = Pitch.get(PitchEnum.C4);
-  static Map<String, String> chordDescriptorMap = {};
+  static final Map<String, String> _chordDescriptorMap = {};
 }

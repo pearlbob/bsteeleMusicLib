@@ -491,8 +491,9 @@ class Phrase extends MeasureNode {
     for (Measure measure in _measures) {
       chordRowCount += (measure.endOfRow ? 1 : 0);
     }
-    if (!_measures[_measures.length - 1].endOfRow)
-      chordRowCount++; //  fixme: shouldn't be needed?  last measure doesn't have endOfRow
+    if (!_measures[_measures.length - 1].endOfRow) {
+      chordRowCount++;
+    } //  fixme: shouldn't be needed?  last measure doesn't have endOfRow
     return chordRowCount;
   }
 
