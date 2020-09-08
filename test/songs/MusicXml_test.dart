@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/musicXml.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:system_info/system_info.dart';
 import 'package:test/test.dart';
@@ -210,7 +211,7 @@ void main() {
     logger.i('done');
   });
 
-  test('musicxml generation test', () {
+  test('musicxml generation test', () async {
 
     String songString = '''
 {
@@ -293,145 +294,8 @@ void main() {
     MusicXml musicXml = MusicXml();
     File(filename).writeAsString(musicXml.songAsMusicXml(song), flush: true).then((File file) {
       logger.i('done');
+      logger.i( DateFormat.yMMMd().format(new DateTime.now()));
       // Do something with the file.
     });
   });
 }
-
-//     {
-//       //  fill the measures
-//       StringBuffer sb = StringBuffer();
-//       const divisions = 4;
-//       int measureNumber = 0;
-//
-//       int beatDuration = divisions;
-//       int beats = 4;
-//       int beatsPerBar = 4;
-//       Pitch lowRoot = Pitch.get(PitchEnum.A2); //  bass staff
-//       lowRoot = key.mappedPitch(lowRoot); // required once only
-//       Pitch highRoot = Pitch.get(PitchEnum.A3); //  treble staff
-//       highRoot = key.mappedPitch(highRoot); // required once only
-//
-//       int note = 0;
-//       Pitch highPitch = highRoot;
-//       Pitch lowPitch = lowRoot;
-//
-//       for (int i = 0; i < 16; i++) {
-//         if (i % beats == 0) {
-//           if (measureNumber > 0) {
-//             //  end the prior measure
-//             sb.write('''
-// </measure>
-// ''');
-//           }
-//
-//           //  start the next measure
-//           measureNumber++;
-//           sb.write('''
-//
-// <measure number="$measureNumber">
-//
-// ''');
-//
-//           //  first measure gets the attributes
-//           if (measureNumber == 1) //  after the increment
-//           {
-//             sb.write('''
-//     <attributes>
-//           <!--    allow up to 16th notes  -->
-//           <divisions>$divisions</divisions>
-//           <key>
-//               <fifths>${key.getKeyValue()}</fifths>
-//           </key>
-//           <time>
-//               <beats>$beats</beats>
-//               <beat-type>4</beat-type>
-//           </time>
-//           <staves>2</staves>
-//           <clef number="1">
-//               <sign>G</sign>
-//               <line>2</line>
-//           </clef>
-//           <clef number="2">
-//               <sign>F</sign>
-//               <line>4</line>
-//           </clef>
-//       </attributes>
-// ''');
-//           }
-//         }
-//
-//         {
-//           ChordDescriptor chordDescriptor = _nextChordDescriptor(key);
-//           Chord chord = Chord(
-//               ScaleChord(highPitch.scaleNote, chordDescriptor),
-//               beats,
-//               beatsPerBar,
-//               null,
-//               ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none),
-//               true);
-//           logger.i('chord: $chord');
-//           logger.i('    ${highPitch}/${lowPitch}');
-//           sb.write(
-//               '${MusicXml.chordAsMusicXml(chord, highPitch, key, Clef.treble, 1, 4/*fixme: temp!!!!!!!!!!!!!!!!!*/)}\n');
-//         }
-//
-//         //  next note
-// //         sb.write(
-// //             '''<backup> <duration>16</duration> </backup>
-// // <note><!--  bass note: $lowRoot    -->
-// //     ${MusicXml.pitchAsMusicXml(lowRoot)}
-// //     <duration>${beatDuration}</duration>
-// //     <voice>1</voice>
-// //     <staff>2</staff>
-// //     </note>
-// //
-// // ''');
-//
-//         lowRoot = lowRoot.nextHigherPitch();
-//         lowPitch =   Pitch.findPitch(key.getMajorScaleByNote(note), lowRoot);
-//         highPitch =   Pitch.findPitch(key.getMajorScaleByNote(note), highRoot);
-//         note++;
-//       }
-//
-//       //  end the last measure
-//       if (measureNumber > 0) {
-//         sb.write('''
-// </measure>
-// ''');
-//       }
-//
-//       xmlString += sb.toString();
-//     }
-//
-//     xmlString += '''
-// </part>
-// </score-partwise>
-// ''';
-//
-//     logger.w(
-//         'fixme: shouldn\'t be writing a file as part of a test!!!!!!!!!!!!!!!!!');
-//     final filename = '${SysInfo.userDirectory}/junk/genTest.musicxml';
-//     File(filename).writeAsString(xmlString).then((File file) {
-//       logger.i('done');
-//       // Do something with the file.
-//     });
-//   });
-// }
-//
-// int _chordDescriptorIndex = 0;
-// final List<ChordDescriptor> _chordDescriptors = [
-//   ChordDescriptor.major,
-//   ChordDescriptor.minor,
-//   ChordDescriptor.dominant7,
-//   ChordDescriptor.suspended4,
-//   ChordDescriptor.suspended,
-//   ChordDescriptor.augmented,
-//   ChordDescriptor.diminished7,
-//   ChordDescriptor.power5,
-//   ChordDescriptor.major7,
-// ];
-//
-// ChordDescriptor _nextChordDescriptor(music_key.Key key) {
-//   return key.getMinorDiatonicByDegree(_diatonicDegree++).chordDescriptor;
-// }

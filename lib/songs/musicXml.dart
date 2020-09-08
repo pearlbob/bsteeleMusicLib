@@ -7,6 +7,7 @@ import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
+import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
 
 class MusicXml {
@@ -20,18 +21,71 @@ class MusicXml {
 
     StringBuffer sb = StringBuffer();
 
+    // <page-layout>
+    // <page-height>1955</page-height> <!-- 11" -->
+    // <page-width>1511</page-width> <!-- 8.5" -->
+    // <page-margins type="even">
+    // <left-margin>50</left-margin>
+    // <right-margin>5</right-margin>
+    // <top-margin>5</top-margin>
+    // <bottom-margin>110</bottom-margin>
+    // </page-margins>
+    // <page-margins type="odd">
+    // <left-margin>50</left-margin>
+    // <right-margin>5</right-margin>
+    // <top-margin>5</top-margin>
+    // <bottom-margin>110</bottom-margin>
+    // </page-margins>
+    // </page-layout>
+
     sb.write('''
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE score-partwise PUBLIC
-    "-//Recordare//DTD MusicXML 3.1 Partwise//EN"
-    "http://www.musicxml.org/dtds/partwise.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="3.1">
+  <work>
+    <work-title>Title</work-title>
+    </work>
+<identification>
+    <creator type="composer">Composer</creator>
+    <encoding>
+      <software>bsteeleMusicLib</software>
+      <encoding-date>${DateFormat('yyyy-MM-dd').format(DateTime.now())}</encoding-date>
+      <supports element="accidental" type="yes"/>
+      <supports element="beam" type="yes"/>
+      <supports element="print" attribute="new-page" type="yes" value="yes"/>
+      <supports element="print" attribute="new-system" type="yes" value="yes"/>
+      <supports element="stem" type="yes"/>
+      </encoding>
+    </identification>
+  <defaults>
+      <scaling>
+      <millimeters>7.05556</millimeters>
+        <tenths>40</tenths>
+        </scaling>
+      <page-layout>
+        <page-height>1683.78</page-height>
+      <page-width>1190.55</page-width>
+        <page-margins type="even">
+        <left-margin>56.6929</left-margin>
+        <right-margin>56.6929</right-margin>
+        <top-margin>56.6929</top-margin>
+        <bottom-margin>113.386</bottom-margin>
+          </page-margins>
+        <page-margins type="odd">
+        <left-margin>56.6929</left-margin>
+        <right-margin>56.6929</right-margin>
+        <top-margin>56.6929</top-margin>
+        <bottom-margin>113.386</bottom-margin>
+          </page-margins>
+        </page-layout>
+      <word-font font-family="FreeSerif" font-size="10"/>
+      <lyric-font font-family="FreeSerif" font-size="11"/>
+      </defaults>
     <credit page="1">
-        <credit-words default-x="500" default-y="150" font-size="24" justify="center" valign="top">
-            ${song.title}
-        </credit-words>
+       <credit-words default-x="595.275" default-y="1627.09" justify="center" valign="top" font-size="24">Weight, The</credit-words>
     </credit>
     <credit page="1">
-        <credit-words default-x="400" default-y="50" font-size="12" justify="right" valign="bottom">
+         <credit-words default-x="1133.86" default-y="1527.09" justify="right" valign="bottom" font-size="12">
             ${song.artist}, Copyright ${song.copyright}
         </credit-words>
     </credit>
@@ -52,22 +106,31 @@ class MusicXml {
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
       highRoot = key.mappedPitch(highRoot); // required once only
 
-      song.songMomentGrid;//  fixme: shouldn't be required!
+      song.songMomentGrid; //  fixme: shouldn't be required!
 
       for (SongMoment songMoment in song.songMoments) {
         int measureNumber = songMoment.momentNumber;
-        _lyricsHaveBeenWritten=false;
+        _lyricsHaveBeenWritten = false;
 
         //  start the measure
         sb.write('''
 
 <!--   $songMoment   -->
-<measure number="$measureNumber">
+<measure number="${measureNumber + 1}" width="200">
 ''');
 
         //  first measure gets the attributes
         if (measureNumber == 0) {
           sb.write('''
+    <print>
+        <system-layout>
+          <system-margins>
+            <left-margin>0.00</left-margin>
+            <right-margin>-0.00</right-margin>
+            </system-margins>
+          <top-system-distance>170.00</top-system-distance>
+          </system-layout>
+        </print>
     <attributes>
           <!--    allow up to 16th notes  -->
           <divisions>$_divisionsPerBeat</divisions>
@@ -100,17 +163,22 @@ class MusicXml {
           }
         }
 
-        //  next note
-//         sb.write(
-//             '''<backup> <duration>16</duration> </backup>
-// <note><!--  bass note: $lowRoot    -->
-//     ${MusicXml.pitchAsMusicXml(lowRoot)}
-//     <duration>${beatDuration}</duration>
-//     <voice>1</voice>
-//     <staff>2</staff>
-//     </note>
-//
-// ''');
+        //  bass
+        sb.write('\t<backup> <duration>16</duration> </backup>');
+
+        {
+          for (Chord chord in songMoment.getMeasure().chords) {
+            Pitch pitch = key.mappedPitch(Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot));
+            sb.write('''
+  <note><!--  bass note: $pitch    -->
+    ${_pitchAsMusicXml(pitch)}
+    ${_noteDuration(chord.beats)}
+    <staff>2</staff>
+    </note>
+''');
+          }
+        }
+
         //  end the measure
         sb.write('''
 </measure>
@@ -145,23 +213,65 @@ class MusicXml {
     return ret;
   }
 
+  String _rootStep(ScaleNote scaleNote) {
+    return _step(scaleNote, basis: 'root');
+  }
+
+  String _bassStep(ScaleNote scaleNote) {
+    if (scaleNote == null) {
+      return '';
+    }
+    return _step(scaleNote, basis: 'bass');
+  }
+
+  String _step(ScaleNote scaleNote, {String basis}) {
+    String mod = '${basis != null ? basis + '-' : ''}';
+    String ret = '<${mod}step>${scaleNote.scaleString}</${mod}step>';
+    if (scaleNote.isSharp) {
+      ret += '<${mod}alter>1</${mod}alter>';
+    }
+    if (scaleNote.isFlat) {
+      ret += '<${mod}alter>-1</${mod}alter>';
+    }
+    return ret;
+  }
+
+  String _noteDuration(int beats) {
+    String type;
+    switch (beats) {
+      case 1:
+        type = 'quarter';
+        break;
+      case 2:
+        type = 'half';
+        break;
+      case 4:
+        type = 'whole';
+        break;
+      default:
+        //  fixme: dotted
+        //  fixme: 6/8 time
+        break;
+    }
+    return '''
+\t\t<duration>${beats * _divisionsPerBeat}</duration>
+\t\t<type>$type</type>
+''';
+  }
+
   String _chordAsMusicXml(SongMoment songMoment, Chord chord) {
     ScaleNote scaleNote = chord.scaleChord.scaleNote;
 
-    String ret = '\t<harmony><root>'
-        '<root-step>${scaleNote.scaleString}'
-        '</root-step>';
-    if (scaleNote.isSharp) {
-      ret += '<root-alter>1</root-alter>';
-    }
-    if (scaleNote.isFlat) {
-      ret += '<root-alter>-1</root-alter>';
-    }
-    String name = _getChordDescriptorName(chord.scaleChord);
-    ret += '</root><kind>$name</kind></harmony>'
-        '\n';
+    String ret = '\t<harmony><root>' + _rootStep(scaleNote);
 
-//  draw the chord notes
+    String name = _getChordDescriptorName(chord.scaleChord);
+    ret += '</root><kind halign="center" text="7">$name</kind>';
+    if (chord.slashScaleNote != null) {
+      ret += '\n\t\t<bass>${_bassStep(chord.slashScaleNote)}</bass>';
+    }
+    ret += '</harmony>\n';
+
+    //  draw the chord notes
     bool first = true;
     for (Pitch pitch in chord.getPitches(_chordBase)) {
       pitch = _song.key.mappedPitch(pitch);
@@ -190,18 +300,17 @@ class MusicXml {
           //  fixme: 6/8 time
           break;
       }
-      ret += '''\t\t${_pitchAsMusicXml(pitch)}
-\t\t<duration>${chord.beats * _divisionsPerBeat}</duration>
-\t\t<type>$type</type>
-\t\t<staff>1</staff>
-''';
-      if (!_lyricsHaveBeenWritten  && songMoment.lyrics != null && songMoment.lyrics.isNotEmpty) {
+      ret += '\t\t${_pitchAsMusicXml(pitch)}';
+      ret += _noteDuration(chord.beats);
+      ret += '\t\t<staff>1</staff>';
+
+      if (!_lyricsHaveBeenWritten && songMoment.lyrics != null && songMoment.lyrics.isNotEmpty) {
         ret += '''
 \t\t<lyric name="${songMoment.lyricSection.sectionVersion.getFormalName()}" number="1">
 \t\t\t<text>${songMoment.lyrics}</text>
 \t\t</lyric>
 ''';
-        _lyricsHaveBeenWritten=true;
+        _lyricsHaveBeenWritten = true;
       }
 
       ret += '''
