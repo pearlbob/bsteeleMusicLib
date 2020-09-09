@@ -445,6 +445,14 @@ class Key implements Comparable<Key> {
     return '';
   }
 
+  String sharpsFlatsToMarkup() {
+    if (_keyValue < 0) {
+      return _keyValue.abs().toString() + 'b';
+    }
+    if (_keyValue > 0) return _keyValue.toString() + '#';
+    return '';
+  }
+
   @override
   int compareTo(Key other) {
     return _keyEnum.index - other._keyEnum.index;

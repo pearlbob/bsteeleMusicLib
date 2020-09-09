@@ -106,7 +106,7 @@ class ScaleNote implements Comparable<ScaleNote> {
       case ScaleNoteEnum.E:
       case ScaleNoteEnum.F:
       case ScaleNoteEnum.G:
-        //mod += '\u266E';  //  fixme: natural sign on scale not is overkill?
+        //mod += MusicConstants.naturalChar;  //  natural sign on scale is overkill!
         _isNatural = true;
         _accidental = Accidental.natural;
         break;
@@ -120,7 +120,7 @@ class ScaleNote implements Comparable<ScaleNote> {
       case ScaleNoteEnum.Es:
       case ScaleNoteEnum.Fs:
       case ScaleNoteEnum.Gs:
-        mod += '\u266F';
+        mod += MusicConstants.sharpChar;
         modMarkup = '#';
         _isSharp = true;
         _accidental = Accidental.sharp;
@@ -132,7 +132,7 @@ class ScaleNote implements Comparable<ScaleNote> {
       case ScaleNoteEnum.Eb:
       case ScaleNoteEnum.Fb:
       case ScaleNoteEnum.Gb:
-        mod += '\u266D';
+        mod +=  MusicConstants.flatChar;
         modMarkup = 'b';
         _isFlat = true;
         _accidental = Accidental.flat;

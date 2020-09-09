@@ -100,7 +100,6 @@ class MusicXml {
 
     {
       int beats = song.beatsPerBar;
-      int unitsPerMeasure = song.unitsPerMeasure;
       Pitch lowRoot = Pitch.get(PitchEnum.E2); //  bass staff
       lowRoot = key.mappedPitch(lowRoot); // required once only
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
@@ -284,22 +283,6 @@ class MusicXml {
         ret += '\t\t<chord/>\n';
       }
 
-      String type;
-      switch (chord.beats) {
-        case 1:
-          type = 'quarter';
-          break;
-        case 2:
-          type = 'half';
-          break;
-        case 4:
-          type = 'whole';
-          break;
-        default:
-          //  fixme: dotted
-          //  fixme: 6/8 time
-          break;
-      }
       ret += '\t\t${_pitchAsMusicXml(pitch)}';
       ret += _noteDuration(chord.beats);
       ret += '\t\t<staff>1</staff>';

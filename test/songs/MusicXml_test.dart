@@ -211,7 +211,7 @@ void main() {
     logger.i('done');
   });
 
-  test('musicxml generation test', () async {
+  test('musicxml generation test', () {
 
     String songString = '''
 {
@@ -294,7 +294,7 @@ void main() {
     MusicXml musicXml = MusicXml();
     File(filename).writeAsString(musicXml.songAsMusicXml(song), flush: true).then((File file) {
       logger.i('done');
-      logger.i( DateFormat.yMMMd().format(new DateTime.now()));
+      logger.i( DateFormat.yMMMd().format( DateTime.now()));
       // Do something with the file.
     });
   });
