@@ -57,7 +57,7 @@ class Song extends SongBase implements Comparable<Song> {
 
   /// Copy the song to a new instance.
   Song copySong() {
-    Song ret = createSong(
+    Song ret = Song.createSong(
         getTitle(),
         getArtist(),
         getCopyright(),
