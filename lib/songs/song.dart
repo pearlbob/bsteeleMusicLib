@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import '../util/util.dart';
+import 'chordSectionLocation.dart';
 import 'key.dart';
 import 'songBase.dart';
 
@@ -57,6 +58,7 @@ class Song extends SongBase implements Comparable<Song> {
 
   /// Copy the song to a new instance.
   Song copySong() {
+    //  note: assure all arguments are immutable, or at least unique to the copy
     Song ret = Song.createSong(
         getTitle(),
         getArtist(),
@@ -72,7 +74,7 @@ class Song extends SongBase implements Comparable<Song> {
     ret.setFileName(getFileName());
     ret.lastModifiedTime = lastModifiedTime;
     ret.setTotalBeats(getTotalBeats());
-    ret.setCurrentChordSectionLocation(getCurrentChordSectionLocation());
+    ret.setCurrentChordSectionLocation(ChordSectionLocation.copy(getCurrentChordSectionLocation()));
     ret.setCurrentMeasureEditType(getCurrentMeasureEditType());
     return ret;
   }

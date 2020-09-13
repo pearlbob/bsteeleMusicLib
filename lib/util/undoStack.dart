@@ -4,7 +4,7 @@
 class UndoStack<T> {
   UndoStack() : _max = _defaultSize;
 
-  UndoStack.forMax(int m) : _max = m <= 0 ? _defaultSize : m;
+  UndoStack.withMax(int m) : _max = m <= 0 ? _defaultSize : m;
 
   /// push data on to the undo stack
   void push(T value) {
@@ -19,7 +19,6 @@ class UndoStack<T> {
     if (_undoStackPointer >= _max - 1) _undoStack.remove(0);
 
     //  store the value in the undo stack
-
     _undoStack.add(value);
 
     _undoStackPointer = _undoStack.length - 1;
@@ -27,14 +26,13 @@ class UndoStack<T> {
   }
 
   /// see if there is data that can be undone
-  bool get canUndo => _undoStackPointer > 0;
+  bool get canUndo => _undoStackPointer > 1 || (_undoStackPointer == 1 && _undoStack[0] != null);
 
   /// pop the current value off the stack, i.e. undo
-  T pop() {
+  T undo() {
     if (!canUndo) return null;
-    T ret = top;
     _undoStackPointer--;
-    return ret;
+    return top;
   }
 
   /// if there is data above the current pointer in the stack, a redo is possible
@@ -52,8 +50,14 @@ class UndoStack<T> {
   int get length => _undoStack.length;
 
   /// get the top of the undo stack
-  T get top => _undoStack[_undoStackPointer];
+  T get top => _undoStackPointer >= 0 ? _undoStack[_undoStackPointer] : null;
 
+  ///  return from down the stack, starting from zero
+  T get(int i) {
+    int index = _undoStackCount - i;
+    if (index < 0 || index > _max - 1) return null;
+    return _undoStack[index];
+  }
 
   @override
   String toString() {

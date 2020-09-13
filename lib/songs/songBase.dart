@@ -89,7 +89,7 @@ class SongBase {
     _getChordSectionMap();
 
     _songMoments = <SongMoment>[];
-    beatsToMoment = HashMap<int, SongMoment>();
+    _beatsToMoment = HashMap<int, SongMoment>();
 
     if (_lyricSections == null) return;
 
@@ -232,7 +232,7 @@ class SongBase {
       for (SongMoment songMoment in _songMoments) {
         int limit = songMoment.getMeasure().beatCount;
         for (int b = 0; b < limit; b++) {
-          beatsToMoment[beat++] = songMoment;
+          _beatsToMoment[beat++] = songMoment;
         }
       }
     }
@@ -1167,8 +1167,8 @@ class SongBase {
 
   void clearCachedValues() {
     _chordSectionLocationGrid = null;
-    complexity = 0;
-    chordsAsMarkup = null;
+    _complexity = 0;
+    _chordsAsMarkup = null;
     _songMomentGrid = null;
     _songMoments = null;
     _duration = 0;
@@ -1187,7 +1187,7 @@ class SongBase {
   }
 
   String toMarkup() {
-    if (chordsAsMarkup != null) return chordsAsMarkup;
+    if (_chordsAsMarkup != null) return _chordsAsMarkup;
 
     StringBuffer sb = StringBuffer();
 
@@ -1226,8 +1226,8 @@ class SongBase {
       sb.write(chordSection.phrasesToMarkup());
       sb.write(' '); //  for human readability only
     }
-    chordsAsMarkup = sb.toString();
-    return chordsAsMarkup;
+    _chordsAsMarkup = sb.toString();
+    return _chordsAsMarkup;
   }
 
   String toMarkupByLocation(ChordSectionLocation location) {
@@ -2872,11 +2872,11 @@ class SongBase {
     }
 
     _computeSongMoments();
-    if (songBeat >= beatsToMoment.length) {
+    if (songBeat >= _beatsToMoment.length) {
       return null;
     } //  we're done with the last measure of this song play
 
-    return beatsToMoment[songBeat].getMomentNumber();
+    return _beatsToMoment[songBeat].getMomentNumber();
   }
 
   /// Return the first moment on the given row
@@ -2924,7 +2924,7 @@ class SongBase {
 
   ///Compute a relative complexity index for the song
   int getComplexity() {
-    if (complexity == 0) {
+    if (_complexity == 0) {
       //  compute the complexity
       SplayTreeSet<Measure> differentChords = SplayTreeSet();
       for (ChordSection chordSection in _getChordSectionMap().values) {
@@ -2934,14 +2934,14 @@ class SongBase {
 
           //  weight measures by guitar complexity
           for (Measure measure in phrase.measures) {
-            if (!measure.isEasyGuitarMeasure()) complexity++;
+            if (!measure.isEasyGuitarMeasure()) _complexity++;
           }
         }
       }
-      complexity += _getChordSectionMap().values.length;
-      complexity += differentChords.length;
+      _complexity += _getChordSectionMap().values.length;
+      _complexity += differentChords.length;
     }
-    return complexity;
+    return _complexity;
   }
 
   String getRawLyrics() {
@@ -2977,11 +2977,11 @@ class SongBase {
   }
 
   String getMessage() {
-    return message;
+    return _message;
   }
 
   void setMessage(String message) {
-    this.message = message;
+    this._message = message;
   }
 
   MeasureEditType getCurrentMeasureEditType() {
@@ -3202,13 +3202,13 @@ class SongBase {
   Grid<ChordSectionLocation> get chordSectionLocationGrid => getChordSectionLocationGrid();
   Grid<ChordSectionLocation> _chordSectionLocationGrid;
 
-  int complexity;
-  String chordsAsMarkup;
-  String message;
+  int _complexity;
+  String _chordsAsMarkup;
+  String _message;
 
   List<SongMoment> get songMoments => getSongMoments();
   List<SongMoment> _songMoments;
-  HashMap<int, SongMoment> beatsToMoment;
+  HashMap<int, SongMoment> _beatsToMoment;
 
   static final RegExp _spaceRegexp = RegExp(r'\s');
 
