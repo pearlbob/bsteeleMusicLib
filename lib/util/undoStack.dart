@@ -10,13 +10,15 @@ class UndoStack<T> {
   void push(T value) {
     //  remove the dead edits in the redo top
     if (canRedo) {
-      while (_undoStack.isNotEmpty && _undoStack.length > _undoStackPointer + 1) {
-        _undoStack.remove(_undoStack.length - 1);
+      while (_undoStack.isNotEmpty && _undoStack.length > _undoStackPointer ) {
+        _undoStack.removeAt(_undoStack.length - 1);
       }
     }
 
     //  cut the maxed out undo's off the stack
-    if (_undoStackPointer >= _max - 1) _undoStack.remove(0);
+    if (_undoStackPointer >= _max - 1) {
+      _undoStack.removeAt(0);
+    }
 
     //  store the value in the undo stack
     _undoStack.add(value);

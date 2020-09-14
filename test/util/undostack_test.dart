@@ -3,6 +3,16 @@ import 'package:bsteeleMusicLib/util/undoStack.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
+void _logStack(UndoStack undoStack){
+  logger.i('');
+  for ( int i = 0; ; i++){
+    var s = undoStack.get(i);
+    if ( s == null ) {
+      break;
+    }
+    logger.i('$i: "${s.toString()}"');
+  }
+}
 
 void main() {
   Logger.level = Level.info;
@@ -23,14 +33,7 @@ void main() {
     expect(undoStack.top, '4');
 
     //  take a look
-    for ( int i = 0; ; i++){
-      String s = undoStack.get(i);
-      if ( s == null ) {
-        break;
-      }
-      logger.v('$i: "$s"');
-      expect( s , (4 - i ).toString());
-    }
+    _logStack(undoStack);
 
     expect(undoStack.top, '4');
     expect(undoStack.canUndo, true);
@@ -57,5 +60,22 @@ void main() {
     expect(undoStack.canUndo, true);
     expect(undoStack.canRedo, false);
     expect(undoStack.redo(), null);
+    expect(undoStack.undo(), '3');
+
+
+    undoStack.push('2+1');
+    undoStack.push('2+2');
+    _logStack(undoStack);
+    expect(undoStack.top, '2+2');
+    expect(undoStack.undo(), '2+1');
+    expect(undoStack.undo(), '2');
+    undoStack.push('1a');
+    undoStack.push('1b');
+    _logStack(undoStack);
+    expect(undoStack.undo(), '1a');
+    expect(undoStack.undo(), '1');
+    expect(undoStack.undo(), null);
   });
+
+
 }

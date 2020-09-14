@@ -2063,6 +2063,9 @@ class SongBase {
   }
 
   Measure findMeasureByChordSectionLocation(ChordSectionLocation chordSectionLocation) {
+    if ( chordSectionLocation== null ){
+      return null;
+    }
     try {
       if (chordSectionLocation.isMeasure) {
         return _getChordSectionMap()[chordSectionLocation.sectionVersion]
@@ -2073,6 +2076,15 @@ class SongBase {
       return null;
     }
     return null;
+  }
+
+  /// convenience method
+  void setCurrentChordSectionLocationMeasureEndOfRow(bool endOfRow){
+    Measure m = getCurrentChordSectionLocationMeasure();
+    if ( m != null && m.endOfRow != endOfRow){
+      m.endOfRow = endOfRow;
+      clearCachedValues();
+    }
   }
 
   Measure getCurrentChordSectionLocationMeasure() {
