@@ -656,7 +656,7 @@ class SongBase {
   void _parseChords(final String chords) {
     _chords = chords; //  safety only
     _chordSectionMap = HashMap();
-    clearCachedValues(); //  force lazy eval
+    _clearCachedValues(); //  force lazy eval
 
     if (chords != null) {
       logger.d('parseChords for: ' + getTitle());
@@ -683,10 +683,10 @@ class SongBase {
             emptyChordSections.clear();
           }
           _chordSectionMap[chordSection.sectionVersion] = chordSection;
-          clearCachedValues();
+          _clearCachedValues();
         } catch (e) {
           //  try some repair
-          clearCachedValues();
+          _clearCachedValues();
 
           // logger.d(logGrid());
           rethrow;
@@ -1165,7 +1165,7 @@ class SongBase {
     return chordSectionGridCoorinateMap;
   }
 
-  void clearCachedValues() {
+  void _clearCachedValues() {
     _chordSectionLocationGrid = null;
     _complexity = 0;
     _chordsAsMarkup = null;
@@ -1747,6 +1747,14 @@ class SongBase {
             case MeasureEditType.append:
               newLocation = location.nextMeasureIndexLocation();
               break;
+            case MeasureEditType.replace:
+              //  deal with a change of endOfRow
+              Measure newMeasure = measureNode as Measure;
+              Measure oldMeasure = phrase.measures[newLocation.measureIndex];
+              if (newMeasure.endOfRow != oldMeasure.endOfRow) {
+                _clearCachedValues();
+              }
+              break;
             default:
               break;
           }
@@ -2063,7 +2071,7 @@ class SongBase {
   }
 
   Measure findMeasureByChordSectionLocation(ChordSectionLocation chordSectionLocation) {
-    if ( chordSectionLocation== null ){
+    if (chordSectionLocation == null) {
       return null;
     }
     try {
@@ -2078,13 +2086,20 @@ class SongBase {
     return null;
   }
 
-  /// convenience method
-  void setCurrentChordSectionLocationMeasureEndOfRow(bool endOfRow){
-    Measure m = getCurrentChordSectionLocationMeasure();
-    if ( m != null && m.endOfRow != endOfRow){
-      m.endOfRow = endOfRow;
-      clearCachedValues();
+  void setChordSectionLocationMeasureEndOfRow(ChordSectionLocation chordSectionLocation, bool endOfRow) {
+    if (endOfRow == null) {
+      return;
     }
+    Measure measure = findMeasureByChordSectionLocation(chordSectionLocation);
+    if (measure != null && measure.endOfRow != endOfRow) {
+      measure.endOfRow = endOfRow;
+      _clearCachedValues();
+    }
+  }
+
+  /// convenience method
+  void setCurrentChordSectionLocationMeasureEndOfRow(bool endOfRow) {
+    setChordSectionLocationMeasureEndOfRow(getCurrentChordSectionLocation(), endOfRow);
   }
 
   Measure getCurrentChordSectionLocationMeasure() {
@@ -2154,7 +2169,7 @@ class SongBase {
     try {
       ChordSection chordSection = getChordSection(chordSectionLocation.sectionVersion);
       if (chordSection.deleteMeasure(chordSectionLocation.phraseIndex, chordSectionLocation.measureIndex)) {
-        clearCachedValues();
+        _clearCachedValues();
         setCurrentChordSectionLocation(chordSectionLocation);
         return true;
       }
@@ -2273,7 +2288,7 @@ class SongBase {
     }
 
     //  safety with lazy eval
-    clearCachedValues();
+    _clearCachedValues();
   }
 
   /// Debug only!  a string form of the song chord section grid
@@ -2733,7 +2748,7 @@ class SongBase {
     //  never divide by zero
     if (beatsPerBar <= 1) beatsPerBar = 2;
     this.beatsPerBar = beatsPerBar;
-    clearCachedValues();
+    _clearCachedValues();
   }
 
   /// Return an integer that represents the number of notes per measure
@@ -2963,12 +2978,12 @@ class SongBase {
   void setChords(String chords) {
     _chords = chords;
     _chordSectionMap = null; //  force a parse of the new chords
-    clearCachedValues();
+    _clearCachedValues();
   }
 
   void _invalidateChords() {
     _chords = null;
-    clearCachedValues();
+    _clearCachedValues();
   }
 
   void setRawLyrics(String rawLyrics) {
@@ -3120,7 +3135,7 @@ class SongBase {
     return other is SongBase && songBaseSameAs(other);
   }
 
-  bool songBaseSameAs(SongBase o) {
+  bool songBaseSameContent(SongBase o) {
     //  song id built from title with reduced whitespace
     if (title != o.title) return false;
     if (artist != o.artist) return false;
@@ -3136,6 +3151,14 @@ class SongBase {
     if (beatsPerBar != o.beatsPerBar) return false;
     if (_getChords() != o._getChords()) return false;
     if (rawLyrics != (o.rawLyrics)) return false;
+
+    return true;
+  }
+
+  bool songBaseSameAs(SongBase o) {
+    //  song id built from title with reduced whitespace
+    if (!songBaseSameContent(o)) return false;
+
     //    if (metadata != (o.metadata))
     //      return false;
     if (lastModifiedTime != o.lastModifiedTime) return false;

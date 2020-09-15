@@ -123,6 +123,11 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     return ChordSectionLocation(sectionVersion);
   }
 
+  ChordSectionLocation priorMeasureIndexLocation() {
+    if (!hasPhraseIndex || !_hasMeasureIndex || _measureIndex == 0) return null;
+    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex - 1);
+  }
+
   ChordSectionLocation nextMeasureIndexLocation() {
     if (!hasPhraseIndex || !_hasMeasureIndex) return this;
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
