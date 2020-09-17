@@ -3,19 +3,33 @@ import 'dart:core';
 import 'dart:math';
 
 class Util {
-
   /// add quotes to a string so it can be used as a dart constant
-  static String quote(String s){
-    if ( s == null) {
+  static String quote(String s) {
+    if (s == null) {
       return null;
     }
-    if ( s.isEmpty) {
+    if (s.isEmpty) {
       return '';
     }
-    s = s.replaceAll("'", "\'")
-    .replaceAll('\n', "\\n'\n'")
-    ;
+    s = s.replaceAll("'", "\'").replaceAll('\n', "\\n'\n'");
     return "'$s'";
+  }
+
+  static num limit(final num n, final num limit1, final num limit2) {
+    if (n == null) {
+      return n;
+    }
+    if (limit1 == null) {
+      if (limit2 == null) {
+        return n;
+      } else {
+        return min(n, limit2);
+      }
+    }
+    if (limit2 == null) {
+      return max(n, limit1);
+    }
+    return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
   /// capitalize the first character

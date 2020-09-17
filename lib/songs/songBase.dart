@@ -1165,6 +1165,11 @@ class SongBase {
     return chordSectionGridCoorinateMap;
   }
 
+  void _invalidateChords() {
+    _chords = null;
+    _clearCachedValues();
+  }
+
   void _clearCachedValues() {
     _chordSectionLocationGrid = null;
     _complexity = 0;
@@ -1752,7 +1757,7 @@ class SongBase {
               Measure newMeasure = measureNode as Measure;
               Measure oldMeasure = phrase.measures[newLocation.measureIndex];
               if (newMeasure.endOfRow != oldMeasure.endOfRow) {
-                _clearCachedValues();
+                _invalidateChords();
               }
               break;
             default:
@@ -2093,7 +2098,7 @@ class SongBase {
     Measure measure = findMeasureByChordSectionLocation(chordSectionLocation);
     if (measure != null && measure.endOfRow != endOfRow) {
       measure.endOfRow = endOfRow;
-      _clearCachedValues();
+      _invalidateChords();
     }
   }
 
@@ -2978,11 +2983,6 @@ class SongBase {
   void setChords(String chords) {
     _chords = chords;
     _chordSectionMap = null; //  force a parse of the new chords
-    _clearCachedValues();
-  }
-
-  void _invalidateChords() {
-    _chords = null;
     _clearCachedValues();
   }
 
