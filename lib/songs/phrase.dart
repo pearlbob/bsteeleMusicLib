@@ -521,6 +521,21 @@ class Phrase extends MeasureNode {
     return sb.toString();
   }
 
+  Measure get firstMeasure {
+    try {
+      return _measures.first;
+    } catch (e) {
+      return null;
+    }
+  }
+  Measure get lastMeasure {
+    try {
+      return _measures.last;
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   String toString() {
     return toMarkup() + '\n';

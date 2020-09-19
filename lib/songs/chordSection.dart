@@ -313,6 +313,22 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
   }
 
+  Measure get firstMeasure {
+    try {
+      return phrases.first.firstMeasure;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Measure get lastMeasure {
+    try {
+      return phrases.last.lastMeasure;
+    } catch (e) {
+      return null;
+    }
+  }
+
   bool deletePhrase(int phraseIndex) {
     try {
       return _phrases.removeAt(phraseIndex) != null;
@@ -341,11 +357,11 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   /**
-     * Return the sectionVersion beats per minute
-     * or null to default to the song BPM.
-     *
-     * @return the sectionVersion BPM or null
-     */
+   * Return the sectionVersion beats per minute
+   * or null to default to the song BPM.
+   *
+   * @return the sectionVersion BPM or null
+   */
 //   Integer getBeatsPerMinute() {
 //    return bpm;
 //}
