@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import '../util/util.dart';
 import 'chordComponent.dart';
 import 'musicConstants.dart';
@@ -14,209 +16,161 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   /// Dominant 7th chord with the 3rd replaced by the 4th. Suspended chords are neither major or minor.
 
   static ChordDescriptor get sevenSus4 => _sevenSus4;
-  static final ChordDescriptor _sevenSus4 =
-      ChordDescriptor._('sevenSus4', '7sus4', 'R 4 5 m7');
+  static final ChordDescriptor _sevenSus4 = ChordDescriptor._('sevenSus4', '7sus4', 'R 4 5 m7');
 
   static ChordDescriptor get sevenSus2 => _sevenSus2;
-  static final ChordDescriptor _sevenSus2 =
-      ChordDescriptor._('sevenSus2', '7sus2', 'R 2 5 m7');
+  static final ChordDescriptor _sevenSus2 = ChordDescriptor._('sevenSus2', '7sus2', 'R 2 5 m7');
 
   static ChordDescriptor get sevenSus => _sevenSus;
-  static final ChordDescriptor _sevenSus =
-      ChordDescriptor._('sevenSus', '7sus', 'R 5 m7');
+  static final ChordDescriptor _sevenSus = ChordDescriptor._('sevenSus', '7sus', 'R 5 m7');
 
   static ChordDescriptor get maug => _maug;
-  static final ChordDescriptor _maug =
-      ChordDescriptor._('maug', 'maug', 'R m3 3 #5');
+  static final ChordDescriptor _maug = ChordDescriptor._('maug', 'maug', 'R m3 3 #5');
 
   static ChordDescriptor get dominant13 => _dominant13;
-  static final ChordDescriptor _dominant13 =
-      ChordDescriptor._('dominant13', '13', 'R 3 5 m7 9 11 13');
+  static final ChordDescriptor _dominant13 = ChordDescriptor._('dominant13', '13', 'R 3 5 m7 9 11 13');
 
   static ChordDescriptor get dominant11 => _dominant11;
-  static final ChordDescriptor _dominant11 =
-      ChordDescriptor._('dominant11', '11', 'R 3 5 m7 9 11');
+  static final ChordDescriptor _dominant11 = ChordDescriptor._('dominant11', '11', 'R 3 5 m7 9 11');
 
   static ChordDescriptor get mmaj7 => _mmaj7;
-  static final ChordDescriptor _mmaj7 =
-      ChordDescriptor._('mmaj7', 'mmaj7', 'R m3 5 7');
+  static final ChordDescriptor _mmaj7 = ChordDescriptor._('mmaj7', 'mmaj7', 'R m3 5 7');
 
   static ChordDescriptor get minor7b5 => _minor7b5;
-  static final ChordDescriptor _minor7b5 =
-      ChordDescriptor._('minor7b5', 'm7b5', 'R m3 b5 m7');
+  static final ChordDescriptor _minor7b5 = ChordDescriptor._('minor7b5', 'm7b5', 'R m3 b5 m7');
 
   static ChordDescriptor get msus2 => _msus2;
-  static final ChordDescriptor _msus2 =
-      ChordDescriptor._('msus2', 'msus2', 'R 2 m3 5');
+  static final ChordDescriptor _msus2 = ChordDescriptor._('msus2', 'msus2', 'R 2 m3 5');
 
   static ChordDescriptor get msus4 => _msus4;
-  static final ChordDescriptor _msus4 =
-      ChordDescriptor._('msus4', 'msus4', 'R m3 4 5');
+  static final ChordDescriptor _msus4 = ChordDescriptor._('msus4', 'msus4', 'R m3 4 5');
 
   static ChordDescriptor get add9 => _add9;
-  static final ChordDescriptor _add9 =
-      ChordDescriptor._('add9', 'add9', 'R 2 3 5 7');
+  static final ChordDescriptor _add9 = ChordDescriptor._('add9', 'add9', 'R 2 3 5 7');
 
   static ChordDescriptor get jazz7b9 => _jazz7b9;
-  static final ChordDescriptor _jazz7b9 =
-      ChordDescriptor._('jazz7b9', 'jazz7b9', 'R m2 3 5');
+  static final ChordDescriptor _jazz7b9 = ChordDescriptor._('jazz7b9', 'jazz7b9', 'R m2 3 5');
 
   static ChordDescriptor get sevenSharp5 => _sevenSharp5;
-  static final ChordDescriptor _sevenSharp5 =
-      ChordDescriptor._('sevenSharp5', '7#5', 'R 3 #5 m7');
+  static final ChordDescriptor _sevenSharp5 = ChordDescriptor._('sevenSharp5', '7#5', 'R 3 #5 m7');
 
   static ChordDescriptor get flat5 => _flat5;
-  static final ChordDescriptor _flat5 =
-      ChordDescriptor._('flat5', 'flat5', 'R 3 b5');
+  static final ChordDescriptor _flat5 = ChordDescriptor._('flat5', 'flat5', 'R 3 b5');
 
   static ChordDescriptor get sevenFlat5 => _sevenFlat5;
-  static final ChordDescriptor _sevenFlat5 =
-      ChordDescriptor._('sevenFlat5', '7b5', 'R 3 b5 m7');
+  static final ChordDescriptor _sevenFlat5 = ChordDescriptor._('sevenFlat5', '7b5', 'R 3 b5 m7');
 
   static ChordDescriptor get sevenSharp9 => _sevenSharp9;
-  static final ChordDescriptor _sevenSharp9 =
-      ChordDescriptor._('sevenSharp9', '7#9', 'R m3 5 m7');
+  static final ChordDescriptor _sevenSharp9 = ChordDescriptor._('sevenSharp9', '7#9', 'R m3 5 m7');
 
   static ChordDescriptor get sevenFlat9 => _sevenFlat9;
-  static final ChordDescriptor _sevenFlat9 =
-      ChordDescriptor._('sevenFlat9', '7b9', 'R m2 3 5 7');
+  static final ChordDescriptor _sevenFlat9 = ChordDescriptor._('sevenFlat9', '7b9', 'R m2 3 5 7');
 
   static ChordDescriptor get dominant9 => _dominant9;
-  static final ChordDescriptor _dominant9 =
-      ChordDescriptor._('dominant9', '9', 'R 3 5 m7 9');
+  static final ChordDescriptor _dominant9 = ChordDescriptor._('dominant9', '9', 'R 3 5 m7 9');
 
   static ChordDescriptor get six9 => _six9;
-  static final ChordDescriptor _six9 =
-      ChordDescriptor._('six9', '69', 'R 2 3 5 6');
+  static final ChordDescriptor _six9 = ChordDescriptor._('six9', '69', 'R 2 3 5 6');
 
   static ChordDescriptor get major6 => _major6;
-  static final ChordDescriptor _major6 =
-      ChordDescriptor._('major6', '6', 'R 3 5 6');
+  static final ChordDescriptor _major6 = ChordDescriptor._('major6', '6', 'R 3 5 6');
 
   static ChordDescriptor get diminished7 => _diminished7;
-  static final ChordDescriptor _diminished7 =
-      ChordDescriptor._('diminished7', 'dim7', 'R m3 b5 6');
+  static final ChordDescriptor _diminished7 = ChordDescriptor._('diminished7', 'dim7', 'R m3 b5 6');
 
-  static ChordDescriptor get dimMasculineOrdinalIndicator7 =>
-      _dimMasculineOrdinalIndicator7;
+  static ChordDescriptor get dimMasculineOrdinalIndicator7 => _dimMasculineOrdinalIndicator7;
   static final ChordDescriptor _dimMasculineOrdinalIndicator7 =
-      ChordDescriptor._('dimMasculineOrdinalIndicator7', 'º7', 'R m3 b5 6',
-          alias: diminished7);
+      ChordDescriptor._('dimMasculineOrdinalIndicator7', 'º7', 'R m3 b5 6', alias: diminished7);
 
   static ChordDescriptor get diminished => _diminished;
-  static final ChordDescriptor _diminished =
-      ChordDescriptor._('diminished', 'dim', 'R m3 b5');
+  static final ChordDescriptor _diminished = ChordDescriptor._('diminished', 'dim', 'R m3 b5');
 
   static ChordDescriptor get diminishedAsCircle => _diminishedAsCircle;
-  static final ChordDescriptor _diminishedAsCircle = ChordDescriptor._(
-      'diminishedAsCircle', '' + MusicConstants.diminishedCircle, 'R m3 b5',
-      alias: diminished);
+  static final ChordDescriptor _diminishedAsCircle =
+      ChordDescriptor._('diminishedAsCircle', '' + MusicConstants.diminishedCircle, 'R m3 b5', alias: diminished);
 
   static ChordDescriptor get augmented5 => _augmented5;
-  static final ChordDescriptor _augmented5 =
-      ChordDescriptor._('augmented5', 'aug5', 'R 3 #5');
+  static final ChordDescriptor _augmented5 = ChordDescriptor._('augmented5', 'aug5', 'R 3 #5');
 
   static ChordDescriptor get augmented7 => _augmented7;
-  static final ChordDescriptor _augmented7 =
-      ChordDescriptor._('augmented7', 'aug7', 'R 3 #5 m7');
+  static final ChordDescriptor _augmented7 = ChordDescriptor._('augmented7', 'aug7', 'R 3 #5 m7');
 
   static ChordDescriptor get augmented => _augmented;
-  static final ChordDescriptor _augmented =
-      ChordDescriptor._('augmented', 'aug', 'R 3 #5');
+  static final ChordDescriptor _augmented = ChordDescriptor._('augmented', 'aug', 'R 3 #5');
 
   static ChordDescriptor get suspended7 => _suspended7;
-  static final ChordDescriptor _suspended7 =
-      ChordDescriptor._('suspended7', 'sus7', 'R 5 m7');
+  static final ChordDescriptor _suspended7 = ChordDescriptor._('suspended7', 'sus7', 'R 5 m7');
 
   static ChordDescriptor get suspended4 => _suspended4;
-  static final ChordDescriptor _suspended4 =
-      ChordDescriptor._('suspended4', 'sus4', 'R 4 5');
+  static final ChordDescriptor _suspended4 = ChordDescriptor._('suspended4', 'sus4', 'R 4 5');
 
   static ChordDescriptor get suspended2 => _suspended2;
-  static final ChordDescriptor _suspended2 =
-      ChordDescriptor._('suspended2', 'sus2', 'R 2 5');
+  static final ChordDescriptor _suspended2 = ChordDescriptor._('suspended2', 'sus2', 'R 2 5');
 
   static ChordDescriptor get suspended => _suspended;
-  static final ChordDescriptor _suspended =
-      ChordDescriptor._('suspended', 'sus', 'R 5');
+  static final ChordDescriptor _suspended = ChordDescriptor._('suspended', 'sus', 'R 5');
 
   static ChordDescriptor get minor9 => _minor9;
-  static final ChordDescriptor _minor9 =
-      ChordDescriptor._('minor9', 'm9', 'R m3 5 m7 9');
+  static final ChordDescriptor _minor9 = ChordDescriptor._('minor9', 'm9', 'R m3 5 m7 9');
 
   static ChordDescriptor get minor11 => _minor11;
-  static final ChordDescriptor _minor11 =
-      ChordDescriptor._('minor11', 'm11', 'R m3 5 m7 11');
+  static final ChordDescriptor _minor11 = ChordDescriptor._('minor11', 'm11', 'R m3 5 m7 11');
 
   static ChordDescriptor get minor13 => _minor13;
-  static final ChordDescriptor _minor13 =
-      ChordDescriptor._('minor13', 'm13', 'R m3 5 m7 13');
+  static final ChordDescriptor _minor13 = ChordDescriptor._('minor13', 'm13', 'R m3 5 m7 13');
 
   static ChordDescriptor get minor6 => _minor6;
-  static final ChordDescriptor _minor6 =
-      ChordDescriptor._('minor6', 'm6', 'R m3 5 6');
+  static final ChordDescriptor _minor6 = ChordDescriptor._('minor6', 'm6', 'R m3 5 6');
 
   static ChordDescriptor get major7 => _major7;
-  static final ChordDescriptor _major7 =
-      ChordDescriptor._('major7', 'maj7', 'R 3 5 7');
+  static final ChordDescriptor _major7 = ChordDescriptor._('major7', 'maj7', 'R 3 5 7');
 
   static ChordDescriptor get deltaMajor7 => _deltaMajor7;
-  static final ChordDescriptor _deltaMajor7 = ChordDescriptor._(
-      'deltaMajor7', '' + MusicConstants.greekCapitalDelta, 'R 3 5 7',
-      alias: major7);
+  static final ChordDescriptor _deltaMajor7 =
+      ChordDescriptor._('deltaMajor7', '' + MusicConstants.greekCapitalDelta, 'R 3 5 7', alias: major7);
 
   static ChordDescriptor get capMajor7 => _capMajor7;
-  static final ChordDescriptor _capMajor7 =
-      ChordDescriptor._('capMajor7', 'Maj7', 'R 3 5 7', alias: major7);
+  static final ChordDescriptor _capMajor7 = ChordDescriptor._('capMajor7', 'Maj7', 'R 3 5 7', alias: major7);
 
   static ChordDescriptor get major9 => _major9;
-  static final ChordDescriptor _major9 =
-      ChordDescriptor._('major9', 'maj9', 'R 3 5 7 9');
+  static final ChordDescriptor _major9 = ChordDescriptor._('major9', 'maj9', 'R 3 5 7 9');
 
   static ChordDescriptor get maj => _maj;
   static final ChordDescriptor _maj = ChordDescriptor._('maj', 'maj', 'R 3 5');
 
   static ChordDescriptor get majorNine => _majorNine;
-  static final ChordDescriptor _majorNine =
-      ChordDescriptor._('majorNine', 'M9', 'R 3 5 7 9');
+  static final ChordDescriptor _majorNine = ChordDescriptor._('majorNine', 'M9', 'R 3 5 7 9');
 
   static ChordDescriptor get majorSeven => _majorSeven;
-  static final ChordDescriptor _majorSeven =
-      ChordDescriptor._('majorSeven', 'M7', 'R 3 5 7');
+  static final ChordDescriptor _majorSeven = ChordDescriptor._('majorSeven', 'M7', 'R 3 5 7');
 
   static ChordDescriptor get suspendedSecond => _suspendedSecond;
-  static final ChordDescriptor _suspendedSecond = ChordDescriptor._(
-      'suspendedSecond', '2', 'R 2 5'); //  alias for  suspended2
+  static final ChordDescriptor _suspendedSecond =
+      ChordDescriptor._('suspendedSecond', '2', 'R 2 5'); //  alias for  suspended2
 
   static ChordDescriptor get suspendedFourth => _suspendedFourth;
-  static final ChordDescriptor _suspendedFourth = ChordDescriptor._(
-      'suspendedFourth', '4', 'R 4 5'); //  alias for suspended 4
+  static final ChordDescriptor _suspendedFourth =
+      ChordDescriptor._('suspendedFourth', '4', 'R 4 5'); //  alias for suspended 4
 
   static ChordDescriptor get power5 => _power5;
-  static final ChordDescriptor _power5 = ChordDescriptor._(
-      'power5', '5', 'R 5'); //  3rd omitted typically to avoid distortions
+  static final ChordDescriptor _power5 =
+      ChordDescriptor._('power5', '5', 'R 5'); //  3rd omitted typically to avoid distortions
 
   static ChordDescriptor get minor7 => _minor7;
-  static final ChordDescriptor _minor7 =
-      ChordDescriptor._('minor7', 'm7', 'R m3 5 m7');
+  static final ChordDescriptor _minor7 = ChordDescriptor._('minor7', 'm7', 'R m3 5 m7');
 
   static ChordDescriptor get dominant7 => _dominant7;
-  static final ChordDescriptor _dominant7 =
-      ChordDescriptor._('dominant7', '7', 'R 3 5 m7');
+  static final ChordDescriptor _dominant7 = ChordDescriptor._('dominant7', '7', 'R 3 5 m7');
 
   static ChordDescriptor get minor => _minor;
-  static final ChordDescriptor _minor =
-      ChordDescriptor._('minor', 'm', 'R m3 5');
+  static final ChordDescriptor _minor = ChordDescriptor._('minor', 'm', 'R m3 5');
 
   static ChordDescriptor get capMajor => _capMajor;
-  static final ChordDescriptor _capMajor =
-      ChordDescriptor._('capMajor', 'M', 'R 3 5');
+  static final ChordDescriptor _capMajor = ChordDescriptor._('capMajor', 'M', 'R 3 5');
 
-  static ChordDescriptor get dimMasculineOrdinalIndicator =>
-      _dimMasculineOrdinalIndicator;
+  static ChordDescriptor get dimMasculineOrdinalIndicator => _dimMasculineOrdinalIndicator;
   static final ChordDescriptor _dimMasculineOrdinalIndicator =
-      ChordDescriptor._('dimMasculineOrdinalIndicator', 'º', 'R m3 b5',
-          alias: diminished);
+      ChordDescriptor._('dimMasculineOrdinalIndicator', 'º', 'R m3 b5', alias: diminished);
 
   ///  Default chord descriptor.
   static ChordDescriptor get major => _major;
@@ -226,8 +180,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     return _major;
   }
 
-  ChordDescriptor._(this._name, this._shortName, String structure,
-      {ChordDescriptor alias}) {
+  ChordDescriptor._(this._name, this._shortName, String structure, {ChordDescriptor alias}) {
     _alias = alias;
     _chordComponents = ChordComponent.parse(structure);
   }
@@ -334,8 +287,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   ChordDescriptor get alias => _alias;
   ChordDescriptor _alias;
 
-  static List<ChordDescriptor> get primaryChordDescriptorsOrdered =>
-      _primaryChordDescriptorsOrdered;
+  static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [
     //  most common
     _major,
@@ -343,8 +295,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _dominant7,
   ];
 
-  static List<ChordDescriptor> get otherChordDescriptorsOrdered =>
-      _otherChordDescriptorsOrdered;
+  static List<ChordDescriptor> get otherChordDescriptorsOrdered => _otherChordDescriptorsOrdered;
   static final List<ChordDescriptor> _otherChordDescriptorsOrdered = [
     //  less pop by short name
     _add9,
@@ -450,15 +401,18 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static List<ChordDescriptor> get values {
     if (_allChordDescriptorsOrdered == null) {
       // lazy eval
-      //  compute the ordered list of all chord descriptors
-      List<ChordDescriptor> list = [];
+      //  compute the ordered set of all chord descriptors
+      SplayTreeSet<ChordDescriptor> set = SplayTreeSet();
       for (ChordDescriptor cd in _primaryChordDescriptorsOrdered) {
-        list.add(cd);
+        set.add(cd);
       }
       for (ChordDescriptor cd in _otherChordDescriptorsOrdered) {
-        list.add(cd);
+        set.add(cd);
       }
-      _allChordDescriptorsOrdered = list;
+      for (ChordDescriptor cd in _parseOrderedChordDescriptorsOrdered) {
+        set.add(cd);
+      }
+      _allChordDescriptorsOrdered = set.toList();
     }
     return _allChordDescriptorsOrdered;
   }

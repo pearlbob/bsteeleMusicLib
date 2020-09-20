@@ -6,10 +6,8 @@ import 'package:test/test.dart';
 void main() {
   test('ChordDescriptor testing', () {
     expect(ChordDescriptor.major, ChordDescriptor.major);
-    expect(ChordDescriptor.parseString('' + MusicConstants.greekCapitalDelta),
-        ChordDescriptor.major7);
-    expect(ChordDescriptor.diminished,
-        ChordDescriptor.parseString('' + MusicConstants.diminishedCircle));
+    expect(ChordDescriptor.parseString('' + MusicConstants.greekCapitalDelta), ChordDescriptor.major7);
+    expect(ChordDescriptor.diminished, ChordDescriptor.parseString('' + MusicConstants.diminishedCircle));
     expect(ChordDescriptor.major, ChordDescriptor.parseString(''));
     expect(ChordDescriptor.minor, ChordDescriptor.parseString('m'));
     expect(ChordDescriptor.dominant7, ChordDescriptor.parseString('7'));
@@ -53,11 +51,21 @@ void main() {
 
         logger.i(cd2.toString() + ':\tcompare:\t' + compareValue.toString());
         if (cd1 == cd2) {
-          expect(compareValue, 0 );
+          expect(compareValue, 0);
         } else {
-          expect(compareValue, cd2.name.compareTo(cd1.name) );
+          expect(compareValue, cd2.name.compareTo(cd1.name));
         }
       }
     }
+  });
+
+  test('ChordDescriptor all values', () {
+    ChordDescriptor chordDescriptor = ChordDescriptor.capMajor;
+    logger.i('$chordDescriptor');
+    for ( ChordDescriptor cd in ChordDescriptor.values){
+      logger.d('$cd');
+    }
+    logger.d('length: ${ChordDescriptor.values.length}');
+    expect(ChordDescriptor.values.length,51);// expect this to change when a ChordDescriptor is added!
   });
 }

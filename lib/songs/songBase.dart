@@ -3008,7 +3008,7 @@ class SongBase {
   }
 
   void setMessage(String message) {
-    this._message = message;
+    _message = message;
   }
 
   MeasureEditType getCurrentMeasureEditType() {
