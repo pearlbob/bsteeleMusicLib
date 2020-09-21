@@ -19,6 +19,7 @@ workspace.xml
 usage.statistics.xml
 tasks.xml
 Dart_Packages.xml
+.idea/shelf
 
 
 # The .vscode folder contains launch configuration and tasks you configure in
