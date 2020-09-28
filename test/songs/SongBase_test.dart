@@ -183,9 +183,9 @@ void main() {
     a = SongBase.createSongBase(
         'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: v: t:', 'i: dude v: bob, bob, bob berand');
 
-    expect(a.toMarkup().trim(), 'I: [] V: [] T: []');
+    expect( a.toMarkup().trim(), 'I: []  V: []  T: []',);
     expect(a.editList(a.parseChordEntry('t: G G C G')), isTrue);
-    expect(a.toMarkup().trim(), 'I: [] V: [] T: G G C G');
+    expect(a.toMarkup().trim(), 'I: []  V: []  T: G G C G');
     expect(a.editList(a.parseChordEntry('I: V:  A B C D')), isTrue);
     expect(
       a.toMarkup().trim(),
@@ -524,7 +524,7 @@ void main() {
     expect(Measure.parseString('B', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
 
     a.chordSectionLocationDelete(ChordSectionLocation.parseString('i:0:0'));
-    expect('I: []', a.getChordSection(SectionVersion.parseString('i:')).toMarkup());
+    expect(a.getChordSection(SectionVersion.parseString('i:')).toMarkup(), 'I: [] ');
     expect(a.getCurrentChordSectionLocationMeasureNode(), isNull);
     //expect(ChordSection.parseString("I:", beatsPerBar ),a.getCurrentChordSectionLocationMeasureNode());
 

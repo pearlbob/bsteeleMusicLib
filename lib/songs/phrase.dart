@@ -528,6 +528,7 @@ class Phrase extends MeasureNode {
       return null;
     }
   }
+
   Measure get lastMeasure {
     try {
       return _measures.last;
@@ -535,6 +536,8 @@ class Phrase extends MeasureNode {
       return null;
     }
   }
+
+  int get measureCount => measures?.length ?? 0;
 
   @override
   String toString() {

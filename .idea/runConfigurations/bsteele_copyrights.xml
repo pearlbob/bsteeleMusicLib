@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="bsteele copyrights" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
-    <option name="arguments" value="-url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics -copyright" />
-    <option name="filePath" value="$PROJECT_DIR$/lib/bsteeleMusicUtil.dart" />
-    <option name="workingDirectory" value="$PROJECT_DIR$" />
-    <method v="2" />
-  </configuration>
-</component>

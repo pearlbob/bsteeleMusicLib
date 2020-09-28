@@ -24,7 +24,7 @@ void checkMeasureNodesSlashScaleNoteByMeasure(ScaleNote scaleNote, List<Measure>
 }
 
 void main() {
-  Logger.level = Level.warning;
+  Logger.level = Level.info;
 
   List<Phrase> phrases;
   Phrase phrase;
@@ -365,4 +365,23 @@ void main() {
       expect(4 + 4 * 4 + 4, chordSection.getTotalMoments());
     }
   });
+
+  test('test empty chord sections', () {
+    {
+      ChordSection chordSection1 = ChordSection.parseString('I:       A B C D\n\n', 4);
+      ChordSection chordSection2 = ChordSection.parseString('I:       A B C D\n\n', 4);
+      expect( chordSection1 == chordSection1, isTrue);
+      expect( chordSection1 == chordSection2, isTrue);
+
+      chordSection2 = ChordSection.parseString('I:A B C D\n', 4);
+      expect( chordSection1 == chordSection2, isTrue);
+      chordSection2 = ChordSection.parseString('I:', 4);
+      expect( chordSection1 == chordSection2, isFalse);
+      chordSection1 = ChordSection.parseString('I:', 4);
+     expect( chordSection1 == chordSection2, isTrue);
+      chordSection2 = ChordSection.parseString('I:[]', 4);
+      logger.d('chordSection1: "${chordSection1.toMarkup()}"');
+      logger.d('chordSection2: "${chordSection2.toMarkup()}"');
+      expect( chordSection1 == chordSection2, isTrue);
+    }});
 }

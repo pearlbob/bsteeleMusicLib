@@ -166,11 +166,11 @@ void main() {
     ts.post(MeasureEditType.append, 'PC:', 'PC: []');
     ts.startingChords('V: C F C C F F C C G F C G  PC:  ');
     ts.pre(MeasureEditType.append, 'PC:', 'PC: []', 'O: []');
-    ts.resultChords('V: C F C C F F C C G F C G  PC: [] O: [] ');
+    ts.resultChords('V: C F C C F F C C G F C G  PC: []  O: [] ');
     ts.post(MeasureEditType.append, 'O:', 'O: []');
     ts.startingChords('V: C F C C F F C C G F C G  PC: []  O: [] ');
     ts.pre(MeasureEditType.replace, 'O:', 'O: []', 'O: []');
-    ts.resultChords('V: C F C C F F C C G F C G  PC: [] O: [] ');
+    ts.resultChords('V: C F C C F F C C G F C G  PC: []  O: [] ');
     ts.post(MeasureEditType.append, 'O:', 'O: []');
 
     //  delete the section
@@ -286,12 +286,12 @@ void main() {
 
     ts.startingChords('I:  V:  ');
     ts.pre(MeasureEditType.append, 'V:', 'V: []', 'Dm ');
-    ts.resultChords('I: [] V: Dm  ');
+    ts.resultChords('I: []  V: Dm  ');
     ts.post(MeasureEditType.append, 'V:0:0', 'Dm');
 
     ts.startingChords('I:  V:  ');
     ts.pre(MeasureEditType.replace, 'V:', 'V: []', 'Dm ');
-    ts.resultChords('I: [] V: Dm  ');
+    ts.resultChords('I: []  V: Dm  ');
     ts.post(MeasureEditType.append, 'V:0:0', 'Dm');
 
     ts.startingChords('V: C F F C C F F C C G F C G  ');
@@ -321,8 +321,8 @@ void main() {
 
     ts.startingChords('I:  V:  ');
     ts.pre(MeasureEditType.append, 'V:', 'V: []', 'T: ');
-    ts.resultChords('I: [] V: [] T: []'); //  fixme: why is this?
-    ts.post(MeasureEditType.append, 'T:', 'T: []');
+    ts.resultChords('I: []  V: []  T: [] '); //  fixme: why is this?
+    ts.post(MeasureEditType.append, 'T:', 'T: [] ');
 
     ts.startingChords('V: C F C C F F C C [G F C G ] x4  ');
     ts.pre(MeasureEditType.replace, 'V:1', '[G F C G ] x4 ', 'B ');

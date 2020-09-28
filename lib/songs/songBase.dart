@@ -3136,7 +3136,9 @@ class SongBase {
   }
 
   bool songBaseSameContent(SongBase o) {
-    //  song id built from title with reduced whitespace
+    if (o == null) {
+      return false;
+    }
     if (title != o.title) return false;
     if (artist != o.artist) return false;
     if (coverArtist != null) {

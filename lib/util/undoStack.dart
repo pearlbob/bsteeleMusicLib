@@ -50,6 +50,7 @@ class UndoStack<T> {
   }
 
   int get length => _undoStack.length;
+  int get pointer => _undoStackPointer;
 
   /// get the top of the undo stack
   T get top => _undoStackPointer >= 0 ? _undoStack[_undoStackPointer] : null;

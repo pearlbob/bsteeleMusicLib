@@ -1,5 +1,6 @@
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
+import 'package:quiver/iterables.dart';
 
 import '../appLogger.dart';
 import '../util/util.dart';
@@ -382,7 +383,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   MeasureNode lastMeasureNode() {
-    if (_phrases == null || _phrases.isEmpty) return this;
+    if (isEmpty()) {
+      return this;
+    }
     Phrase measureSequenceItem = _phrases[_phrases.length - 1];
     List<Measure> measures = measureSequenceItem.measures;
     if (measures == null || measures.isEmpty) return measureSequenceItem;
@@ -423,8 +426,8 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   String phrasesToMarkup() {
-    if (_phrases == null || _phrases.isEmpty) {
-      return '[]';
+    if (isEmpty()) {
+      return '[] ';
     }
     StringBuffer sb = StringBuffer();
     for (Phrase phrase in _phrases) {
@@ -454,7 +457,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   String phrasesToEntry() {
-    if (_phrases == null || _phrases.isEmpty) {
+    if (isEmpty()) {
       return '[]';
     }
     StringBuffer sb = StringBuffer();
@@ -469,7 +472,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
     sb.write('\n');
-    if (_phrases == null || _phrases.isEmpty) {
+    if (isEmpty()) {
       sb.write('[]');
     } else {
       for (Phrase phrase in _phrases) {
@@ -514,17 +517,32 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   int getPhraseCount() {
-    if (_phrases == null) return 0;
+    if (_phrases == null) {
+      return 0;
+    }
     return _phrases.length;
   }
 
+  /// sum all the measures in all the phrases
+  int get measureCount {
+    int measureCount = 0;
+    for (Phrase phrase in _phrases) {
+      measureCount += phrase.measureCount;
+    }
+    return measureCount;
+  }
+
   Phrase lastPhrase() {
-    if (_phrases == null) return null;
+    if (_phrases == null) {
+      return null;
+    }
     return _phrases[_phrases.length - 1];
   }
 
   int get chordRowCount {
-    if (_phrases == null || _phrases.isEmpty) return 0;
+    if (isEmpty()) {
+      return 0;
+    }
     int chordRowCount = 0;
     for (Phrase phrase in _phrases) {
       chordRowCount += phrase.chordRowCount;
@@ -534,7 +552,15 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   @override
   bool isEmpty() {
-    return _phrases == null || _phrases.isEmpty || _phrases[0].isEmpty();
+    if (_phrases == null || _phrases.isEmpty) {
+      return true;
+    }
+    for (Phrase phrase in _phrases) {
+      if (!phrase.isEmpty()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// Compares this object with the specified object for order.  Returns a
@@ -559,7 +585,15 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (identical(this, other)) {
       return true;
     }
-    return other is ChordSection && _sectionVersion == other._sectionVersion && listsEqual(_phrases, other._phrases);
+    if (!(other is ChordSection && _sectionVersion == other._sectionVersion && measureCount == other.measureCount)) {
+      return false;
+    }
+    //  deal with empty-ish phrases
+    if (measureCount == 0) {
+      //  only works since the measure counts are identical
+      return true;
+    }
+    return listsEqual(_phrases, other._phrases);
   }
 
   @override
