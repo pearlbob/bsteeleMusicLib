@@ -1,5 +1,6 @@
 //  -v -o songs -x allSongs.songlyrics -a songs -f -w allSongs2.songlyrics
 //  -v -o songs -x allSongs.songlyrics -a songs -f -w allSongs2.songlyrics -o songs2 -x allSongs2.songlyrics
+//  -v -url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
