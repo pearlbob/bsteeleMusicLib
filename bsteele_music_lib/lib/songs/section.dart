@@ -42,6 +42,20 @@ enum SectionEnum {
   outro,
 }
 
+//  indicate how "interesting", i.e. how common the section is
+Map<SectionEnum, int> _sectionWeights = {
+  SectionEnum.intro: 5,
+  SectionEnum.verse: 10,
+  SectionEnum.preChorus: 6,
+  SectionEnum.chorus: 8,
+  SectionEnum.a: 2,
+  SectionEnum.b: 2,
+  SectionEnum.bridge: 3,
+  SectionEnum.coda: 1,
+  SectionEnum.tag: 2,
+  SectionEnum.outro: 4,
+};
+
 /// Song structure is represented by a sequence of these sections.
 /// The section names have been borrowed from musical practice in the USA
 /// so they will likely be familiar.
@@ -233,6 +247,8 @@ class Section implements Comparable<Section> {
 
   String get originalAbbreviation => _originalAbbreviation;
   final String _originalAbbreviation;
+
+  int get weight => _sectionWeights[_sectionEnum];
 
   static HashMap<String, Section> mapStringToSection;
 

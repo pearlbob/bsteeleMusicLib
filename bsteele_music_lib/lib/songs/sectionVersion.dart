@@ -104,5 +104,7 @@ class SectionVersion implements Comparable<SectionVersion> {
   String get name => _name;
   final String _name;
 
+  int get weight => _section.weight + (10 - _version );
+
   static final RegExp sectionRegexp = RegExp(r'^([a-zA-Z]+)([\d]*):\s*\,*');
 }
