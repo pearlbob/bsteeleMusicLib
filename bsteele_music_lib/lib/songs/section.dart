@@ -44,16 +44,16 @@ enum SectionEnum {
 
 //  indicate how "interesting", i.e. how common the section is
 Map<SectionEnum, int> _sectionWeights = {
-  SectionEnum.intro: 5,
+  SectionEnum.intro: 8,
   SectionEnum.verse: 10,
-  SectionEnum.preChorus: 6,
-  SectionEnum.chorus: 8,
+  SectionEnum.preChorus: 8,
+  SectionEnum.chorus: 9,
   SectionEnum.a: 2,
   SectionEnum.b: 2,
-  SectionEnum.bridge: 3,
+  SectionEnum.bridge: 5,
   SectionEnum.coda: 1,
-  SectionEnum.tag: 2,
-  SectionEnum.outro: 4,
+  SectionEnum.tag: 4,
+  SectionEnum.outro: 6,
 };
 
 /// Song structure is represented by a sequence of these sections.
