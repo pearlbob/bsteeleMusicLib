@@ -1301,4 +1301,27 @@ o: end here''');
     //   }
     // }
   });
+
+  test('test getLastMeasureLocation()', () {
+    int beatsPerBar = 4;
+    SongBase a;
+    Grid<ChordSectionLocation> grid;
+
+    //  see that section identifiers are on first phrase row
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('i:',beatsPerBar)).toString(), 'I:0:3');
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c:',beatsPerBar)).toString(), 'C:0:7');
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c2:',beatsPerBar)), isNull);
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('o:',beatsPerBar)).toString(), 'O:0:4');
+  });
+
 }

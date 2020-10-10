@@ -1159,6 +1159,55 @@ class SongBase {
     return grid.get(grid.getRowCount() - 1, row.length - 1);
   }
 
+  ChordSectionLocation getLastMeasureLocationOfSectionVersion(SectionVersion sectionVersion) {
+    return getLastMeasureLocationOfChordSection(findChordSectionBySectionVersion(sectionVersion));
+  }
+
+  ChordSectionLocation getLastMeasureLocationOfChordSection(ChordSection chordSection) {
+    if (chordSection == null) return null;
+
+    Grid<ChordSectionLocation> grid = getChordSectionLocationGrid();
+    if (grid == null || grid.isEmpty) return null;
+
+    for (int r = 0; r < grid.getRowCount(); r++) {
+      List<ChordSectionLocation> row = grid.getRow(r);
+      if (row.isEmpty) {
+        continue;
+      }
+      ChordSectionLocation chordSectionLocation = row[0];
+      if (chordSectionLocation == null ||
+          !chordSectionLocation.isSection ||
+          chordSectionLocation.sectionVersion != chordSection.sectionVersion) {
+        continue;
+      }
+
+      //  find the last grid position of the chord section
+      ChordSectionLocation lastChordSectionLocation = chordSectionLocation;
+      sectionVersionLoop:
+      for (; r < grid.getRowCount(); r++) {
+        List<ChordSectionLocation> row = grid.getRow(r);
+        for (int c = 0; c < row.length; c++) {
+          ChordSectionLocation chordSectionLocation = row[c];
+          logger.v('($r,$c): $chordSectionLocation');
+          if (chordSectionLocation == null) {
+            continue;
+          }
+          if (chordSectionLocation.isPhrase) //  fixme: should be a bette test for repeat
+          {
+            continue;
+          }
+          if (chordSectionLocation.sectionVersion == chordSection.sectionVersion) {
+            lastChordSectionLocation = chordSectionLocation;
+          } else if (c == 0) {
+            break sectionVersionLoop; //  this row is not the correct section version
+          }
+        }
+      }
+      return lastChordSectionLocation;
+    }
+    return null; //  chord section not found
+  }
+
   HashMap<SectionVersion, GridCoordinate> getChordSectionGridCoorinateMap() {
     // force grid population from lazy eval
     if (_chordSectionLocationGrid == null) getChordSectionLocationGrid();

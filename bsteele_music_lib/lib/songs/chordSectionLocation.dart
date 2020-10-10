@@ -16,12 +16,12 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocation(this._sectionVersion, {int phraseIndex, int measureIndex}) : _labelSectionVersions = null {
     if (phraseIndex == null || phraseIndex < 0) {
       _phraseIndex = -1;
-      hasPhraseIndex = false;
+      _hasPhraseIndex = false;
       _measureIndex = -1;
       _hasMeasureIndex = false;
     } else {
       _phraseIndex = phraseIndex;
-      hasPhraseIndex = true;
+      _hasPhraseIndex = true;
       if (measureIndex == null || measureIndex < 0) {
         _measureIndex = -1;
         _hasMeasureIndex = false;
@@ -40,7 +40,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocation.byMultipleSectionVersion(Set<SectionVersion> labelSectionVersions)
       : _sectionVersion = null,
         _phraseIndex = -1,
-        hasPhraseIndex = false,
+        _hasPhraseIndex = false,
         _measureIndex = -1,
         _hasMeasureIndex = false {
     if (labelSectionVersions != null) {
@@ -60,10 +60,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocation.withMarker(this._sectionVersion, int phraseIndex, this._marker) : _labelSectionVersions = null {
     if (phraseIndex == null || phraseIndex < 0) {
       _phraseIndex = -1;
-      hasPhraseIndex = false;
+      _hasPhraseIndex = false;
     } else {
       _phraseIndex = phraseIndex;
-      hasPhraseIndex = true;
+      _hasPhraseIndex = true;
     }
     _measureIndex = -1;
     _hasMeasureIndex = false;
@@ -74,7 +74,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       return this; //  no change
     }
 
-    if (hasPhraseIndex) {
+    if (_hasPhraseIndex) {
       if (_hasMeasureIndex) {
         return ChordSectionLocation(sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex);
       } else {
@@ -124,17 +124,17 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   }
 
   ChordSectionLocation priorMeasureIndexLocation() {
-    if (!hasPhraseIndex || !_hasMeasureIndex || _measureIndex == 0) return null;
+    if (!_hasPhraseIndex || !_hasMeasureIndex || _measureIndex == 0) return null;
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex - 1);
   }
 
   ChordSectionLocation nextMeasureIndexLocation() {
-    if (!hasPhraseIndex || !_hasMeasureIndex) return this;
+    if (!_hasPhraseIndex || !_hasMeasureIndex) return this;
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
   }
 
   ChordSectionLocation nextPhraseIndexLocation() {
-    if (!hasPhraseIndex) return this;
+    if (!_hasPhraseIndex) return this;
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex + 1);
   }
 
@@ -147,7 +147,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     if (id == null) {
       if (_labelSectionVersions == null) {
         id = _sectionVersion.toString() +
-            (hasPhraseIndex ? _phraseIndex.toString() + (_hasMeasureIndex ? ':' + _measureIndex.toString() : '') : '');
+            (_hasPhraseIndex ? _phraseIndex.toString() + (_hasMeasureIndex ? ':' + _measureIndex.toString() : '') : '');
       } else {
         StringBuffer sb = StringBuffer();
         for (SectionVersion sv in _labelSectionVersions) {
@@ -220,11 +220,11 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     return ret;
   }
 
-  bool get isSection => hasPhraseIndex == false && _hasMeasureIndex == false;
+  bool get isSection => _hasPhraseIndex == false && _hasMeasureIndex == false;
 
-  bool get isPhrase => hasPhraseIndex == true && _hasMeasureIndex == false;
+  bool get isPhrase => _hasPhraseIndex == true && _hasMeasureIndex == false;
 
-  bool get isMeasure => hasPhraseIndex == true && _hasMeasureIndex == true;
+  bool get isMeasure => _hasPhraseIndex == true && _hasMeasureIndex == true;
 
   SectionVersion get sectionVersion => _sectionVersion;
   SectionVersion _sectionVersion;
@@ -232,7 +232,8 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   int get phraseIndex => _phraseIndex;
   int _phraseIndex;
-  bool hasPhraseIndex;
+  bool get hasPhraseIndex => _hasPhraseIndex;
+  bool _hasPhraseIndex;
 
   int get measureIndex => _measureIndex;
   int _measureIndex;
