@@ -1220,6 +1220,7 @@ class SongBase {
   }
 
   void _clearCachedValues() {
+    logger.d('_clearCachedValues()');
     _chordSectionLocationGrid = null;
     _complexity = 0;
     _chordsAsMarkup = null;
@@ -2106,6 +2107,21 @@ class SongBase {
     } catch (e) {
       return null;
     }
+  }
+
+  ChordSectionLocation findLastChordSectionLocation(ChordSection chordSection) {
+    if (chordSection == null || (chordSection.phrases?.isEmpty ?? true)) {
+      return null;
+    }
+
+    int phraseIndex = chordSection.phrases.length - 1;
+    Phrase phrase = chordSection.lastPhrase();
+    if (phrase == null) {
+      return null;
+    }
+    int measureIndex = phrase.length - 1;
+
+    return ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
   }
 
   ChordSectionLocation getChordSectionLocation(GridCoordinate gridCoordinate) {

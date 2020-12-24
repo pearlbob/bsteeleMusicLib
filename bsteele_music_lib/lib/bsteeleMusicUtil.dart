@@ -1,5 +1,6 @@
 //  -v -o songs -x allSongs.songlyrics -a songs -f -w allSongs2.songlyrics
 //  -v -o songs -x allSongs.songlyrics -a songs -f -w allSongs2.songlyrics -o songs2 -x allSongs2.songlyrics
+//   -v -url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics -ninjam
 //  -v -url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics
 import 'dart:collection';
 import 'dart:convert';
@@ -36,11 +37,12 @@ bsteeleMusicUtil:
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
 -cjwrite {file)     format the song metada data
--cjread {file)     add song metada data
+-cjread {file)      add song metada data
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
 -f                  force file writes over existing files
 -h                  this help message
+-ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
 -similar            list similar titled/artist songs
 -url {url}          read the given url into the utility's allSongs list
@@ -124,7 +126,7 @@ coerced to reflect the songlist's last modification for that song.
 //          break;
 
         case '-cjread': // {file}
-        //  insist there is another arg
+          //  insist there is another arg
           if (i >= args.length - 1) {
             logger.e('missing directory path for -a');
             _help();
@@ -602,14 +604,13 @@ coerced to reflect the songlist's last modification for that song.
         List<String> ranking = line.split(_csvLineSplit);
         if (ranking[1] != null && ranking[1].isNotEmpty) {
           logger.v('$i: ${ranking[0]}, ${ranking[1]}');
-          SongMetadata.add(SongIdMetadata(ranking[0],metadata: <NameValue>[]..add(NameValue('cj',ranking[1]))));
+          SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[]..add(NameValue('cj', ranking[1]))));
         }
       }
       i++;
     }
-    logger.d( SongMetadata.toJson());
+    logger.d(SongMetadata.toJson());
   }
-
 
   void _csv() {
     StringBuffer sb = StringBuffer();
@@ -659,6 +660,5 @@ String homePath() {
   }
   return home;
 }
-
 
 final RegExp _csvLineSplit = RegExp(r'[\,\r]');

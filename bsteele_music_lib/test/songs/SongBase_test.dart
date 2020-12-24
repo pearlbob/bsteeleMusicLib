@@ -287,6 +287,21 @@ void main() {
     }
   });
 
+  test('test findChordSectionLocation()', () {
+    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
+        'i: A B C D v: E B C D', 'i: v: bob, bob, bob berand');
+
+    logger.d(a.logGrid());
+    logger.d('moment count: ${a.getSongMoments().length}');
+    for ( SongMoment moment in a.getSongMoments()){
+      logger.d( 'moment: $moment');
+      ChordSection chordSection = a.findChordSectionBySectionVersion(moment.chordSection.sectionVersion);
+      ChordSectionLocation lastLoc = a.findLastChordSectionLocation(chordSection);
+      logger.d( '   lastLoc: $lastLoc');
+      expect(lastLoc.sectionVersion, chordSection.sectionVersion);
+    }
+  });
+
   test('test parsing comments', () {
     SongBase a;
     SplayTreeSet<ChordSection> chordSections = SplayTreeSet();
