@@ -132,7 +132,7 @@ class ScaleNote implements Comparable<ScaleNote> {
       case ScaleNoteEnum.Eb:
       case ScaleNoteEnum.Fb:
       case ScaleNoteEnum.Gb:
-        mod +=  MusicConstants.flatChar;
+        mod += MusicConstants.flatChar;
         modMarkup = 'b';
         _isFlat = true;
         _accidental = Accidental.flat;
@@ -170,14 +170,14 @@ class ScaleNote implements Comparable<ScaleNote> {
     return get(_flats[step % MusicConstants.halfStepsPerOctave]);
   }
 
-  static ScaleNote parseString(String s) {
+  static ScaleNote? parseString(String s) {
     return parse(MarkedString(s));
   }
 
   /// Return the ScaleNote represented by the given string.
 //  Is case sensitive.
-  static ScaleNote parse(MarkedString markedString) {
-    if (markedString == null || markedString.isEmpty) {
+  static ScaleNote? parse(MarkedString markedString) {
+    if (markedString.isEmpty) {
       throw ArgumentError('no data to parse');
     }
 
@@ -256,7 +256,7 @@ class ScaleNote implements Comparable<ScaleNote> {
   ];
 
   static ScaleNote get(ScaleNoteEnum e) {
-    return _map()[e];
+    return _map()[e]!;
   }
 
   static Iterable<ScaleNote> get values {
@@ -267,9 +267,7 @@ class ScaleNote implements Comparable<ScaleNote> {
 
   static HashMap<ScaleNoteEnum, ScaleNote> _map() {
     //  lazy eval
-    if (_hashmap == null) {
-      _hashmap = HashMap.identity();
-
+    if (_hashmap.isEmpty) {
       //  fill the map
       for (ScaleNoteEnum e in ScaleNoteEnum.values) {
         _hashmap[e] = ScaleNote._(e);
@@ -298,10 +296,9 @@ class ScaleNote implements Comparable<ScaleNote> {
     return _hashmap;
   }
 
-  static ScaleNote valueOf(String name) {
+  static ScaleNote? valueOf(String name) {
     //  lazy eval
-    if (_parseMap == null) {
-      _parseMap = {};
+    if (_parseMap.isEmpty) {
       for (ScaleNoteEnum e in ScaleNoteEnum.values) {
         ScaleNote sn = get(e);
         _parseMap[sn._scaleNoteMarkup] = sn;
@@ -330,43 +327,42 @@ class ScaleNote implements Comparable<ScaleNote> {
     return _enum.hashCode;
   }
 
-  ScaleNoteEnum _enum;
+  late ScaleNoteEnum _enum;
 
   int get halfStep => _halfStep;
-  int _halfStep;
+  late int _halfStep;
 
   int get scaleNumber => _scaleNumber;
-  int _scaleNumber;
+  late int _scaleNumber;
 
   String get scaleNoteString => _scaleNoteString;
-  String _scaleNoteString;
-  String _scaleNoteMarkup;
+  late String _scaleNoteString;
+  late String _scaleNoteMarkup;
 
   String get scaleString => _scaleString;
-  String _scaleString;
+  late String _scaleString;
 
-  ScaleNote _alias;
+  ScaleNote? get alias => _alias;
+  ScaleNote? _alias;
 
-  ScaleNote get alias => _alias;
-
-  bool _isSharp;
+  late bool _isSharp;
 
   bool get isSharp => _isSharp;
 
-  bool _isFlat;
+  late bool _isFlat;
 
   bool get isFlat => _isFlat;
 
-  bool _isNatural;
+  late bool _isNatural;
 
   bool get isNatural => _isNatural;
 
-  bool _isSilent;
+  late bool _isSilent;
 
   bool get isSilent => _isSilent;
 
   Accidental get accidental => _accidental;
-  Accidental _accidental;
+  late Accidental _accidental;
 
   ///  Returns the name of this scale note in a user friendly text format,
   //  i.e. as UTF-8
@@ -375,6 +371,6 @@ class ScaleNote implements Comparable<ScaleNote> {
     return _scaleNoteString;
   }
 
-  static Map<ScaleNoteEnum, ScaleNote> _hashmap;
-  static Map<String, ScaleNote> _parseMap;
+  static late HashMap<ScaleNoteEnum, ScaleNote> _hashmap = HashMap.identity();
+  static late final Map<String, ScaleNote> _parseMap = {};
 }

@@ -15,14 +15,14 @@ enum KeyEnum { Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, Fs }
 class Key implements Comparable<Key> {
   Key._(this._keyEnum, this._keyValue, this._halfStep)
       : _name = _keyEnumToString(_keyEnum),
-        _keyScaleNote = ScaleNote.valueOf(_keyEnumToString(_keyEnum));
+        _keyScaleNote = ScaleNote.valueOf(_keyEnumToString(_keyEnum))!;
 
   static String _keyEnumToString(KeyEnum ke) {
     return ke.toString().split('.').last;
   }
 
-  static Map<KeyEnum, Key> _keyMap;
-  static List<Key> _keysByHalfStep;
+  static Map<KeyEnum, Key> _keyMap = {};
+  static late List<Key> _keysByHalfStep;
   static final List<dynamic> _initialization = [
     //  KeyEnum, keyValue, key halfsteps from A
     [KeyEnum.Gb, -6, 9],
@@ -39,7 +39,7 @@ class Key implements Comparable<Key> {
     [KeyEnum.B, 5, 2],
     [KeyEnum.Fs, 6, 9]
   ];
-  static Map<String, KeyEnum> _keyEnums;
+  static late Map<String, KeyEnum> _keyEnumMap = {};
 
   static List<Key> keysByHalfStep() {
     if (_keysByHalfStep == null) {
@@ -57,15 +57,13 @@ class Key implements Comparable<Key> {
   }
 
   static List<Key> keysByHalfStepFrom(Key key) {
-    List<Key> ret = List(halfStepsPerOctave + 1);
-    for (int i = 0; i <= halfStepsPerOctave; i++) {
-      ret[i] = byHalfStep(offset: key._halfStep + i);
-    }
-    return ret;
+    return List.generate(halfStepsPerOctave + 1, (i) {
+      return byHalfStep(offset: key._halfStep + i);
+    });
   }
 
   static Map<KeyEnum, Key> _getKeys() {
-    if (_keyMap == null) {
+    if (_keyMap.isEmpty) {
       _keyMap = Map<KeyEnum, Key>.identity();
       for (var init in _initialization) {
         KeyEnum keInit = init[0];
@@ -74,64 +72,59 @@ class Key implements Comparable<Key> {
 
       //  majorDiatonics needs majorScale which is initialized after the initialization
       for (Key key in _keyMap.values) {
-        key._majorDiatonics = List<ScaleChord>(MusicConstants.notesPerScale);
-        for (int i = 0; i < MusicConstants.notesPerScale; i++) {
-          key._majorDiatonics[i] = ScaleChord(key.getMajorScaleByNote(i),
-              MusicConstants.getMajorDiatonicChordModifier(i));
-        }
+        key._majorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
+          return ScaleChord(key.getMajorScaleByNote(i), MusicConstants.getMajorDiatonicChordModifier(i));
+        });
 
-        key._minorDiatonics = List<ScaleChord>(MusicConstants.notesPerScale);
-        for (int i = 0; i < MusicConstants.notesPerScale; i++) {
-          key._minorDiatonics[i] = ScaleChord(key.getMinorScaleByNote(i),
-              MusicConstants.getMinorDiatonicChordModifier(i));
-        }
-      }
+        key._minorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
+          return ScaleChord(key.getMinorScaleByNote(i), MusicConstants.getMinorDiatonicChordModifier(i));
+        });
 
-      //  compute the minor scale note
-      for (Key key in _keyMap.values) {
-        key._keyMinorScaleNote = key.getMajorDiatonicByDegree(6 - 1).scaleNote;
+        //  compute the minor scale note
+        for (Key key in _keyMap.values) {
+          key._keyMinorScaleNote = key.getMajorDiatonicByDegree(6 - 1).scaleNote;
+        }
       }
     }
-
     return _keyMap;
   }
 
   static Key get(KeyEnum ke) {
-    return _getKeys()[ke];
+    return _getKeys()[ke]!;
   }
 
   static Iterable<Key> get values => _getKeys().values;
 
-  static KeyEnum _getKeyEnum(String s) {
+  static KeyEnum? _getKeyEnum(String s) {
     //  lazy eval
-    if (_keyEnums == null) {
-      _keyEnums = <String, KeyEnum>{};
+    if (_keyEnumMap.isEmpty) {
+      _keyEnumMap = <String, KeyEnum>{};
       for (KeyEnum ke in KeyEnum.values) {
-        _keyEnums[_keyEnumToString(ke)] = ke;
+        _keyEnumMap[_keyEnumToString(ke)] = ke;
       }
     }
-    return _keyEnums[s];
+    return _keyEnumMap[s];
   }
 
   static final RegExp _hashSignRegExp = RegExp(r'[♯#]');
 
-  static Key parseString(String s) {
+  static Key? parseString(String s) {
     s = s.replaceAll('♭', 'b').replaceAll(_hashSignRegExp, 's');
-    KeyEnum keyEnum = _getKeyEnum(s);
-    return get(keyEnum);
+    KeyEnum? keyEnum = _getKeyEnum(s);
+    if (keyEnum != null) {
+      return get(keyEnum);
+    }
+    return null;
   }
 
   static final trebleStaffTopPitch = Pitch.get(PitchEnum.F5);
   static final double trebleStaffTop = _staffSpacesFromA0(trebleStaffTopPitch);
-  static final bassStaffTopPitch =
-      Pitch.get(PitchEnum.A2); //fixme: should be a3 for piano!
+  static final bassStaffTopPitch = Pitch.get(PitchEnum.A2); //fixme: should be a3 for piano!
   static final double bassStaffTop = _staffSpacesFromA0(bassStaffTopPitch);
 
   static double _staffSpacesFromA0(Pitch pitch) {
     return (pitch.scaleNumber +
-            (pitch.scaleNumber >= _notesFromAtoC
-                    ? pitch.octaveNumber - 1
-                    : pitch.octaveNumber) *
+            (pitch.scaleNumber >= _notesFromAtoC ? pitch.octaveNumber - 1 : pitch.octaveNumber) *
                 MusicConstants.notesPerScale) /
         2;
   }
@@ -143,7 +136,6 @@ class Key implements Comparable<Key> {
       case Clef.bass:
         return bassStaffTop - _staffSpacesFromA0(pitch);
     }
-    return null;
   }
 
   /// map from an arbitrary pitch to the correct pitch expression for this key.
@@ -155,31 +147,24 @@ class Key implements Comparable<Key> {
 
   /// Return the next key that is one half step higher.
   Key nextKeyByHalfStep() {
-    return _getKeys()[
-        keyEnumsByHalfStep[(_halfStep + 1) % keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[(_halfStep + 1) % keyEnumsByHalfStep.length]]!;
   }
 
   Key nextKeyByHalfSteps(int step) {
-    return _getKeys()[
-        keyEnumsByHalfStep[(_halfStep + step) % keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[(_halfStep + step) % keyEnumsByHalfStep.length]]!;
   }
 
   Key nextKeyByFifth() {
-    return _getKeys()[keyEnumsByHalfStep[
-        (_halfStep + MusicConstants.notesPerScale) %
-            keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[(_halfStep + MusicConstants.notesPerScale) % keyEnumsByHalfStep.length]]!;
   }
 
   /// Return the next key that is one half step lower.
   Key previousKeyByHalfStep() {
-    return _getKeys()[
-        keyEnumsByHalfStep[(_halfStep - 1) % keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[(_halfStep - 1) % keyEnumsByHalfStep.length]]!;
   }
 
   Key previousKeyByFifth() {
-    return _getKeys()[keyEnumsByHalfStep[
-        (_halfStep - MusicConstants.notesPerScale) %
-            keyEnumsByHalfStep.length]];
+    return _getKeys()[keyEnumsByHalfStep[(_halfStep - MusicConstants.notesPerScale) % keyEnumsByHalfStep.length]]!;
   }
 
   /// Transpose the given scale note by the requested offset.
@@ -220,8 +205,7 @@ class Key implements Comparable<Key> {
 
   Key getMinorKey() {
     // the key's tonic    fixme: should be calculated once only
-    return getKeyByHalfStep(
-        getHalfStep() + majorScale[6 - 1]); //  counts from 0
+    return getKeyByHalfStep(getHalfStep() + majorScale[6 - 1]); //  counts from 0
   }
 
   /// Guess the key from the collection of scale notes in a given song.
@@ -236,8 +220,7 @@ class Key implements Comparable<Key> {
 
       //  count the uses
       //  fixme: account for song section repeats
-      int count = useMap[scaleNote];
-      useMap[scaleNote] = ((count == null) ? 1 : count + 1);
+      useMap[scaleNote] = (useMap[scaleNote] ?? 0) + 1;
     }
 
     //  find the key with the longest greatest parse to the major chord
@@ -246,8 +229,8 @@ class Key implements Comparable<Key> {
 
     //  find the key with the greatest parse to it's diatonic chords
     {
-      int count;
-      ScaleChord diatonic;
+      int? count;
+      ScaleChord? diatonic;
       ScaleNote diatonicScaleNote;
       for (Key key in _getKeys().values) {
         //  score by weighted uses of the scale chords
@@ -256,21 +239,19 @@ class Key implements Comparable<Key> {
           diatonic = key.getMajorDiatonicByDegree(i);
           diatonicScaleNote = diatonic.scaleNote;
           if ((count = useMap[diatonicScaleNote]) != null) {
-            score += count * guessWeights[i];
+            score += count! * guessWeights[i];
           } else {
             if ((diatonic = diatonic.getAlias()) != null) {
-              diatonicScaleNote = diatonic.scaleNote;
-              if (diatonic != null &&
-                  (count = useMap[diatonicScaleNote]) != null) {
-                score += count * guessWeights[i];
+              diatonicScaleNote = diatonic!.scaleNote;
+              if ((count = useMap[diatonicScaleNote]) != null) {
+                score += count! * guessWeights[i];
               }
             }
           }
         }
 
         //  find the max score with the minimum key value
-        if (score > maxScore ||
-            (score == maxScore && key._keyValue.abs() < minKeyValue)) {
+        if (score > maxScore || (score == maxScore && key._keyValue.abs() < minKeyValue)) {
           ret = key;
           maxScore = score;
           minKeyValue = key._keyValue.abs();
@@ -312,13 +293,12 @@ class Key implements Comparable<Key> {
 
   /// get the key's scale note for the given note
   ScaleNote getKeyScaleNoteFor(ScaleNote note) {
-    return getMajorScaleByNote(
-        note.scaleNumber - getKeyScaleNote().scaleNumber);
+    return getMajorScaleByNote(note.scaleNumber - getKeyScaleNote().scaleNumber);
   }
 
   /// required accidental for this pitch in terms of the key
   /// Note that a null return means that no accidental should be applied.
-  Accidental accidental(final Pitch pitch) {
+  Accidental? accidental(final Pitch pitch) {
     //  adjust the pitch to the key's accidental
     ScaleNote scaleNote = mappedPitch(pitch).scaleNote;
 
@@ -342,12 +322,11 @@ class Key implements Comparable<Key> {
     }
 
     //  adjust the expressed accidental as required (i.e. if different)
-    if ( keyScaleNote.accidental == scaleNote.accidental){
+    if (keyScaleNote.accidental == scaleNote.accidental) {
       return null;
     }
-    return  scaleNote.accidental;
+    return scaleNote.accidental;
   }
-
 
   /// return an expression of the pitch in terms of the key
   String accidentalString(final Pitch pitch) {
@@ -409,8 +388,7 @@ class Key implements Comparable<Key> {
 
   /// Counts from zero.
   ScaleNote getKeyScaleNoteByHalfStep(int halfStep) {
-    halfStep += _keyValue * MusicConstants.halfStepsToFifth +
-        MusicConstants.halfStepsFromAtoC;
+    halfStep += _keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC;
     return getScaleNoteByHalfStep(halfStep);
   }
 
@@ -427,9 +405,7 @@ class Key implements Comparable<Key> {
 
   ScaleNote _getScaleNoteByHalfStepNoAdjustment(int halfSteps) {
     halfSteps = halfSteps % halfStepsPerOctave;
-    ScaleNote ret = isSharp
-        ? ScaleNote.getSharpByHalfStep(halfSteps)
-        : ScaleNote.getFlatByHalfStep(halfSteps);
+    ScaleNote ret = isSharp ? ScaleNote.getSharpByHalfStep(halfSteps) : ScaleNote.getFlatByHalfStep(halfSteps);
     return ret;
   }
 
@@ -548,9 +524,9 @@ class Key implements Comparable<Key> {
   final ScaleNote _keyScaleNote;
 
   //  have to be set after initialization of all keys
-  ScaleNote _keyMinorScaleNote;
-  List<ScaleChord> _majorDiatonics;
-  List<ScaleChord> _minorDiatonics;
+  late ScaleNote _keyMinorScaleNote;
+  late List<ScaleChord> _majorDiatonics;
+  late List<ScaleChord> _minorDiatonics;
 }
 
 /*                     1  2  3  4  5  6  7                 I    II   III  IV   V    VI   VII               0  1  2  3  4  5  6  7  8  9  10 11

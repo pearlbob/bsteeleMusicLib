@@ -31,7 +31,7 @@ enum ChordAnticipationOrDelayEnum {
 /// A small timing adjustment for a chord to change the feel of the chord.
 /// Units are fractions of a beat expressed assuming quarter note beat duration.
 class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
-  static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _delays;
+  static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _delays = {};
   static final List<dynamic> _initialization = [
     [ChordAnticipationOrDelayEnum.none, ''],
     [ChordAnticipationOrDelayEnum.anticipate8th, '<8'],
@@ -44,7 +44,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
 
   ChordAnticipationOrDelay._(this._chordAnticipationOrDelayEnum, this._shortName);
 
-  static ChordAnticipationOrDelay parse(MarkedString markedString) {
+  static ChordAnticipationOrDelay? parse(MarkedString? markedString) {
     if (markedString == null) throw 'no data to parse';
     if (markedString.isNotEmpty) {
       for (ChordAnticipationOrDelay a in _getSortedByShortName()) {
@@ -58,7 +58,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return ChordAnticipationOrDelay._getDelays()[ChordAnticipationOrDelayEnum.none];
   }
 
-  static ChordAnticipationOrDelay get(ChordAnticipationOrDelayEnum e) {
+  static ChordAnticipationOrDelay? get(ChordAnticipationOrDelayEnum e) {
     return _getDelays()[e];
   }
 
@@ -66,24 +66,26 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return _getDelays().values;
   }
 
-  static SplayTreeSet<ChordAnticipationOrDelay> _sortedByShortName;
+  static SplayTreeSet<ChordAnticipationOrDelay> _sortedByShortName = SplayTreeSet();
 
   static Set _getSortedByShortName() {
-    if (_sortedByShortName == null) {
-      //  initialize
+    if (_sortedByShortName.isEmpty) {
+      //  lazy initialize
       _sortedByShortName = SplayTreeSet<ChordAnticipationOrDelay>((a1, a2) {
         return a2.shortName.compareTo(a1.shortName);
       });
       for (ChordAnticipationOrDelayEnum delays in ChordAnticipationOrDelayEnum.values) {
-        ChordAnticipationOrDelay delay = _getDelays()[delays];
-        _sortedByShortName.add(delay);
+        ChordAnticipationOrDelay? delay = _getDelays()[delays];
+        if ( delay != null) {
+          _sortedByShortName.add(delay);
+        }
       }
     }
     return _sortedByShortName;
   }
 
   static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _getDelays() {
-    if (_delays == null) {
+    if (_delays.isEmpty) {
       _delays = Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay>.identity();
       for (var init in _initialization) {
         ChordAnticipationOrDelayEnum keInit = init[0];

@@ -1,6 +1,5 @@
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
-import 'package:quiver/iterables.dart';
 
 import '../appLogger.dart';
 import '../util/util.dart';
@@ -18,9 +17,7 @@ import 'sectionVersion.dart';
 /// Immutable.
 
 class ChordSection extends MeasureNode implements Comparable<ChordSection> {
-  ChordSection(this._sectionVersion, List<Phrase> phrases) {
-    _phrases = (phrases ?? []);
-  }
+  ChordSection(this._sectionVersion, List<Phrase>? phrases) : _phrases = (phrases ?? []);
 
   static ChordSection getDefault() {
     return ChordSection(SectionVersion.getDefault(), null);
@@ -55,7 +52,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     List<Measure> measures = [];
     List<Measure> lineMeasures = [];
     //  bool repeatMarker = false;
-    Measure lastMeasure;
+    Measure? lastMeasure;
     for (int i = 0; i < 2000; i++) //  arbitrary safety hard limit
     {
       markedString.stripLeadingSpaces();
@@ -110,8 +107,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
       try {
         //  add a measure to the current line measures
-        Measure measure = Measure.parse(markedString, beatsPerBar, lastMeasure);
-        lineMeasures.add(measure);
+        Measure? measure = Measure.parse(markedString, beatsPerBar, lastMeasure);
+        if (measure != null) {
+          lineMeasures.add(measure);
+        }
         lastMeasure = measure;
         continue;
       } catch (e) {
@@ -122,9 +121,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       {
         String s = markedString.remainingStringLimited(10);
         logger.d('s: ' + s);
-        RegExpMatch mr = commaRegexp.firstMatch(s);
+        RegExpMatch? mr = commaRegexp.firstMatch(s);
         if (mr != null) {
-          markedString.consume(mr.group(0).length);
+          markedString.consume(mr.group(0)!.length);
           continue;
         }
       }
@@ -152,12 +151,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
           s = markedString.toString();
         }
 
-        RegExpMatch mr = commentRegExp.firstMatch(s);
+        RegExpMatch? mr = commentRegExp.firstMatch(s);
 
         //  consume the comment
         if (mr != null) {
-          s = mr.group(1);
-          markedString.consume(mr.group(0).length);
+          s = mr.group(1) ?? '';
+          markedString.consume(mr.group(0)!.length);
           //  cope with unbalanced leading ('s and trailing )'s
           s = s.replaceAll('^\\(', '').replaceAll(r'\)$', '');
           s = s.trim(); //  in case there is white space inside unbalanced parens
@@ -204,15 +203,15 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
     _phrases ??= [];
 
-    if (_phrases.isEmpty) {
-      _phrases.add(newPhrase);
+    if (_phrases?.isEmpty ?? false) {
+      _phrases?.add(newPhrase);
       return true;
     }
 
     try {
       _addPhraseAt(index, newPhrase);
     } catch (e) {
-      _phrases.add(newPhrase); //  default to the end!
+      _phrases?.add(newPhrase); //  default to the end!
     }
     return true;
   }
@@ -232,25 +231,25 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
     _phrases ??= [];
 
-    if (_phrases.isEmpty) {
-      _phrases.add(newPhrase);
+    if (_phrases?.isEmpty ?? false) {
+      _phrases?.add(newPhrase);
       return true;
     }
 
     try {
       _addPhraseAt(index, newPhrase);
     } catch (e) {
-      _phrases.add(newPhrase); //  default to the end!
+      _phrases?.add(newPhrase); //  default to the end!
     }
     return true;
   }
 
   void _addPhraseAt(int index, Phrase m) {
     _phrases ??= [];
-    if (_phrases.length < index) {
-      _phrases.add(m);
+    if ((_phrases?.length ?? -1) < index) {
+      _phrases?.add(m);
     } else {
-      _phrases.insert(index + 1, m);
+      _phrases?.insert(index + 1, m);
     }
   }
 
@@ -263,10 +262,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 //    }
 //  }
 
-  MeasureNode findMeasureNode(MeasureNode measureNode) {
-    for (Phrase measureSequenceItem in phrases) {
+  MeasureNode? findMeasureNode(MeasureNode measureNode) {
+    for (Phrase measureSequenceItem in phrases ?? []) {
       if (measureSequenceItem == measureNode) return measureSequenceItem;
-      MeasureNode mn = measureSequenceItem.findMeasureNode(measureNode);
+      MeasureNode? mn = measureSequenceItem.findMeasureNode(measureNode);
       if (mn != null) return mn;
     }
     return null;
@@ -274,7 +273,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   int findMeasureNodeIndex(MeasureNode measureNode) {
     int index = 0;
-    for (Phrase phrase in phrases) {
+    for (Phrase phrase in phrases ?? []) {
       int i = phrase.findMeasureNodeIndex(measureNode);
       if (i >= 0) return index + i;
       index += phrase.length;
@@ -282,49 +281,49 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return -1;
   }
 
-  Phrase findPhrase(MeasureNode measureNode) {
-    for (Phrase phrase in phrases) {
+  Phrase? findPhrase(MeasureNode measureNode) {
+    for (Phrase phrase in phrases ?? []) {
       if (phrase == measureNode || phrase.contains(measureNode)) return phrase;
     }
     return null;
   }
 
   int findPhraseIndex(MeasureNode measureNode) {
-    for (int i = 0; i < phrases.length; i++) {
-      Phrase p = phrases[i];
-      if (measureNode == p || p.contains(measureNode)) return i;
+    for (int i = 0; i < (phrases?.length ?? 0); i++) {
+      Phrase? p = phrases?[i];
+      if (measureNode == p || (p?.contains(measureNode) ?? false)) return i;
     }
     return -1;
   }
 
   int indexOf(Phrase phrase) {
-    for (int i = 0; i < phrases.length; i++) {
-      Phrase p = phrases[i];
+    for (int i = 0; i < (phrases?.length ?? 0); i++) {
+      Phrase? p = phrases?[i];
       if (phrase == p) return i;
     }
     return -1;
   }
 
-  Measure getMeasure(int phraseIndex, int measureIndex) {
+  Measure? getMeasure(int phraseIndex, int measureIndex) {
     try {
-      Phrase phrase = getPhrase(phraseIndex);
-      return phrase.getMeasure(measureIndex);
+      Phrase? phrase = getPhrase(phraseIndex);
+      return phrase?.getMeasure(measureIndex);
     } catch (e) {
       return null;
     }
   }
 
-  Measure get firstMeasure {
+  Measure? get firstMeasure {
     try {
-      return phrases.first.firstMeasure;
+      return phrases?.first.firstMeasure;
     } catch (e) {
       return null;
     }
   }
 
-  Measure get lastMeasure {
+  Measure? get lastMeasure {
     try {
-      return phrases.last.lastMeasure;
+      return phrases?.last.lastMeasure;
     } catch (e) {
       return null;
     }
@@ -332,7 +331,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   bool deletePhrase(int phraseIndex) {
     try {
-      return _phrases.removeAt(phraseIndex) != null;
+      return _phrases?.removeAt(phraseIndex) != null;
     } catch (e) {
       return false;
     }
@@ -340,9 +339,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   bool deleteMeasure(int phraseIndex, int measureIndex) {
     try {
-      Phrase phrase = getPhrase(phraseIndex);
-      bool ret = phrase.deleteAt(measureIndex);
-      if (ret && phrase.isEmpty()) return deletePhrase(phraseIndex);
+      Phrase? phrase = getPhrase(phraseIndex);
+      bool ret = phrase?.deleteAt(measureIndex) ?? false;
+      if (ret && (phrase?.isEmpty() ?? true)) return deletePhrase(phraseIndex);
       return ret;
     } catch (e) {
       return false;
@@ -351,7 +350,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   int getTotalMoments() {
     int total = 0;
-    for (Phrase measureSequenceItem in _phrases) {
+    for (Phrase measureSequenceItem in _phrases ?? []) {
       total += measureSequenceItem.getTotalMoments();
     }
     return total;
@@ -382,12 +381,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return MeasureNodeType.section;
   }
 
-  MeasureNode lastMeasureNode() {
+  MeasureNode? lastMeasureNode() {
     if (isEmpty()) {
       return this;
     }
-    Phrase measureSequenceItem = _phrases[_phrases.length - 1];
-    List<Measure> measures = measureSequenceItem.measures;
+    Phrase? measureSequenceItem = _phrases?[(_phrases?.length ?? 0) - 1];
+    List<Measure>? measures = measureSequenceItem?.measures;
     if (measures == null || measures.isEmpty) return measureSequenceItem;
     return measures[measures.length - 1];
   }
@@ -397,7 +396,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
     if (_phrases != null) {
-      for (Phrase phrase in _phrases) {
+      for (Phrase phrase in _phrases ?? []) {
         sb.write(phrase.transpose(key, halfSteps));
       }
     }
@@ -405,13 +404,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  MeasureNode transposeToKey(Key key) {
-    List<Phrase> newPhrases;
-    if (_phrases != null) {
-      newPhrases = [];
-      for (Phrase phrase in _phrases) {
-        newPhrases.add(phrase.transposeToKey(key) as Phrase);
-      }
+  MeasureNode transposeToKey(Key? key) {
+    if (key == null) return this;
+    List<Phrase>? newPhrases;
+    newPhrases = [];
+    for (Phrase phrase in _phrases) {
+      newPhrases.add(phrase.transposeToKey(key) as Phrase);
     }
     return ChordSection(_sectionVersion, newPhrases);
   }
@@ -430,7 +428,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       return '[] ';
     }
     StringBuffer sb = StringBuffer();
-    for (Phrase phrase in _phrases) {
+    for (Phrase phrase in _phrases ?? []) {
       sb.write(phrase.toMarkup());
     }
     return sb.toString();
@@ -450,7 +448,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (measuresPerRow <= 0) return false;
 
     bool ret = false;
-    for (Phrase phrase in _phrases) {
+    for (Phrase phrase in _phrases ?? []) {
       ret = ret || phrase.setMeasuresPerRow(measuresPerRow);
     }
     return ret;
@@ -461,7 +459,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       return '[]';
     }
     StringBuffer sb = StringBuffer();
-    for (Phrase phrase in _phrases) {
+    for (Phrase phrase in _phrases ?? []) {
       sb.write(phrase.toEntry());
     }
     return sb.toString();
@@ -475,7 +473,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (isEmpty()) {
       sb.write('[]');
     } else {
-      for (Phrase phrase in _phrases) {
+      for (Phrase phrase in _phrases ?? []) {
         String s = phrase.toJson();
         sb.write(s);
         if (!s.endsWith('\n')) {
@@ -493,7 +491,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     sb.write(getSectionVersion().toString());
     sb.write('\n');
     if (_phrases != null) {
-      for (Phrase phrase in _phrases) {
+      for (Phrase phrase in _phrases ?? []) {
         sb.write(phrase.toString());
       }
     }
@@ -508,8 +506,8 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return _sectionVersion.section;
   }
 
-  Phrase getPhrase(int index) {
-    return _phrases[index];
+  Phrase? getPhrase(int index) {
+    return _phrases?[index];
   }
 
   void setPhrases(List<Phrase> phrases) {
@@ -517,26 +515,23 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   int getPhraseCount() {
-    if (_phrases == null) {
-      return 0;
-    }
-    return _phrases.length;
+    return _phrases?.length ?? 0;
   }
 
   /// sum all the measures in all the phrases
   int get measureCount {
     int measureCount = 0;
-    for (Phrase phrase in _phrases) {
+    for (Phrase phrase in _phrases ?? []) {
       measureCount += phrase.measureCount;
     }
     return measureCount;
   }
 
-  Phrase lastPhrase() {
+  Phrase? lastPhrase() {
     if (_phrases == null) {
       return null;
     }
-    return _phrases[_phrases.length - 1];
+    return _phrases?[(_phrases?.length ?? 0) - 1];
   }
 
   int get chordRowCount {
@@ -544,7 +539,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       return 0;
     }
     int chordRowCount = 0;
-    for (Phrase phrase in _phrases) {
+    for (Phrase phrase in _phrases ?? []) {
       chordRowCount += phrase.chordRowCount;
     }
     return chordRowCount;
@@ -552,10 +547,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   @override
   bool isEmpty() {
-    if (_phrases == null || _phrases.isEmpty) {
+    if (_phrases?.isEmpty ?? true) {
       return true;
     }
-    for (Phrase phrase in _phrases) {
+    for (Phrase phrase in _phrases ?? []) {
       if (!phrase.isEmpty()) {
         return false;
       }
@@ -571,10 +566,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     int ret = _sectionVersion.compareTo(o._sectionVersion);
     if (ret != 0) return ret;
 
-    if (_phrases.length != o._phrases.length) return _phrases.length < o._phrases.length ? -1 : 1;
+    if (_phrases?.length != o._phrases?.length) return (_phrases?.length ?? 0) < (o._phrases?.length ?? 0) ? -1 : 1;
 
-    for (int i = 0; i < _phrases.length; i++) {
-      ret = _phrases[i].toMarkup().compareTo(o._phrases[i].toMarkup());
+    for (int i = 0; i < (_phrases?.length ?? 0); i++) {
+      ret = _phrases?[i].toMarkup().compareTo(o._phrases?[i].toMarkup() ?? '') ?? 0;
       if (ret != 0) return ret;
     }
     return 0;

@@ -12,10 +12,9 @@ import 'section.dart';
 import 'key.dart';
 
 class Phrase extends MeasureNode {
-  Phrase(List<Measure> measures, int phraseIndex) {
+  Phrase(List<Measure> measures, int phraseIndex) : _phraseIndex = phraseIndex {
     _measures = [];
     _measures.addAll(measures);
-    _phraseIndex = phraseIndex;
   }
 
   int getTotalMoments() {
@@ -26,7 +25,7 @@ class Phrase extends MeasureNode {
     return parse(MarkedString(string), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
+  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
     List<Measure> measures = [];
@@ -50,9 +49,9 @@ class Phrase extends MeasureNode {
       if (Section.lookahead(markedString)) break;
 
       try {
-        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
+        Measure? measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
         priorMeasure = measure;
-        lineMeasures.add(measure);
+        lineMeasures.add(measure!);
 
         //  we found an end of row so this row is a part of a phrase
         if (measure.endOfRow) {
@@ -144,24 +143,24 @@ class Phrase extends MeasureNode {
     return Phrase(newMeasures, _phraseIndex);
   }
 
-  MeasureNode findMeasureNode(MeasureNode measureNode) {
+  MeasureNode? findMeasureNode(MeasureNode measureNode) {
     for (Measure m in _measures) {
       if (m == measureNode) return m;
     }
     return null;
   }
 
-  int findMeasureNodeIndex(MeasureNode measureNode) {
+  int findMeasureNodeIndex(MeasureNode? measureNode) {
     if (measureNode == null) throw 'measureNode null';
 
-    int ret = _measures.indexOf(measureNode);
+    int ret = _measures.indexOf(measureNode as Measure);
 
     if (ret < 0) throw 'measureNode not found: ' + measureNode.toMarkup();
 
     return ret;
   }
 
-  bool insert(int index, MeasureNode newMeasureNode) {
+  bool insert(int index, MeasureNode? newMeasureNode) {
     if (newMeasureNode == null) return false;
 
     switch (newMeasureNode.getMeasureNodeType()) {
@@ -172,8 +171,6 @@ class Phrase extends MeasureNode {
     }
 
     Measure newMeasure = newMeasureNode as Measure;
-
-    _measures ??= [];
 
     if (_measures.isEmpty) {
       _measures.add(newMeasure);
@@ -188,8 +185,8 @@ class Phrase extends MeasureNode {
     return true;
   }
 
-  bool replace(int index, MeasureNode newMeasureNode) {
-    if (_measures == null || _measures.isEmpty) return false;
+  bool replace(int index, MeasureNode? newMeasureNode) {
+    if ( _measures.isEmpty) return false;
 
     if (newMeasureNode == null) return false;
 
@@ -228,7 +225,6 @@ class Phrase extends MeasureNode {
 
     Measure newMeasure = newMeasureNode as Measure;
 
-    _measures ??= [];
     if (_measures.isEmpty) {
       _measures.add(newMeasure);
       return true;
@@ -245,21 +241,18 @@ class Phrase extends MeasureNode {
 
   bool add(List<Measure> newMeasures) {
     if (newMeasures == null || newMeasures.isEmpty) return false;
-    _measures ??= <Measure>[];
     _measures.addAll(newMeasures);
     return true;
   }
 
   bool addAt(int index, List<Measure> newMeasures) {
     if (newMeasures == null || newMeasures.isEmpty) return false;
-    _measures ??= <Measure>[];
     index = min(index, _measures.length - 1);
     addAllAt(index, newMeasures);
     return true;
   }
 
   void _addAt(int index, Measure m) {
-    _measures ??= [];
     if (_measures.length < index) {
       _measures.add(m);
     } else {
@@ -269,7 +262,6 @@ class Phrase extends MeasureNode {
 
   bool addAllAt(int index, List<Measure> list) {
     if (list == null || list.isEmpty) return false;
-    _measures ??= [];
     if (_measures.length < index) {
       _measures.addAll(list);
     } else {
@@ -309,7 +301,7 @@ class Phrase extends MeasureNode {
         break;
       case MeasureEditType.insert:
       case MeasureEditType.append:
-        _measures ??= [];
+
 
         //  index doesn't matter
         if (_measures.isEmpty) {
@@ -415,7 +407,7 @@ class Phrase extends MeasureNode {
   }
 
   @override
-  String getId() {
+  String? getId() {
     return null;
   }
 
@@ -521,7 +513,7 @@ class Phrase extends MeasureNode {
     return sb.toString();
   }
 
-  Measure get firstMeasure {
+  Measure? get firstMeasure {
     try {
       return _measures.first;
     } catch (e) {
@@ -529,7 +521,7 @@ class Phrase extends MeasureNode {
     }
   }
 
-  Measure get lastMeasure {
+  Measure? get lastMeasure {
     try {
       return _measures.last;
     } catch (e) {
@@ -573,7 +565,7 @@ class Phrase extends MeasureNode {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType &&
+    return other is Phrase &&
         _phraseIndex == other._phraseIndex &&
         listsEqual(_measures, other._measures);
   }
@@ -585,6 +577,6 @@ class Phrase extends MeasureNode {
     return ret;
   }
 
-  List<Measure> _measures;
+  late List<Measure> _measures;
   int _phraseIndex;
 }

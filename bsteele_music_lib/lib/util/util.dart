@@ -4,7 +4,7 @@ import 'dart:math';
 
 class Util {
   /// add quotes to a string so it can be used as a dart constant
-  static String quote(String s) {
+  static String? quote(String? s) {
     if (s == null) {
       return null;
     }
@@ -15,7 +15,7 @@ class Util {
     return "'$s'";
   }
 
-  static num limit(final num n, final num limit1, final num limit2) {
+  static num? limit(final num? n, final num? limit1, final num? limit2) {
     if (n == null) {
       return n;
     }
@@ -106,8 +106,8 @@ class MarkedString {
     return _string[_index + i];
   }
 
-  void consume(int n) {
-    _index += n;
+  void consume(int? n) {
+    _index += n ?? 0;
   }
 
   int available() {

@@ -64,11 +64,9 @@ Map<SectionEnum, int> _sectionWeights = {
 /// </p>
 
 class Section implements Comparable<Section> {
-  Section._(this._sectionEnum, this._abbreviation, this._alternateAbbreviation,
-      this._description)
+  Section._(this._sectionEnum, this._abbreviation, this._alternateAbbreviation, this._description)
       : //_lowerCaseName = _sectionEnumToString(_sectionEnum).toLowerCase(),
-        _formalName =
-            Util.firstToUpper(_sectionEnumToString(_sectionEnum).toLowerCase()),
+        _formalName = Util.firstToUpper(_sectionEnumToString(_sectionEnum).toLowerCase()),
         _originalAbbreviation = _abbreviation;
 
   static String _sectionEnumToString(SectionEnum se) {
@@ -77,12 +75,7 @@ class Section implements Comparable<Section> {
 
   static final List<dynamic> _initialization = [
     [SectionEnum.intro, 'I', 'in', 'A section that introduces the song.'],
-    [
-      SectionEnum.verse,
-      'V',
-      'vs',
-      'A repeating section of the song that typically has new lyrics for each instance.'
-    ],
+    [SectionEnum.verse, 'V', 'vs', 'A repeating section of the song that typically has new lyrics for each instance.'],
     [
       SectionEnum.preChorus,
       'PC',
@@ -113,12 +106,7 @@ class Section implements Comparable<Section> {
       null,
       'A non-repeating section often used once to break the repeated section patterns prior to the last sections of a song.'
     ],
-    [
-      SectionEnum.coda,
-      'Co',
-      'coda',
-      'A section used to jump to for an ending or repeat.'
-    ],
+    [SectionEnum.coda, 'Co', 'coda', 'A section used to jump to for an ending or repeat.'],
     [
       SectionEnum.tag,
       'T',
@@ -129,11 +117,10 @@ class Section implements Comparable<Section> {
     [SectionEnum.outro, 'O', 'out', 'The ending section of many songs.'],
   ];
 
-  static Map<SectionEnum, Section> _sections;
+  static final HashMap<SectionEnum, Section> _sections = HashMap.identity();
 
-  static Map<SectionEnum, Section> _getSections() {
-    if (_sections == null) {
-      _sections = Map<SectionEnum, Section>.identity();
+  static HashMap<SectionEnum, Section> _getSections() {
+    if (_sections.isEmpty) {
       for (var init in _initialization) {
         SectionEnum seInit = init[0];
         _sections[seInit] = Section._(seInit, init[1], init[2], init[3]);
@@ -143,14 +130,12 @@ class Section implements Comparable<Section> {
   }
 
   static HashMap<String, Section> _getMapStringToSection() {
-    if (mapStringToSection == null) {
-      mapStringToSection = HashMap();
+    if (mapStringToSection.isEmpty) {
       for (Section section in _getSections().values) {
         mapStringToSection[section._formalName.toLowerCase()] = section;
         mapStringToSection[section._abbreviation.toLowerCase()] = section;
         if (section._alternateAbbreviation != null) {
-          mapStringToSection[section._alternateAbbreviation.toLowerCase()] =
-              section;
+          mapStringToSection[section._alternateAbbreviation!.toLowerCase()] = section;
         }
       }
     }
@@ -158,17 +143,16 @@ class Section implements Comparable<Section> {
   }
 
   static Section get(SectionEnum se) {
-    return _getSections()[se];
+    return _getSections()[se]!;
   }
 
   static Iterable<Section> get values => _getSections().values;
 
-  static Map<String, SectionEnum> _sectionEnums;
+  static late final HashMap<String, SectionEnum> _sectionEnums = HashMap.identity();
 
-  static SectionEnum _getSectionEnum(String s) {
+  static SectionEnum? _getSectionEnum(String s) {
     //  lazy eval
-    if (_sectionEnums == null) {
-      _sectionEnums = <String, SectionEnum>{};
+    if (_sectionEnums.isEmpty) {
       for (SectionEnum se in SectionEnum.values) {
         _sectionEnums[_sectionEnumToString(se).toLowerCase()] = se;
 
@@ -176,30 +160,32 @@ class Section implements Comparable<Section> {
         Section section = get(se);
         _sectionEnums[section._abbreviation.toLowerCase()] = se;
         if (section._alternateAbbreviation != null) {
-          _sectionEnums[section._alternateAbbreviation.toLowerCase()] = se;
+          _sectionEnums[section._alternateAbbreviation!.toLowerCase()] = se;
         }
       }
     }
     return _sectionEnums[s];
   }
 
-  static Section parseString(String s) {
-    SectionEnum sectionEnum = _getSectionEnum(s);
-    return get(sectionEnum);
+  static Section? parseString(String s) {
+    SectionEnum? sectionEnum = _getSectionEnum(s);
+    if (sectionEnum != null) {
+      return get(sectionEnum);
+    }
+    return null;
   }
 
   static bool lookahead(MarkedString markedString) {
-    RegExpMatch m = sectionRegexp
-        .firstMatch(markedString.remainingStringLimited(maxLength));
+    RegExpMatch? m = sectionRegexp.firstMatch(markedString.remainingStringLimited(maxLength));
     if (m == null) return false;
     if (m.groupCount < 2) return false;
-    String sectionName = m.group(1);
-    Section section = parseString(sectionName.toLowerCase());
+    String sectionName = m.group(1)!;
+    Section? section = parseString(sectionName.toLowerCase());
     // String sectionNumber = m.group(2);
     return section != null;
   }
 
-  static Section getSection(String sectionId) {
+  static Section? getSection(String sectionId) {
     sectionId = sectionId.toLowerCase();
     return _getMapStringToSection()[sectionId];
   }
@@ -222,7 +208,7 @@ class Section implements Comparable<Section> {
 
   @override
   bool operator ==(other) {
-    return _sectionEnum == other._sectionEnum;
+    return other is Section && _sectionEnum == other._sectionEnum;
   }
 
   @override
@@ -235,7 +221,7 @@ class Section implements Comparable<Section> {
 
   String get abbreviation => _abbreviation;
   final String _abbreviation;
-  final String _alternateAbbreviation;
+  final String? _alternateAbbreviation;
 
   String get description => _description;
   final String _description;
@@ -248,9 +234,9 @@ class Section implements Comparable<Section> {
   String get originalAbbreviation => _originalAbbreviation;
   final String _originalAbbreviation;
 
-  int get weight => _sectionWeights[_sectionEnum];
+  int get weight => _sectionWeights[_sectionEnum] ?? 0;
 
-  static HashMap<String, Section> mapStringToSection;
+  static late HashMap<String, Section> mapStringToSection = HashMap();
 
   static final int maxLength = 10; //  fixme: compute
 

@@ -1,4 +1,3 @@
-import 'package:bsteeleMusicLib/songs/chordComponent.dart';
 import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
@@ -9,8 +8,8 @@ import 'chordAnticipationOrDelay.dart';
 import 'key.dart';
 
 class Chord implements Comparable<Chord> {
-  Chord(ScaleChord scaleChord, int beats, int beatsPerBar, ScaleNote slashScaleNote,
-      ChordAnticipationOrDelay anticipationOrDelay, bool implicitBeats) {
+  Chord(ScaleChord scaleChord, int beats, int beatsPerBar, ScaleNote? slashScaleNote,
+      ChordAnticipationOrDelay? anticipationOrDelay, bool implicitBeats) {
     _scaleChord = scaleChord;
     this.beats = beats;
     _beatsPerBar = beatsPerBar;
@@ -42,20 +41,20 @@ class Chord implements Comparable<Chord> {
     implicitBeats = true;
   }
 
-  static Chord parseString(String s, int beatsPerBar) {
+  static Chord? parseString(String s, int beatsPerBar) {
     return parse(MarkedString(s), beatsPerBar);
   }
 
-  static Chord parse(final MarkedString markedString, int beatsPerBar) {
-    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
+  static Chord? parse(final MarkedString markedString, int beatsPerBar) {
+    if ( markedString.isEmpty) throw 'no data to parse';
 
     int beats = beatsPerBar; //  default only
-    ScaleChord scaleChord = ScaleChord.parse(markedString);
+    ScaleChord? scaleChord = ScaleChord.parse(markedString);
     if (scaleChord == null) return null;
 
-    ChordAnticipationOrDelay anticipationOrDelay = ChordAnticipationOrDelay.parse(markedString);
+    ChordAnticipationOrDelay? anticipationOrDelay = ChordAnticipationOrDelay.parse(markedString);
 
-    ScaleNote slashScaleNote;
+    ScaleNote? slashScaleNote;
 //  note: X chords can have a slash chord
     if (markedString.isNotEmpty && markedString.charAt(0) == '/') {
       markedString.consume(1);
@@ -92,8 +91,8 @@ class Chord implements Comparable<Chord> {
 //}
 
   Chord transpose(Key key, int halfSteps) {
-    return Chord(_scaleChord.transpose(key, halfSteps), beats, _beatsPerBar,
-        slashScaleNote == null ? null : slashScaleNote.transpose(key, halfSteps), _anticipationOrDelay, implicitBeats);
+    return Chord(_scaleChord.transpose(key, halfSteps), beats, _beatsPerBar, slashScaleNote?.transpose(key, halfSteps),
+        _anticipationOrDelay, implicitBeats);
   }
 
   /// Compares this object with the specified object for order.  Returns a
@@ -106,12 +105,18 @@ class Chord implements Comparable<Chord> {
     if (slashScaleNote == null && o.slashScaleNote != null) return -1;
     if (slashScaleNote != null && o.slashScaleNote == null) return 1;
     if (slashScaleNote != null && o.slashScaleNote != null) {
-      ret = slashScaleNote.compareTo(o.slashScaleNote);
+      ret = slashScaleNote!.compareTo(o.slashScaleNote!);
       if (ret != 0) return ret;
     }
     if (beats != o.beats) return beats < o.beats ? -1 : 1;
-    ret = _anticipationOrDelay.compareTo(o._anticipationOrDelay);
-    if (ret != 0) return ret;
+
+    if (_anticipationOrDelay == null && o._anticipationOrDelay != null) return -1;
+    if (_anticipationOrDelay != null && o._anticipationOrDelay == null) return 1;
+    if (_anticipationOrDelay != null && o._anticipationOrDelay != null) {
+      ret = _anticipationOrDelay!.compareTo(o._anticipationOrDelay!);
+      if (ret != 0) return ret;
+    }
+
     if (_beatsPerBar != o._beatsPerBar) {
       return _beatsPerBar < o._beatsPerBar ? -1 : 1;
     }
@@ -140,7 +145,7 @@ class Chord implements Comparable<Chord> {
   /// Returns a markup representation of the object.
   String toMarkup() {
     String ret = _scaleChord.toMarkup() +
-        (slashScaleNote == null ? '' : '/' + slashScaleNote.toMarkup()) +
+        (slashScaleNote == null ? '' : '/' + slashScaleNote!.toMarkup()) +
         _anticipationOrDelay.toString();
     if (!implicitBeats && beats < _beatsPerBar) {
       if (beats == 1) {
@@ -157,9 +162,12 @@ class Chord implements Comparable<Chord> {
 
   List<Pitch> getPitches(Pitch atOrAbove) {
     List<Pitch> ret = [];
-    Pitch root = Pitch.findPitch(_scaleChord.scaleNote, atOrAbove);
-    for (ChordComponent chordComponent in _scaleChord.getChordComponents()) {
-      ret.add(root.offsetByHalfSteps(chordComponent.halfSteps));
+    Pitch? root = Pitch.findPitch(_scaleChord.scaleNote, atOrAbove);
+    if (root != null) {
+      for (var chordComponent in _scaleChord.getChordComponents()) {
+        var p = root.offsetByHalfSteps(chordComponent.halfSteps);
+        if (p != null) ret.add(p);
+      }
     }
     return ret;
   }
@@ -183,18 +191,18 @@ class Chord implements Comparable<Chord> {
   }
 
   ScaleChord get scaleChord => _scaleChord;
-  ScaleChord _scaleChord;
+  late ScaleChord _scaleChord;
 
-  int beats;
+  late int beats;
 
   int get beatsPerBar => _beatsPerBar;
-  int _beatsPerBar;
+  late int _beatsPerBar;
 
   bool implicitBeats = true;
-  ScaleNote slashScaleNote;
+  ScaleNote? slashScaleNote;
 
-  ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;
-  ChordAnticipationOrDelay _anticipationOrDelay;
+  ChordAnticipationOrDelay? get anticipationOrDelay => _anticipationOrDelay;
+  ChordAnticipationOrDelay? _anticipationOrDelay;
 
   static final RegExp _beatSizeRegexp = RegExp(r'^\.\d');
 }

@@ -47,7 +47,7 @@ abstract class MeasureNode {
   /// This is used to represent the scale note(s) in the proper expression
   /// of flats or sharps based on the key.
   /// <p>Note that the key of C is considered sharp.</p>
-  MeasureNode transposeToKey(Key key);
+  MeasureNode transposeToKey(Key? key);
 
   /// Represent the measure node to the user in a string form and from storage encoding.
   String toMarkup();
@@ -58,7 +58,7 @@ abstract class MeasureNode {
   /// Set the measures per row to the given value;
   bool setMeasuresPerRow(int measuresPerRow);
 
-  static String concatMarkup(List<MeasureNode> measureNodes) {
+  static String concatMarkup(List<MeasureNode>? measureNodes) {
     StringBuffer sb = StringBuffer();
     if (measureNodes != null) {
       for (MeasureNode measureNode in measureNodes) {
@@ -77,7 +77,7 @@ abstract class MeasureNode {
   String toJson();
 
   /// The id to uniquely identify this measureNode in the song.
-  String getId();
+  String? getId();
 
   MeasureNodeType getMeasureNodeType();
 }

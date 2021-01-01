@@ -31,8 +31,7 @@ class MeasureComment extends Measure {
     if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
 //  prep a sub string to look for the comment
-    int n =
-        markedString.indexOf('\n'); //  all comments end at the end of the line
+    int n = markedString.indexOf('\n'); //  all comments end at the end of the line
     String s = '';
     if (n > 0) {
       s = markedString.remainingStringLimited(n);
@@ -42,12 +41,12 @@ class MeasureComment extends Measure {
 
     //  properly formatted comment
 
-    RegExpMatch mr = commentRegExp.firstMatch(s);
+    RegExpMatch? mr = commentRegExp.firstMatch(s);
 
     //  consume the comment
     if (mr != null) {
-      s = mr.group(1);
-      markedString.consume(mr.group(0).length);
+      s = mr.group(1) ?? '';
+      markedString.consume(mr.group(0)!.length);
     } else {
       throw 'no well formed comment found'; //  all whitespace
     }
@@ -90,7 +89,7 @@ class MeasureComment extends Measure {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && _comment == other._comment;
+    return other is MeasureComment && _comment == other._comment;
   }
 
   @override

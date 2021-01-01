@@ -4,11 +4,11 @@ description: A starting point for Dart libraries or applications.
 # homepage: https://www.example.com
 
 environment:
-  sdk: '>=2.11.0-260.0.dev <3.0.0'
+  sdk: '>=2.12.0-179.0.dev <3.0.0'
 
 dependencies:
-  logger: ^0.9.3
-  quiver: ^2.1.3
+  logger: ^0.9.4
+  quiver: ^2.1.5
   http: ^0.12.2  # not nullable
   archive: ^2.0.13  # not nullable
   universal_html: ^1.2.3  # not nullable

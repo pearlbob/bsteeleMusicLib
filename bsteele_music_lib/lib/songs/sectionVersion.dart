@@ -31,20 +31,20 @@ class SectionVersion implements Comparable<SectionVersion> {
   static SectionVersion parse(MarkedString markedString) {
     if (markedString == null) throw 'no data to parse';
 
-    RegExpMatch m = sectionRegexp.firstMatch(markedString.toString());
+    RegExpMatch? m = sectionRegexp.firstMatch(markedString.toString());
     if (m == null) throw 'no section version found';
 
-    String sectionId = m.group(1);
-    String versionId = (m.groupCount >= 2 ? m.group(2) : null);
+    String? sectionId = m.group(1)!;
+    String? versionId = (m.groupCount >= 2 ? m.group(2)! : null);
     int version = 0;
     if (versionId != null && versionId.isNotEmpty) {
       version = int.parse(versionId);
     }
-    Section section = Section.getSection(sectionId);
+    Section? section = Section.getSection(sectionId);
     if (section == null) throw 'no section found';
 
     //   consume the section label
-    markedString.consume(m.group(0).length); //  includes the separator
+    markedString.consume(m.group(0)!.length); //  includes the separator
     return SectionVersion(section, version);
   }
 

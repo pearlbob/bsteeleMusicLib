@@ -41,9 +41,9 @@ class Part {
     this.description = description;
   }
 
-  DrumType drumType;
-  int divisionsPerBeat;
-  String description;
+  DrumType drumType = DrumType.kick; //  default
+  int divisionsPerBeat = 4;
+  String description = 'unknown drum measure';
 }
 
 /// Descriptor of the drums to be played for the given measure and
@@ -57,7 +57,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   ///Get an individual drum's part.
-  Part getPart(DrumType drumType) {
+  Part? getPart(DrumType drumType) {
     return parts[drumType];
   }
 
@@ -66,7 +66,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
     parts[drumType] = part;
   }
 
-  HashMap<DrumType, Part> parts;
+  HashMap<DrumType, Part> parts = HashMap<DrumType, Part>();
 
   //  legacy stuff
   //
@@ -97,10 +97,8 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
     _isSilent = null;
   }
 
-  bool isSilent() {
-    _isSilent ??= !(regExpHasX.hasMatch(highHat) ||
-          regExpHasX.hasMatch(snare) ||
-          regExpHasX.hasMatch(kick));
+  bool? isSilent() {
+    _isSilent ??= !(regExpHasX.hasMatch(highHat) || regExpHasX.hasMatch(snare) || regExpHasX.hasMatch(kick));
     return _isSilent;
   }
 
@@ -111,8 +109,18 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
 
   @override
   int compareTo(LegacyDrumMeasure o) {
-    int ret = (_isSilent == o._isSilent ? 0 : (_isSilent ? -1 : 1));
+    int ret = 0;
+    if (_isSilent == null && o._isSilent == null) {
+      ret = 0;
+    } else if (_isSilent == null && o._isSilent != null) {
+      ret = -1;
+    } else if (_isSilent != null && o._isSilent == null) {
+      ret = 1;
+    } else {
+      ret = (_isSilent == o._isSilent ? 0 : (_isSilent! ? -1 : 1));
+    }
     if (ret != 0) return ret;
+
     ret = highHat.compareTo(o.highHat);
     if (ret != 0) return ret;
     ret = snare.compareTo(o.snare);
@@ -143,6 +151,6 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   String highHat = '';
   String snare = '';
   String kick = '';
-  bool _isSilent;
+  bool? _isSilent;
   static final RegExp regExpHasX = RegExp('.*[xX].*');
 }

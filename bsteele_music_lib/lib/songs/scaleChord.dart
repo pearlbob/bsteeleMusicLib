@@ -8,34 +8,34 @@ import 'key.dart';
 
 ///  A chord with a scale note and an optional chord descriptor and tension.
 class ScaleChord implements Comparable<ScaleChord> {
-  ScaleChord(this._scaleNote, ChordDescriptor chordDescriptor)
-      : _chordDescriptor = chordDescriptor.deAlias();
+  ScaleChord(this._scaleNote, ChordDescriptor chordDescriptor) : _chordDescriptor = chordDescriptor.deAlias();
 
   ScaleChord.fromScaleNoteEnum(ScaleNoteEnum scaleNoteEnum)
       : _scaleNote = ScaleNote.get(scaleNoteEnum),
         _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
 
-  ScaleChord.fromScaleNoteEnumAndChordDescriptor(
-      ScaleNoteEnum scaleNoteEnum, ChordDescriptor chordDescriptor)
+  ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum scaleNoteEnum, ChordDescriptor chordDescriptor)
       : _scaleNote = ScaleNote.get(scaleNoteEnum),
         _chordDescriptor = chordDescriptor.deAlias();
 
-  ScaleChord.fromScaleNote(this._scaleNote)
-      : _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
+  ScaleChord.fromScaleNote(this._scaleNote) : _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
 
-  static ScaleChord parseString(String s) {
+  static ScaleChord? parseString(String s) {
     return parse(MarkedString(s));
   }
 
-  static ScaleChord parse(MarkedString markedString) {
-    if (markedString == null || markedString.isEmpty) {
+  static ScaleChord? parse(MarkedString markedString) {
+    if (markedString.isEmpty) {
       throw ArgumentError('no data to parse');
     }
 
-    ScaleNote retScaleNote = ScaleNote.parse(markedString);
+    ScaleNote? retScaleNote = ScaleNote.parse(markedString);
+    if (retScaleNote == null) {
+      return null;
+    }
+
     if (retScaleNote == ScaleNote.get(ScaleNoteEnum.X)) {
-      return ScaleChord(
-          retScaleNote, ChordDescriptor.major); //  by convention only
+      return ScaleChord(retScaleNote, ChordDescriptor.major); //  by convention only
     }
 
     ChordDescriptor retChordDescriptor = ChordDescriptor.parse(markedString);
@@ -50,8 +50,8 @@ class ScaleChord implements Comparable<ScaleChord> {
 //return new ScaleChord(scaleNote.transpose(key, halfSteps), chordDescriptor);
 //}
 
-  ScaleChord getAlias() {
-    ScaleNote alias = _scaleNote.alias;
+  ScaleChord? getAlias() {
+    ScaleNote? alias = _scaleNote.alias;
     if (alias == null) return null;
     return ScaleChord(alias, _chordDescriptor);
   }
@@ -70,13 +70,11 @@ class ScaleChord implements Comparable<ScaleChord> {
 
   @override
   String toString() {
-    return scaleNote.toString() +
-        (chordDescriptor != null ? chordDescriptor.shortName : '');
+    return scaleNote.toString() + chordDescriptor.shortName;
   }
 
   String toMarkup() {
-    return scaleNote.toMarkup() +
-        (chordDescriptor != null ? chordDescriptor.shortName : '');
+    return scaleNote.toMarkup() + chordDescriptor.shortName;
   }
 
   @override
@@ -93,9 +91,7 @@ class ScaleChord implements Comparable<ScaleChord> {
     if (identical(this, other)) {
       return true;
     }
-    return other is ScaleChord &&
-        _scaleNote == other._scaleNote &&
-        _chordDescriptor == other._chordDescriptor;
+    return other is ScaleChord && _scaleNote == other._scaleNote && _chordDescriptor == other._chordDescriptor;
   }
 
   @override
@@ -104,19 +100,18 @@ class ScaleChord implements Comparable<ScaleChord> {
     return ret;
   }
 
-  static Set<ScaleChord> _easyGuitarChords;
+  static final Set<ScaleChord> _easyGuitarChords = <ScaleChord>{};
 
   static Set<ScaleChord> _getEasyGuitarChords() {
-    if (_easyGuitarChords == null) {
-      _easyGuitarChords = <ScaleChord>{};
-      _easyGuitarChords.add(ScaleChord.parseString('C'));
-      _easyGuitarChords.add(ScaleChord.parseString('A'));
-      _easyGuitarChords.add(ScaleChord.parseString('G'));
-      _easyGuitarChords.add(ScaleChord.parseString('E'));
-      _easyGuitarChords.add(ScaleChord.parseString('D'));
-      _easyGuitarChords.add(ScaleChord.parseString('Am'));
-      _easyGuitarChords.add(ScaleChord.parseString('Em'));
-      _easyGuitarChords.add(ScaleChord.parseString('Dm'));
+    if (_easyGuitarChords.isEmpty) {
+      _easyGuitarChords.add(ScaleChord.parseString('C')!);
+      _easyGuitarChords.add(ScaleChord.parseString('A')!);
+      _easyGuitarChords.add(ScaleChord.parseString('G')!);
+      _easyGuitarChords.add(ScaleChord.parseString('E')!);
+      _easyGuitarChords.add(ScaleChord.parseString('D')!);
+      _easyGuitarChords.add(ScaleChord.parseString('Am')!);
+      _easyGuitarChords.add(ScaleChord.parseString('Em')!);
+      _easyGuitarChords.add(ScaleChord.parseString('Dm')!);
     }
     return _easyGuitarChords;
   }

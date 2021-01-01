@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('test quote', () {
-    String s;
+    String? s;
     String qs;
 
     s = null;

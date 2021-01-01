@@ -180,11 +180,14 @@ class Pitch implements Comparable<Pitch> {
   Pitch._(this._pitchEnum) {
     //  initialize the final values
 
-    RegExpMatch mr = pitchRegExp.firstMatch(_pitchEnum.toString());
+    RegExpMatch? mr = pitchRegExp.firstMatch(_pitchEnum.toString());
+    if (mr == null) {
+      throw 'bad pitch! "${_pitchEnum.toString()}"';
+    }
     //   fail early on null!
-    _name = mr.group(1) + mr.group(2);
-    _scaleNote = ScaleNote.valueOf(mr.group(1));
-    _octaveNumber = int.parse(mr.group(2));
+    _name = mr.group(1)! + mr.group(2)!;
+    _scaleNote = ScaleNote.valueOf(mr.group(1)!)!;
+    _octaveNumber = int.parse(mr.group(2)!);
 
     //  cope with the piano numbers stepping forward on C
     //  and the label numbers not stepping with sharps and flats,
@@ -196,27 +199,24 @@ class Pitch implements Comparable<Pitch> {
       n += (_octaveNumber - 1) * MusicConstants.halfStepsPerOctave;
     } else {
       //  offset from A to C
-      int fromC = (n - MusicConstants.halfStepsFromAtoC) %
-          MusicConstants.halfStepsPerOctave;
+      int fromC = (n - MusicConstants.halfStepsFromAtoC) % MusicConstants.halfStepsPerOctave;
       //  compute halfSteps from A0
-      n += ((fromC >=
-                  (MusicConstants.halfStepsPerOctave -
-                      MusicConstants.halfStepsFromAtoC))
+      n += ((fromC >= (MusicConstants.halfStepsPerOctave - MusicConstants.halfStepsFromAtoC))
               ? _octaveNumber
               : _octaveNumber - 1) *
           MusicConstants.halfStepsPerOctave;
     }
     _number = n;
 
-    _frequency = 440 * pow(2, ((_number + 1) - 49) / 12);
+    _frequency = 440.0 * pow(2, ((_number + 1) - 49) / 12);
   }
 
   static Pitch get(PitchEnum se) {
-    return _getPitchMap()[se];
+    return _getPitchMap()[se]!;
   }
 
-  static Map<PitchEnum, Pitch> _pitchMap;
-  static List<Pitch> _pitches;
+  static final Map<PitchEnum, Pitch> _pitchMap = Map<PitchEnum, Pitch>.identity();
+  static final List<Pitch> _pitches = [];
 
   static List<Pitch> get sharps {
     getPitches();
@@ -233,17 +233,15 @@ class Pitch implements Comparable<Pitch> {
   static final List<Pitch> _flats = [];
 
   static List<Pitch> getPitches() {
-    if (_pitches == null) {
+    if (_pitches.isEmpty) {
       _getPitchMap(); //  note that the alignment in pitch map requires the singletons be generated there
     }
     return _pitches;
   }
 
   static Map<PitchEnum, Pitch> _getPitchMap() {
-    if (_pitchMap == null) {
+    if (_pitches.isEmpty) {
       //  instantiate all the pitches
-      _pitchMap = Map<PitchEnum, Pitch>.identity();
-      _pitches = [];
       for (PitchEnum e in PitchEnum.values) {
         Pitch p = Pitch._(e);
         //  note the alignment with the enum
@@ -256,23 +254,20 @@ class Pitch implements Comparable<Pitch> {
         if (pitch.isSharp) {
           _sharps.add(pitch); //    the natural didn't get there first
         } else if (pitch.isFlat) {
-          if (_flats.isNotEmpty &&
-              _flats[_flats.length - 1].number != pitch.number) {
+          if (_flats.isNotEmpty && _flats[_flats.length - 1].number != pitch.number) {
             _flats.add(pitch); //    the natural didn't get there first
           }
         } else {
           //  natural
 
-          if (_sharps.isNotEmpty &&
-              _sharps[_sharps.length - 1].number == pitch.number) {
+          if (_sharps.isNotEmpty && _sharps[_sharps.length - 1].number == pitch.number) {
             //  remove sharp duplicates
             _sharps[_sharps.length - 1] = pitch;
           } else {
             _sharps.add(pitch);
           }
 
-          if (flats.isNotEmpty &&
-              flats[flats.length - 1].number == pitch.number) {
+          if (flats.isNotEmpty && flats[flats.length - 1].number == pitch.number) {
             //  remove flat duplicates
             flats[flats.length - 1] = pitch;
           } else {
@@ -299,7 +294,7 @@ class Pitch implements Comparable<Pitch> {
     return _pitchMap;
   }
 
-  static Pitch findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
+  static Pitch? findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
     for (Pitch p in getPitches()) {
       if (p.scaleNote == scaleNote && p.number >= atOrAbove.number) return p;
     }
@@ -342,14 +337,14 @@ class Pitch implements Comparable<Pitch> {
     return (isSharp ? sharps : flats)[retNumber];
   }
 
-  Pitch nextHigherPitch() {
+  Pitch? nextHigherPitch() {
     List<Pitch> list = (isSharp ? sharps : flats);
     int n = _number + 1;
     if (n >= list.length) return null;
     return list[n];
   }
 
-  Pitch nextLowerPitch() {
+  Pitch? nextLowerPitch() {
     List<Pitch> list = (isSharp ? sharps : flats);
     int n = _number - 1;
     if (n < 0) return null;
@@ -365,7 +360,7 @@ class Pitch implements Comparable<Pitch> {
   }
 
   /// Return the pitch offset by the given number of half steps.
-  Pitch offsetByHalfSteps(int halfSteps) {
+  Pitch? offsetByHalfSteps(int halfSteps) {
     if (halfSteps == 0) {
       return this;
     }
@@ -415,24 +410,24 @@ class Pitch implements Comparable<Pitch> {
   final PitchEnum _pitchEnum;
 
   String get name => _name;
-  String _name;
+  late  String _name;
 
   ScaleNote get scaleNote => _scaleNote;
-  ScaleNote _scaleNote;
+  late  ScaleNote _scaleNote;
 
-  int get scaleNumber => _scaleNote?.scaleNumber;
+  int get scaleNumber => _scaleNote.scaleNumber;
 
   Accidental get accidental => _scaleNote.accidental;
 
   int get octaveNumber => _octaveNumber;
-  int _octaveNumber;
+  late  int _octaveNumber;
 
   int get number => _number;
-  int _number;
-  double _frequency;
+  late  int _number;
+ late double _frequency;
 
-  Pitch _asSharp;
-  Pitch _asFlat;
+  late Pitch _asSharp;
+  late Pitch _asFlat;
 
   static final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');
 }

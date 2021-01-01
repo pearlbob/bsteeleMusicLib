@@ -38,7 +38,7 @@ class Song extends SongBase implements Comparable<Song> {
       int bpm,
       int beatsPerBar,
       int unitsPerMeasure,
-      String user,
+      String? user,
       String chords,
       String lyrics) {
     Song song = Song();
@@ -181,21 +181,21 @@ class Song extends SongBase implements Comparable<Song> {
       //  a list of songs
       for (Map jsonMap in json) {
         Song song = songFromJson(jsonMap);
-        if (song != null) songList.add(song);
+        songList.add(song);
       }
     } else if (json is Map) {
       //  a single song
       Song song = songFromJson(json);
-      if (song != null) songList.add(song);
+      songList.add(song);
     }
     return songList;
   }
 
   /// Read a single song from a JSON map
   static Song songFromJson(Map jsonSongFile) {
-    Song song = Song.createEmptySong();
+    Song song = Song.createEmptySong();   //  fixme: better error modes on parse failures
 
-    Map jsonSong = jsonSongFile['song'];
+    Map? jsonSong = jsonSongFile['song'];
     jsonSong ??= jsonSongFile;
 
     var fileDateTime =
@@ -223,11 +223,11 @@ class Song extends SongBase implements Comparable<Song> {
         case 'timeSignature':
           //  most of this is coping with real old events with poor formatting
           String timeSignature = jsonSong[name];
-          RegExpMatch mr = _timeSignatureExp.firstMatch(timeSignature);
+          RegExpMatch? mr = _timeSignatureExp.firstMatch(timeSignature);
           if (mr != null) {
             // parse
-            song.setBeatsPerBar(int.parse(mr.group(1)));
-            song.setUnitsPerMeasure(int.parse(mr.group(2)));
+            song.setBeatsPerBar(int.parse(mr.group(1)!));
+            song.setUnitsPerMeasure(int.parse(mr.group(2)!));
           } else {
             //  safe default
             song.setBeatsPerBar(4);
@@ -257,7 +257,7 @@ class Song extends SongBase implements Comparable<Song> {
           DateTime songDateTime =
               DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
           if (songDateTime.isAfter(fileDateTime)) {
-            song.lastModifiedTime = songDateTime.millisecondsSinceEpoch;
+            song.setLastModifiedTime( songDateTime.millisecondsSinceEpoch);
           }
           break;
         case 'user':
@@ -269,9 +269,6 @@ class Song extends SongBase implements Comparable<Song> {
   }
 
   static String listToJson(List<Song> songs) {
-    if (songs == null || songs.isEmpty) {
-      return null;
-    }
     StringBuffer sb = StringBuffer();
     sb.write('[\n');
     bool first = true;
@@ -289,7 +286,7 @@ class Song extends SongBase implements Comparable<Song> {
 
   String toJsonAsFile() {
     return '{ \"file\": ' +
-        jsonEncode(getFileName() ?? '') +
+        jsonEncode(getFileName()) +
         ', \"lastModifiedDate\": ' +
         lastModifiedTime.toString() +
         ', \"song\":' +
@@ -381,8 +378,8 @@ class Song extends SongBase implements Comparable<Song> {
         0,
         StringTriple(
             'file date',
-            DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
-            DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime)
+            DateTime.fromMillisecondsSinceEpoch(a.getLastModifiedTime).toString(),
+            DateTime.fromMillisecondsSinceEpoch(b.getLastModifiedTime)
                 .toString()));
     return ret;
   }
@@ -450,8 +447,8 @@ Comparator<Song> _comparatorByArtist = (Song o1, Song o2) {
 };
 
 int _compareByLastModifiedDate(Song o1, Song o2) {
-  int mod1 = o1.lastModifiedTime;
-  int mod2 = o2.lastModifiedTime;
+  int mod1 = o1.getLastModifiedTime;
+  int mod2 = o2.getLastModifiedTime;
 
   if (mod1 == mod2) return o1.compareTo(o2);
   return mod1 < mod2 ? 1 : -1;

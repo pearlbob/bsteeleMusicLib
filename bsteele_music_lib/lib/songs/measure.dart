@@ -20,15 +20,15 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     allocateTheBeats();
   }
 
-  Measure.deepCopy(Measure measure) {
+  Measure.deepCopy(Measure? measure) {
     if (measure == null) return;
 
     beatCount = measure.beatCount;
 
     //  deep copy
     List<Chord> chords = [];
-    for (Chord chord in measure.chords) {
-      chords.add( Chord.copy(chord));
+    for (Chord chord in measure.chords!) {
+      chords.add(Chord.copy(chord));
     }
     this.chords = chords;
 
@@ -38,22 +38,21 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   /// for subclasses
   Measure.zeroArgs()
       : beatCount = 4,
-        chords = null;
+        chords = [];
 
   /// Convenience method for testing only
-  static Measure parseString(String s, int beatsPerBar, {bool endOfRow}) {
+  static Measure? parseString(String s, int beatsPerBar, {bool endOfRow:false}) {
     return parse(MarkedString(s), beatsPerBar, null, endOfRow: endOfRow);
   }
 
   /// Parse a measure from the input string
-  static Measure parse(final MarkedString markedString, final int beatsPerBar,
-      final Measure priorMeasure,
-      {bool endOfRow}) {
+  static Measure? parse(final MarkedString markedString, final int beatsPerBar, final Measure? priorMeasure,
+      {bool endOfRow: false}) {
     //  should not be white space, even leading, in a measure
-    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) throw 'no data to parse';
 
     List<Chord> chords = [];
-    Measure ret;
+    Measure? ret;
 
     for (int i = 0; i < 32; i++) //  safety
     {
@@ -64,8 +63,10 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
       int mark = markedString.mark();
       try {
-        Chord chord = Chord.parse(markedString, beatsPerBar);
-        chords.add(chord);
+        Chord? chord = Chord.parse(markedString, beatsPerBar);
+        if (chord != null) {
+          chords.add(chord);
+        }
       } catch (e) {
         markedString.resetTo(mark);
 
@@ -77,9 +78,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         }
 
         //  see if this is a repeat measure
-        if (chords.isEmpty &&
-            markedString.charAt(0) == '-' &&
-            priorMeasure != null) {
+        if (chords.isEmpty && markedString.charAt(0) == '-' && priorMeasure != null) {
           ret = Measure(beatsPerBar, priorMeasure.chords);
           markedString.getNextChar();
           break;
@@ -87,14 +86,16 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         break;
       }
     }
-    if (ret == null && chords.isEmpty) throw 'no chords found';
+    if (ret == null && chords.isEmpty) {
+      throw 'no chords found';
+    }
 
     ret ??= Measure(beatsPerBar, chords);
 
     //  process end of row markers
-    RegExpMatch mr = sectionRegexp.firstMatch(markedString.toString());
+    RegExpMatch? mr = sectionRegexp.firstMatch(markedString.toString());
     if (mr != null) {
-      markedString.consume(mr.group(0).length);
+      markedString.consume(mr.group(0)!.length);
       endOfRow = true;
     }
 
@@ -117,8 +118,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         }
       }
       //  verify not over specified
-      if (explicitBeats + (chords.length - explicitChords) >
-          beatCount) {
+      if (explicitBeats + (chords.length - explicitChords) > beatCount) {
         return; //  too many beats!  even if the unspecified chords only got 1
       }
 
@@ -132,9 +132,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         return;
       }
 
-      if (explicitBeats == 0 &&
-          explicitChords == 0 &&
-          beatCount % chords.length == 0) {
+      if (explicitBeats == 0 && explicitChords == 0 && beatCount % chords.length == 0) {
         //  spread the implicit beats evenly
         int implicitBeats = beatCount ~/ chords.length;
         //  fixme: why is the cast required?
@@ -147,9 +145,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         //  give left over beats to the first unspecified
         int totalBeats = explicitBeats;
         if (chords.length > explicitChords) {
-          Chord firstUnspecifiedChord;
-          int beatsPerUnspecifiedChord = max(1,
-              (beatCount - explicitBeats) ~/ (chords.length - explicitChords));
+          Chord? firstUnspecifiedChord;
+          int beatsPerUnspecifiedChord = max(1, (beatCount - explicitBeats) ~/ (chords.length - explicitChords));
           for (Chord c in chords) {
             c.implicitBeats = false;
             if (c.beats == beatCount) {
@@ -161,8 +158,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
           //  dump all the remaining beats on the first unspecified
           if (firstUnspecifiedChord != null && totalBeats < beatCount) {
             firstUnspecifiedChord.implicitBeats = false;
-            firstUnspecifiedChord.beats =
-                beatsPerUnspecifiedChord + (beatCount - totalBeats);
+            firstUnspecifiedChord.beats = beatsPerUnspecifiedChord + (beatCount - totalBeats);
             totalBeats = beatCount;
           }
         }
@@ -188,7 +184,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     }
   }
 
-  Chord getChordAtBeat(double beat) {
+  Chord? getChordAtBeat(double beat) {
     if (chords == null || chords.isEmpty) return null;
 
     double beatSum = 0;
@@ -227,9 +223,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   bool isEasyGuitarMeasure() {
-    return chords != null &&
-        chords.length == 1 &&
-        chords[0].scaleChord.isEasyGuitarChord();
+    return chords != null && chords.length == 1 && chords[0].scaleChord.isEasyGuitarChord();
   }
 
   @override
@@ -252,21 +246,21 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return toMarkupWithEnd(null);
   }
 
-  String toMarkupWithEnd(String endOfRowChar) {
+  String toMarkupWithEnd(String? endOfRowChar) {
     if (chords != null && chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
         sb.write(chord.toMarkup());
       }
-      if (endOfRowChar!=null && endOfRow) sb.write(endOfRowChar);
+      if (endOfRowChar != null && endOfRow) sb.write(endOfRowChar);
       return sb.toString();
     }
-    if (endOfRowChar!=null && endOfRow) return 'X' + endOfRowChar;
+    if (endOfRowChar != null && endOfRow) return 'X' + endOfRowChar;
     return 'X'; // no chords
   }
 
   @override
-  String getId() {
+  String? getId() {
     return null;
   }
 
@@ -304,7 +298,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType &&
+    return other is Measure &&
         beatCount == other.beatCount &&
         endOfRow == other.endOfRow &&
         listsEqual(chords, other.chords);

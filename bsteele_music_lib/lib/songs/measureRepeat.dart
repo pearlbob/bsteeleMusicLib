@@ -9,15 +9,15 @@ import 'section.dart';
 import 'key.dart';
 
 class MeasureRepeat extends Phrase {
-  MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats) : super(measures, phraseIndex) {
-    _repeatMarker = MeasureRepeatMarker(repeats);
-  }
+  MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats)
+      : _repeatMarker = MeasureRepeatMarker(repeats),
+        super(measures, phraseIndex);
 
   static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static MeasureRepeat parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
+  static MeasureRepeat parse(MarkedString? markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     if (markedString == null || markedString.isEmpty) throw 'no data to parse';
 
     int initialMark = markedString.mark();
@@ -66,12 +66,14 @@ class MeasureRepeat extends Phrase {
 
       int mark = markedString.mark();
       try {
-        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
-        if (!hasBracket && measure.endOfRow) {
+        Measure? measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
+        if (!hasBracket && measure != null && measure.endOfRow) {
           throw 'repeat not found'; //  this is not a repeat!
         }
         priorMeasure = measure;
-        measures.add(measure);
+        if (measure != null) {
+          measures.add(measure);
+        }
         barFound = false;
         continue;
       } catch (e) {
@@ -92,13 +94,13 @@ class MeasureRepeat extends Phrase {
     }
 
     final RegExp repeatExp = RegExp('^' + (hasBracket ? '\\s*]' : '') + '\\s*x(\\d+)\\s*');
-    RegExpMatch mr = repeatExp.firstMatch(markedString.toString());
+    RegExpMatch? mr = repeatExp.firstMatch(markedString.toString());
     if (mr != null) {
-      int repeats = int.parse(mr.group(1));
+      int repeats = int.parse(mr.group(1)!);
       if (measures.isNotEmpty) measures[measures.length - 1].endOfRow = false;
       MeasureRepeat ret = MeasureRepeat(measures, phraseIndex, repeats);
       logger.d(' measure repeat: ' + ret.toMarkup());
-      markedString.consume(mr.group(0).length);
+      markedString.consume(mr.group(0)!.length);
       return ret;
     }
 
@@ -121,8 +123,8 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  MeasureNode findMeasureNode(MeasureNode measureNode) {
-    MeasureNode ret = super.findMeasureNode(measureNode);
+  MeasureNode? findMeasureNode(MeasureNode measureNode) {
+    MeasureNode? ret = super.findMeasureNode(measureNode);
     if (ret != null) return ret;
     if (measureNode == _repeatMarker) return _repeatMarker;
     return null;

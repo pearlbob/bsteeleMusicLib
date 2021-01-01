@@ -19,7 +19,7 @@ class Bass{
     }
 
     static Pitch bassFretToPitch( int fret ){
-        return _E1.offsetByHalfSteps(fret);
+        return _E1.offsetByHalfSteps(fret)!;
     }
 
     static final Pitch _E1 = Pitch.get(PitchEnum.E1);

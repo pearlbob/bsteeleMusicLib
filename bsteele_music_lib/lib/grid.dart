@@ -2,42 +2,42 @@
 /// Grid locations are logically assigned without the details of the UI mapping.
 class Grid<T> {
   /// Deep copy, not as a constructor
-  Grid<T> deepCopy(Grid<T> other) {
-    if (other == null) return null;
+  Grid<T> deepCopy(Grid<T>? other) {
+    if (other == null) return Grid<T>();
     int rLimit = other.getRowCount();
     for (int r = 0; r < rLimit; r++) {
-      List<T> row = other.getRow(r);
-      int colLimit = row.length;
+      List<T?>? row = other.getRow(r);
+      int colLimit = row?.length??0;
       for (int c = 0; c < colLimit; c++) {
-        set(c, r, row[c]);
+        set(c, r, row?[c]);
       }
     }
     return this;
   }
 
-  bool get isEmpty => grid.isEmpty;
+  bool get isEmpty => grid?.isEmpty ?? true;
 
-  bool get isNotEmpty => grid.isNotEmpty;
+  bool get isNotEmpty => grid?.isNotEmpty ?? false;
 
-  void set(int x, int y, T t) {
+  void set(int x, int y, T? t) {
     if (x < 0) x = 0;
     if (y < 0) y = 0;
 
-    while (x >= grid.length) {
+    while (x >= (grid?.length ?? 0)) {
       //  addTo a new row to the grid
-      grid.add(List.generate(1, (a) {
+      grid?.add(List.generate(1, (a) {
         return null;
       }));
     }
 
-    List<T> row = grid[x];
-    if (y == row.length) {
-      row.add(t);
+    List<T?>? row = grid?[x];
+    if (y == row?.length) {
+      row?.add(t);
     } else {
-      while (y > row.length - 1) {
-        row.add(null);
+      while (y > (row?.length??0) - 1) {
+        row?.add(null);
       }
-      row[y] = t;
+      row?[y] = t;
     }
   }
 
@@ -52,11 +52,11 @@ class Grid<T> {
     if (grid != null) {
       int rLimit = getRowCount();
       for (int r = 0; r < rLimit; r++) {
-        List<T> row = getRow(r);
-        int colLimit = row.length;
+        List<T?>? row = getRow(r);
+        int colLimit = row?.length??0;
         sb.write('\t[');
         for (int c = 0; c < colLimit; c++) {
-          sb.write('\t' + row[c].toString()+',');
+          sb.write('\t' + (row?[c].toString()??'') + ',');
         }
         sb.write('\t]\n');
       }
@@ -65,9 +65,9 @@ class Grid<T> {
     return sb.toString();
   }
 
-  T get(int x, int y) {
+  T? get(int x, int y) {
     try {
-      List<T> row = grid[x];
+      List<T?>? row = grid?[x];
       if (row == null) {
         return null;
       }
@@ -78,33 +78,33 @@ class Grid<T> {
   }
 
   int getRowCount() {
-    return grid.length;
+    return grid?.length??0;
   }
 
-  List<T> getRow(int r) {
+  List<T?>? getRow(int r) {
     try {
-      return grid[r];
+      return grid?[r];
     } catch (ex) {
       return null;
     }
   }
 
-  int rowLength(int r) {
+  int? rowLength(int r) {
     try {
-      return grid[r].length;
+      return grid?[r].length;
     } catch (ex) {
       return null;
     }
   }
 
   void clear() {
-    grid.clear();
-    grid.add(List.generate(1, (a) {
+    grid?.clear();
+    grid?.add(List.generate(1, (a) {
       return null;
     }));
   }
 
-  final List<List<T>> grid =
+  final List<List<T?>>? grid =
       //  fixme: is this required for a dart bug?
       List.generate(1, (a) {
     return List.generate(1, (a) {

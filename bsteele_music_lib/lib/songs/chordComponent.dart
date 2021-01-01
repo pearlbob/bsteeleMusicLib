@@ -27,7 +27,7 @@ class ChordComponent implements Comparable<ChordComponent> {
     for (String s in chordComponentString.split(RegExp(r'[,. ]'))) {
       if (s.isEmpty) continue;
 
-      ChordComponent cc;
+      ChordComponent? cc;
       for (ChordComponent t in _chordComponentByHalfSteps) {
         if (t.shortName == s) {
           cc = t;

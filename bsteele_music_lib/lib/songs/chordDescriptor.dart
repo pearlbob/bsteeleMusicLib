@@ -180,10 +180,9 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     return _major;
   }
 
-  ChordDescriptor._(this._name, this._shortName, String structure, {ChordDescriptor alias}) {
-    _alias = alias;
-    _chordComponents = ChordComponent.parse(structure);
-  }
+  ChordDescriptor._(this._name, this._shortName, String structure, {ChordDescriptor? alias})
+      : _alias = alias,
+        _chordComponents = ChordComponent.parse(structure);
 
   static ChordDescriptor parseString(String s) {
     return parse(MarkedString(s));
@@ -234,8 +233,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 //}
 
   ChordDescriptor deAlias() {
-    if (_alias != null) return _alias;
-    return this;
+    return _alias ?? this;
   }
 
   @override
@@ -245,12 +243,11 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   @override
   bool operator ==(other) {
-    return _name == other._name;
+    return _name == ((other as ChordDescriptor)?._name ?? '');
   }
 
   @override
   int compareTo(ChordDescriptor other) {
-    if (other == null) return -1;
     return _name.compareTo(other._name);
   }
 
@@ -284,8 +281,8 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   /// an optional alias often used by musicians.
   /// can be null.
-  ChordDescriptor get alias => _alias;
-  ChordDescriptor _alias;
+  ChordDescriptor? get alias => _alias;
+  ChordDescriptor? _alias;
 
   static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [
@@ -340,7 +337,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _dominant11,
     _dominant13,
   ];
-  static List<ChordDescriptor> _allChordDescriptorsOrdered;
+  static late List<ChordDescriptor> _allChordDescriptorsOrdered;
 
   static final List<ChordDescriptor> _parseOrderedChordDescriptorsOrdered = [
     _sevenSus4,

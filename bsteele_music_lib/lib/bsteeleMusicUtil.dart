@@ -229,7 +229,7 @@ coerced to reflect the songlist's last modification for that song.
           {
             Map<Song, int> ninjams = {};
             for (Song song in allSongs) {
-              ChordSection lastChordSection;
+              ChordSection? lastChordSection;
               bool allSignificantChordSectionsMatch = true;
 
               if (song.getChordSections().length == 1) {
@@ -346,9 +346,11 @@ coerced to reflect the songlist's last modification for that song.
                 }
                 if (rating.rating >= 0.8) {
                   print('"${song.title.toString()}" by ${song.artist.toString()}');
-                  Song similar = map[rating.target];
-                  print('"${similar.title.toString()}" by ${similar.artist.toString()}');
-                  print(' ');
+                  Song? similar = map[rating.target];
+                  if (similar != null) {
+                    print('"${similar?.title.toString()}" by ${similar?.artist.toString()}');
+                    print(' ');
+                  }
                   listed.add(rating.target);
                 }
                 break;
@@ -420,83 +422,85 @@ coerced to reflect the songlist's last modification for that song.
 
           i++;
           _file = File(args[i]);
-          if (_verbose) print('input file path: ${_file.toString()}');
-          if (!(await _file.exists())) {
-            logger.d('input file path: ${_file.toString()}'
-                    ' is missing' +
-                (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
+          if (_file != null) {
+            if (_verbose) print('input file path: ${_file.toString()}');
+            if (!(await _file!.exists())) {
+              logger.d('input file path: ${_file.toString()}'
+                      ' is missing' +
+                  (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
 
-            exit(-1);
-          }
+              exit(-1);
+            }
 
-          if (_verbose) {
-            logger.d('input file: ${_file.toString()}, file size: ${await _file.length()}');
-          }
+            if (_verbose) {
+              logger.d('input file: ${_file.toString()}, file size: ${await _file!.length()}');
+            }
 
-          List<Song> songs;
-          if (_file.path.endsWith('.zip')) {
-            // Read the Zip file from disk.
-            final bytes = await _file.readAsBytes();
+            List<Song>? songs;
+            if (_file!.path.endsWith('.zip')) {
+              // Read the Zip file from disk.
+              final bytes = await _file!.readAsBytes();
 
-            // Decode the Zip file
-            final archive = ZipDecoder().decodeBytes(bytes);
+              // Decode the Zip file
+              final archive = ZipDecoder().decodeBytes(bytes);
 
-            // Extract the contents of the Zip archive
-            for (final file in archive) {
-              if (file.isFile) {
-                final data = file.content as List<int>;
-                songs = Song.songListFromJson(utf8.decode(data));
+              // Extract the contents of the Zip archive
+              for (final file in archive) {
+                if (file.isFile) {
+                  final data = file.content as List<int>;
+                  songs = Song.songListFromJson(utf8.decode(data));
+                }
               }
+            } else {
+              songs = Song.songListFromJson(_file!.readAsStringSync());
             }
-          } else {
-            songs = Song.songListFromJson(_file.readAsStringSync());
-          }
 
-          if (songs == null || songs.isEmpty) {
-            logger.e('didn\'t find songs in ${_file.toString()}');
-            exit(-1);
-          }
-
-          for (Song song in songs) {
-            DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime);
-
-            //  used to spread the songs thinner than the maximum 1000 files
-            //  per directory limit in github.com
-            Directory songDir;
-            {
-              String s = song.getTitle().replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
-              songDir = Directory(_outputDirectory.path + '/' + s);
+            if (songs == null || songs.isEmpty) {
+              logger.e('didn\'t find songs in ${_file.toString()}');
+              exit(-1);
             }
-            songDir.createSync();
 
-            File writeTo = File(songDir.path + '/' + song.songId.toString() + '.songlyrics');
-            if (_verbose) logger.d('\t' + writeTo.path);
-            String fileAsJson = song.toJsonAsFile();
-            if (writeTo.existsSync()) {
-              String fileAsRead = writeTo.readAsStringSync();
-              if (fileAsJson != fileAsRead) {
-                writeTo.writeAsStringSync(fileAsJson, flush: true);
+            for (Song song in songs) {
+              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.getLastModifiedTime ?? 0);
+
+              //  used to spread the songs thinner than the maximum 1000 files
+              //  per directory limit in github.com
+              Directory songDir;
+              {
+                String s = song.getTitle().replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
+                songDir = Directory(_outputDirectory.path + '/' + s);
+              }
+              songDir.createSync();
+
+              File writeTo = File(songDir.path + '/' + song.songId.toString() + '.songlyrics');
+              if (_verbose) logger.d('\t' + writeTo.path);
+              String fileAsJson = song.toJsonAsFile();
+              if (writeTo.existsSync()) {
+                String fileAsRead = writeTo.readAsStringSync();
+                if (fileAsJson != fileAsRead) {
+                  writeTo.writeAsStringSync(fileAsJson, flush: true);
+                  if (_verbose) {
+                    logger.i(
+                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                  }
+                } else {
+                  if (_veryVerbose) {
+                    logger.i(
+                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                    logger.i('\tidentical');
+                  }
+                }
+              } else {
                 if (_verbose) {
                   logger.i(
                       '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
                 }
-              } else {
-                if (_veryVerbose) {
-                  logger.i(
-                      '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
-                  logger.i('\tidentical');
-                }
+                writeTo.writeAsStringSync(fileAsJson, flush: true);
               }
-            } else {
-              if (_verbose) {
-                logger.i(
-                    '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
-              }
-              writeTo.writeAsStringSync(fileAsJson, flush: true);
-            }
 
-            //  force the modification date
-            await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
+              //  force the modification date
+              await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
+            }
           }
           break;
 
@@ -549,7 +553,7 @@ coerced to reflect the songlist's last modification for that song.
     for (Song song in addSongs) {
       if (allSongs.contains(song)) {
         Song listSong = allSongs.firstWhere((value) => value.songId.compareTo(song.songId) == 0);
-        if (song.lastModifiedTime > listSong.lastModifiedTime) {
+        if (song.getLastModifiedTime > listSong.getLastModifiedTime ) {
           allSongs.remove(listSong);
           allSongs.add(song);
           _updateCount++;
@@ -563,9 +567,12 @@ coerced to reflect the songlist's last modification for that song.
   void _copyright() {
     Map<String, SplayTreeSet<Song>> copyrights = {};
     for (Song song in allSongs) {
-      String copyright = song.copyright.trim();
+      String? copyright = song.copyright?.trim();
+      if (copyright == null) {
+        continue;
+      }
       //print('${song.copyright} ${song.songId.toString()}');
-      SplayTreeSet<Song> set = copyrights[copyright];
+      SplayTreeSet<Song>? set = copyrights[copyright];
       if (set == null) {
         set = SplayTreeSet();
         set.add(song);
@@ -579,7 +586,7 @@ coerced to reflect the songlist's last modification for that song.
     orderedKeys.addAll(copyrights.keys);
     for (String copyright in orderedKeys) {
       print('"$copyright"');
-      for (Song song in copyrights[copyright]) {
+      for (Song song in copyrights[copyright] ?? {}) {
         print('\t${song.songId.toString()}');
       }
     }
@@ -640,7 +647,7 @@ coerced to reflect the songlist's last modification for that song.
 
   Directory _outputDirectory = Directory.current;
   SplayTreeSet<Song> allSongs = SplayTreeSet();
-  File _file;
+  File? _file;
   bool _verbose = false;
   bool _veryVerbose = false;
   bool _force = false; //  force a file write, even if it already exists
@@ -652,11 +659,11 @@ String homePath() {
   String home = '';
   Map<String, String> envVars = Platform.environment;
   if (Platform.isMacOS) {
-    home = envVars['HOME'];
+    home = envVars['HOME'] ?? '';
   } else if (Platform.isLinux) {
-    home = envVars['HOME'];
+    home = envVars['HOME'] ?? '';
   } else if (Platform.isWindows) {
-    home = envVars['UserProfile'];
+    home = envVars['UserProfile'] ?? '';
   }
   return home;
 }

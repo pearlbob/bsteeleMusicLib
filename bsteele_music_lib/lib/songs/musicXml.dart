@@ -17,7 +17,7 @@ class MusicXml {
 
   String songAsMusicXml(Song song) {
     _song = song;
-    music_key.Key key = _song.key;
+    music_key.Key? key = _song.key;
 
     StringBuffer sb = StringBuffer();
 
@@ -101,9 +101,9 @@ class MusicXml {
     {
       int beats = song.beatsPerBar;
       Pitch lowRoot = Pitch.get(PitchEnum.E2); //  bass staff
-      lowRoot = key.mappedPitch(lowRoot); // required once only
+      lowRoot = key?.mappedPitch(lowRoot) ?? lowRoot; // required once only
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
-      highRoot = key.mappedPitch(highRoot); // required once only
+      highRoot = key?.mappedPitch(highRoot) ?? highRoot; // required once only
 
       song.songMomentGrid; //  fixme: shouldn't be required!
 
@@ -134,7 +134,7 @@ class MusicXml {
           <!--    allow up to 16th notes  -->
           <divisions>$_divisionsPerBeat</divisions>
           <key>
-              <fifths>${key.getKeyValue()}</fifths>
+              <fifths>${key?.getKeyValue() ?? ''}</fifths>
           </key>
           <time>
               <beats>$beats</beats>
@@ -165,16 +165,19 @@ class MusicXml {
         //  bass
         sb.write('\t<backup> <duration>16</duration> </backup>');
 
-        {
+        if (key != null) {
           for (Chord chord in songMoment.getMeasure().chords) {
-            Pitch pitch = key.mappedPitch(Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot));
-            sb.write('''
+            Pitch? p = Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot);
+            if (p != null) {
+              Pitch pitch = key.mappedPitch(p);
+              sb.write('''
   <note><!--  bass note: $pitch    -->
     ${_pitchAsMusicXml(pitch)}
     ${_noteDuration(chord.beats)}
     <staff>2</staff>
     </note>
 ''');
+            }
           }
         }
 
@@ -216,14 +219,14 @@ class MusicXml {
     return _step(scaleNote, basis: 'root');
   }
 
-  String _bassStep(ScaleNote scaleNote) {
+  String _bassStep(ScaleNote? scaleNote) {
     if (scaleNote == null) {
       return '';
     }
     return _step(scaleNote, basis: 'bass');
   }
 
-  String _step(ScaleNote scaleNote, {String basis}) {
+  String _step(ScaleNote scaleNote, {String? basis}) {
     String mod = '${basis != null ? basis + '-' : ''}';
     String ret = '<${mod}step>${scaleNote.scaleString}</${mod}step>';
     if (scaleNote.isSharp) {
@@ -250,6 +253,7 @@ class MusicXml {
       default:
         //  fixme: dotted
         //  fixme: 6/8 time
+        type = 'quarter';
         break;
     }
     return '''
@@ -263,8 +267,8 @@ class MusicXml {
 
     String ret = '\t<harmony><root>' + _rootStep(scaleNote);
 
-    String name = _getChordDescriptorName(chord.scaleChord);
-    ret += '</root><kind halign="center" text="7">$name</kind>';
+    String? name = _getChordDescriptorName(chord.scaleChord);
+    ret += '</root><kind halign="center" text="7">${name ?? chord.scaleChord}</kind>';
     if (chord.slashScaleNote != null) {
       ret += '\n\t\t<bass>${_bassStep(chord.slashScaleNote)}</bass>';
     }
@@ -273,9 +277,12 @@ class MusicXml {
     //  draw the chord notes
     bool first = true;
     for (Pitch pitch in chord.getPitches(_chordBase)) {
-      pitch = _song.key.mappedPitch(pitch);
+      Pitch? p = _song.key?.mappedPitch(pitch);
+      if (p == null) {
+        continue;
+      }
       ret += '''
-\t<note><!--    ${pitch}   -->
+\t<note><!--    ${p}   -->
 ''';
       if (first) {
         first = false;
@@ -283,11 +290,11 @@ class MusicXml {
         ret += '\t\t<chord/>\n';
       }
 
-      ret += '\t\t${_pitchAsMusicXml(pitch)}';
+      ret += '\t\t${_pitchAsMusicXml(p)}';
       ret += _noteDuration(chord.beats);
       ret += '\t\t<staff>1</staff>';
 
-      if (!_lyricsHaveBeenWritten && songMoment.lyrics != null && songMoment.lyrics.isNotEmpty) {
+      if (!_lyricsHaveBeenWritten && songMoment.lyrics != null && songMoment.lyrics!.isNotEmpty) {
         ret += '''
 \t\t<lyric name="${songMoment.lyricSection.sectionVersion.getFormalName()}" number="1">
 \t\t\t<text>${songMoment.lyrics}</text>
@@ -304,7 +311,7 @@ class MusicXml {
     return ret;
   }
 
-  String _getChordDescriptorName(ScaleChord scaleChord) {
+  String? _getChordDescriptorName(ScaleChord scaleChord) {
     //  lazy eval, map internal names to musicXml names
     if (_chordDescriptorMap.isEmpty) {
       for (ChordDescriptor cd in ChordDescriptor.values) {
@@ -407,7 +414,7 @@ class MusicXml {
     return _chordDescriptorMap[scaleChord.chordDescriptor.name];
   }
 
-  Song _song;
+  late Song _song;
 
   bool _lyricsHaveBeenWritten = false;
 

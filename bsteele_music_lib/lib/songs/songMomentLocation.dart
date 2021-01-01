@@ -9,19 +9,19 @@ class SongMomentLocation {
     return parse(MarkedString(s));
   }
 
-  static SongMomentLocation parse(MarkedString markedString) {
+  static SongMomentLocation? parse(MarkedString markedString) {
     ChordSectionLocation chordSectionLocation =
         ChordSectionLocation.parse(markedString);
 
     if (markedString.available() < 2) return null;
 
-    RegExpMatch mr =
+    RegExpMatch? mr =
         numberRegexp.firstMatch(markedString.remainingStringLimited(5));
     if (mr != null) {
       try {
-        int index = int.parse(mr.group(1));
+        int index = int.parse(mr.group(1)!);
         if (index <= 0) return null;
-        markedString.consume(mr.group(0).length);
+        markedString.consume(mr.group(0)!.length);
         return SongMomentLocation(chordSectionLocation, index);
       } catch (nfe) {
         return null;

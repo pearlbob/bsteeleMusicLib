@@ -40,7 +40,7 @@ class MeasureRepeatMarker extends Measure {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && repeats == other.repeats;
+    return other is MeasureRepeatMarker && repeats == other.repeats;
   }
 
   @override

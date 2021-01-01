@@ -108,7 +108,7 @@ class LyricSection implements Comparable<LyricSection> {
   }
 
   SectionVersion get sectionVersion => _sectionVersion;
-  SectionVersion _sectionVersion;
+  late SectionVersion _sectionVersion;
   LegacyDrumSection drumSection = LegacyDrumSection();
 
   List<String> get lyricsLines => _lyricsLines;
