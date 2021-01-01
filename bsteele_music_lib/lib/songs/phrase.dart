@@ -26,7 +26,7 @@ class Phrase extends MeasureNode {
   }
 
   static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
-    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) throw 'no data to parse';
 
     List<Measure> measures = [];
     List<Measure> lineMeasures = [];
@@ -186,7 +186,7 @@ class Phrase extends MeasureNode {
   }
 
   bool replace(int index, MeasureNode? newMeasureNode) {
-    if ( _measures.isEmpty) return false;
+    if (_measures.isEmpty) return false;
 
     if (newMeasureNode == null) return false;
 
@@ -213,7 +213,7 @@ class Phrase extends MeasureNode {
     return true;
   }
 
-  bool append(int index, MeasureNode newMeasureNode) {
+  bool append(int index, MeasureNode? newMeasureNode) {
     if (newMeasureNode == null) return false;
 
     switch (newMeasureNode.getMeasureNodeType()) {
@@ -239,13 +239,13 @@ class Phrase extends MeasureNode {
     return true;
   }
 
-  bool add(List<Measure> newMeasures) {
+  bool add(List<Measure>? newMeasures) {
     if (newMeasures == null || newMeasures.isEmpty) return false;
     _measures.addAll(newMeasures);
     return true;
   }
 
-  bool addAt(int index, List<Measure> newMeasures) {
+  bool addAt(int index, List<Measure>? newMeasures) {
     if (newMeasures == null || newMeasures.isEmpty) return false;
     index = min(index, _measures.length - 1);
     addAllAt(index, newMeasures);
@@ -260,7 +260,7 @@ class Phrase extends MeasureNode {
     }
   }
 
-  bool addAllAt(int index, List<Measure> list) {
+  bool addAllAt(int index, List<Measure>? list) {
     if (list == null || list.isEmpty) return false;
     if (_measures.length < index) {
       _measures.addAll(list);
@@ -272,7 +272,7 @@ class Phrase extends MeasureNode {
     return true;
   }
 
-  bool edit(MeasureEditType type, int index, MeasureNode newMeasureNode) {
+  bool edit(MeasureEditType type, int index, MeasureNode? newMeasureNode) {
     if (newMeasureNode == null) {
       switch (type) {
         case MeasureEditType.delete:
@@ -297,11 +297,11 @@ class Phrase extends MeasureNode {
     switch (type) {
       case MeasureEditType.replace:
       case MeasureEditType.delete:
-        if (_measures == null || _measures.isEmpty) return false;
+        if (_measures.isEmpty) return false;
         break;
       case MeasureEditType.insert:
       case MeasureEditType.append:
-
+        if (newMeasureNode == null) return false;
 
         //  index doesn't matter
         if (_measures.isEmpty) {
@@ -328,6 +328,7 @@ class Phrase extends MeasureNode {
         }
         break;
       case MeasureEditType.insert:
+        if (newMeasureNode == null) return false;
         try {
           if (newMeasureNode.isSingleItem()) {
             _addAt(index - 1, newMeasureNode as Measure);
@@ -344,6 +345,7 @@ class Phrase extends MeasureNode {
         }
         break;
       case MeasureEditType.append:
+        if (newMeasureNode == null) return false;
         try {
           if (newMeasureNode.isSingleItem()) {
             _addAt(index + 1, newMeasureNode as Measure);
@@ -360,6 +362,7 @@ class Phrase extends MeasureNode {
         }
         break;
       case MeasureEditType.replace:
+        if (newMeasureNode == null) return false;
         try {
           _measures.removeAt(index);
           if (newMeasureNode.isSingleItem()) {
@@ -393,12 +396,17 @@ class Phrase extends MeasureNode {
 
   /// Delete the first instance of the given measure if it belongs in the sequence item.
   bool delete(Measure measure) {
-    if (_measures == null) return false;
+    if (_measures.isEmpty) return false;
     return _measures.remove(measure);
   }
 
-  bool deleteAt(int measureIindex) {
-    return _measures.removeAt(measureIindex) != null;
+  bool deleteAt(int measureIndex) {
+    try {
+      _measures.removeAt(measureIndex);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -418,12 +426,12 @@ class Phrase extends MeasureNode {
 
   @override
   bool isEmpty() {
-    return _measures == null || _measures.isEmpty;
+    return  _measures.isEmpty;
   }
 
   @override
   String toMarkup() {
-    if (_measures == null || _measures.isEmpty) return '[]';
+    if (_measures.isEmpty) return '[]';
 
     StringBuffer sb = StringBuffer();
     for (Measure measure in _measures) {
@@ -435,7 +443,7 @@ class Phrase extends MeasureNode {
 
   @override
   String toEntry() {
-    if (_measures == null || _measures.isEmpty) return '[]';
+    if ( _measures.isEmpty) return '[]';
 
     StringBuffer sb = StringBuffer();
     for (Measure measure in _measures) {
@@ -451,7 +459,7 @@ class Phrase extends MeasureNode {
 
     bool ret = false;
     int i = 0;
-    if (_measures != null && _measures.isNotEmpty) {
+    if (_measures.isNotEmpty) {
       Measure lastMeasure = _measures[_measures.length - 1];
       for (Measure measure in _measures) {
         if (measure.isComment()) {
@@ -478,7 +486,7 @@ class Phrase extends MeasureNode {
 
   /// Get the number of rows in this phrase after gridding.
   int get chordRowCount {
-    if (_measures == null || _measures.isEmpty) return 0;
+    if ( _measures.isEmpty) return 0;
     int chordRowCount = 0;
     for (Measure measure in _measures) {
       chordRowCount += (measure.endOfRow ? 1 : 0);
@@ -491,7 +499,7 @@ class Phrase extends MeasureNode {
 
   @override
   String toJson() {
-    if (_measures == null || _measures.isEmpty) return ' ';
+    if ( _measures.isEmpty) return ' ';
 
     StringBuffer sb = StringBuffer();
     if (_measures.isNotEmpty) {
@@ -529,7 +537,7 @@ class Phrase extends MeasureNode {
     }
   }
 
-  int get measureCount => measures?.length ?? 0;
+  int get measureCount => measures.length;
 
   @override
   String toString() {
@@ -548,7 +556,7 @@ class Phrase extends MeasureNode {
 
   int compareTo(Object o) {
     if (!(o is Phrase)) return -1;
-    Phrase other = o as Phrase;
+    Phrase other = o;
     int limit = min(_measures.length, other._measures.length);
     for (int i = 0; i < limit; i++) {
       int ret = _measures[i].compareTo(other._measures[i]);
@@ -565,18 +573,16 @@ class Phrase extends MeasureNode {
     if (identical(this, other)) {
       return true;
     }
-    return other is Phrase &&
-        _phraseIndex == other._phraseIndex &&
-        listsEqual(_measures, other._measures);
+    return other is Phrase && _phraseIndex == other._phraseIndex && listsEqual(_measures, other._measures);
   }
 
   @override
   int get hashCode {
     int ret = _phraseIndex.hashCode;
-    if (_measures != null) ret = ret * 17 + hashObjects(_measures);
+    ret = ret * 17 + hashObjects(_measures);
     return ret;
   }
 
-  late List<Measure> _measures;
+  List<Measure> _measures = [];
   int _phraseIndex;
 }

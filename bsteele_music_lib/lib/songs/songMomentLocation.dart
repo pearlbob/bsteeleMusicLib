@@ -4,7 +4,7 @@ import '../util/util.dart';
 class SongMomentLocation {
   SongMomentLocation(this._chordSectionLocation, this._index);
 
-  static SongMomentLocation parseString(String s) {
+  static SongMomentLocation? parseString(String? s) {
     if (s == null) return null;
     return parse(MarkedString(s));
   }
@@ -48,7 +48,7 @@ class SongMomentLocation {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType &&
+    return other is SongMomentLocation &&
         _chordSectionLocation == other._chordSectionLocation &&
         _index == other._index;
   }

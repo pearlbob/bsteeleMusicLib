@@ -12,7 +12,6 @@ import 'package:test/test.dart';
 
 import '../customMatchers.dart';
 
-
 void testChordTranspose(Key key) {
   int count = 0;
   for (ScaleNote sn in ScaleNote.values) {
@@ -33,7 +32,7 @@ void testChordTranspose(Key key) {
           expect(
               Chord.parseString(snHalfSteps.toString() + chordDescriptor.shortName, beatsPerBar),
               CompareTo(Chord.parseString(sn.toString() + chordDescriptor.shortName, beatsPerBar)
-                  .transpose(key, halfSteps)));
+                  ?.transpose(key, halfSteps)));
           count++;
         }
       }
@@ -42,9 +41,9 @@ void testChordTranspose(Key key) {
   logger.d('transpose count: ' + count.toString());
 
   count = 0;
-  for (ScaleNote sn in ScaleNote.values){
+  for (ScaleNote sn in ScaleNote.values) {
     for (ScaleNote slashSn in ScaleNote.values) {
-      for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++){
+      for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
         for (int halfSteps = -15; halfSteps < 15; halfSteps++) {
           for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
             ScaleNote snHalfSteps = sn.transpose(key, halfSteps);
@@ -65,13 +64,15 @@ void testChordTranspose(Key key) {
                 Chord.parseString(
                     snHalfSteps.toString() + chordDescriptor.shortName + '/' + slashSnHalfSteps.toString(),
                     beatsPerBar),
-                CompareTo(Chord.parseString(
-                    sn.toString() + chordDescriptor.shortName + '/' + slashSn.toString(), beatsPerBar)
-                    .transpose(key, halfSteps)));
+                CompareTo(
+                    Chord.parseString(sn.toString() + chordDescriptor.shortName + '/' + slashSn.toString(), beatsPerBar)
+                        ?.transpose(key, halfSteps)));
             count++;
           }
-        }}
-    }}
+        }
+      }
+    }
+  }
   logger.d('transpose slash count: ' + count.toString());
 }
 
@@ -95,9 +96,9 @@ void main() {
               }
               Chord chord = Chord(scaleChord, beats, beatsPerBar, null, anticipationOrDelay, true);
               logger.d(chord.toString());
-              Chord pChord = Chord.parseString(chord.toString(), beatsPerBar);
+              Chord? pChord = Chord.parseString(chord.toString(), beatsPerBar);
 
-              if (beats != beatsPerBar) {
+              if (pChord != null && beats != beatsPerBar) {
                 //  the beats will default to beats per bar if unspecified
                 expect(pChord.scaleChord, CompareTo(chord.scaleChord));
                 expect(pChord.slashScaleNote, chord.slashScaleNote);
@@ -112,16 +113,16 @@ void main() {
   });
 
   test('testChordParse testing', () {
-    Chord chord;
+    Chord? chord;
     int beatsPerBar = 4;
     chord =
         Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.D, ChordDescriptor.diminished));
     chord.slashScaleNote = ScaleNote.get(ScaleNoteEnum.G);
 
     logger.i('\"' + Chord.parseString('Ddim/G', beatsPerBar).toString() + '\"');
-    logger.i('compare: ' + Chord.parseString('Ddim/G', beatsPerBar).compareTo(chord).toString());
+    logger.i('compare: ' + (Chord.parseString('Ddim/G', beatsPerBar)?.compareTo(chord)).toString());
     logger.i('==: ' + (Chord.parseString('Ddim/G', beatsPerBar) == chord ? 'true' : 'false'));
-    Chord pChord = Chord.parseString('Ddim/G', beatsPerBar);
+    Chord? pChord = Chord.parseString('Ddim/G', beatsPerBar);
     expect(pChord, CompareTo(chord));
 
     chord = Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.X, ChordDescriptor.major));

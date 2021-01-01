@@ -31,7 +31,7 @@ class UndoStack<T> {
   bool get canUndo => _undoStackPointer > 1 || (_undoStackPointer == 1 && _undoStack[0] != null);
 
   /// pop the current value off the stack, i.e. undo
-  T undo() {
+  T? undo() {
     if (!canUndo) return null;
     _undoStackPointer--;
     return top;
@@ -41,7 +41,7 @@ class UndoStack<T> {
   bool get canRedo => _undoStackPointer < _undoStackCount;
 
   ///  return the data above the current level if there is an undo that can be redone
-  T redo() {
+  T? redo() {
     if (!canRedo) {
       return null;
     }
@@ -53,10 +53,10 @@ class UndoStack<T> {
   int get pointer => _undoStackPointer;
 
   /// get the top of the undo stack
-  T get top => _undoStackPointer >= 0 ? _undoStack[_undoStackPointer] : null;
+  T? get top => _undoStackPointer >= 0 ? _undoStack[_undoStackPointer] : null;
 
   ///  return from down the stack, starting from zero
-  T get(int i) {
+  T? get(int i) {
     int index = _undoStackCount - i;
     if (index < 0 || index > _max - 1) return null;
     return _undoStack[index];
@@ -69,7 +69,7 @@ class UndoStack<T> {
 
   final int _max;
   static final int _defaultSize = 100;
-  final List<T> _undoStack = <T>[null];
+  final List<T> _undoStack = <T>[];
   int _undoStackPointer = 0;
   int _undoStackCount = 0;
 }

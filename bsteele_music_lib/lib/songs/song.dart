@@ -38,7 +38,7 @@ class Song extends SongBase implements Comparable<Song> {
       int bpm,
       int beatsPerBar,
       int unitsPerMeasure,
-      String? user,
+      String user,
       String chords,
       String lyrics) {
     Song song = Song();

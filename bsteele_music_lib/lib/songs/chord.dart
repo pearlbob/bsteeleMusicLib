@@ -9,35 +9,34 @@ import 'key.dart';
 
 class Chord implements Comparable<Chord> {
   Chord(ScaleChord scaleChord, int beats, int beatsPerBar, ScaleNote? slashScaleNote,
-      ChordAnticipationOrDelay? anticipationOrDelay, bool implicitBeats) {
+      ChordAnticipationOrDelay anticipationOrDelay, bool implicitBeats)
+      : _anticipationOrDelay = anticipationOrDelay {
     _scaleChord = scaleChord;
     this.beats = beats;
     _beatsPerBar = beatsPerBar;
     this.slashScaleNote = slashScaleNote;
-    _anticipationOrDelay = anticipationOrDelay;
     this.implicitBeats = implicitBeats;
   }
 
-  Chord.copy(Chord chord) {
+  Chord.copy(Chord chord) : _anticipationOrDelay = chord._anticipationOrDelay {
     _scaleChord = chord._scaleChord;
     beats = chord.beats;
     _beatsPerBar = chord._beatsPerBar;
     slashScaleNote = chord.slashScaleNote;
-    _anticipationOrDelay = chord._anticipationOrDelay;
     implicitBeats = chord.implicitBeats;
   }
 
-  Chord.byScaleChord(this._scaleChord) {
+  Chord.byScaleChord(this._scaleChord)
+      : _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none) {
     beats = 4;
     _beatsPerBar = 4;
     slashScaleNote = null;
-    _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
     implicitBeats = true;
   }
 
-  Chord.byScaleChordAndBeats(this._scaleChord, this.beats, this._beatsPerBar) {
+  Chord.byScaleChordAndBeats(this._scaleChord, this.beats, this._beatsPerBar)
+      : _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none) {
     slashScaleNote = null;
-    _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
     implicitBeats = true;
   }
 
@@ -46,7 +45,7 @@ class Chord implements Comparable<Chord> {
   }
 
   static Chord? parse(final MarkedString markedString, int beatsPerBar) {
-    if ( markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) throw 'no data to parse';
 
     int beats = beatsPerBar; //  default only
     ScaleChord? scaleChord = ScaleChord.parse(markedString);
@@ -201,8 +200,8 @@ class Chord implements Comparable<Chord> {
   bool implicitBeats = true;
   ScaleNote? slashScaleNote;
 
-  ChordAnticipationOrDelay? get anticipationOrDelay => _anticipationOrDelay;
-  ChordAnticipationOrDelay? _anticipationOrDelay;
+  ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;
+  ChordAnticipationOrDelay _anticipationOrDelay;
 
   static final RegExp _beatSizeRegexp = RegExp(r'^\.\d');
 }

@@ -17,7 +17,7 @@ class MusicXml {
 
   String songAsMusicXml(Song song) {
     _song = song;
-    music_key.Key? key = _song.key;
+    music_key.Key key = _song.key;
 
     StringBuffer sb = StringBuffer();
 
@@ -101,9 +101,9 @@ class MusicXml {
     {
       int beats = song.beatsPerBar;
       Pitch lowRoot = Pitch.get(PitchEnum.E2); //  bass staff
-      lowRoot = key?.mappedPitch(lowRoot) ?? lowRoot; // required once only
+      lowRoot = key.mappedPitch(lowRoot) ?? lowRoot; // required once only
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
-      highRoot = key?.mappedPitch(highRoot) ?? highRoot; // required once only
+      highRoot = key.mappedPitch(highRoot) ?? highRoot; // required once only
 
       song.songMomentGrid; //  fixme: shouldn't be required!
 
@@ -134,7 +134,7 @@ class MusicXml {
           <!--    allow up to 16th notes  -->
           <divisions>$_divisionsPerBeat</divisions>
           <key>
-              <fifths>${key?.getKeyValue() ?? ''}</fifths>
+              <fifths>${key.getKeyValue() ?? ''}</fifths>
           </key>
           <time>
               <beats>$beats</beats>
@@ -165,19 +165,17 @@ class MusicXml {
         //  bass
         sb.write('\t<backup> <duration>16</duration> </backup>');
 
-        if (key != null) {
-          for (Chord chord in songMoment.getMeasure().chords) {
-            Pitch? p = Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot);
-            if (p != null) {
-              Pitch pitch = key.mappedPitch(p);
-              sb.write('''
+        for (Chord chord in songMoment.getMeasure().chords) {
+          Pitch? p = Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot);
+          if (p != null) {
+            Pitch pitch = key.mappedPitch(p);
+            sb.write('''
   <note><!--  bass note: $pitch    -->
     ${_pitchAsMusicXml(pitch)}
     ${_noteDuration(chord.beats)}
     <staff>2</staff>
     </note>
 ''');
-            }
           }
         }
 

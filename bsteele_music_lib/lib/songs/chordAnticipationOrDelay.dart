@@ -58,8 +58,10 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return ChordAnticipationOrDelay._getDelays()[ChordAnticipationOrDelayEnum.none];
   }
 
-  static ChordAnticipationOrDelay? get(ChordAnticipationOrDelayEnum e) {
-    return _getDelays()[e];
+  static ChordAnticipationOrDelay get(ChordAnticipationOrDelayEnum e) {
+    var ret = _getDelays()[e];
+    if (ret != null) return ret;
+    throw 'ChordAnticipationOrDelay not found!';
   }
 
   static Iterable<ChordAnticipationOrDelay> get values {
@@ -76,7 +78,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
       });
       for (ChordAnticipationOrDelayEnum delays in ChordAnticipationOrDelayEnum.values) {
         ChordAnticipationOrDelay? delay = _getDelays()[delays];
-        if ( delay != null) {
+        if (delay != null) {
           _sortedByShortName.add(delay);
         }
       }

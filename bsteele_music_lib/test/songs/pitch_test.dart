@@ -64,7 +64,7 @@ void main() {
     expect(7 * 7 + 2, flatCount);
     expect(7 * 7 + 2, naturalCount);
 
-    Pitch p = Pitch.get(PitchEnum.A0);
+    Pitch? p = Pitch.get(PitchEnum.A0);
     expect(false, p. isSharp);
     expect(false, p. isFlat);
     expect(true, p. isNatural);
@@ -74,7 +74,7 @@ void main() {
     for (int i = 0; i < Pitch.getPitches().length; i++) //  safety only
     {
       //System.out.println(p.toString());
-      p = p.offsetByHalfSteps(1);
+      p = p!.offsetByHalfSteps(1);
       if (p == null) break;
       if (p. isSharp) sharps++;
       if (p. isNatural) naturals++;

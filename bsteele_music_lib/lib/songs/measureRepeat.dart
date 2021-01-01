@@ -17,8 +17,8 @@ class MeasureRepeat extends Phrase {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static MeasureRepeat parse(MarkedString? markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
-    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
+  static MeasureRepeat parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
+    if ( markedString.isEmpty) throw 'no data to parse';
 
     int initialMark = markedString.mark();
 

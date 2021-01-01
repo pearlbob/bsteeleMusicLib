@@ -232,11 +232,13 @@ coerced to reflect the songlist's last modification for that song.
               ChordSection? lastChordSection;
               bool allSignificantChordSectionsMatch = true;
 
-              if (song.getChordSections().length == 1) {
-                lastChordSection = song.getChordSections().first;
+              var chordSections = song.getChordSections();
+              if (chordSections == null) continue;
+              if (chordSections.length == 1) {
+                lastChordSection = chordSections.first;
               }
 
-              for (ChordSection chordSection in song.getChordSections()) {
+              for (ChordSection chordSection in chordSections) {
                 switch (chordSection.sectionVersion.section.sectionEnum) {
                   case SectionEnum.intro:
                   case SectionEnum.outro:
@@ -348,7 +350,7 @@ coerced to reflect the songlist's last modification for that song.
                   print('"${song.title.toString()}" by ${song.artist.toString()}');
                   Song? similar = map[rating.target];
                   if (similar != null) {
-                    print('"${similar?.title.toString()}" by ${similar?.artist.toString()}');
+                    print('"${similar.title.toString()}" by ${similar.artist.toString()}');
                     print(' ');
                   }
                   listed.add(rating.target);
@@ -461,7 +463,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             for (Song song in songs) {
-              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.getLastModifiedTime ?? 0);
+              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.getLastModifiedTime);
 
               //  used to spread the songs thinner than the maximum 1000 files
               //  per directory limit in github.com
@@ -518,7 +520,6 @@ coerced to reflect the songlist's last modification for that song.
         default:
           logger.e('command not understood: "$arg"');
           exit(-1);
-          break;
       }
     }
     print('songs: ${allSongs.length}');
@@ -553,7 +554,7 @@ coerced to reflect the songlist's last modification for that song.
     for (Song song in addSongs) {
       if (allSongs.contains(song)) {
         Song listSong = allSongs.firstWhere((value) => value.songId.compareTo(song.songId) == 0);
-        if (song.getLastModifiedTime > listSong.getLastModifiedTime ) {
+        if (song.getLastModifiedTime > listSong.getLastModifiedTime) {
           allSongs.remove(listSong);
           allSongs.add(song);
           _updateCount++;
@@ -567,7 +568,7 @@ coerced to reflect the songlist's last modification for that song.
   void _copyright() {
     Map<String, SplayTreeSet<Song>> copyrights = {};
     for (Song song in allSongs) {
-      String? copyright = song.copyright?.trim();
+      String? copyright = song.copyright.trim();
       if (copyright == null) {
         continue;
       }
@@ -598,7 +599,7 @@ coerced to reflect the songlist's last modification for that song.
         ',ranking'
         '\n');
     for (Song song in allSongs) {
-      NameValue nameValue = SongMetadata.songMetadataAt(song.songId.songId, 'cj');
+      NameValue? nameValue = SongMetadata.songMetadataAt(song.songId.songId, 'cj');
       sb.write('"${song.songId.songId}","${nameValue?.value ?? ''}"\n');
     }
     return sb.toString();
@@ -630,13 +631,13 @@ coerced to reflect the songlist's last modification for that song.
         ',Time'
         '\n');
     for (Song song in allSongs) {
-      sb.write('"${song.title}","${song.artist ?? ''}","${song.coverArtist ?? ''}"'
-          ',"${song.user ?? ''}"'
+      sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
+          ',"${song.user}"'
           //  ',"${song.lastModifiedTime??''}"'
-          ',"${song.copyright?.substring(0, min(song.copyright?.length ?? 0, 80)) ?? ''}"'
-          ',"${song.key ?? ''}"'
-          ',"${song.defaultBpm ?? ''}"'
-          ',"${song.beatsPerBar ?? '4'}/${song.unitsPerMeasure ?? '4'}"'
+          ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
+          ',"${song.key}"'
+          ',"${song.defaultBpm}"'
+          ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
           '\n');
     }
 

@@ -47,7 +47,7 @@ abstract class MeasureNode {
   /// This is used to represent the scale note(s) in the proper expression
   /// of flats or sharps based on the key.
   /// <p>Note that the key of C is considered sharp.</p>
-  MeasureNode transposeToKey(Key? key);
+  MeasureNode transposeToKey(Key key);
 
   /// Represent the measure node to the user in a string form and from storage encoding.
   String toMarkup();

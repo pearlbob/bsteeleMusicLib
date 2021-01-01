@@ -1,5 +1,5 @@
 class RollingAverage {
-  RollingAverage(this._size) : _data = List(_size);
+  RollingAverage(this._size) : _data = [];
 
   void reset() {
     _rollSize = 0;
