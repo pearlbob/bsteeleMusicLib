@@ -10,7 +10,7 @@ void parse(String s) {
   try {
     measureComment = MeasureComment.parseString(s);
   } catch (e) {
-    throw e.toString();
+    measureComment = null;
   }
 }
 

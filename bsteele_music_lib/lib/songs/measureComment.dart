@@ -89,7 +89,7 @@ class MeasureComment extends Measure {
     if (identical(this, other)) {
       return true;
     }
-    return other is MeasureComment && _comment == other._comment;
+    return runtimeType == other.runtimeType && other is MeasureComment && _comment == other._comment;
   }
 
   @override

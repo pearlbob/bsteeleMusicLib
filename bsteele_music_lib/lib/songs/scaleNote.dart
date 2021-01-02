@@ -319,7 +319,7 @@ class ScaleNote implements Comparable<ScaleNote> {
     if (identical(this, other)) {
       return true;
     }
-    return other is ScaleNote && _enum == other._enum;
+    return runtimeType == other.runtimeType && other is ScaleNote && _enum == other._enum;
   }
 
   @override

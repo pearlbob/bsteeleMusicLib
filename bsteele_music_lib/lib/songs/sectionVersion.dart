@@ -71,7 +71,7 @@ class SectionVersion implements Comparable<SectionVersion> {
     if (identical(this, other)) {
       return true;
     }
-    return other is SectionVersion &&
+    return runtimeType == other.runtimeType &&  other is SectionVersion &&
         _section == other._section &&
         _version == other._version;
   }

@@ -135,7 +135,9 @@ class SongMoment implements Comparable<SongMoment> {
     if (identical(this, other)) {
       return true;
     }
-    return (other is SongMoment &&
+    return (
+        runtimeType == other.runtimeType &&
+        other is SongMoment &&
         momentNumber == other.momentNumber &&
         chordSectionLocation == other.chordSectionLocation &&
         beatNumber == other.beatNumber &&

@@ -91,7 +91,7 @@ class ScaleChord implements Comparable<ScaleChord> {
     if (identical(this, other)) {
       return true;
     }
-    return other is ScaleChord && _scaleNote == other._scaleNote && _chordDescriptor == other._chordDescriptor;
+    return runtimeType == other.runtimeType && other is ScaleChord && _scaleNote == other._scaleNote && _chordDescriptor == other._chordDescriptor;
   }
 
   @override

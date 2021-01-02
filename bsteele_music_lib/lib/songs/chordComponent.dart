@@ -74,7 +74,7 @@ class ChordComponent implements Comparable<ChordComponent> {
 
   @override
   bool operator ==(other) {
-    return identical(this, other);
+    return runtimeType == other.runtimeType && identical(this, other);
   }
 
   @override

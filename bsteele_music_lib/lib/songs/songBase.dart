@@ -518,7 +518,7 @@ class SongBase {
 
   HashMap<SectionVersion, ChordSection> _getChordSectionMap() {
     //  lazy eval
-    if (_chordSectionMap.isEmpty) {
+    if (_chordSectionMap.isEmpty && _chords.isNotEmpty) {
       try {
         _parseChords(_chords);
         _invalidateChords();
@@ -530,8 +530,10 @@ class SongBase {
     return _chordSectionMap;
   }
 
-  String? _getChords() {
-    _chords ??= chordsToJsonTransportString();
+  String _getChords() {
+    if (_chords.isEmpty) {
+      _chords = chordsToJsonTransportString();
+    }
     return _chords;
   }
 
@@ -658,10 +660,10 @@ class SongBase {
 
   /// Parse the current string representation of the song's chords into the song internal structures.
   void _parseChords(final String? chords) {
-    _chords = chords; //  safety only
+    _chords = chords ?? ''; //  safety only
     _clearCachedValues(); //  force lazy eval
 
-    if (chords != null) {
+    if (chords != null && chords.isNotEmpty) {
       logger.d('parseChords for: ' + getTitle());
       SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
       MarkedString markedString = MarkedString(chords);
@@ -1226,7 +1228,7 @@ class SongBase {
   }
 
   void _invalidateChords() {
-    _chords = null;
+    _chords = '';
     _clearCachedValues();
   }
 
@@ -2087,21 +2089,29 @@ class SongBase {
     SplayTreeSet<SectionVersion> sortedSectionVersions = SplayTreeSet<SectionVersion>.of(_getChordSectionMap().keys);
     if (sortedSectionVersions.length < 2) return null;
 
-    SectionVersion ret = sortedSectionVersions.firstWhere((v) {
-      return sectionVersion.compareTo(v) > 0;
-    });
+    SectionVersion? ret;
+    for (var sv in sortedSectionVersions) {
+      if (sectionVersion.compareTo(sv) > 0) {
+        ret = sv;
+        break;
+      }
+    }
 
     logger.d('_priorSectionVersion($sectionVersion): $ret');
     logger.d(sortedSectionVersions.toList().toString());
     return ret;
   }
 
-  SectionVersion _nextSectionVersion(SectionVersion sectionVersion) {
+  SectionVersion? _nextSectionVersion(SectionVersion sectionVersion) {
     SplayTreeSet<SectionVersion> sortedSectionVersions = SplayTreeSet<SectionVersion>.of(_getChordSectionMap().keys);
 
-    SectionVersion ret = sortedSectionVersions.firstWhere((v) {
-      return sectionVersion.compareTo(v) < 0;
-    });
+    SectionVersion? ret;
+    for (var sv in sortedSectionVersions) {
+      if (sectionVersion.compareTo(sv) < 0) {
+        ret = sv;
+        break;
+      }
+    }
     logger.d('_nextSectionVersion($sectionVersion): $ret');
     logger.d(sortedSectionVersions.toList().toString());
     return ret;
@@ -3288,7 +3298,7 @@ class SongBase {
     if (identical(this, other)) {
       return true;
     }
-    return other is SongBase && songBaseSameAs(other);
+    return runtimeType == other.runtimeType && other is SongBase && songBaseSameAs(other);
   }
 
   bool songBaseSameContent(SongBase? o) {
@@ -3350,14 +3360,14 @@ class SongBase {
   int beatsPerBar = 4; //  beats per bar, i.e. timeSignature denominator
 
   set lastModifiedTime(int t) {
-    lastModifiedTime = t;
+    _lastModifiedTime = t;
   }
 
   int get lastModifiedTime => _lastModifiedTime;
-  final int _lastModifiedTime = 0;
+  int _lastModifiedTime = 0;
 
 //  chords as a string is only valid on input or output
-  String? _chords;
+  String _chords = '';
 
 //  normally the chords data is held in the chord section map
   HashMap<SectionVersion, ChordSection> _chordSectionMap = HashMap();

@@ -175,7 +175,8 @@ class Chord implements Comparable<Chord> {
     if (identical(this, other)) {
       return true;
     }
-    return other is Chord &&
+    return runtimeType == other.runtimeType &&
+        other is Chord &&
         _scaleChord == other._scaleChord &&
         beats == other.beats &&
         _beatsPerBar == other._beatsPerBar &&

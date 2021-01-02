@@ -243,7 +243,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   @override
   bool operator ==(other) {
-    return _name == ((other as ChordDescriptor)._name );
+    return runtimeType == other.runtimeType && other is ChordDescriptor && _name == other._name;
   }
 
   @override

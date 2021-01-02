@@ -571,7 +571,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (identical(this, other)) {
       return true;
     }
-    if (!(other is ChordSection && _sectionVersion == other._sectionVersion && measureCount == other.measureCount)) {
+    if (!(runtimeType == other.runtimeType && other is ChordSection && _sectionVersion == other._sectionVersion && measureCount == other.measureCount)) {
       return false;
     }
     //  deal with empty-ish phrases

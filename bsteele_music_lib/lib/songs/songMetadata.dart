@@ -33,7 +33,7 @@ class NameValue implements Comparable<NameValue> {
 
   @override
   bool operator ==(other) {
-    return other is NameValue && _name == other._name && _value == other._value;
+    return runtimeType == other.runtimeType && other is NameValue && _name == other._name && _value == other._value;
   }
 
   @override

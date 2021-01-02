@@ -48,7 +48,7 @@ class SongMomentLocation {
     if (identical(this, other)) {
       return true;
     }
-    return other is SongMomentLocation &&
+    return runtimeType == other.runtimeType && other is SongMomentLocation &&
         _chordSectionLocation == other._chordSectionLocation &&
         _index == other._index;
   }

@@ -573,7 +573,9 @@ class Phrase extends MeasureNode {
     if (identical(this, other)) {
       return true;
     }
-    return other is Phrase && _phraseIndex == other._phraseIndex && listsEqual(_measures, other._measures);
+    return runtimeType == other.runtimeType //  distinguish yourself from subclasses
+        && other is Phrase  //  required for the following:
+        && _phraseIndex == other._phraseIndex && listsEqual(_measures, other._measures);
   }
 
   @override

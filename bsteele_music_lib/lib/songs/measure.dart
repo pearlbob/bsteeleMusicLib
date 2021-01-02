@@ -296,7 +296,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     if (identical(this, other)) {
       return true;
     }
-    return other is Measure &&
+    return runtimeType == other.runtimeType && other is Measure &&
         beatCount == other.beatCount &&
         endOfRow == other.endOfRow &&
         listsEqual(chords, other.chords);

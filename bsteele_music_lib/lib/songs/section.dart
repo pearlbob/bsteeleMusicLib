@@ -117,13 +117,13 @@ class Section implements Comparable<Section> {
     [SectionEnum.outro, 'O', 'out', 'The ending section of many songs.'],
   ];
 
-  static final HashMap<SectionEnum, Section> _sections = HashMap.identity();
-
   static HashMap<SectionEnum, Section> _getSections() {
     if (_sections.isEmpty) {
       for (var init in _initialization) {
         SectionEnum seInit = init[0];
-        _sections[seInit] = Section._(seInit, init[1], init[2], init[3]);
+        Section section = Section._(seInit, init[1], init[2], init[3]);
+        _sectionsList.add(section);
+        _sections[seInit] = section;
       }
     }
     return _sections;
@@ -146,7 +146,10 @@ class Section implements Comparable<Section> {
     return _getSections()[se]!;
   }
 
-  static Iterable<Section> get values => _getSections().values;
+  static Iterable<Section> get values {
+    _getSections(); // assure lazy eval
+    return _sectionsList;
+  }
 
   static late final HashMap<String, SectionEnum> _sectionEnums = HashMap.identity();
 
@@ -177,7 +180,7 @@ class Section implements Comparable<Section> {
     if (m.groupCount < 2) return false;
     String sectionName = m.group(1)!;
     Section? section = parseString(sectionName.toLowerCase());
-     String sectionNumber = m.group(2)!;
+    String sectionNumber = m.group(2)!;
     return section != null;
   }
 
@@ -204,13 +207,16 @@ class Section implements Comparable<Section> {
 
   @override
   bool operator ==(other) {
-    return other is Section && _sectionEnum == other._sectionEnum;
+    return runtimeType == other.runtimeType && other is Section && _sectionEnum == other._sectionEnum;
   }
 
   @override
   int get hashCode {
     return _sectionEnum.hashCode;
   }
+
+  static final HashMap<SectionEnum, Section> _sections = HashMap.identity();
+  static final List<Section> _sectionsList = [];
 
   SectionEnum get sectionEnum => _sectionEnum;
   final SectionEnum _sectionEnum;

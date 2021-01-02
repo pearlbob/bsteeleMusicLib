@@ -1,5 +1,5 @@
 class RollingAverage {
-  RollingAverage(this._size) : _data = [];
+  RollingAverage(this._size) : _data = List<double>.generate(_size, (index) => 0);
 
   void reset() {
     _rollSize = 0;
@@ -8,7 +8,8 @@ class RollingAverage {
 
   double roll(double d) {
     _data[_currentIndex++] = d;
-    if ( _currentIndex >= _size ) {
+
+    if (_currentIndex >= _size) {
       _currentIndex = 0;
     }
     if (_rollSize < _size) {

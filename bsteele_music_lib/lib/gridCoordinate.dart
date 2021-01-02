@@ -25,7 +25,7 @@ class GridCoordinate implements Comparable<GridCoordinate> {
     if (identical(this, other)) {
       return true;
     }
-    return other is GridCoordinate && _row == other._row && _col == other._col;
+    return runtimeType == other.runtimeType && other is GridCoordinate && _row == other._row && _col == other._col;
   }
 
   @override

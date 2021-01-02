@@ -232,7 +232,7 @@ class MeasureRepeat extends Phrase {
     if (identical(this, other)) {
       return true;
     }
-    return other is MeasureRepeat && super == (other) && _repeatMarker == other._repeatMarker;
+    return runtimeType == other.runtimeType && other is MeasureRepeat && super == (other) && _repeatMarker == other._repeatMarker;
   }
 
   @override
