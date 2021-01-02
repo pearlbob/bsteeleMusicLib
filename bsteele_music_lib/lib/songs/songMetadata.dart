@@ -13,8 +13,8 @@ enum CjRankingEnum {
 
 extension CjRankingEnumParser on String {
   CjRankingEnum toCjRankingEnum() {
-    return CjRankingEnum.values
-        .firstWhere((e) => e.toString() == 'CjRankingEnum.$this', orElse: () => null); //return null if not found
+    return CjRankingEnum.values.firstWhere((e) => e.toString() == 'CjRankingEnum.$this',
+        orElse: () => CjRankingEnum.all); //return all if not found
   }
 }
 
@@ -152,11 +152,9 @@ class SongMetadata {
   static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata idMetadata) doesMatch,
       {SplayTreeSet<SongIdMetadata>? from}) {
     SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
-    if (doesMatch != null) {
-      for (SongIdMetadata idMetadata in from ?? _singleton._idMetadata) {
-        if (doesMatch(idMetadata)) {
-          ret.add(idMetadata);
-        }
+    for (SongIdMetadata idMetadata in from ?? _singleton._idMetadata) {
+      if (doesMatch(idMetadata)) {
+        ret.add(idMetadata);
       }
     }
     return ret;
@@ -197,7 +195,7 @@ class SongMetadata {
 
     loop:
     for (SongIdMetadata idm in _singleton._idMetadata) {
-      if (idIsLikeReg != null && idm._id != null && idIsLikeReg.hasMatch(idm._id!)) {
+      if (idIsLikeReg != null && idIsLikeReg.hasMatch(idm._id)) {
         ret.add(idm);
         continue;
       }

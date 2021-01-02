@@ -28,7 +28,7 @@ class MeasureComment extends Measure {
 
   /// Trash can of measure parsing.  Will consume all that it sees to the end of line.
   static MeasureComment parse(MarkedString markedString) {
-    if (markedString == null || markedString.isEmpty) throw 'no data to parse';
+    if ( markedString.isEmpty) throw 'no data to parse';
 
 //  prep a sub string to look for the comment
     int n = markedString.indexOf('\n'); //  all comments end at the end of the line
@@ -76,7 +76,7 @@ class MeasureComment extends Measure {
 
   @override
   String toString() {
-    return _comment == null || _comment.isEmpty ? '' : '(' + _comment + ')';
+    return _comment.isEmpty ? '' : '(' + _comment + ')';
   }
 
   @override

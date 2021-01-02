@@ -52,6 +52,9 @@ class Chord implements Comparable<Chord> {
     if (scaleChord == null) return null;
 
     ChordAnticipationOrDelay? anticipationOrDelay = ChordAnticipationOrDelay.parse(markedString);
+    if (anticipationOrDelay == null) {
+      throw 'anticipationOrDelay not understood: ${markedString.remainingStringLimited(5)}';
+    }
 
     ScaleNote? slashScaleNote;
 //  note: X chords can have a slash chord
@@ -109,12 +112,8 @@ class Chord implements Comparable<Chord> {
     }
     if (beats != o.beats) return beats < o.beats ? -1 : 1;
 
-    if (_anticipationOrDelay == null && o._anticipationOrDelay != null) return -1;
-    if (_anticipationOrDelay != null && o._anticipationOrDelay == null) return 1;
-    if (_anticipationOrDelay != null && o._anticipationOrDelay != null) {
-      ret = _anticipationOrDelay!.compareTo(o._anticipationOrDelay!);
-      if (ret != 0) return ret;
-    }
+    ret = _anticipationOrDelay.compareTo(o._anticipationOrDelay);
+    if (ret != 0) return ret;
 
     if (_beatsPerBar != o._beatsPerBar) {
       return _beatsPerBar < o._beatsPerBar ? -1 : 1;
@@ -201,7 +200,7 @@ class Chord implements Comparable<Chord> {
   ScaleNote? slashScaleNote;
 
   ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;
-  ChordAnticipationOrDelay _anticipationOrDelay;
+  late final ChordAnticipationOrDelay _anticipationOrDelay;
 
   static final RegExp _beatSizeRegexp = RegExp(r'^\.\d');
 }

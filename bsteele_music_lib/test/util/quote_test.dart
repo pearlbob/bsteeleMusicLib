@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   test('test quote', () {
     String? s;
-    String qs;
+    String? qs;
 
     s = null;
     expect(Util.quote(s), s);

@@ -257,7 +257,7 @@ class Song extends SongBase implements Comparable<Song> {
           DateTime songDateTime =
               DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
           if (songDateTime.isAfter(fileDateTime)) {
-            song.setLastModifiedTime( songDateTime.millisecondsSinceEpoch);
+            song.lastModifiedTime= songDateTime.millisecondsSinceEpoch;
           }
           break;
         case 'user':
@@ -378,8 +378,8 @@ class Song extends SongBase implements Comparable<Song> {
         0,
         StringTriple(
             'file date',
-            DateTime.fromMillisecondsSinceEpoch(a.getLastModifiedTime).toString(),
-            DateTime.fromMillisecondsSinceEpoch(b.getLastModifiedTime)
+            DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
+            DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime)
                 .toString()));
     return ret;
   }
@@ -447,8 +447,8 @@ Comparator<Song> _comparatorByArtist = (Song o1, Song o2) {
 };
 
 int _compareByLastModifiedDate(Song o1, Song o2) {
-  int mod1 = o1.getLastModifiedTime;
-  int mod2 = o2.getLastModifiedTime;
+  int mod1 = o1.lastModifiedTime;
+  int mod2 = o2.lastModifiedTime;
 
   if (mod1 == mod2) return o1.compareTo(o2);
   return mod1 < mod2 ? 1 : -1;

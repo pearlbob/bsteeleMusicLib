@@ -168,7 +168,7 @@ void main() {
     for (NameValue nameValue in idMetadata.nameValues) {
       if (nameValue.name == 'cj') {
         CjRankingEnum r = nameValue.value.toCjRankingEnum();
-        if (r != null && r.index >= ranking.index) {
+        if (r.index >= ranking.index) {
           return true;
         }
       }
@@ -191,8 +191,8 @@ void main() {
         metadata: [NameValue('genre', 'rock'), NameValue('cj', 'best')]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
         metadata: [NameValue('genre', 'rock'), NameValue('cj', 'ok')]));
-    SongMetadata.set(
-        SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId, metadata: [NameValue('cj', 'best')]));
+    SongMetadata.set(SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
+        metadata: [NameValue('cj', 'best')]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
         metadata: [NameValue('christmas', '')]));
 
@@ -215,8 +215,8 @@ void main() {
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    matches =
-        SongMetadata.match(_rockMatch, from: SongMetadata.match(_cjRankingBest, from: SongMetadata.match(_notChristmasMatch)));
+    matches = SongMetadata.match(_rockMatch,
+        from: SongMetadata.match(_cjRankingBest, from: SongMetadata.match(_notChristmasMatch)));
     expect(matches, isNotNull);
     expect(matches.length, 1);
     expect(matches.first.id, 'Song_Hey_Joe_by_Jimi_Hendrix');

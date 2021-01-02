@@ -15,7 +15,7 @@ void main() {
   Logger.level = Level.verbose;
 
   test('parse ', () {
-    SongMomentLocation loc;
+    SongMomentLocation? loc;
     {
       loc = SongMomentLocation.parseString(null);
       expect(loc, isNull);
@@ -84,20 +84,20 @@ void main() {
     expect(songMomentGrid.getRowCount(), 8);
 
     {
-      SongMoment lastSongMoment;
+      SongMoment? lastSongMoment;
 
-      int lastRowLength;
+      int? lastRowLength;
       for (int row = 0; row < songMomentGrid.getRowCount(); row++) {
         logger.i('$row:');
 
-        int rowLength = songMomentGrid.rowLength(row);
+        int? rowLength = songMomentGrid.rowLength(row);
         if (lastRowLength != null) {
           expect(rowLength, lastRowLength);
         }
         lastRowLength = rowLength;
 
-        for (int col = 0; col < rowLength; col++) {
-          SongMoment songMoment = songMomentGrid.get(row, col);
+        for (int col = 0; col < rowLength!; col++) {
+          SongMoment? songMoment = songMomentGrid.get(row, col);
           String s = (songMoment == null ? 'null' : songMoment.toString());
           logger.d('\t($row,$col): $s');
           if (songMoment != null) {

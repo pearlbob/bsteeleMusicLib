@@ -4,7 +4,7 @@ import 'measureNode.dart';
 import 'key.dart';
 
 class MeasureRepeatExtension extends MeasureComment {
-  static MeasureRepeatExtension get(ChordSectionLocationMarker marker) {
+  static MeasureRepeatExtension get(ChordSectionLocationMarker? marker) {
     if (marker == null) return nullMeasureRepeatExtension;
 
     switch (marker) {

@@ -371,6 +371,6 @@ class ScaleNote implements Comparable<ScaleNote> {
     return _scaleNoteString;
   }
 
-  static late HashMap<ScaleNoteEnum, ScaleNote> _hashmap = HashMap.identity();
+  static late final HashMap<ScaleNoteEnum, ScaleNote> _hashmap = HashMap.identity();
   static late final Map<String, ScaleNote> _parseMap = {};
 }

@@ -75,7 +75,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   void setHighHat(String highHat) {
-    this.highHat = (highHat ?? '');
+    this.highHat = (highHat);
     _isSilent = null;
   }
 
@@ -84,7 +84,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   void setSnare(String snare) {
-    this.snare = (snare ?? '');
+    this.snare = snare;
     _isSilent = null;
   }
 
@@ -93,7 +93,7 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
   }
 
   void setKick(String kick) {
-    this.kick = (kick ?? '');
+    this.kick = kick;
     _isSilent = null;
   }
 

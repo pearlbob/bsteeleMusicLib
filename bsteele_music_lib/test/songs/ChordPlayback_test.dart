@@ -11,7 +11,8 @@ import 'package:test/test.dart';
 
 Pitch _atOrAbove = Pitch.get(PitchEnum.A3);
 
-String _stringChord(Chord chord) {
+String _stringChord(Chord? chord) {
+  if ( chord == null ) throw 'null chord';
   StringBuffer sb = StringBuffer();
   sb.write('${chord.toMarkup()}:');
   for (Pitch p in chord.getPitches(_atOrAbove)) {
@@ -57,15 +58,13 @@ void main() {
         if (scaleNote.isSilent) {
           continue;
         }
-        Pitch pitch = Pitch.findPitch(scaleNote, _atOrAbove);
+        Pitch? pitch = Pitch.findPitch(scaleNote, _atOrAbove);
         assert(pitch != null);
         int beats = beatsPerBar; //  default only
 
         for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
           ScaleChord scaleChord =
-              ScaleChord(pitch.getScaleNote(), chordDescriptor);
-
-          assert(scaleChord != null);
+              ScaleChord(pitch!.getScaleNote(), chordDescriptor);
 
           ChordAnticipationOrDelay anticipationOrDelay =
               ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);

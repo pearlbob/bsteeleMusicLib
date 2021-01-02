@@ -13,7 +13,7 @@ class MeasureRepeat extends Phrase {
       : _repeatMarker = MeasureRepeatMarker(repeats),
         super(measures, phraseIndex);
 
-  static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
+  static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);
   }
 
@@ -66,14 +66,12 @@ class MeasureRepeat extends Phrase {
 
       int mark = markedString.mark();
       try {
-        Measure? measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
-        if (!hasBracket && measure != null && measure.endOfRow) {
+        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
+        if (!hasBracket &&  measure.endOfRow) {
           throw 'repeat not found'; //  this is not a repeat!
         }
         priorMeasure = measure;
-        if (measure != null) {
           measures.add(measure);
-        }
         barFound = false;
         continue;
       } catch (e) {
@@ -131,7 +129,7 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  bool delete(Measure measure) {
+  bool delete(Measure? measure) {
     if (measure == null) return false;
     if (measure == getRepeatMarker()) {
       //  fixme: improve delete repeat marker
@@ -187,7 +185,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toJson() {
-    if (measures == null || measures.isEmpty) return ' ';
+    if (measures.isEmpty) return ' ';
 
     StringBuffer sb = StringBuffer();
     if (measures.isNotEmpty) {
@@ -223,7 +221,7 @@ class MeasureRepeat extends Phrase {
 
     int ret = super.compareTo(o);
     if (ret != 0) return ret;
-    MeasureRepeat other = o as MeasureRepeat;
+    MeasureRepeat other = o;
     ret = _repeatMarker.compareTo(other._repeatMarker);
     if (ret != 0) return ret;
     return 0;
@@ -244,5 +242,5 @@ class MeasureRepeat extends Phrase {
     return ret;
   }
 
-  MeasureRepeatMarker _repeatMarker;
+  final MeasureRepeatMarker _repeatMarker;
 }

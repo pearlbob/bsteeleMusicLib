@@ -20,8 +20,7 @@ void main() {
 
     try {
       //  bad input means this is not a repeat
-      measureRepeat =
-          MeasureRepeat.parseString('[A B C D [ x2 E F', 0, 4, null);
+      measureRepeat = MeasureRepeat.parseString('[A B C D [ x2 E F', 0, 4, null);
       fail('bad input was parsed');
     } catch (e) {
       //  expected
@@ -69,20 +68,17 @@ void main() {
     expect(refRepeat, isNotNull);
     expect('[A B (yo) C D ] x2 ', refRepeat.toMarkup());
 
-    measureRepeat =
-        MeasureRepeat.parseString('   A B (yo)|\nC D  x2 E F', 0, 4, null);
+    measureRepeat = MeasureRepeat.parseString('   A B (yo)|\nC D  x2 E F', 0, 4, null);
     expect(measureRepeat, isNotNull);
     expect('[A B (yo) C D ] x2 ', measureRepeat.toMarkup());
     expect(refRepeat, measureRepeat);
 
-    measureRepeat =
-        MeasureRepeat.parseString(' [   A B (yo)|\nC D]x2 E F', 0, 4, null);
+    measureRepeat = MeasureRepeat.parseString(' [   A B (yo)|\nC D]x2 E F', 0, 4, null);
     expect(measureRepeat, isNotNull);
     expect('[A B (yo) C D ] x2 ', measureRepeat.toMarkup());
     expect(refRepeat, measureRepeat);
 
-    measureRepeat =
-        MeasureRepeat.parseString(' [   A B (yo)   C D]x2 E F', 0, 4, null);
+    measureRepeat = MeasureRepeat.parseString(' [   A B (yo)   C D]x2 E F', 0, 4, null);
     expect(measureRepeat, isNotNull);
     expect('[A B (yo) C D ] x2 ', measureRepeat.toMarkup());
     expect(refRepeat, measureRepeat);
@@ -93,16 +89,14 @@ void main() {
 
     ChordSection chordSection;
 
-    chordSection =
-        ChordSection.parseString('v3: A B C D | \n E F G G# | x2   \n', 4);
+    chordSection = ChordSection.parseString('v3: A B C D | \n E F G G# | x2   \n', 4);
 
     expect(chordSection, isNotNull);
-    Phrase phrase = chordSection.getPhrase(0);
+    Phrase? phrase = chordSection.getPhrase(0);
     expect(phrase is MeasureRepeat, isTrue);
     measureRepeat = phrase as MeasureRepeat;
     logger.d(measureRepeat.toMarkup());
-    ChordSectionLocation loc =
-        ChordSectionLocation(chordSection.sectionVersion, phraseIndex: 0);
+    ChordSectionLocation loc = ChordSectionLocation(chordSection.sectionVersion, phraseIndex: 0);
     logger.d(loc.toString());
     expect('V3:0', loc.toString());
 
@@ -121,31 +115,22 @@ void main() {
   test('testGridMapping', () {
     int beatsPerBar = 4;
     SongBase a;
-    Measure m;
+    Measure? m;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'V: [G Bm F♯m G, GBm ] x3',
-        'v: bob, bob, bob berand\n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'V: [G Bm F♯m G, GBm ] x3', 'v: bob, bob, bob berand\n');
     a.debugSongMoments();
 
     ChordSection cs = ChordSection.parseString('v:', a.getBeatsPerBar());
-    ChordSection chordSection =
-        a.findChordSectionBySectionVersion(cs.sectionVersion);
+    ChordSection? chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    Phrase phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    Phrase? phrase = chordSection!.getPhrase(0);
+    expect(phrase?.isRepeat(), isTrue);
 
     MeasureRepeat measureRepeat = phrase as MeasureRepeat;
     expect(5, measureRepeat.length);
 
-    MeasureNode measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    MeasureNode? measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G', a.getBeatsPerBar()), measureNode);
 
@@ -174,36 +159,25 @@ void main() {
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
     expect(measureNode, isNull);
 
-    ChordSectionLocation chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(1, 4 + 1));
+    ChordSectionLocation? chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(1, 4 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: [A B , Ab Bb Eb, D C G G# ] x3 T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'v: [A B , Ab Bb Eb, D C G G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(0);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(9, measureRepeat.length);
@@ -239,18 +213,18 @@ void main() {
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight, );
+    expect(
+      chordSectionLocation!.marker,
+      ChordSectionLocationMarker.repeatLowerRight,
+    );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase.createSongBase(
         'A',
@@ -269,62 +243,54 @@ void main() {
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(1);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(1);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(16, measureRepeat.length);
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 1));
     expect(measureNode, isNotNull);
-    expect(measureNode, Measure.parseString('A', a.getBeatsPerBar()) );
+    expect(measureNode, Measure.parseString('A', a.getBeatsPerBar()));
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 1));
     expect(measureNode, isNotNull);
-    expect(measureNode, Measure.parseString('D', a.getBeatsPerBar()) );
+    expect(measureNode, Measure.parseString('D', a.getBeatsPerBar()));
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
-    expect(measureNode, Measure.parseString('Gb', a.getBeatsPerBar()) );
+    expect(measureNode, Measure.parseString('Gb', a.getBeatsPerBar()));
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 7));
     expect(measureNode, isNotNull);
-    expect(measureNode, Measure.parseString('G#', a.getBeatsPerBar()) );
+    expect(measureNode, Measure.parseString('G#', a.getBeatsPerBar()));
 
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 8));
     expect(measureNode, isNotNull);
-    expect(measureNode, Measure.parseString('A#', a.getBeatsPerBar()) );
+    expect(measureNode, Measure.parseString('A#', a.getBeatsPerBar()));
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 8 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight, );
+    expect(
+      chordSectionLocation!.marker,
+      ChordSectionLocationMarker.repeatLowerRight,
+    );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: A B C D x3 T: A',
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'v: A B C D x3 T: A',
         'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(0);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(4, measureRepeat.length);
@@ -337,31 +303,25 @@ void main() {
     expect(measureNode, isNotNull);
     expect(Measure.parseString('D', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(0, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(0, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight, );
+    expect(
+      chordSectionLocation!.marker,
+      ChordSectionLocationMarker.repeatLowerRight,
+    );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: [A B C D] x3 T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'v: [A B C D] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(0);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(4, measureRepeat.length);
@@ -374,31 +334,25 @@ void main() {
     expect(measureNode, isNotNull);
     expect(Measure.parseString('D', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(0, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(0, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight, );
+    expect(
+      chordSectionLocation!.marker,
+      ChordSectionLocationMarker.repeatLowerRight,
+    );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(0);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(12, measureRepeat.length);
@@ -422,36 +376,25 @@ void main() {
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: [A B C D, Ab Bb Eb Db, D C G# ] x3 T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'v: [A B C D, Ab Bb Eb Db, D C G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(0);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(11, measureRepeat.length);
@@ -479,36 +422,25 @@ void main() {
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
     expect(measureNode, isNull);
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 E F F# G T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 E F F# G T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(0);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(0);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(12, measureRepeat.length);
@@ -537,36 +469,25 @@ void main() {
     measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: E F F# Gb [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
+        'v: E F F# Gb [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.getBeatsPerBar());
     chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    phrase = chordSection.getPhrase(1);
-    expect(phrase.isRepeat(), isTrue);
+    phrase = chordSection!.getPhrase(1);
+    expect(phrase!.isRepeat(), isTrue);
 
     measureRepeat = phrase as MeasureRepeat;
     expect(12, measureRepeat.length);
@@ -593,17 +514,14 @@ void main() {
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(3, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight,
-        chordSectionLocation.marker);
-    chordSectionLocation =
-        a.getChordSectionLocation(GridCoordinate(3, 4 + 1 + 1));
+    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
-    expect(measureNode.isRepeat(), isTrue);
+    expect(measureNode!.isRepeat(), isTrue);
   });
 }

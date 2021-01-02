@@ -191,7 +191,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   ///
 //    Parse the start of the given string for a chord description.
   static ChordDescriptor parse(MarkedString markedString) {
-    if (markedString != null && markedString.isNotEmpty) {
+    if (markedString.isNotEmpty) {
       //  arbitrary cutoff, larger than the max short name
       const int maxLength = 10;
       String match = markedString.remainingStringLimited(maxLength);
@@ -243,7 +243,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   @override
   bool operator ==(other) {
-    return _name == ((other as ChordDescriptor)?._name ?? '');
+    return _name == ((other as ChordDescriptor)._name );
   }
 
   @override
@@ -277,12 +277,12 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   /// the list of components from the scale that make up the given chord.
   Set<ChordComponent> get chordComponents => _chordComponents;
-  Set<ChordComponent> _chordComponents;
+  final Set<ChordComponent> _chordComponents;
 
   /// an optional alias often used by musicians.
   /// can be null.
   ChordDescriptor? get alias => _alias;
-  ChordDescriptor? _alias;
+  final ChordDescriptor? _alias;
 
   static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [
@@ -337,7 +337,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _dominant11,
     _dominant13,
   ];
-  static late List<ChordDescriptor> _allChordDescriptorsOrdered;
+  static late List<ChordDescriptor> _allChordDescriptorsOrdered=[];
 
   static final List<ChordDescriptor> _parseOrderedChordDescriptorsOrdered = [
     _sevenSus4,
@@ -396,7 +396,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static List<ChordDescriptor> get parseOrderedValues => _parseOrderedChordDescriptorsOrdered;
 
   static List<ChordDescriptor> get values {
-    if (_allChordDescriptorsOrdered == null) {
+    if (_allChordDescriptorsOrdered.isEmpty) {
       // lazy eval
       //  compute the ordered set of all chord descriptors
       SplayTreeSet<ChordDescriptor> set = SplayTreeSet();

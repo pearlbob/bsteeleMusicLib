@@ -45,26 +45,26 @@ void main() {
     for (ScaleNote sn in ScaleNote.values) {
       if (sn == ScaleNote.get(ScaleNoteEnum.X)) continue;
       String s = sn.toString();
-      ScaleChord sc;
+      ScaleChord? sc;
 
       sc = ScaleChord.parseString(s);
 
-      expect(sn, sc.scaleNote);
+      expect(sn, sc!.scaleNote);
 
       s = sn.toString() + 'º';
       sc = ScaleChord.parseString(s);
-      expect(sn, sc.scaleNote);
+      expect(sn, sc!.scaleNote);
       expect(ChordDescriptor.diminished, sc.chordDescriptor);
 
       s = sn.toString() + 'º7';
       sc = ScaleChord.parseString(s);
-      expect(sn, sc.scaleNote);
+      expect(sn, sc!.scaleNote);
       expect(ChordDescriptor.diminished7, sc.chordDescriptor);
 
       for (ChordDescriptor cd in ChordDescriptor.values) {
         s = sn.toString() + cd.shortName;
         sc = ScaleChord.parseString(s);
-        expect(sn, sc.scaleNote);
+        expect(sn, sc!.scaleNote);
         ChordDescriptor chordDescriptor = sc.chordDescriptor;
         expect(cd.deAlias(), chordDescriptor);
 
@@ -74,7 +74,7 @@ void main() {
         ScaleChord builtScaleChord = ScaleChord(sn, cd);
 
         expect(sc, builtScaleChord);
-        expect(sn, sc.scaleNote);
+        expect(sn, sc!.scaleNote);
         expect(cd.deAlias(), sc.chordDescriptor);
 
         List<ScaleChord> scaleChords = [];
@@ -97,7 +97,7 @@ void main() {
   });
 
   test('testScaleChordParse', () {
-    ScaleChord a = ScaleChord.parseString('A13');
+    ScaleChord? a = ScaleChord.parseString('A13');
     ScaleChord ref = ScaleChord(ScaleNote.get(ScaleNoteEnum.A), ChordDescriptor.dominant13);
     expect(a, ref);
     expect(ScaleChord.parseString('A13'), ScaleChord(ScaleNote.get(ScaleNoteEnum.A), ChordDescriptor.dominant13));

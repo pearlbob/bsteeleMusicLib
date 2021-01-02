@@ -168,11 +168,7 @@ class Section implements Comparable<Section> {
   }
 
   static Section? parseString(String s) {
-    SectionEnum? sectionEnum = _getSectionEnum(s);
-    if (sectionEnum != null) {
-      return get(sectionEnum);
-    }
-    return null;
+    return _getMapStringToSection()[s.toLowerCase()];
   }
 
   static bool lookahead(MarkedString markedString) {
@@ -181,7 +177,7 @@ class Section implements Comparable<Section> {
     if (m.groupCount < 2) return false;
     String sectionName = m.group(1)!;
     Section? section = parseString(sectionName.toLowerCase());
-    // String sectionNumber = m.group(2);
+     String sectionNumber = m.group(2)!;
     return section != null;
   }
 

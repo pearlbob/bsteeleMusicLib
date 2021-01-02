@@ -98,6 +98,10 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return _delays;
   }
 
+
+  static
+  ChordAnticipationOrDelay get defaultValue => ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
+
   @override
   int compareTo(ChordAnticipationOrDelay other) {
     return _chordAnticipationOrDelayEnum.index - other._chordAnticipationOrDelayEnum.index;

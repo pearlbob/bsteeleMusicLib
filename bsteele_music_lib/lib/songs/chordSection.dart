@@ -84,31 +84,27 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       try {
         //  look for a phrase
         Phrase phrase = Phrase.parse(markedString, phrases.length, beatsPerBar, null);
-        if (phrase != null) {
-          //  don't assume every line has an eol
-          for (Measure m in lineMeasures) {
-            measures.add(m);
-          }
-          lineMeasures = [];
-          if (measures.isNotEmpty) {
-            phrases.add(Phrase(measures, phrases.length));
-          }
-          phrase.setPhraseIndex(phrases.length);
-          phrases.add(phrase);
-          measures = [];
-          lastMeasure = null;
-          continue;
+        //  don't assume every line has an eol
+        for (Measure m in lineMeasures) {
+          measures.add(m);
         }
+        lineMeasures = [];
+        if (measures.isNotEmpty) {
+          phrases.add(Phrase(measures, phrases.length));
+        }
+        phrase.setPhraseIndex(phrases.length);
+        phrases.add(phrase);
+        measures = [];
+        lastMeasure = null;
+        continue;
       } catch (e) {
         //  ignore
       }
 
       try {
         //  add a measure to the current line measures
-        Measure? measure = Measure.parse(markedString, beatsPerBar, lastMeasure);
-        if (measure != null) {
-          lineMeasures.add(measure);
-        }
+        Measure measure = Measure.parse(markedString, beatsPerBar, lastMeasure);
+        lineMeasures.add(measure);
         lastMeasure = measure;
         continue;
       } catch (e) {
@@ -186,7 +182,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return ret;
   }
 
-  bool add(int index, MeasureNode newMeasureNode) {
+  bool add(int index, MeasureNode? newMeasureNode) {
     if (newMeasureNode == null) return false;
 
     switch (newMeasureNode.getMeasureNodeType()) {
@@ -212,7 +208,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return true;
   }
 
-  bool insert(int index, MeasureNode newMeasureNode) {
+  bool insert(int index, MeasureNode? newMeasureNode) {
     if (newMeasureNode == null) return false;
 
     switch (newMeasureNode.getMeasureNodeType()) {
@@ -382,8 +378,8 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       return this;
     }
     Phrase? measureSequenceItem = _phrases[_phrases.length - 1];
-    List<Measure>? measures = measureSequenceItem.measures;
-    if (measures == null || measures.isEmpty) return measureSequenceItem;
+    List<Measure> measures = measureSequenceItem.measures;
+    if ( measures.isEmpty) return measureSequenceItem;
     return measures[measures.length - 1];
   }
 
@@ -485,7 +481,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     StringBuffer sb = StringBuffer();
     sb.write(getSectionVersion().toString());
     sb.write('\n');
-    if (_phrases != null) {
+    if (_phrases.isNotEmpty) {
       for (Phrase phrase in _phrases) {
         sb.write(phrase.toString());
       }
@@ -523,7 +519,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   Phrase? lastPhrase() {
-    if (_phrases == null) {
+    if (_phrases.isEmpty) {
       return null;
     }
     return _phrases[_phrases.length - 1];

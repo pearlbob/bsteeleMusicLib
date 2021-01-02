@@ -27,7 +27,7 @@ void main() {
       Chord chord = Chord.byScaleChordAndBeats(
           ScaleChord(ScaleNote.get(ScaleNoteEnum.B), ChordDescriptor.major), beats, beatsPerBar);
       ref = Measure(beats, [chord]);
-      logger.i('m:   ' + (m?.toMarkup() ?? 'none'));
+      logger.i('m:   ' + m.toMarkup());
       logger.i('ref: ' + ref.toMarkup());
       logger.i('m == ref: ' + (m == ref).toString());
       expect(m, ref);
@@ -42,7 +42,6 @@ void main() {
       s = 'X.';
 
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
 
       //  explicit measure short of beats is left as specified
@@ -51,7 +50,6 @@ void main() {
     {
       s = 'GD.C';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  explicit measure short of beats is left as specified
       expect('GD.C', m.toMarkup());
@@ -60,7 +58,6 @@ void main() {
       s = 'AX';
 
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  explicit measure short of beats is left as specified
       expect('AX', m.toMarkup());
@@ -69,7 +66,6 @@ void main() {
       s = 'AX..';
 
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  explicit measure short of beats is left as specified
       expect('AX..', m.toMarkup());
@@ -78,7 +74,6 @@ void main() {
       s = 'X';
 
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  explicit measure short of beats is left as specified
       expect('X', m.toMarkup());
@@ -88,7 +83,6 @@ void main() {
       s = 'A.B.';
 
       m = Measure.parseString(s, 5);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  explicit measure short of beats is left as specified
       expect('A.B.', m.toMarkup());
@@ -97,7 +91,6 @@ void main() {
       s = 'A.B.';
 
       m = Measure.parseString(s, 5);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  explicit measure short of beats is left as specified
       expect('A.B.', m.toMarkup());
@@ -105,7 +98,6 @@ void main() {
     {
       s = 'AB';
       m = Measure.parseString(s, 5);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  5/4 split across two chords, first one gets the extra beat
       expect('A..B.', m.toMarkup());
@@ -113,7 +105,6 @@ void main() {
     {
       s = 'A.B.';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       //  default to simplest expression
       expect('AB', m.toMarkup());
@@ -121,14 +112,12 @@ void main() {
     {
       s = 'A/GA/F♯';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(m.toMarkup(), 'A/GA/F#');
     }
     {
       s = 'A/G';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
       expect(m.beatCount, 4);
@@ -136,7 +125,6 @@ void main() {
     {
       s = 'F.';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
       expect(m.beatCount, 2);
@@ -144,7 +132,6 @@ void main() {
     {
       s = 'F.';
       m = Measure.parseString(s, 2);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect('F', m.toMarkup());
       expect(m.beatCount, 2);
@@ -152,7 +139,6 @@ void main() {
     {
       s = 'F..';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
       expect(m.beatCount, 3);
@@ -160,7 +146,6 @@ void main() {
     {
       s = 'F...';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect('F', m.toMarkup());
       expect(m.beatCount, 4);
@@ -168,7 +153,6 @@ void main() {
     {
       s = 'A..B';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
       expect(m.beatCount, 4);
@@ -176,21 +160,18 @@ void main() {
     {
       s = 'AB..';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
     }
     {
       s = 'ABC.';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
     }
     {
       s = 'A.BC';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(s, m.toMarkup());
     }
@@ -198,54 +179,46 @@ void main() {
     {
       s = 'E♭F';
       m = Measure.parseString(s, 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(m.toMarkup(), 'EbF');
     }
     {
       s = 'E♭F';
       m = Measure.parseString(s, 3);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(m.toMarkup(), 'Eb.F');
     }
     {
       //  test beat allocation
       m = Measure.parseString('EAB', 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(3, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(1, m.chords[1].beats);
       expect(1, m.chords[2].beats);
 
       m = Measure.parseString('EA', 4);
-      if (m == null) throw TestFailure('parse result is null');
+
       expect(2, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(2, m.chords[1].beats);
       m = Measure.parseString('E..A', 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(2, m.chords.length);
       expect(3, m.chords[0].beats);
       expect(1, m.chords[1].beats);
 
       m = Measure.parseString('E.A', 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(2, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(2, m.chords[1].beats);
       m = Measure.parseString('E.A.', 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(2, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(2, m.chords[1].beats);
       m = Measure.parseString('EA.', 4);
-      if (m == null) throw TestFailure('parse result is null');
       expect(2, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(2, m.chords[1].beats);
       m = Measure.parseString('EA.', 6);
-      if (m == null) throw TestFailure('parse result is null');
       expect(2, m.chords.length);
       expect(4, m.chords[0].beats);
       expect(2, m.chords[1].beats);
@@ -261,7 +234,6 @@ void main() {
 
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('A', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(beatsPerBar, m.beatCount);
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
@@ -273,7 +245,6 @@ void main() {
 
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('BC', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(beatsPerBar, m.beatCount);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -287,7 +258,6 @@ void main() {
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('E#m7. ', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect(2, m.beatCount);
       expect(1, m.chords.length);
@@ -301,7 +271,6 @@ void main() {
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('E#m7Gb7', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(beatsPerBar, m.beatCount);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -323,7 +292,6 @@ void main() {
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('F#m7.Asus4', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(beatsPerBar, m.beatCount);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -347,7 +315,6 @@ void main() {
     ChordAnticipationOrDelay delayNone = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('A/G#', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(beatsPerBar, m.beatCount);
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
@@ -358,7 +325,6 @@ void main() {
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('C/F#.G', beatsPerBar);
-      if (m == null) throw TestFailure('parse result is null');
       expect(beatsPerBar, m.beatCount);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -375,9 +341,7 @@ void main() {
     {
       for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
         Measure? m0 = Measure.parseString('C', beatsPerBar);
-        if (m0 == null) throw TestFailure('parse result is null');
         m = Measure.parse(MarkedString('-'), beatsPerBar, m0);
-        if (m == null) throw TestFailure('parse result is null');
         expect(beatsPerBar, m.beatCount);
         expect(1, m.chords.length);
         expect(m0.chords, m.chords);
@@ -386,14 +350,12 @@ void main() {
     {
       for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
         m = Measure.parseString('X', beatsPerBar);
-        if (m == null) throw TestFailure('parse result is null');
         expect(beatsPerBar, m.beatCount);
         expect(1, m.chords.length);
       }
     }
     {
       m = Measure.parseString('E#m7. ', 3);
-      if (m == null) throw TestFailure('parse result is null');
       expect(m, isNotNull);
       expect('E#m7.', m.toMarkup());
     }
@@ -435,7 +397,6 @@ void main() {
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       try {
         m = Measure.parseString('E#m7.. ', beatsPerBar);
-        if (m == null) throw TestFailure('parse result is null');
         expect(3, m.beatCount);
         expect(1, m.chords.length);
         Chord chord0 = m.chords[0];
@@ -464,7 +425,6 @@ void main() {
         for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
           logger.i('beatsPerBar: ' + beatsPerBar.toString());
           m = Measure.parseString(scaleNote.toString(), beatsPerBar);
-          if (m == null) throw TestFailure('parse result is null');
           m = m.transposeToKey(key) as Measure;
           for (Chord chord in m.chords) {
             ScaleNote sn = chord.scaleChord.scaleNote;
@@ -482,7 +442,6 @@ void main() {
               if (sourceSlash.isSilent) continue;
               chord.slashScaleNote = sourceSlash;
               m = Measure.parseString(chord.toString(), beatsPerBar);
-              if (m == null) throw TestFailure('parse result is null');
               m = m.transposeToKey(key) as Measure;
               if (m.chords.isEmpty) throw TestFailure('transposeToKey result is empty');
               ScaleNote? slashScaleNote = m.chords[0].slashScaleNote;

@@ -55,10 +55,10 @@ class LyricSection implements Comparable<LyricSection> {
     int ret = _sectionVersion.compareTo(other._sectionVersion);
     if (ret != 0) return ret;
 
-    if (_lyricsLines == null) {
-      if (other._lyricsLines != null) return -1;
+    if (_lyricsLines.isEmpty) {
+      if (other._lyricsLines.isNotEmpty) return -1;
     } else {
-      if (other._lyricsLines == null) return 1;
+      if (other._lyricsLines.isEmpty) return 1;
       if (_lyricsLines.length != other._lyricsLines.length) {
         return _lyricsLines.length - other._lyricsLines.length;
       }
@@ -75,8 +75,8 @@ class LyricSection implements Comparable<LyricSection> {
 
     if (!listsEqual(_lyricsLines, other._lyricsLines)) {
       //  compare the lists
-      if (_lyricsLines == null) return other._lyricsLines == null ? 0 : 1;
-      if (other._lyricsLines == null) return -1;
+      if (_lyricsLines.isEmpty) return other._lyricsLines.isEmpty ? 0 : 1;
+      if (other._lyricsLines.isEmpty) return -1;
       if (_lyricsLines.length != other._lyricsLines.length) {
         return _lyricsLines.length < other._lyricsLines.length ? -1 : 1;
       }
@@ -103,7 +103,7 @@ class LyricSection implements Comparable<LyricSection> {
   int get hashCode {
     int ret = _sectionVersion.hashCode;
     ret = ret * 13 + drumSection.hashCode;
-    if (_lyricsLines != null) ret = ret * 17 + hashObjects(_lyricsLines);
+    ret = ret * 17 + hashObjects(_lyricsLines);
     return ret;
   }
 

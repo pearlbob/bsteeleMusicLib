@@ -11,7 +11,7 @@ import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
-SongBase _a;
+SongBase _a = SongBase();
 
 class TestSong {
   void startingChords(String chords) {
@@ -20,7 +20,7 @@ class TestSong {
     _myA = _a;
   }
 
-  void pre(MeasureEditType type, String locationString, String measureNodeString, String editEntry) {
+  void pre(MeasureEditType type, String? locationString, String? measureNodeString, String? editEntry) {
     //  de-music character the result
     measureNodeString = _deMusic(measureNodeString);
 
@@ -31,7 +31,7 @@ class TestSong {
       expect(_myA.getCurrentChordSectionLocation().toString(), locationString);
 
       if (measureNodeString != null) {
-        expect(_myA.getCurrentMeasureNode().toMarkup().trim(), measureNodeString.trim());
+        expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), measureNodeString.trim());
       }
     }
 
@@ -50,10 +50,10 @@ class TestSong {
   }
 
   void resultChords(String chords) {
-    expect(_myA.toMarkup().trim(), _deMusic(chords).trim());
+    expect(_myA.toMarkup().trim(), _deMusic(chords)!.trim());
   }
 
-  void post(MeasureEditType type, String locationString, String measureNodeString) {
+  void post(MeasureEditType type, String locationString, String? measureNodeString) {
     measureNodeString = _deMusic(measureNodeString);
 
     expect(_myA.getCurrentMeasureEditType(), type);
@@ -66,11 +66,11 @@ class TestSong {
     } else {
       logger.d('measureNodeString: ' + measureNodeString);
       expect(_myA.getCurrentMeasureNode(), isNotNull);
-      expect(_myA.getCurrentMeasureNode().toMarkup().trim(), measureNodeString.trim());
+      expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), measureNodeString.trim());
     }
   }
 
-  static String _deMusic(String s) {
+  static String? _deMusic(String? s) {
     if (s == null) return null;
 
     //  de-music characters in the string
@@ -79,7 +79,7 @@ class TestSong {
     return s;
   }
 
-  SongBase _myA;
+  SongBase _myA = SongBase();
 }
 
 void main() {
@@ -94,7 +94,7 @@ void main() {
     ChordSection newSection;
     MeasureRepeat newRepeat;
     Phrase newPhrase;
-    Measure newMeasure;
+    Measure? newMeasure;
 
     ts.startingChords('');
     ts.pre(MeasureEditType.append, '', '', 'i: [A B C D]');
@@ -222,9 +222,9 @@ void main() {
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:0:0', 'C♯m');
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:0'));
-    expect(_a.getCurrentChordSectionLocationMeasureNode().toMarkup(), TestSong._deMusic('[C♯m A♭ F A♭ ] x4 '));
+    expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong._deMusic('[C♯m A♭ F A♭ ] x4 '));
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:1:0'));
-    expect(_a.getCurrentChordSectionLocationMeasureNode().toMarkup(), '(Prechorus)');
+    expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), '(Prechorus)');
     ts.pre(MeasureEditType.delete, 'V:1:0', '(Prechorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:1:0', 'C');
@@ -405,7 +405,7 @@ void main() {
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect('I:0:7', _a.getCurrentChordSectionLocation().toString());
-    expect('A', _a.getCurrentMeasureNode().toMarkup());
+    expect('A', _a.getCurrentMeasureNode()!.toMarkup());
 
     _a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
         'V: C F C C [GB F C Dm7 ] x4 G F C G  ', 'v: bob, bob, bob berand');
@@ -432,7 +432,7 @@ void main() {
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect('V:0:7', _a.getCurrentChordSectionLocation().toString());
-    expect('Dm7', _a.getCurrentMeasureNode().toMarkup());
+    expect('Dm7', _a.getCurrentMeasureNode()!.toMarkup());
 
     //   current type	current edit loc	entry	replace entry	 edit type	 edit loc	result
     logger.d('section	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -516,7 +516,7 @@ void main() {
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(ChordSectionLocation.parseString('i:0:4'), _a.getCurrentChordSectionLocation());
-    expect(newMeasure.toMarkup(), _a.getCurrentChordSectionLocationMeasureNode().toMarkup());
+    expect(newMeasure.toMarkup(), _a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
 
     logger.d('phrase	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
     _a = SongBase.createSongBase(

@@ -34,7 +34,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     _marker = ChordSectionLocationMarker.none;
   }
 
-  ChordSectionLocation.copy(ChordSectionLocation other)
+  ChordSectionLocation.copy(ChordSectionLocation? other)
       : this(other?.sectionVersion, phraseIndex: other?.phraseIndex, measureIndex: other?._measureIndex);
 
   ChordSectionLocation.byMultipleSectionVersion(Set<SectionVersion>? labelSectionVersions)
@@ -58,7 +58,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   }
 
   ChordSectionLocation.withMarker(this._sectionVersion, int phraseIndex, this._marker) : _labelSectionVersions = null {
-    if (phraseIndex == null || phraseIndex < 0) {
+    if (phraseIndex < 0) {
       _phraseIndex = -1;
       _hasPhraseIndex = false;
     } else {
@@ -98,9 +98,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       if (mr != null) {
         try {
           int phraseIndex = int.parse(mr.group(1)!);
-          phraseIndex ??= -1;
           int measureIndex = int.parse(mr.group(2)!);
-          measureIndex ??= -1;
           markedString.consume(mr.group(0)!.length);
           return ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
         } catch (e) {
@@ -135,12 +133,12 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   ChordSectionLocation nextPhraseIndexLocation() {
     if (!_hasPhraseIndex) return this;
-    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex ?? 0 + 1);
+    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex);
   }
 
   @override
   String toString() {
-    return getId() + (_marker != null && _marker != ChordSectionLocationMarker.none ? ':x' : '');
+    return getId() + (_marker != ChordSectionLocationMarker.none ? ':x' : '');
   }
 
   String getId() {
@@ -175,7 +173,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       return ret;
     }
 
-    ret = (_phraseIndex ?? -1) - (other._phraseIndex ?? -1);
+    ret = _phraseIndex - other._phraseIndex;
     if (ret != 0) return ret;
     ret = _measureIndex - other._measureIndex;
     if (ret != 0) return ret;

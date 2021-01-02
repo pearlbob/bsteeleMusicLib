@@ -29,7 +29,7 @@ class SectionVersion implements Comparable<SectionVersion> {
   /// used in the id.
 
   static SectionVersion parse(MarkedString markedString) {
-    if (markedString == null) throw 'no data to parse';
+    if (markedString.isEmpty) throw 'no data to parse';
 
     RegExpMatch? m = sectionRegexp.firstMatch(markedString.toString());
     if (m == null) throw 'no section version found';

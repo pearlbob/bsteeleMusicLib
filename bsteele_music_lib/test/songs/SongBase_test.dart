@@ -21,32 +21,32 @@ String chordSectionToMultiLineString(SongBase song) {
   Grid<ChordSectionLocation> grid = song.getChordSectionLocationGrid();
   StringBuffer sb = StringBuffer('Grid{\n');
 
-  if (grid != null) {
-    int rLimit = grid.getRowCount();
-    for (int r = 0; r < rLimit; r++) {
-      List<ChordSectionLocation> row = grid.getRow(r);
-      int colLimit = row.length;
-      sb.write('\t[');
-      for (int c = 0; c < colLimit; c++) {
-        ChordSectionLocation loc = row[c];
-        if (loc == null) {
-          sb.write('\tnull\n');
-          continue;
-        }
-
-        sb.write('\t' + loc.toString() + ' ');
-        if (loc.isMeasure) {
-          Measure measure = song.findMeasureByChordSectionLocation(loc);
-          sb.write('measure: "${measure.toMarkup()}"'
-              '${measure.endOfRow ? ', endOfRow' : ''}'
-              '${measure.isRepeat() ? ', repeat' : ''}'
-              //
-              );
-        }
-        sb.write('\n');
+  int rLimit = grid.getRowCount();
+  for (int r = 0; r < rLimit; r++) {
+    List<ChordSectionLocation?>? row = grid.getRow(r);
+    if (row == null) throw 'row == null';
+    int colLimit = row.length;
+    sb.write('\t[');
+    for (int c = 0; c < colLimit; c++) {
+      ChordSectionLocation? loc = row[c];
+      if (loc == null) {
+        sb.write('\tnull\n');
+        continue;
       }
-      sb.write('\t]\n');
+
+      sb.write('\t' + loc.toString() + ' ');
+      if (loc.isMeasure) {
+        Measure? measure = song.findMeasureByChordSectionLocation(loc);
+        if (measure == null) throw 'measure == null';
+        sb.write('measure: "${measure.toMarkup()}"'
+            '${measure.endOfRow ? ', endOfRow' : ''}'
+            '${measure.isRepeat() ? ', repeat' : ''}'
+            //
+            );
+      }
+      sb.write('\n');
     }
+    sb.write('\t]\n');
   }
   sb.write('}');
   return sb.toString();
@@ -149,14 +149,27 @@ void main() {
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('c3:1:3')); //  move to end
     expect(Measure.parseString('F', a.getBeatsPerBar()), a.getCurrentMeasureNode());
     ChordSection cs = ChordSection.parseString('c3:', a.getBeatsPerBar());
-    ChordSection chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
+    ChordSection? chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
-    expect(cs.sectionVersion, chordSection.sectionVersion);
+    expect(cs.sectionVersion, chordSection!.sectionVersion);
   });
 
   test('test basics', () {
     SongBase a;
 
+    // {
+    //   //  trivial first!
+    //   a = SongBase.createSongBase(
+    //       'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'I: A B C D v: D C G G', 'v: bob, bob, bob berand');
+    //
+    //   SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>.of(a.getChordSections());
+    //   ChordSection chordSection = chordSections.first;
+    //   Phrase phrase = chordSection.phrases[0];
+    //
+    //   Measure measure = phrase.measures[1];
+    //   expect(phrase.measures.length, 4);
+    //   expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.B));
+    // }
     {
       a = SongBase.createSongBase(
           'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'I:v: A B C D', 'I:v: bob, bob, bob berand');
@@ -174,7 +187,8 @@ void main() {
       a.setBeatsPerMinute(i);
       expect(a.getBeatsPerMinute(), i);
     }
-  });
+  }
+  );
 
   test('testChordSectionEntry', () {
     SongBase a;
@@ -183,7 +197,10 @@ void main() {
     a = SongBase.createSongBase(
         'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: v: t:', 'i: dude v: bob, bob, bob berand');
 
-    expect( a.toMarkup().trim(), 'I: []  V: []  T: []',);
+    expect(
+      a.toMarkup().trim(),
+      'I: []  V: []  T: []',
+    );
     expect(a.editList(a.parseChordEntry('t: G G C G')), isTrue);
     expect(a.toMarkup().trim(), 'I: []  V: []  T: G G C G');
     expect(a.editList(a.parseChordEntry('I: V:  A B C D')), isTrue);
@@ -193,14 +210,14 @@ void main() {
     );
 
     expect(
-      a.findChordSectionByString('I:').toMarkup().trim(),
+      a.findChordSectionByString('I:')!.toMarkup().trim(),
       'I: A B C D',
     );
     expect(
-      a.findChordSectionByString('V:').toMarkup().trim(),
+      a.findChordSectionByString('V:')!.toMarkup().trim(),
       'V: A B C D',
     );
-    expect(a.findChordSectionByString('T:').toMarkup().trim(), 'T: G G C G');
+    expect(a.findChordSectionByString('T:')!.toMarkup().trim(), 'T: G G C G');
 
     //  auto rows of 4 when 8 or more measures entered at once
     a = SongBase.createSongBase(
@@ -208,7 +225,7 @@ void main() {
 
     expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
-    expect('I: A B C D, A B C D,', a.findChordSectionByString('I:').toMarkup().trim());
+    expect('I: A B C D, A B C D,', a.findChordSectionByString('I:')!.toMarkup().trim());
   });
 
   test('testFind', () {
@@ -216,18 +233,18 @@ void main() {
         'i: A B C D v: E F G A# t: Gm Gm', 'i: dude v: bob, bob, bob berand');
 
     expect(a.findChordSectionByString('ch:'), isNull);
-    ChordSection chordSection = a.findChordSectionByString('i:');
-    logger.d(chordSection.toMarkup());
+    ChordSection? chordSection = a.findChordSectionByString('i:');
+    logger.d(chordSection!.toMarkup());
     expect('I: A B C D ', chordSection.toMarkup());
 
     chordSection = a.findChordSectionByString('v:');
-    logger.d(chordSection.toMarkup());
-    logger.d(a.findChordSectionByString('v:').toMarkup());
+    logger.d(chordSection!.toMarkup());
+    logger.d(a.findChordSectionByString('v:')!.toMarkup());
     expect(chordSection.toMarkup(), 'V: E F G A# ');
 
     chordSection = a.findChordSectionByString('t:');
-    logger.d(chordSection.toMarkup());
-    logger.d(a.findChordSectionByString('t:').toMarkup());
+    logger.d(chordSection!.toMarkup());
+    logger.d(a.findChordSectionByString('t:')!.toMarkup());
     expect('T: Gm Gm ', chordSection.toMarkup());
 
 //            logger.d(a.findMeasureNodeByGrid("i:1"));
@@ -239,16 +256,16 @@ void main() {
       SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
           'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
 
-      MeasureNode m = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
-      ChordSectionLocation chordSectionLocation = a.findChordSectionLocation(m);
+      MeasureNode? m = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+      ChordSectionLocation? chordSectionLocation = a.findChordSectionLocation(m);
       logger.d(chordSectionLocation.toString());
-      a.setRepeat(chordSectionLocation, 2);
+      a.setRepeat(chordSectionLocation!, 2);
       logger.d(a.toMarkup());
       expect(a.toMarkup().trim(), 'I: [A B C D ] x2  V: E F G A#');
 
       //  remove the repeat
       chordSectionLocation = a.findChordSectionLocation(m);
-      a.setRepeat(chordSectionLocation, 1);
+      a.setRepeat(chordSectionLocation!, 1);
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#');
     }
 
@@ -264,22 +281,25 @@ void main() {
         a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: A B C D v: E F G A#',
             'i: v: bob, bob, bob berand');
         grid = a.getChordSectionLocationGrid();
-        List<ChordSectionLocation> cols = grid.getRow(row);
-        for (int col = 1; col < cols.length; col++) {
-          for (int r = 6; r > 1; r--) {
-            MeasureNode m = a.findMeasureNodeByGrid(GridCoordinate(row, col));
-            ChordSectionLocation chordSectionLocation = a.findChordSectionLocation(m);
-            a.setRepeat(chordSectionLocation, r);
-            String s = a.toMarkup().trim();
-            logger.d(s);
-            if (row == 0) {
-              expect(s, 'I: [A B C D ] x' + r.toString() + '  V: E F G A#');
-            } else {
-              expect(
-                  s,
-                  'I: A B C D'
-                          '  V: [E F G A# ] x' +
-                      r.toString());
+        List<ChordSectionLocation?>? cols = grid.getRow(row);
+        if (cols != null) {
+          for (int col = 1; col < cols.length; col++) {
+            for (int r = 6; r > 1; r--) {
+              MeasureNode? m = a.findMeasureNodeByGrid(GridCoordinate(row, col));
+              ChordSectionLocation? chordSectionLocation = a.findChordSectionLocation(m);
+              if (chordSectionLocation == null) throw 'chordSectionLocation == null';
+              a.setRepeat(chordSectionLocation, r);
+              String s = a.toMarkup().trim();
+              logger.d(s);
+              if (row == 0) {
+                expect(s, 'I: [A B C D ] x' + r.toString() + '  V: E F G A#');
+              } else {
+                expect(
+                    s,
+                    'I: A B C D'
+                            '  V: [E F G A# ] x' +
+                        r.toString());
+              }
             }
           }
         }
@@ -288,16 +308,18 @@ void main() {
   });
 
   test('test findChordSectionLocation()', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-        'i: A B C D v: E B C D', 'i: v: bob, bob, bob berand');
+    SongBase a = SongBase.createSongBase(
+        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: A B C D v: E B C D', 'i: v: bob, bob, bob berand');
 
     logger.d(a.logGrid());
     logger.d('moment count: ${a.getSongMoments().length}');
-    for ( SongMoment moment in a.getSongMoments()){
-      logger.d( 'moment: $moment');
-      ChordSection chordSection = a.findChordSectionBySectionVersion(moment.chordSection.sectionVersion);
-      ChordSectionLocation lastLoc = a.findLastChordSectionLocation(chordSection);
-      logger.d( '   lastLoc: $lastLoc');
+    for (SongMoment moment in a.getSongMoments()) {
+      logger.d('moment: $moment');
+      ChordSection? chordSection = a.findChordSectionBySectionVersion(moment.chordSection.sectionVersion);
+      if (chordSection == null) throw 'chordSection == null';
+      ChordSectionLocation? lastLoc = a.findLastChordSectionLocation(chordSection);
+      if (lastLoc == null) throw 'lastLoc == null';
+      logger.d('   lastLoc: $lastLoc');
       expect(lastLoc.sectionVersion, chordSection.sectionVersion);
     }
   });
@@ -329,7 +351,7 @@ void main() {
 
   test('testGetGrid', () {
     SongBase a;
-    Measure measure;
+    Measure? measure;
 
     a = SongBase.createSongBase(
         'A',
@@ -348,11 +370,13 @@ void main() {
 
     expect(grid.getRowCount(), 5);
     for (int r = 2; r < grid.getRowCount(); r++) {
-      List<ChordSectionLocation> row = grid.getRow(r);
+      List<ChordSectionLocation?>? row = grid.getRow(r);
+      if (row == null) throw 'row == null';
+
       for (int c = 1; c < row.length; c++) {
         measure = null;
 
-        MeasureNode node = a.findMeasureNodeByLocation(row[c]);
+        MeasureNode? node = a.findMeasureNodeByLocation(row[c]);
         switch (r) {
           case 0:
             switch (c) {
@@ -412,11 +436,11 @@ void main() {
         if (measure != null) {
           expect(measure, a.findMeasureNodeByLocation(a.getChordSectionLocationGrid().get(r, c)));
           logger.d('measure(' + c.toString() + ',' + r.toString() + '): ' + measure.toMarkup());
-          ChordSectionLocation loc = a.findChordSectionLocation(measure);
+          ChordSectionLocation? loc = a.findChordSectionLocation(measure);
           logger.d('loc: ' + loc.toString());
           a.setCurrentChordSectionLocation(loc);
 
-          logger.d('current: ' + a.getCurrentMeasureNode().toMarkup());
+          logger.d('current: ' + a.getCurrentMeasureNode()!.toMarkup());
           expect(measure, a.getCurrentMeasureNode());
         }
         logger.d('grid[' + r.toString() + ',' + c.toString() + ']: ' + node.toString());
@@ -450,7 +474,7 @@ void main() {
 
     chordSectionLocation = ChordSectionLocation.parseString('v:0:0');
 
-    MeasureNode m = a.findMeasureNodeByLocation(chordSectionLocation);
+    MeasureNode? m = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(Measure.parseString('D', a.getBeatsPerBar()), m);
     expect(m, a.findMeasureNodeByLocation(chordSectionLocation));
 
@@ -496,12 +520,15 @@ void main() {
     expect(Measure.parseString('A', a.getBeatsPerBar()), m);
 
     chordSectionLocation = ChordSectionLocation.parseString('v:0');
-    MeasureNode mn = a.findMeasureNodeByLocation(chordSectionLocation);
+    MeasureNode? mn = a.findMeasureNodeByLocation(chordSectionLocation);
+    if (mn == null) throw 'mn == null';
+
     logger.d(mn.toMarkup());
     expect(mn.toMarkup(), 'D E F F# ');
 
     chordSectionLocation = ChordSectionLocation.parseString('out:');
     mn = a.findMeasureNodeByLocation(chordSectionLocation);
+    if (mn == null) throw 'mn == null';
     logger.d(mn.toMarkup());
     expect('O: C C C C B ', mn.toMarkup());
   });
@@ -516,34 +543,34 @@ void main() {
     loc = ChordSectionLocation.parseString('i:0:2');
     a.setCurrentChordSectionLocation(loc);
     logger.d(a.getCurrentChordSectionLocation().toString());
-    logger.d(a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation()).toMarkup());
+    logger.d(a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation())!.toMarkup());
     a.chordSectionLocationDelete(loc);
-    logger.d(a.findChordSectionBySectionVersion(SectionVersion.parseString('i:')).toMarkup());
-    logger.d(a.findMeasureNodeByLocation(loc).toMarkup());
+    logger.d(a.findChordSectionBySectionVersion(SectionVersion.parseString('i:'))!.toMarkup());
+    logger.d(a.findMeasureNodeByLocation(loc)!.toMarkup());
     logger.d('loc: ' + a.getCurrentChordSectionLocation().toString());
-    logger.d(a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation()).toMarkup());
+    logger.d(a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation())!.toMarkup());
     expect(a.findMeasureNodeByLocation(loc), a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation()));
     logger.d(a.toMarkup());
-    expect(a.getChordSection(SectionVersion.parseString('i:')).toMarkup(), 'I: A B D ');
+    expect(a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup(), 'I: A B D ');
     expect(Measure.parseString('D', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
-    logger.d('cur: ' + a.getCurrentChordSectionLocationMeasureNode().toMarkup());
+    logger.d('cur: ' + a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
 
     a.chordSectionLocationDelete(loc);
-    expect('I: A B ', a.getChordSection(SectionVersion.parseString('i:')).toMarkup());
-    logger.d(a.getCurrentChordSectionLocationMeasureNode().toMarkup());
+    expect('I: A B ', a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup());
+    logger.d(a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
     expect(Measure.parseString('B', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
 
     a.chordSectionLocationDelete(ChordSectionLocation.parseString('i:0:0'));
-    expect('I: B ', a.getChordSection(SectionVersion.parseString('i:')).toMarkup());
-    logger.d(a.getCurrentChordSectionLocationMeasureNode().toMarkup());
+    expect('I: B ', a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup());
+    logger.d(a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
     expect(Measure.parseString('B', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
 
     a.chordSectionLocationDelete(ChordSectionLocation.parseString('i:0:0'));
-    expect(a.getChordSection(SectionVersion.parseString('i:')).toMarkup(), 'I: [] ');
+    expect(a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup(), 'I: [] ');
     expect(a.getCurrentChordSectionLocationMeasureNode(), isNull);
     //expect(ChordSection.parseString("I:", beatsPerBar ),a.getCurrentChordSectionLocationMeasureNode());
 
-    expect(a.getChordSection(SectionVersion.parseString('v:')).toMarkup(), 'V: D E F F# ');
+    expect(a.getChordSection(SectionVersion.parseString('v:'))!.toMarkup(), 'V: D E F F# ');
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:3'));
     expect(Measure.parseString('F#', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
     a.chordSectionLocationDelete(ChordSectionLocation.parseString('v:0:3'));
@@ -587,12 +614,15 @@ void main() {
     logger.d(a.logGrid());
     Grid<ChordSectionLocation> grid = a.getChordSectionLocationGrid();
     expect(10, grid.getRowCount()); //  comments on their own line add a bunch
-    List<ChordSectionLocation> row = grid.getRow(0);
+    List<ChordSectionLocation?>? row = grid.getRow(0);
+    if (row == null) throw 'row == null';
     expect(2, row.length);
     row = grid.getRow(1);
+    if (row == null) throw 'row == null';
     logger.d('row: ' + row.toString());
     expect(6, row.length);
     row = grid.getRow(2);
+    if (row == null) throw 'row == null';
     expect(2, row.length);
     expect(grid.get(0, 5), isNull);
   });
@@ -616,11 +646,11 @@ void main() {
         'o: nothing');
     logger.v('grid: ' + a.logGrid());
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
-    MeasureNode measureNode = a.findMeasureNodeByLocation(location);
-    logger.v('measure: ' + measureNode.toMarkup());
+    MeasureNode? measureNode = a.findMeasureNodeByLocation(location);
+    logger.v('measure: ' + measureNode!.toMarkup());
     expect(measureNode, Measure.parseString('B♭maj7,', beatsPerBar));
-    MeasureNode mn = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
-    Measure expectedMn = Measure.parseString('B♭maj7', beatsPerBar);
+    MeasureNode? mn = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    Measure? expectedMn = Measure.parseString('B♭maj7', beatsPerBar);
     expectedMn.endOfRow = true;
     expect(mn, expectedMn);
 
@@ -629,6 +659,7 @@ void main() {
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0),
         phraseIndex: row, measureIndex: lastCol);
     measureNode = a.findMeasureNodeByLocation(location);
+    if (measureNode == null) throw 'measureNode == null';
     logger.d(measureNode.toMarkup());
     expect(measureNode, a.findMeasureNodeByGrid(GridCoordinate(row, lastCol + 1)));
 
@@ -678,7 +709,7 @@ void main() {
             'C5D5 C5D5 C5D5 C5D#',
         'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
-    Measure m = Measure.parseString('X', a.getBeatsPerBar());
+    Measure? m = Measure.parseString('X', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(a.findMeasureNodeByGrid(GridCoordinate(1, 2)), m);
     expect(Measure.parseString('C5D5', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(5, 4)));
@@ -715,7 +746,7 @@ void main() {
     int beatsPerBar = 4;
     SongBase a;
     Grid<ChordSectionLocation> grid;
-    ChordSectionLocation location;
+    ChordSectionLocation? location;
     GridCoordinate gridCoordinate;
 
     //  see that section identifiers are on first phrase row
@@ -821,20 +852,21 @@ void main() {
 
     grid = a.getChordSectionLocationGrid();
     for (int r = 0; r < grid.getRowCount(); r++) {
-      List<ChordSectionLocation> row = grid.getRow(r);
+      List<ChordSectionLocation?>? row = grid.getRow(r);
+      if (row == null) throw 'row == null';
       for (int c = 0; c < row.length; c++) {
         GridCoordinate coordinate = GridCoordinate(r, c);
         expect(coordinate, isNotNull);
         expect(coordinate.toString(), isNotNull);
         expect(a.getChordSectionLocationGrid(), isNotNull);
         expect(a.getChordSectionLocationGrid().getRow(r), isNotNull);
-        ChordSectionLocation chordSectionLocation = a.getChordSectionLocationGrid().getRow(r)[c];
+        ChordSectionLocation? chordSectionLocation = a.getChordSectionLocationGrid().getRow(r)![c];
         if (chordSectionLocation == null) continue;
         expect(chordSectionLocation.toString(), isNotNull);
         logger.d(coordinate.toString() + '  ' + chordSectionLocation.toString());
-        ChordSectionLocation loc = a.getChordSectionLocation(coordinate);
+        ChordSectionLocation? loc = a.getChordSectionLocation(coordinate);
         logger.d(loc.toString());
-        expect(a.getChordSectionLocationGrid().getRow(r)[c], a.getChordSectionLocation(coordinate));
+        expect(a.getChordSectionLocationGrid().getRow(r)![c], a.getChordSectionLocation(coordinate));
         expect(coordinate, a.getGridCoordinate(loc));
         expect(loc, a.getChordSectionLocation(coordinate)); //  well, yeah
       }
@@ -885,7 +917,7 @@ void main() {
 //    a.debugSongMoments();
 
     for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
-      SongMoment songMoment = a.getSongMoment(momentNumber);
+      SongMoment? songMoment = a.getSongMoment(momentNumber);
       if (songMoment == null) break;
 //      logger.d(songMoment.toString());
 //      expect(count, songMoment.getMomentNumber());
@@ -925,23 +957,27 @@ void main() {
     a.debugSongMoments();
     {
       //  verify repeats stay on correct row
-      SongMoment songMoment;
+      SongMoment? songMoment;
 
       for (int momentNumber = 0; momentNumber < 4; momentNumber++) {
         songMoment = a.getSongMoment(momentNumber);
-        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber).row, 0);
+        if (songMoment == null) throw 'songMoment == null';
+        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber)!.row, 0);
       }
       for (int momentNumber = 4; momentNumber < 6; momentNumber++) {
         songMoment = a.getSongMoment(momentNumber);
-        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber).row, 1);
+        if (songMoment == null) throw 'songMoment == null';
+        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber)!.row, 1);
       }
       for (int momentNumber = 6; momentNumber < 10; momentNumber++) {
         songMoment = a.getSongMoment(momentNumber);
-        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber).row, 2);
+        if (songMoment == null) throw 'songMoment == null';
+        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber)!.row, 2);
       }
       for (int momentNumber = 10; momentNumber < 12; momentNumber++) {
         songMoment = a.getSongMoment(momentNumber);
-        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber).row, 3);
+        if (songMoment == null) throw 'songMoment == null';
+        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber)!.row, 3);
       }
     }
 
@@ -961,7 +997,7 @@ void main() {
       //  verify beats total as expected
       int beats = 0;
       for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
-        SongMoment songMoment = a.getSongMoment(momentNumber);
+        SongMoment? songMoment = a.getSongMoment(momentNumber);
         if (songMoment == null) break;
         expect(beats, songMoment.getBeatNumber());
         beats += songMoment.getMeasure().beatCount;
@@ -970,12 +1006,13 @@ void main() {
     {
       int count = 0;
       for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
-        SongMoment songMoment = a.getSongMoment(momentNumber);
+        SongMoment? songMoment = a.getSongMoment(momentNumber);
         if (songMoment == null) break;
         logger.d(' ');
         logger.d(songMoment.toString());
         expect(count, songMoment.getMomentNumber());
-        GridCoordinate momentGridCoordinate = a.getMomentGridCoordinate(songMoment);
+        GridCoordinate? momentGridCoordinate = a.getMomentGridCoordinate(songMoment);
+        if (momentGridCoordinate == null) throw 'momentGridCoordinate == null';
         logger.d(momentGridCoordinate.toString());
         expect(momentGridCoordinate, isNotNull);
 
@@ -984,13 +1021,14 @@ void main() {
     }
     {
       //  verify repeats stay on correct row
-      SongMoment songMoment;
+      SongMoment? songMoment;
 
       for (int momentNumber = 0; momentNumber < 56; momentNumber++) {
         songMoment = a.getSongMoment(momentNumber);
+        if (songMoment == null) throw 'songMoment == null';
         logger.d(songMoment.toString());
         int e = momentNumber ~/ 4;
-        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber).row, e);
+        expect(a.getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber)!.row, e);
       }
     }
   });
@@ -1013,17 +1051,18 @@ void main() {
     logger.d(a.toMarkup());
     int size = a.getSongMomentsSize();
     for (int momentNumber = 0; momentNumber < size; momentNumber++) {
-      SongMoment songMoment = a.getSongMoment(momentNumber);
-      GridCoordinate coordinate = a.getMomentGridCoordinate(songMoment);
-      SongMoment songMomentAtRow = a.getFirstSongMomentAtRow(coordinate.row);
-      GridCoordinate coordinateAtRow = a.getMomentGridCoordinate(songMomentAtRow);
+      SongMoment? songMoment = a.getSongMoment(momentNumber);
+      if (songMoment == null) throw 'songMoment == null';
+      GridCoordinate? coordinate = a.getMomentGridCoordinate(songMoment);
+      SongMoment? songMomentAtRow = a.getFirstSongMomentAtRow(coordinate!.row);
+      GridCoordinate? coordinateAtRow = a.getMomentGridCoordinate(songMomentAtRow!);
       logger.d('songMoment: ' +
           songMoment.toString() +
           ' at: ' +
           coordinate.toString() +
           ' atRow: ' +
           coordinateAtRow.toString());
-      expect(coordinate.row, coordinateAtRow.row);
+      expect(coordinate.row, coordinateAtRow!.row);
       expect(coordinateAtRow.col, 1);
     }
   });
@@ -1094,7 +1133,8 @@ void main() {
             expected.toString() +
             '  ' +
             SongBase.getBeatNumberAtTime(bpm, t).toString());
-        int result = SongBase.getBeatNumberAtTime(bpm, t);
+        int? result = SongBase.getBeatNumberAtTime(bpm, t);
+        if (result == null) throw 'result == null';
         logger.v('beat at ' + t.toString() + ' = ' + result.toString());
         logger.v('   expected: ' + expected.toString());
         if (result != expected) {
@@ -1125,7 +1165,8 @@ void main() {
       int expected = -3;
       int count = 0;
       for (double t = -8 * 3 * dt; t < 8 * 3 * dt; t += dt) {
-        int result = a.getSongMomentNumberAtSongTime(t);
+        int? result = a.getSongMomentNumberAtSongTime(t);
+        if (result == null) throw 'result == null';
         logger.v(t.toString() +
             ' = ' +
             (t / dt).toString() +
@@ -1208,7 +1249,8 @@ void main() {
 
     grid = a.getChordSectionLocationGrid();
 
-    List<ChordSectionLocation> row = grid.getRow(0);
+    List<ChordSectionLocation?>? row = grid.getRow(0);
+    if (row == null) throw 'row == null';
     logger.i(row.length.toString());
     logger.i(grid.toMultiLineString());
     logger.i(chordSectionToMultiLineString(a));
@@ -1320,7 +1362,6 @@ o: end here''');
   test('test getLastMeasureLocation()', () {
     int beatsPerBar = 4;
     SongBase a;
-    Grid<ChordSectionLocation> grid;
 
     //  see that section identifiers are on first phrase row
     a = SongBase.createSongBase(
@@ -1333,10 +1374,9 @@ o: end here''');
         4,
         'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
-    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('i:',beatsPerBar)).toString(), 'I:0:3');
-    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c:',beatsPerBar)).toString(), 'C:0:7');
-    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c2:',beatsPerBar)), isNull);
-    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('o:',beatsPerBar)).toString(), 'O:0:4');
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('i:', beatsPerBar)).toString(), 'I:0:3');
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c:', beatsPerBar)).toString(), 'C:0:7');
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c2:', beatsPerBar)), isNull);
+    expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('o:', beatsPerBar)).toString(), 'O:0:4');
   });
-
 }

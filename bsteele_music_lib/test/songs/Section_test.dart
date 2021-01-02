@@ -19,7 +19,7 @@ void main() {
       }
       sb.write(section.formalName + ':');
       String s = section.abbreviation;
-      if (s != null) sb.write(' ' + s);
+      sb.write(' ' + s);
     }
     logger.d(sb.toString());
     expect(sb.toString(),

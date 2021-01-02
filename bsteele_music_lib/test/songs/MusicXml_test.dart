@@ -105,58 +105,47 @@ void main() {
       for (XmlElement xmlParList in xmlScorPartwise.findElements('part-list')) {
         for (XmlElement xmlScorePart in xmlParList.findElements('score-part')) {
           String id = xmlScorePart.getAttribute('id');
-          partMap[id] = xmlScorPartwise
-              .findElements('part')
-              .firstWhere((element) => element.getAttribute('id') == id);
+          partMap[id] = xmlScorPartwise.findElements('part').firstWhere((element) => element.getAttribute('id') == id);
         }
       }
 
       for (String scorePart in partMap.keys) {
-        XmlElement part = partMap[scorePart];
+        XmlElement? part = partMap[scorePart];
         logger.v('    scorePart: ${part}');
 
         for (XmlElement xmlMeasure in part.findElements('measure')) {
           int m = int.parse(xmlMeasure.getAttribute('number'));
           logger.i('measure $m:');
 
-          for (XmlElement child in xmlMeasure.children
-              .where((c) => c.nodeType == XmlNodeType.ELEMENT)) {
+          for (XmlNode c in xmlMeasure.children.where((c) => c.nodeType == XmlNodeType.ELEMENT)) {
+            var child = c as XmlElement;
             switch (child.name.toString()) {
               case 'attributes':
-              //  process the attributes
+                //  process the attributes
                 XmlElement xmlMeasureAttributes = child;
-                for (XmlElement xmlAttribute
-                in xmlMeasureAttributes.findElements('divisions')) {
+                for (XmlElement xmlAttribute in xmlMeasureAttributes.findElements('divisions')) {
                   logger.i('   divisions: ${int.parse(xmlAttribute.text)}');
                 }
-                for (XmlElement xmlAttribute
-                in xmlMeasureAttributes.findElements('key')) {
-                  for (XmlElement xmlfifths
-                  in xmlAttribute.findElements('fifths')) {
+                for (XmlElement xmlAttribute in xmlMeasureAttributes.findElements('key')) {
+                  for (XmlElement xmlfifths in xmlAttribute.findElements('fifths')) {
                     logger.i('   fifths: ${int.parse(xmlfifths.text)}');
                   }
                 }
-                for (XmlElement xmlAttribute
-                in xmlMeasureAttributes.findElements('time')) {
-                  for (XmlElement xmlbeats
-                  in xmlAttribute.findElements('beats')) {
+                for (XmlElement xmlAttribute in xmlMeasureAttributes.findElements('time')) {
+                  for (XmlElement xmlbeats in xmlAttribute.findElements('beats')) {
                     logger.i('   beats: ${int.parse(xmlbeats.text)}');
                   }
-                  for (XmlElement xmlbeatType
-                  in xmlAttribute.findElements('beat-type')) {
+                  for (XmlElement xmlbeatType in xmlAttribute.findElements('beat-type')) {
                     logger.i('   beatType: ${int.parse(xmlbeatType.text)}');
                   }
                 }
-                for (XmlElement e
-                in xmlMeasureAttributes.findElements('staves')) {
+                for (XmlElement e in xmlMeasureAttributes.findElements('staves')) {
                   logger.i('   staves: ${int.parse(e.text)}');
                 }
-                for (XmlElement e
-                in xmlMeasureAttributes.findElements('staves')) {
+                for (XmlElement e in xmlMeasureAttributes.findElements('staves')) {
                   logger.i('   staves: ${int.parse(e.text)}');
                 }
-                for (XmlElement xmlClef
-                in xmlMeasureAttributes.findElements('clef')) {
+                for (XmlElement xmlClef in xmlMeasureAttributes.findElements('clef')) {
                   int clefNumber = int.parse(xmlMeasure.getAttribute('number'));
                   logger.i('   clef: $clefNumber');
                   for (XmlElement xmlSign in xmlClef.findElements('sign')) {
@@ -212,7 +201,6 @@ void main() {
   });
 
   test('musicxml generation test', () {
-
     String songString = '''
 {
 "title": "Weight, The",
@@ -285,16 +273,15 @@ void main() {
     ]
 }
 ''';
-    List<Song> list = Song.songListFromJson( songString);
+    List<Song> list = Song.songListFromJson(songString);
     Song song = list[0];
 
-        logger.w(
-        'fixme: shouldn\'t be writing a file as part of a test!!!!!!!!!!!!!!!!!');
+    logger.w('fixme: shouldn\'t be writing a file as part of a test!!!!!!!!!!!!!!!!!');
     final filename = '${SysInfo.userDirectory}/junk/genTest.musicxml';
     MusicXml musicXml = MusicXml();
     File(filename).writeAsString(musicXml.songAsMusicXml(song), flush: true).then((File file) {
       logger.i('done');
-      logger.i( DateFormat.yMMMd().format( DateTime.now()));
+      logger.i(DateFormat.yMMMd().format(DateTime.now()));
       // Do something with the file.
     });
   });

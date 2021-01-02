@@ -22,7 +22,7 @@ class Key implements Comparable<Key> {
   }
 
   static Map<KeyEnum, Key> _keyMap = {};
-  static late List<Key> _keysByHalfStep;
+  static List<Key> _keysByHalfStep = [];
   static final List<dynamic> _initialization = [
     //  KeyEnum, keyValue, key halfsteps from A
     [KeyEnum.Gb, -6, 9],
@@ -42,7 +42,7 @@ class Key implements Comparable<Key> {
   static late Map<String, KeyEnum> _keyEnumMap = {};
 
   static List<Key> keysByHalfStep() {
-    if (_keysByHalfStep == null) {
+    if (_keysByHalfStep.isEmpty) {
       SplayTreeSet<Key> sortedSet = SplayTreeSet((a1, a2) {
         return a1._halfStep.compareTo(a2._halfStep);
       });
@@ -80,10 +80,11 @@ class Key implements Comparable<Key> {
           return ScaleChord(key.getMinorScaleByNote(i), MusicConstants.getMinorDiatonicChordModifier(i));
         });
 
-        //  compute the minor scale note
-        for (Key key in _keyMap.values) {
-          key._keyMinorScaleNote = key.getMajorDiatonicByDegree(6 - 1).scaleNote;
-        }
+      }
+
+      //  compute the minor scale note
+      for (Key key in _keyMap.values) {
+        key._keyMinorScaleNote = key.getMajorDiatonicByDegree(6 - 1).scaleNote;
       }
     }
     return _keyMap;
@@ -365,20 +366,17 @@ class Key implements Comparable<Key> {
           case Accidental.flat:
             return scaleNote.scaleNoteString + MusicConstants.flatChar;
         }
-        break;
       case Accidental.flat:
         switch (scaleNote.accidental) {
           case Accidental.natural:
             return scaleNote.scaleNoteString + MusicConstants.naturalChar;
-            break;
           case Accidental.sharp:
             return scaleNote.scaleNoteString + MusicConstants.sharpChar;
           case Accidental.flat:
             return scaleNote.scaleString;
         }
-        break;
     }
-    return scaleNote.toString(); //  should never get here
+    //  should never get here
   }
 
   ScaleNote getMinorScaleByNote(int note) {
@@ -525,8 +523,8 @@ class Key implements Comparable<Key> {
 
   //  have to be set after initialization of all keys
   late ScaleNote _keyMinorScaleNote;
-  late List<ScaleChord> _majorDiatonics;
-  late List<ScaleChord> _minorDiatonics;
+   List<ScaleChord> _majorDiatonics=[];
+   List<ScaleChord> _minorDiatonics=[];
 }
 
 /*                     1  2  3  4  5  6  7                 I    II   III  IV   V    VI   VII               0  1  2  3  4  5  6  7  8  9  10 11

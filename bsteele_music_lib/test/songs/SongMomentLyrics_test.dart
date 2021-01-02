@@ -75,10 +75,11 @@ We gonna let it all hang down
 
       int rows = grid.getRowCount();
       for (int r = 0; r < rows; r++) {
-        List<SongMoment> row = grid.getRow(r);
+        List<SongMoment?>? row = grid.getRow(r);
+        if (row == null) throw 'row == null';
         int cols = row.length;
         for (int c = 0; c < cols; c++) {
-          SongMoment songMoment = grid.get(r, c);
+          SongMoment? songMoment = grid.get(r, c);
           if (songMoment == null) continue;
           if (c >= 1) {
             String s = Util.quote(songMoment.lyrics) ?? 'isNull';

@@ -77,7 +77,7 @@ coerced to reflect the songlist's last modification for that song.
   /// A workaround method to get the async on main()
   void runMain(List<String> args) async {
     //  help if nothing to do
-    if (args == null || args.isEmpty) {
+    if (args.isEmpty) {
       _help();
       return;
     }
@@ -280,7 +280,7 @@ coerced to reflect the songlist's last modification for that song.
               }
               for (Song song in sortedSongs) {
                 print('"${song.title}" by "${song.artist}"'
-                    '${song.coverArtist != null ? ' cover by "${song.coverArtist}' : ''}'
+                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
                     ':  /bpi ${i}');
               }
             }
@@ -463,7 +463,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             for (Song song in songs) {
-              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.getLastModifiedTime);
+              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime);
 
               //  used to spread the songs thinner than the maximum 1000 files
               //  per directory limit in github.com
@@ -529,9 +529,11 @@ coerced to reflect the songlist's last modification for that song.
 
   void _addAllSongsFromDir(dynamic inputFile) {
     logger.i('$inputFile');
-    if (!(inputFile is Directory)) return;
+    if (inputFile is! Directory) {
+      return;
+    }
 
-    List contents = (inputFile as Directory).listSync();
+    List contents = inputFile.listSync();
     for (var file in contents) {
       _addAllSongsFromFile(file);
     }
@@ -554,7 +556,7 @@ coerced to reflect the songlist's last modification for that song.
     for (Song song in addSongs) {
       if (allSongs.contains(song)) {
         Song listSong = allSongs.firstWhere((value) => value.songId.compareTo(song.songId) == 0);
-        if (song.getLastModifiedTime > listSong.getLastModifiedTime) {
+        if (song.lastModifiedTime > listSong.lastModifiedTime) {
           allSongs.remove(listSong);
           allSongs.add(song);
           _updateCount++;
@@ -569,7 +571,7 @@ coerced to reflect the songlist's last modification for that song.
     Map<String, SplayTreeSet<Song>> copyrights = {};
     for (Song song in allSongs) {
       String? copyright = song.copyright.trim();
-      if (copyright == null) {
+      if (copyright.isEmpty) {
         continue;
       }
       //print('${song.copyright} ${song.songId.toString()}');
@@ -610,7 +612,7 @@ coerced to reflect the songlist's last modification for that song.
     for (String line in input.split('\n')) {
       if (i > 0) {
         List<String> ranking = line.split(_csvLineSplit);
-        if (ranking[1] != null && ranking[1].isNotEmpty) {
+        if ( ranking[1].isNotEmpty) {
           logger.v('$i: ${ranking[0]}, ${ranking[1]}');
           SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[]..add(NameValue('cj', ranking[1]))));
         }

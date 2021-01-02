@@ -21,7 +21,7 @@ class Phrase extends MeasureNode {
     return _measures.length;
   } //  fixme
 
-  static Phrase parseString(String string, int phraseIndex, int beatsPerBar, Measure priorMeasure) {
+  static Phrase parseString(String string, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(string), phraseIndex, beatsPerBar, priorMeasure);
   }
 
@@ -49,9 +49,9 @@ class Phrase extends MeasureNode {
       if (Section.lookahead(markedString)) break;
 
       try {
-        Measure? measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
+        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
         priorMeasure = measure;
-        lineMeasures.add(measure!);
+        lineMeasures.add(measure);
 
         //  we found an end of row so this row is a part of a phrase
         if (measure.endOfRow) {

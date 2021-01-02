@@ -27,7 +27,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
     //  deep copy
     List<Chord> chords = [];
-    for (Chord chord in measure.chords!) {
+    for (Chord chord in measure.chords) {
       chords.add(Chord.copy(chord));
     }
     this.chords = chords;
@@ -41,13 +41,13 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         chords = [];
 
   /// Convenience method for testing only
-  static Measure? parseString(String s, int beatsPerBar, {bool endOfRow:false}) {
+  static Measure parseString(String s, int beatsPerBar, {bool endOfRow = false}) {
     return parse(MarkedString(s), beatsPerBar, null, endOfRow: endOfRow);
   }
 
   /// Parse a measure from the input string
-  static Measure? parse(final MarkedString markedString, final int beatsPerBar, final Measure? priorMeasure,
-      {bool endOfRow: false}) {
+  static Measure parse(final MarkedString markedString, final int beatsPerBar, final Measure? priorMeasure,
+      {bool endOfRow = false}) {
     //  should not be white space, even leading, in a measure
     if (markedString.isEmpty) throw 'no data to parse';
 
@@ -99,7 +99,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       endOfRow = true;
     }
 
-    if (endOfRow != null) ret.endOfRow = endOfRow;
+    ret.endOfRow = endOfRow;
 
     return ret;
   }
@@ -107,7 +107,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   void allocateTheBeats() {
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
-    if (chords != null && chords.isNotEmpty) {
+    if (chords.isNotEmpty) {
       //  find the total count of beats explicitly specified
       int explicitChords = 0;
       int explicitBeats = 0;
@@ -185,7 +185,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   Chord? getChordAtBeat(double beat) {
-    if (chords == null || chords.isEmpty) return null;
+    if (chords.isEmpty) return null;
 
     double beatSum = 0;
     for (Chord chord in chords) {
@@ -197,7 +197,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   String transpose(Key key, int halfSteps) {
-    if (chords != null && chords.isNotEmpty) {
+    if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
         sb.write(chord.transpose(key, halfSteps).toString());
@@ -209,7 +209,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   MeasureNode transposeToKey(Key key) {
-    if (chords != null && chords.isNotEmpty) {
+    if (chords.isNotEmpty) {
       List<Chord> newChords = [];
       for (Chord chord in chords) {
         newChords.add(chord.transpose(key, 0));
@@ -223,7 +223,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   bool isEasyGuitarMeasure() {
-    return chords != null && chords.length == 1 && chords[0].scaleChord.isEasyGuitarChord();
+    return chords.length == 1 && chords[0].scaleChord.isEasyGuitarChord();
   }
 
   @override
@@ -247,7 +247,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   String toMarkupWithEnd(String? endOfRowChar) {
-    if (chords != null && chords.isNotEmpty) {
+    if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
         sb.write(chord.toMarkup());
@@ -279,8 +279,6 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     if (beatCount != o.beatCount) return beatCount < o.beatCount ? -1 : 1;
     if (!listsEqual(chords, o.chords)) {
       //  compare the lists
-      if (chords == null) return o.chords == null ? 0 : 1;
-      if (o.chords == null) return -1;
       if (chords.length != o.chords.length) {
         return chords.length < o.chords.length ? -1 : 1;
       }
@@ -308,7 +306,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
     int ret = hash2(beatCount, endOfRow);
-    if (chords != null) ret = ret * 17 + hashObjects(chords);
+    ret = ret * 17 + hashObjects(chords);
     return ret;
   }
 

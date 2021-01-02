@@ -101,9 +101,9 @@ class MusicXml {
     {
       int beats = song.beatsPerBar;
       Pitch lowRoot = Pitch.get(PitchEnum.E2); //  bass staff
-      lowRoot = key.mappedPitch(lowRoot) ?? lowRoot; // required once only
+      lowRoot = key.mappedPitch(lowRoot); // required once only
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
-      highRoot = key.mappedPitch(highRoot) ?? highRoot; // required once only
+      highRoot = key.mappedPitch(highRoot); // required once only
 
       song.songMomentGrid; //  fixme: shouldn't be required!
 
@@ -134,7 +134,7 @@ class MusicXml {
           <!--    allow up to 16th notes  -->
           <divisions>$_divisionsPerBeat</divisions>
           <key>
-              <fifths>${key.getKeyValue() ?? ''}</fifths>
+              <fifths>${key.getKeyValue()}</fifths>
           </key>
           <time>
               <beats>$beats</beats>
@@ -275,10 +275,7 @@ class MusicXml {
     //  draw the chord notes
     bool first = true;
     for (Pitch pitch in chord.getPitches(_chordBase)) {
-      Pitch? p = _song.key?.mappedPitch(pitch);
-      if (p == null) {
-        continue;
-      }
+      Pitch p = _song.key.mappedPitch(pitch);
       ret += '''
 \t<note><!--    ${p}   -->
 ''';
