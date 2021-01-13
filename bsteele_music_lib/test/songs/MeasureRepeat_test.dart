@@ -161,7 +161,7 @@ void main() {
 
     ChordSectionLocation? chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    expect(ChordSectionLocationMarker.repeatOnOneLineRight, chordSectionLocation!.marker);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
@@ -271,7 +271,7 @@ void main() {
 
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    expect(ChordSectionLocationMarker.repeatOnOneLineRight, chordSectionLocation!.marker);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(

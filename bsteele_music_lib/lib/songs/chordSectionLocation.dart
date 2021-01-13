@@ -58,6 +58,14 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   }
 
   ChordSectionLocation.withMarker(this._sectionVersion, int phraseIndex, this._marker) : _labelSectionVersions = null {
+    _initPhraseIndex(phraseIndex);
+  }
+
+  ChordSectionLocation.withRepeatMarker(this._sectionVersion, int phraseIndex, this._repeats) : _labelSectionVersions = null {
+    _initPhraseIndex(phraseIndex);
+  }
+
+  void _initPhraseIndex(int phraseIndex) {
     if (phraseIndex < 0) {
       _phraseIndex = -1;
       _hasPhraseIndex = false;
@@ -91,9 +99,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   /// Parse a chord section location from the given string input
   static ChordSectionLocation parse(MarkedString markedString) {
-    SectionVersion sectionVersion = SectionVersion.parse(markedString);
+    SectionVersion sectionVersion = SectionVersion.parse(markedString); // fails with an exception
 
     if (markedString.available() >= 3) {
+      //  look for full sectionVersion, phrase, measure specification
       RegExpMatch? mr = numberRangeRegexp.firstMatch(markedString.remainingStringLimited(6));
       if (mr != null) {
         try {
@@ -106,6 +115,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
         }
       }
     }
+    //  look for full sectionVersion, phrase specification
     if (markedString.isNotEmpty) {
       RegExpMatch? mr = numberRegexp.firstMatch(markedString.remainingStringLimited(2));
       if (mr != null) {
@@ -118,6 +128,8 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
         }
       }
     }
+
+    //  return only the sectionVersion
     return ChordSectionLocation(sectionVersion);
   }
 
@@ -138,7 +150,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   @override
   String toString() {
-    return getId() + (_marker != ChordSectionLocationMarker.none ? ':x' : '');
+    if (_repeats != null) {
+      return ':x$_repeats';
+    }
+    return getId();
   }
 
   String getId() {
@@ -163,11 +178,22 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     int ret = 0;
 
     if (_sectionVersion == null && other._sectionVersion == null) {
-      ret = 0;
+      ;
     } else if (other._sectionVersion == null) {
       ret = -1;
     } else {
       ret = (_sectionVersion?.compareTo(other._sectionVersion!) ?? 1);
+    }
+    if (ret != 0) {
+      return ret;
+    }
+
+    if (_repeats == null && other._repeats == null) {
+      ;
+    } else if (other._repeats == null) {
+      ret = -1;
+    } else {
+      ret = (_repeats?.compareTo(other._repeats!) ?? 1);
     }
     if (ret != 0) {
       return ret;
@@ -215,7 +241,8 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     if (!(other is ChordSectionLocation &&
         _sectionVersion == other._sectionVersion &&
         _phraseIndex == other._phraseIndex &&
-        _measureIndex == other._measureIndex)) return false;
+        _measureIndex == other._measureIndex &&
+        _repeats == other._repeats)) return false;
 
     if (_labelSectionVersions == null) {
       return (other._labelSectionVersions == null);
@@ -235,7 +262,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   @override
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = hash3(_sectionVersion, _phraseIndex, _measureIndex);
+    int ret = hash4(_sectionVersion, _phraseIndex, _measureIndex, _repeats);
     if (_labelSectionVersions != null && _labelSectionVersions!.isNotEmpty) {
       ret = ret * 83 + _labelSectionVersions.hashCode;
     }
@@ -247,6 +274,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   bool get isPhrase => _hasPhraseIndex == true && _hasMeasureIndex == false;
 
   bool get isMeasure => _hasPhraseIndex == true && _hasMeasureIndex == true;
+
+  bool get isMarker => _marker != ChordSectionLocationMarker.none;
+
+  bool get isRepeat => _repeats != null;
 
   SectionVersion? get sectionVersion => _sectionVersion;
   SectionVersion? _sectionVersion;
@@ -265,8 +296,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   late bool _hasMeasureIndex;
 
   ChordSectionLocationMarker get marker => _marker;
-  late ChordSectionLocationMarker _marker;
+  ChordSectionLocationMarker _marker = ChordSectionLocationMarker.none;
   String? id;
+
+  int? _repeats;
 
   static final RegExp numberRangeRegexp = RegExp('^(\\d+):(\\d+)');
   static final RegExp numberRegexp = RegExp('^(\\d+)');

@@ -975,7 +975,7 @@ class SongBase {
           }
 
           //  grid each measure of the phrase
-          bool repeatExtensionUsed = false;
+          int repeatExtensionCount = 0;
           if (phraseSize == 0 && phrase.isRepeat()) {
             //  special case: deal with empty repeat
             //  fill row to measures per line
@@ -1049,10 +1049,10 @@ class SongBase {
                       ChordSectionLocation.withMarker(
                           sectionVersion,
                           phraseIndex,
-                          (repeatExtensionUsed
+                          (repeatExtensionCount > 0
                               ? ChordSectionLocationMarker.repeatMiddleRight
                               : ChordSectionLocationMarker.repeatUpperRight)));
-                  repeatExtensionUsed = true;
+                  repeatExtensionCount++;
                 }
                 if (col > offset) {
                   row++;
@@ -1075,21 +1075,24 @@ class SongBase {
                 col = maxCol;
 
                 //  close the multiline repeat marker
-                if (repeatExtensionUsed) {
+                {
                   ChordSectionLocation loc = ChordSectionLocation.withMarker(
-                      sectionVersion, phraseIndex, ChordSectionLocationMarker.repeatLowerRight);
+                      sectionVersion,
+                      phraseIndex,
+                      repeatExtensionCount > 0
+                          ? ChordSectionLocationMarker.repeatLowerRight
+                          : ChordSectionLocationMarker.repeatOnOneLineRight);
                   GridCoordinate coordinate = GridCoordinate(row, col);
                   _gridCoordinateChordSectionLocationMap[coordinate] = loc;
                   _gridChordSectionLocationCoordinateMap[loc] = coordinate;
                   grid.set(row, col++, loc);
-
-                  repeatExtensionUsed = false;
                 }
+                repeatExtensionCount = 0;
 
                 {
-                  //  add repeat indicator
-                  ChordSectionLocation loc = ChordSectionLocation.withMarker(
-                      sectionVersion, phraseIndex, ChordSectionLocationMarker.repeatLowerRight);
+                  //  add repeat indicator after markers
+                  ChordSectionLocation loc = ChordSectionLocation.withRepeatMarker(
+                      sectionVersion, phraseIndex, (phrase as MeasureRepeat).repeats);
                   GridCoordinate coordinate = GridCoordinate(row, col);
                   _gridCoordinateChordSectionLocationMap[coordinate] = loc;
                   _gridChordSectionLocationCoordinateMap[loc] = coordinate;
@@ -2276,6 +2279,7 @@ class SongBase {
 
   MeasureNode? findMeasureNodeByLocation(ChordSectionLocation? chordSectionLocation) {
     if (chordSectionLocation == null) return null;
+    //
     ChordSection? chordSection = _getChordSectionMap()[chordSectionLocation.sectionVersion];
     if (chordSection == null) return null;
     if (chordSectionLocation.isSection) return chordSection;
@@ -2465,17 +2469,17 @@ class SongBase {
   }
 
   void addRepeat(ChordSectionLocation chordSectionLocation, MeasureRepeat repeat) {
-    Measure? measure = findMeasureByChordSectionLocation(chordSectionLocation);
-    if (measure == null) return;
+    MeasureNode? measureNode = findMeasureNodeByLocation(chordSectionLocation);
+    if (measureNode == null || measureNode.runtimeType != MeasureRepeat) {
+      return;
+    }
+    var repeat = measureNode as MeasureRepeat;
 
-    Phrase? measureSequenceItem = findPhrase(measure);
-    if (measureSequenceItem == null) return;
-
-    ChordSection? chordSection = findChordSectionByMeasureNode(measure);
+    ChordSection? chordSection = findChordSectionByMeasureNode(repeat);
     if (chordSection == null) return;
     List<Phrase> measureSequenceItems = chordSection.phrases;
     if (measureSequenceItems.isNotEmpty) {
-      int i = measureSequenceItems.indexOf(measureSequenceItem);
+      int i = measureSequenceItems.indexOf(repeat);
       if (i >= 0) {
         List<Phrase> copy = [];
         copy.addAll(measureSequenceItems);
@@ -2496,14 +2500,13 @@ class SongBase {
   }
 
   void setRepeat(ChordSectionLocation chordSectionLocation, int repeats) {
-    Measure? measure = findMeasureByChordSectionLocation(chordSectionLocation);
-    if (measure == null) return;
+    MeasureNode? measureNode = findMeasureNodeByLocation(chordSectionLocation);
+    if (measureNode == null) {
+      return;
+    }
 
-    Phrase? phrase = findPhrase(measure);
-    if (phrase == null) return;
-
-    if (phrase is MeasureRepeat) {
-      MeasureRepeat measureRepeat = phrase;
+    if (measureNode is MeasureRepeat) {
+      var measureRepeat = measureNode;
 
       if (repeats <= 1) {
         //  remove the repeat
@@ -2524,8 +2527,9 @@ class SongBase {
         //  change the count
         measureRepeat.repeats = repeats;
       }
-    } else {
+    } else if (measureNode is Phrase) {
       //  change sequence items to repeat
+      var phrase = measureNode;
       MeasureRepeat measureRepeat = MeasureRepeat(phrase.measures, phrase.phraseIndex, repeats);
       ChordSection? chordSection = findChordSectionByMeasureNode(phrase);
       if (chordSection != null) {
