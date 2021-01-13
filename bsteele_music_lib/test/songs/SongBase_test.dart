@@ -620,7 +620,7 @@ void main() {
     row = grid.getRow(1);
     if (row == null) throw 'row == null';
     logger.d('row: ' + row.toString());
-    expect(6, row.length);
+    expect(1+4+1+1, row.length);
     row = grid.getRow(2);
     if (row == null) throw 'row == null';
     expect(2, row.length);

@@ -2133,7 +2133,9 @@ class SongBase {
     if (chordSection == null) return null;
     for (Phrase msi in chordSection.phrases) {
       for (Measure m in msi.measures) {
-        if (m == measure) return msi;
+        if (identical(m, measure)) {
+          return msi;
+        }
       }
     }
     return null;
@@ -2500,14 +2502,27 @@ class SongBase {
   }
 
   void setRepeat(ChordSectionLocation chordSectionLocation, int repeats) {
+    //  find the node at the location
     MeasureNode? measureNode = findMeasureNodeByLocation(chordSectionLocation);
     if (measureNode == null) {
       return;
     }
 
-    if (measureNode is MeasureRepeat) {
-      var measureRepeat = measureNode;
+    //  find it's phrase
+    Phrase? phrase;
+    if (measureNode is Measure) {
+      phrase = findPhrase(measureNode);
+      if (phrase == null) {
+        return;
+      }
+    } else if (measureNode is Phrase) {
+      phrase = measureNode;
+    } else {
+      return;
+    }
 
+    if (phrase is MeasureRepeat) {
+      var measureRepeat = phrase;
       if (repeats <= 1) {
         //  remove the repeat
         ChordSection? chordSection = findChordSectionByMeasureNode(measureRepeat);
@@ -2527,9 +2542,8 @@ class SongBase {
         //  change the count
         measureRepeat.repeats = repeats;
       }
-    } else if (measureNode is Phrase) {
+    } else {
       //  change sequence items to repeat
-      var phrase = measureNode;
       MeasureRepeat measureRepeat = MeasureRepeat(phrase.measures, phrase.phraseIndex, repeats);
       ChordSection? chordSection = findChordSectionByMeasureNode(phrase);
       if (chordSection != null) {

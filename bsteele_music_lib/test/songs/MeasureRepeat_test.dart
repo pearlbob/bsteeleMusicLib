@@ -161,10 +161,12 @@ void main() {
 
     ChordSectionLocation? chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatOnOneLineRight, chordSectionLocation!.marker);
+    logger.i(a.logGrid());
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight );
+
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
+
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
@@ -216,11 +218,12 @@ void main() {
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
-      ChordSectionLocationMarker.repeatLowerRight,
+      ChordSectionLocationMarker.none,
     );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
@@ -269,14 +272,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode, Measure.parseString('A#', a.getBeatsPerBar()));
 
+    logger.i(a.logGrid());
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatOnOneLineRight, chordSectionLocation!.marker);
+    logger.i(chordSectionLocation);
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight );
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
-      ChordSectionLocationMarker.repeatLowerRight,
+      ChordSectionLocationMarker.none,
     );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
@@ -307,7 +312,7 @@ void main() {
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
-      ChordSectionLocationMarker.repeatLowerRight,
+      ChordSectionLocationMarker.repeatOnOneLineRight,
     );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
@@ -338,7 +343,7 @@ void main() {
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
-      ChordSectionLocationMarker.repeatLowerRight,
+      ChordSectionLocationMarker.repeatOnOneLineRight,
     );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
@@ -381,7 +386,7 @@ void main() {
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
@@ -427,7 +432,7 @@ void main() {
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
@@ -474,7 +479,7 @@ void main() {
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
@@ -516,10 +521,10 @@ void main() {
 
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight );
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
