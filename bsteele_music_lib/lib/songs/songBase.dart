@@ -2368,7 +2368,7 @@ class SongBase {
 
     _lyricSections = [];
 
-    MarkedString markedString = MarkedString(rawLyrics);
+    MarkedString markedString = MarkedString(_rawLyrics);
     while (markedString.isNotEmpty) {
       String c = markedString.charAt(0);
 
@@ -2582,7 +2582,7 @@ class SongBase {
   /// Checks a song for completeness.
   Song checkSong() {
     return checkSongBase(getTitle(), getArtist(), getCopyright(), getKey(), getDefaultBpm().toString(),
-        getBeatsPerBar().toString(), getUnitsPerMeasure().toString(), getUser(), toMarkup(), getRawLyrics());
+        getBeatsPerBar().toString(), getUnitsPerMeasure().toString(), getUser(), toMarkup(), rawLyrics);
   }
 
   /// Validate a song entry argument set
@@ -2968,7 +2968,7 @@ class SongBase {
   /// Return the lyrics.
   @deprecated
   String getLyricsAsString() {
-    return rawLyrics;
+    return _rawLyrics;
   }
 
   /// Return the default beats per minute.
@@ -3155,10 +3155,6 @@ class SongBase {
     return _complexity;
   }
 
-  String getRawLyrics() {
-    return rawLyrics;
-  }
-
   void setChords(String chords) {
     _chords = chords;
     _chordSectionMap = HashMap(); //  force a parse of the new chords
@@ -3166,7 +3162,7 @@ class SongBase {
   }
 
   void setRawLyrics(String rawLyrics) {
-    this.rawLyrics = rawLyrics;
+    this._rawLyrics = rawLyrics;
     _parseLyrics();
   }
 
@@ -3336,7 +3332,7 @@ class SongBase {
     if (unitsPerMeasure != o.unitsPerMeasure) return false;
     if (beatsPerBar != o.beatsPerBar) return false;
     if (_getChords() != o._getChords()) return false;
-    if (rawLyrics != (o.rawLyrics)) return false;
+    if (_rawLyrics != (o._rawLyrics)) return false;
 
     return true;
   }
@@ -3361,7 +3357,7 @@ class SongBase {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
     int ret = hash4(title, artist, coverArtist, copyright);
     ret = ret * 17 + hash4(key.keyEnum, defaultBpm, unitsPerMeasure, beatsPerBar);
-    ret = ret * 19 + hash3(_getChords(), rawLyrics, _lastModifiedTime);
+    ret = ret * 19 + hash3(_getChords(), _rawLyrics, _lastModifiedTime);
     ret = ret * 23 + hash2(fileName, fileVersionNumber);
     return ret;
   }
@@ -3390,7 +3386,8 @@ class SongBase {
 //  normally the chords data is held in the chord section map
   HashMap<SectionVersion, ChordSection> _chordSectionMap = HashMap();
 
-  String rawLyrics = '';
+  String get rawLyrics => _rawLyrics;
+  String _rawLyrics = '';
 
 //  deprecated values
   int fileVersionNumber = 0;

@@ -223,6 +223,8 @@ class Section implements Comparable<Section> {
 
   String get abbreviation => _abbreviation;
   final String _abbreviation;
+
+  String? get alternateAbbreviation => _alternateAbbreviation;
   final String? _alternateAbbreviation;
 
   String get description => _description;

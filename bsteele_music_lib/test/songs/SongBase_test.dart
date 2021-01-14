@@ -468,7 +468,7 @@ void main() {
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no:');
     logger.d(a.getSongId().toString());
     logger.d('\t' + a.toMarkup());
-    logger.d(a.getRawLyrics());
+    logger.d(a.rawLyrics);
 
     ChordSectionLocation chordSectionLocation;
 
@@ -587,7 +587,7 @@ void main() {
     //logger.d(    a.getRawLyrics());
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: A B C D V: D E F F# ',
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
-    expect(lyrics, a.getRawLyrics());
+    expect(lyrics, a.rawLyrics);
   });
 
   test('testSongWithoutStartingSection', () {

@@ -5,7 +5,6 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
@@ -233,7 +232,6 @@ coerced to reflect the songlist's last modification for that song.
               bool allSignificantChordSectionsMatch = true;
 
               var chordSections = song.getChordSections();
-              if (chordSections == null) continue;
               if (chordSections.length == 1) {
                 lastChordSection = chordSections.first;
               }
@@ -622,31 +620,31 @@ coerced to reflect the songlist's last modification for that song.
     logger.d(SongMetadata.toJson());
   }
 
-  void _csv() {
-    StringBuffer sb = StringBuffer();
-    sb.write('Title, Artist, Cover Artist'
-        ',User'
-        // ',Modified'
-        ',Copyright'
-        ',Key'
-        ',BPM'
-        ',Time'
-        '\n');
-    for (Song song in allSongs) {
-      sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
-          ',"${song.user}"'
-          //  ',"${song.lastModifiedTime??''}"'
-          ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
-          ',"${song.key}"'
-          ',"${song.defaultBpm}"'
-          ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
-          '\n');
-    }
-
-    //print(sb.toString());
-    File writeTo = File(homePath() + '/allSongs.csv');
-    writeTo.writeAsStringSync(sb.toString(), flush: true);
-  }
+  // void _csv() {
+  //   StringBuffer sb = StringBuffer();
+  //   sb.write('Title, Artist, Cover Artist'
+  //       ',User'
+  //       // ',Modified'
+  //       ',Copyright'
+  //       ',Key'
+  //       ',BPM'
+  //       ',Time'
+  //       '\n');
+  //   for (Song song in allSongs) {
+  //     sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
+  //         ',"${song.user}"'
+  //         //  ',"${song.lastModifiedTime??''}"'
+  //         ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
+  //         ',"${song.key}"'
+  //         ',"${song.defaultBpm}"'
+  //         ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
+  //         '\n');
+  //   }
+  //
+  //   //print(sb.toString());
+  //   File writeTo = File(homePath() + '/allSongs.csv');
+  //   writeTo.writeAsStringSync(sb.toString(), flush: true);
+  // }
 
   Directory _outputDirectory = Directory.current;
   SplayTreeSet<Song> allSongs = SplayTreeSet();
