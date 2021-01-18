@@ -104,7 +104,10 @@ void main() {
       Map<String, XmlElement> partMap = {};
       for (XmlElement xmlParList in xmlScorPartwise.findElements('part-list')) {
         for (XmlElement xmlScorePart in xmlParList.findElements('score-part')) {
-          String id = xmlScorePart.getAttribute('id');
+          String? id = xmlScorePart.getAttribute('id');
+          if (id == null) {
+            throw 'null from id';
+          }
           partMap[id] = xmlScorPartwise.findElements('part').firstWhere((element) => element.getAttribute('id') == id);
         }
       }
@@ -113,8 +116,15 @@ void main() {
         XmlElement? part = partMap[scorePart];
         logger.v('    scorePart: ${part}');
 
-        for (XmlElement xmlMeasure in part.findElements('measure')) {
-          int m = int.parse(xmlMeasure.getAttribute('number'));
+        for (XmlElement xmlMeasure in part?.findElements('measure') ?? []) {
+          if (xmlMeasure == null) {
+            continue;
+          }
+          var numberAttr = xmlMeasure.getAttribute('number');
+          if (numberAttr == null) {
+            throw 'null number attribute';
+          }
+          int m = int.parse(numberAttr);
           logger.i('measure $m:');
 
           for (XmlNode c in xmlMeasure.children.where((c) => c.nodeType == XmlNodeType.ELEMENT)) {
@@ -146,7 +156,11 @@ void main() {
                   logger.i('   staves: ${int.parse(e.text)}');
                 }
                 for (XmlElement xmlClef in xmlMeasureAttributes.findElements('clef')) {
-                  int clefNumber = int.parse(xmlMeasure.getAttribute('number'));
+                  var numberAttr = xmlMeasure.getAttribute('number');
+                  if (numberAttr == null) {
+                    throw 'null number attribute';
+                  }
+                  int clefNumber = int.parse(numberAttr);
                   logger.i('   clef: $clefNumber');
                   for (XmlElement xmlSign in xmlClef.findElements('sign')) {
                     logger.i('     sign: ${xmlSign.text}');

@@ -2399,7 +2399,7 @@ class SongBase {
         state = 2;
       }
 
-      //  note that fall through is possible
+      //  note that a fall through is possible from above
       if (state == 2) {
         //  absorb all characters to a newline
         switch (c) {
