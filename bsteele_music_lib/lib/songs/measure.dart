@@ -105,6 +105,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   void allocateTheBeats() {
+    //  fixme: deal with under specified beats: eg. A.B in 4/4, implement as A.B1.
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
     if (chords.isNotEmpty) {

@@ -3162,7 +3162,7 @@ class SongBase {
   }
 
   void setRawLyrics(String rawLyrics) {
-    this._rawLyrics = rawLyrics;
+    _rawLyrics = rawLyrics;
     _parseLyrics();
   }
 

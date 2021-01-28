@@ -386,7 +386,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   String transpose(Key key, int halfSteps) {
     StringBuffer sb = StringBuffer();
-    sb.write(getSectionVersion().toString());
+    sb.write(sectionVersion.toString());
     for (Phrase phrase in _phrases) {
       sb.write(phrase.transpose(key, halfSteps));
     }
@@ -408,7 +408,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   String toMarkup() {
     StringBuffer sb = StringBuffer();
-    sb.write(getSectionVersion().toString());
+    sb.write(sectionVersion.toString());
     sb.write(' ');
     sb.write(phrasesToMarkup());
     return sb.toString();
@@ -428,7 +428,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   String toEntry() {
     StringBuffer sb = StringBuffer();
-    sb.write(getSectionVersion().toString());
+    sb.write(sectionVersion.toString());
     sb.write('\n ');
     sb.write(phrasesToEntry());
     return sb.toString();
@@ -459,7 +459,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   String toJson() {
     StringBuffer sb = StringBuffer();
-    sb.write(getSectionVersion().toString());
+    sb.write(sectionVersion.toString());
     sb.write('\n');
     if (isEmpty()) {
       sb.write('[]');
@@ -479,7 +479,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   String toString() {
     StringBuffer sb = StringBuffer();
-    sb.write(getSectionVersion().toString());
+    sb.write(sectionVersion.toString());
     sb.write('\n');
     if (_phrases.isNotEmpty) {
       for (Phrase phrase in _phrases) {
@@ -487,10 +487,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       }
     }
     return sb.toString();
-  }
-
-  SectionVersion getSectionVersion() {
-    return _sectionVersion;
   }
 
   Section getSection() {

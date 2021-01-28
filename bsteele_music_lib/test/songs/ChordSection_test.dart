@@ -158,7 +158,7 @@ void main() {
       //  infinite loop?
       ChordSection chordSection = ChordSection.parseString('o:AGEDCAGEDCAGA (organ descending scale)', 4);
       SectionVersion outro = SectionVersion.bySection(Section.get(SectionEnum.outro));
-      expect(chordSection.getSectionVersion() == outro, isTrue);
+      expect(chordSection.sectionVersion == outro, isTrue);
     }
 
     {
@@ -167,7 +167,7 @@ void main() {
       //  error will be thrown: expect(chordSection != null, isTrue);
       logger.d(chordSection.toMarkup());
       SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
-      expect(chordSection.getSectionVersion() == intro, isTrue);
+      expect(chordSection.sectionVersion == intro, isTrue);
       phrases = chordSection.phrases;
       expect(3, phrases.length);
       measures = phrases[1].measures;
@@ -251,7 +251,7 @@ void main() {
       ChordSection chordSection = ChordSection.parseString('I: A B C D\n' 'AbBb/G# Am7 Ebsus4 C7/Bb x4', 4);
       logger.d(chordSection.toMarkup());
       SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
-      expect(chordSection.getSectionVersion(), intro);
+      expect(chordSection.sectionVersion, intro);
       phrases = chordSection.phrases;
       expect(2, phrases.length);
       measures = phrases[0].measures;
@@ -284,7 +284,7 @@ void main() {
           'D C AG D\n',
           4);
       SectionVersion verse = SectionVersion.bySection(Section.get(SectionEnum.verse));
-      expect(chordSection.getSectionVersion(), verse);
+      expect(chordSection.sectionVersion, verse);
       phrases = chordSection.phrases;
       phrase = phrases[0];
       measures = phrase.measures;
@@ -313,7 +313,7 @@ void main() {
       expect(markedString, isEmpty);
       expect(chordSection, isNotNull);
       SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.tag));
-      expect(chordSection.getSectionVersion(), sectionVersion);
+      expect(chordSection.sectionVersion, sectionVersion);
       phrases = chordSection.phrases;
       expect(1, phrases.length);
       phrase = phrases[0];

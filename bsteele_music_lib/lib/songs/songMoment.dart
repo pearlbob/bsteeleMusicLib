@@ -79,7 +79,7 @@ class SongMoment implements Comparable<SongMoment> {
 
   ChordSectionLocation getChordSectionLocation() {
     chordSectionLocation ??=
-        ChordSectionLocation(chordSection.getSectionVersion(), phraseIndex: phraseIndex, measureIndex: measureIndex);
+        ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
     return chordSectionLocation!;
   }
 
