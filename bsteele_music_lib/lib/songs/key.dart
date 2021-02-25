@@ -13,7 +13,7 @@ enum KeyEnum { Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, Fs }
 /// <p>Six flats and six sharps are labeled differently but are otherwise the same key.
 /// Seven flats and seven sharps are not included.</p>
 class Key implements Comparable<Key> {
-  Key._(this._keyEnum, this._keyValue, this._halfStep)
+  Key._(this._keyEnum, this._keyValue, this._halfStep, this._capoLocation)
       : _name = _keyEnumToString(_keyEnum),
         _keyScaleNote = ScaleNote.valueOf(_keyEnumToString(_keyEnum))!;
 
@@ -65,13 +65,41 @@ class Key implements Comparable<Key> {
   static Map<KeyEnum, Key> _getKeys() {
     if (_keyMap.isEmpty) {
       _keyMap = Map<KeyEnum, Key>.identity();
+
+      //  calculation constants
+      const int keyCHalfStep = 3;
+      const int keyGHalfStep = 10;
+
       for (var init in _initialization) {
         KeyEnum keInit = init[0];
-        _keyMap[keInit] = Key._(keInit, init[1], init[2]);
+        var halfStep = init[2];
+
+        //  compute capo location
+        var capoLocation = halfStep;
+        if (halfStep >= keyGHalfStep) {
+          capoLocation = halfStep - keyGHalfStep;
+        } else if (halfStep >= keyCHalfStep) {
+          capoLocation = halfStep - keyCHalfStep;
+        } else {
+          capoLocation = (halfStep + MusicConstants.halfStepsPerOctave) - keyGHalfStep;
+        }
+
+        _keyMap[keInit] = Key._(keInit, init[1], halfStep, capoLocation);
       }
 
       //  majorDiatonics needs majorScale which is initialized after the initialization
+      final Key keyC = _keyMap[KeyEnum.C]!;
+      final Key keyG = _keyMap[KeyEnum.G]!;
       for (Key key in _keyMap.values) {
+        //  compute capo key... now that keys mostly exist
+        if (key.halfStep >= keyGHalfStep) {
+          key._capoKey = keyG;
+        } else if (key.halfStep >= keyCHalfStep) {
+          key._capoKey = keyC;
+        } else {
+          key._capoKey = keyG;
+        }
+
         key._majorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
           return ScaleChord(key.getMajorScaleByNote(i), MusicConstants.getMajorDiatonicChordModifier(i));
         });
@@ -79,7 +107,6 @@ class Key implements Comparable<Key> {
         key._minorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
           return ScaleChord(key.getMinorScaleByNote(i), MusicConstants.getMinorDiatonicChordModifier(i));
         });
-
       }
 
       //  compute the minor scale note
@@ -521,10 +548,16 @@ class Key implements Comparable<Key> {
   final int _halfStep;
   final ScaleNote _keyScaleNote;
 
+  int get capoLocation => _capoLocation;
+  final int _capoLocation;
+
+  Key get capoKey => _capoKey;
+  late Key _capoKey;
+
   //  have to be set after initialization of all keys
   late ScaleNote _keyMinorScaleNote;
-   List<ScaleChord> _majorDiatonics=[];
-   List<ScaleChord> _minorDiatonics=[];
+  List<ScaleChord> _majorDiatonics = [];
+  List<ScaleChord> _minorDiatonics = [];
 }
 
 /*                     1  2  3  4  5  6  7                 I    II   III  IV   V    VI   VII               0  1  2  3  4  5  6  7  8  9  10 11

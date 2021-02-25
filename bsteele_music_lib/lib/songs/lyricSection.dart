@@ -14,15 +14,6 @@ class LyricSection implements Comparable<LyricSection> {
     this._sectionVersion = _sectionVersion;
   }
 
-  /// The _sectionVersion's measures.
-  List<String> getLyricsLines() {
-    return _lyricsLines;
-  }
-
-//  void setLyricsLines(List<LyricsLine> lyricsLines) {
-//    this.lyricsLines = lyricsLines;
-//  }
-
   void add(String lyricsLine) {
     logger.v('LyricSection.add($lyricsLine)');
     _lyricsLines.add(lyricsLine);
@@ -63,8 +54,7 @@ class LyricSection implements Comparable<LyricSection> {
         return _lyricsLines.length - other._lyricsLines.length;
       }
       for (int i = 0; i < _lyricsLines.length; i++) {
-        ret =
-            _lyricsLines.elementAt(i).compareTo(other._lyricsLines.elementAt(i));
+        ret = _lyricsLines.elementAt(i).compareTo(other._lyricsLines.elementAt(i));
         if (ret != 0) return ret;
       }
     }
@@ -93,7 +83,8 @@ class LyricSection implements Comparable<LyricSection> {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && other is LyricSection &&
+    return runtimeType == other.runtimeType &&
+        other is LyricSection &&
         _sectionVersion == other._sectionVersion &&
         drumSection == other.drumSection &&
         listsEqual(_lyricsLines, other._lyricsLines);

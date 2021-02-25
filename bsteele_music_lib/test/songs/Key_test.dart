@@ -620,7 +620,43 @@ void main() {
       }
     }
   });
+
+  test('test capo suggestions', () {
+    for (KeyEnum keyEnum in KeyEnum.values) {
+      Key key = Key.get(keyEnum);
+      logger.i('key: ${key.toString().padRight(2)}: '
+          '${key.halfStep.toString().padLeft(2)} '
+          '=> ${key.capoKey} + capo at ${key.capoLocation}');
+    }
+
+    expect(Key.get(KeyEnum.C).capoLocation, 0);
+    expect(Key.get(KeyEnum.Db).capoLocation, 1);
+    expect(Key.get(KeyEnum.D).capoLocation, 2);
+    expect(Key.get(KeyEnum.Eb).capoLocation, 3);
+    expect(Key.get(KeyEnum.E).capoLocation, 4);
+    expect(Key.get(KeyEnum.F).capoLocation, 5);
+    expect(Key.get(KeyEnum.Gb).capoLocation, 6);
+    expect(Key.get(KeyEnum.G).capoLocation, 0);
+    expect(Key.get(KeyEnum.Ab).capoLocation, 1);
+    expect(Key.get(KeyEnum.A).capoLocation, 2);
+    expect(Key.get(KeyEnum.Bb).capoLocation, 3);
+    expect(Key.get(KeyEnum.B).capoLocation, 4);
+
+    expect(Key.get(KeyEnum.C).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.Db).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.D).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.Eb).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.E).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.F).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.Gb).capoKey, Key.get(KeyEnum.C));
+    expect(Key.get(KeyEnum.G).capoKey, Key.get(KeyEnum.G));
+    expect(Key.get(KeyEnum.Ab).capoKey, Key.get(KeyEnum.G));
+    expect(Key.get(KeyEnum.A).capoKey, Key.get(KeyEnum.G));
+    expect(Key.get(KeyEnum.Bb).capoKey, Key.get(KeyEnum.G));
+    expect(Key.get(KeyEnum.B).capoKey, Key.get(KeyEnum.G));
+  });
 }
+
 /*
 Bodhi approved:
 

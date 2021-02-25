@@ -2815,22 +2815,22 @@ class SongBase {
         LyricSection aLyricSection = a._lyricSections[i];
         SectionVersion sectionVersion = aLyricSection.sectionVersion;
         LyricSection bLyricSection = b._lyricSections[i];
-        int lineLimit = min(aLyricSection.getLyricsLines().length, bLyricSection.getLyricsLines().length);
+        int lineLimit = min(aLyricSection.lyricsLines.length, bLyricSection.lyricsLines.length);
         for (int j = 0; j < lineLimit; j++) {
-          String aLine = aLyricSection.getLyricsLines()[j];
-          String bLine = bLyricSection.getLyricsLines()[j];
+          String aLine = aLyricSection.lyricsLines[j];
+          String bLine = bLyricSection.lyricsLines[j];
           if (aLine.compareTo(bLine) != 0) {
             ret.add(StringTriple('lyrics ' + sectionVersion.toString(), aLine, bLine));
           }
         }
-        lineLimit = aLyricSection.getLyricsLines().length;
-        for (int j = bLyricSection.getLyricsLines().length; j < lineLimit; j++) {
-          String aLine = aLyricSection.getLyricsLines()[j];
+        lineLimit = aLyricSection.lyricsLines.length;
+        for (int j = bLyricSection.lyricsLines.length; j < lineLimit; j++) {
+          String aLine = aLyricSection.lyricsLines[j];
           ret.add(StringTriple('lyrics missing ' + sectionVersion.toString(), aLine, ''));
         }
-        lineLimit = bLyricSection.getLyricsLines().length;
-        for (int j = aLyricSection.getLyricsLines().length; j < lineLimit; j++) {
-          String bLine = bLyricSection.getLyricsLines()[j];
+        lineLimit = bLyricSection.lyricsLines.length;
+        for (int j = aLyricSection.lyricsLines.length; j < lineLimit; j++) {
+          String bLine = bLyricSection.lyricsLines[j];
           ret.add(StringTriple('lyrics missing ' + sectionVersion.toString(), '', bLine));
         }
       }
