@@ -60,100 +60,119 @@ We gonna let it all hang down
 
     Grid<SongMoment> grid = a.songMomentGrid;
 
-    bool genCode = false; //  true false
-
-    if (genCode) {
-      for (SongMoment songMoment in a.songMoments) {
-        logger.i('${songMoment.toString()}');
-        logger.i('    "${songMoment.lyrics}"');
-      }
-
-      int rows = grid.getRowCount();
-      for (int r = 0; r < rows; r++) {
-        List<SongMoment?>? row = grid.getRow(r);
-        if (row == null) throw 'row == null';
-        int cols = row.length;
-        for (int c = 0; c < cols; c++) {
-          SongMoment? songMoment = grid.get(r, c);
-          if (songMoment == null) continue;
-          if (c >= 1) {
-            String s = Util.quote(songMoment.lyrics) ?? 'isNull';
-            s = s.isEmpty ? 'isEmpty' : s;
-            logger.i('expect( grid.get($r,$c)?.lyrics, $s);');
-          }
-        }
-      }
-    }
+    // {
+    //   for (SongMoment songMoment in a.songMoments) {
+    //     logger.i('${songMoment.toString()}');
+    //     logger.i('    "${songMoment.lyrics}"');
+    //   }
+    //
+    //   int rows = grid.getRowCount();
+    //   for (int r = 0; r < rows; r++) {
+    //     List<SongMoment?>? row = grid.getRow(r);
+    //     if (row == null) throw 'row == null';
+    //     int cols = row.length;
+    //     for (int c = 0; c < cols; c++) {
+    //       SongMoment? songMoment = grid.get(r, c);
+    //       if (songMoment == null) continue;
+    //       if (c >= 1) {
+    //         String s = Util.quote(songMoment.lyrics) ?? 'isNull';
+    //         s = s.isEmpty ? 'isEmpty' : s;
+    //         logger.i('expect( grid.get($r,$c)?.lyrics, $s);');
+    //       }
+    //     }
+    //   }
+    // }
 
     //  generated code here:
-    expect(grid.get(0, 1)?.lyrics, '(instrumental)');
-    expect(grid.get(0, 2)?.lyrics, isEmpty);
-    expect(grid.get(0, 3)?.lyrics, isEmpty);
-    expect(grid.get(0, 4)?.lyrics, isEmpty);
-    expect(grid.get(1, 1)?.lyrics, isEmpty);
-    expect(grid.get(1, 2)?.lyrics, isEmpty);
-    expect(grid.get(1, 3)?.lyrics, isEmpty);
-    expect(grid.get(1, 4)?.lyrics, isEmpty);
-    expect(grid.get(2, 1)?.lyrics, 'After midnight We');
-    expect(grid.get(2, 2)?.lyrics, 'gonna let it');
-    expect(grid.get(2, 3)?.lyrics, 'all hang down');
-    expect(grid.get(2, 4)?.lyrics, 'After midnight');
-    expect(grid.get(3, 1)?.lyrics, 'We gonna chugalug');
-    expect(grid.get(3, 2)?.lyrics, 'and shout');
-    expect(grid.get(3, 3)?.lyrics, 'Gonna stimulate');
-    expect(grid.get(3, 4)?.lyrics, 'some action');
-    expect(grid.get(4, 1)?.lyrics, 'We gonna get some');
-    expect(grid.get(4, 2)?.lyrics, 'satisfaction We gonna find');
-    expect(grid.get(4, 3)?.lyrics, 'out what it');
-    expect(grid.get(4, 4)?.lyrics, 'is all about');
-    expect(grid.get(5, 1)?.lyrics, 'After midnight We');
-    expect(grid.get(5, 2)?.lyrics, 'gonna let it');
-    expect(grid.get(5, 3)?.lyrics, 'all hang down');
-    expect(grid.get(5, 4)?.lyrics, 'After midnight');
-    expect(grid.get(6, 1)?.lyrics, 'We gonna shake your');
-    expect(grid.get(6, 2)?.lyrics, 'tambourine After midnight');
-    expect(grid.get(6, 3)?.lyrics, 'Soul gonna be');
-    expect(grid.get(6, 4)?.lyrics, 'peaches & cream');
-    expect(grid.get(7, 1)?.lyrics, 'Gonna cause talk and suspicion');
-    expect(grid.get(7, 2)?.lyrics, 'We gonna give an exhibition');
-    expect(grid.get(7, 3)?.lyrics, 'We gonna find out what');
-    expect(grid.get(7, 4)?.lyrics, 'it is all about');
-    expect(grid.get(8, 1)?.lyrics, '(instrumental)');
-    expect(grid.get(8, 2)?.lyrics, isEmpty);
-    expect(grid.get(8, 3)?.lyrics, isEmpty);
-    expect(grid.get(8, 4)?.lyrics, isEmpty);
-    expect(grid.get(9, 1)?.lyrics, isEmpty);
-    expect(grid.get(9, 2)?.lyrics, isEmpty);
-    expect(grid.get(9, 3)?.lyrics, isEmpty);
-    expect(grid.get(9, 4)?.lyrics, isEmpty);
-    expect(grid.get(10, 1)?.lyrics, isEmpty);
-    expect(grid.get(10, 2)?.lyrics, isEmpty);
-    expect(grid.get(10, 3)?.lyrics, isEmpty);
-    expect(grid.get(10, 4)?.lyrics, isEmpty);
-    expect(grid.get(11, 1)?.lyrics, 'After midnight We');
-    expect(grid.get(11, 2)?.lyrics, 'gonna let it');
-    expect(grid.get(11, 3)?.lyrics, 'all hang down');
-    expect(grid.get(11, 4)?.lyrics, 'After midnight');
-    expect(grid.get(12, 1)?.lyrics, 'We gonna shake your');
-    expect(grid.get(12, 2)?.lyrics, 'tambourine After midnight');
-    expect(grid.get(12, 3)?.lyrics, 'Soul gonna be');
-    expect(grid.get(12, 4)?.lyrics, 'peaches & cream');
-    expect(grid.get(13, 1)?.lyrics, 'Gonna cause talk and suspicion');
-    expect(grid.get(13, 2)?.lyrics, 'We gonna give an exhibition');
-    expect(grid.get(13, 3)?.lyrics, 'We gonna find out what');
-    expect(grid.get(13, 4)?.lyrics, 'it is all about');
-    expect(grid.get(14, 1)?.lyrics, 'After midnight We');
-    expect(grid.get(14, 2)?.lyrics, 'gonna let it');
-    expect(grid.get(14, 3)?.lyrics, 'all hang down');
-    expect(grid.get(14, 4)?.lyrics, 'After midnight');
-    expect(grid.get(15, 1)?.lyrics, 'We gonna let it');
-    expect(grid.get(15, 2)?.lyrics, 'all hang down After');
-    expect(grid.get(15, 3)?.lyrics, 'midnight We gonna let');
-    expect(grid.get(15, 4)?.lyrics, 'it all hang down');
-    expect(grid.get(16, 1)?.lyrics, 'After midnight We');
-    expect(grid.get(16, 2)?.lyrics, 'gonna let');
-    expect(grid.get(16, 3)?.lyrics, 'it all');
-    expect(grid.get(16, 4)?.lyrics, 'hang down');
+    expect( grid.get(0,1)?.lyrics, '(instrumental)');
+    expect( grid.get(0,2)?.lyrics, isEmpty);
+    expect( grid.get(0,3)?.lyrics, isEmpty);
+    expect( grid.get(0,4)?.lyrics, isEmpty);
+    expect( grid.get(1,1)?.lyrics, isEmpty);
+    expect( grid.get(1,2)?.lyrics, isEmpty);
+    expect( grid.get(1,3)?.lyrics, isEmpty);
+    expect( grid.get(1,4)?.lyrics, isEmpty);
+    expect( grid.get(2,1)?.lyrics, 'After midnight\n'
+        'We gonna');
+    expect( grid.get(2,2)?.lyrics, 'let it');
+    expect( grid.get(2,3)?.lyrics, 'all hang');
+    expect( grid.get(2,4)?.lyrics, 'down\n'
+        'After midnight');
+    expect( grid.get(3,1)?.lyrics, 'We gonna');
+    expect( grid.get(3,2)?.lyrics, 'chugalug and');
+    expect( grid.get(3,3)?.lyrics, 'shout\n'
+        'Gonna stimulate');
+    expect( grid.get(3,4)?.lyrics, 'some action');
+    expect( grid.get(4,1)?.lyrics, 'We gonna get some');
+    expect( grid.get(4,2)?.lyrics, 'satisfaction\n'
+        'We gonna find');
+    expect( grid.get(4,3)?.lyrics, 'out what it');
+    expect( grid.get(4,4)?.lyrics, 'is all about');
+    expect( grid.get(5,1)?.lyrics, 'After midnight\n'
+        'We gonna');
+    expect( grid.get(5,2)?.lyrics, 'let it');
+    expect( grid.get(5,3)?.lyrics, 'all hang');
+    expect( grid.get(5,4)?.lyrics, 'down\n'
+        'After midnight');
+    expect( grid.get(6,1)?.lyrics, 'We gonna shake');
+    expect( grid.get(6,2)?.lyrics, 'your tambourine\n'
+        'After midnight\n'
+        'Soul');
+    expect( grid.get(6,3)?.lyrics, 'gonna be peaches');
+    expect( grid.get(6,4)?.lyrics, '& cream');
+    expect( grid.get(7,1)?.lyrics, 'Gonna cause talk and suspicion\n'
+        'We');
+    expect( grid.get(7,2)?.lyrics, 'gonna give an exhibition\n'
+        'We');
+    expect( grid.get(7,3)?.lyrics, 'gonna find out what');
+    expect( grid.get(7,4)?.lyrics, 'it is all about');
+    expect( grid.get(8,1)?.lyrics, '(instrumental)');
+    expect( grid.get(8,2)?.lyrics, isEmpty);
+    expect( grid.get(8,3)?.lyrics, isEmpty);
+    expect( grid.get(8,4)?.lyrics, isEmpty);
+    expect( grid.get(9,1)?.lyrics, isEmpty);
+    expect( grid.get(9,2)?.lyrics, isEmpty);
+    expect( grid.get(9,3)?.lyrics, isEmpty);
+    expect( grid.get(9,4)?.lyrics, isEmpty);
+    expect( grid.get(10,1)?.lyrics, isEmpty);
+    expect( grid.get(10,2)?.lyrics, isEmpty);
+    expect( grid.get(10,3)?.lyrics, isEmpty);
+    expect( grid.get(10,4)?.lyrics, isEmpty);
+    expect( grid.get(11,1)?.lyrics, 'After midnight\n'
+        'We gonna');
+    expect( grid.get(11,2)?.lyrics, 'let it');
+    expect( grid.get(11,3)?.lyrics, 'all hang');
+    expect( grid.get(11,4)?.lyrics, 'down\n'
+        'After midnight');
+    expect( grid.get(12,1)?.lyrics, 'We gonna shake');
+    expect( grid.get(12,2)?.lyrics, 'your tambourine\n'
+        'After midnight\n'
+        'Soul');
+    expect( grid.get(12,3)?.lyrics, 'gonna be peaches');
+    expect( grid.get(12,4)?.lyrics, '& cream');
+    expect( grid.get(13,1)?.lyrics, 'Gonna cause talk and suspicion\n'
+        'We');
+    expect( grid.get(13,2)?.lyrics, 'gonna give an exhibition\n'
+        'We');
+    expect( grid.get(13,3)?.lyrics, 'gonna find out what');
+    expect( grid.get(13,4)?.lyrics, 'it is all about');
+    expect( grid.get(14,1)?.lyrics, 'After midnight\n'
+        'We gonna');
+    expect( grid.get(14,2)?.lyrics, 'let it');
+    expect( grid.get(14,3)?.lyrics, 'all hang');
+    expect( grid.get(14,4)?.lyrics, 'down\n'
+        'After midnight');
+    expect( grid.get(15,1)?.lyrics, 'We gonna let it');
+    expect( grid.get(15,2)?.lyrics, 'all hang down\n'
+        'After midnight\n'
+        'We');
+    expect( grid.get(15,3)?.lyrics, 'gonna let it');
+    expect( grid.get(15,4)?.lyrics, 'all hang down');
+    expect( grid.get(16,1)?.lyrics, 'After midnight\n'
+        'We');
+    expect( grid.get(16,2)?.lyrics, 'gonna let');
+    expect( grid.get(16,3)?.lyrics, 'it all');
+    expect( grid.get(16,4)?.lyrics, 'hang down');
   });
 
   test('test Allison Road', () {
@@ -221,77 +240,84 @@ I left to know
 On Allison Road
 ''');
 
-    Grid<SongMoment> grid = a.songMomentGrid;
-
-    {
-      logger.d('=======');
+    if (Logger.level.index <= Level.debug.index) {
+      logger.i('=======');
       for (SongMoment songMoment in a.songMoments) {
-        logger.d('${songMoment.toString()}');
+        logger.i('${songMoment.toString()}');
       }
-      logger.d('=======');
+      logger.i('=======');
     }
 
-//    {
-//    //  generate code for this test
-//    int rows = grid.getRowCount();
-//
-//    for (int r = 0; r < rows; r++) {
-//      List<SongMoment> row = grid.getRow(r);
-//      int cols = row.length;
-//      for (int c = 0; c < cols; c++) {
-//        SongMoment songMoment = grid.get(r, c);
-//        if (songMoment == null) continue;
-//        if (c == 1)
-//          logger.i('expect( grid.get($r,$c)?.lyrics, ${Util.quote(
-//              songMoment.lyrics)});');
-//      }
-//    }
-//    }
+    Grid<SongMoment> grid = a.songMomentGrid;
 
-    expect(grid.get(0, 1)?.lyrics, '(Instrumental)');
-    expect(grid.get(1, 1)?.lyrics, '');
-    expect(grid.get(2, 1)?.lyrics, 'I’ve lost my mind');
-    expect(grid.get(2, 2)?.lyrics, 'on what I’d find');
-    expect(grid.get(2, 3)?.lyrics, 'All of the pressure');
-    expect(grid.get(2, 4)?.lyrics, 'that I left behind');
-    expect(grid.get(3, 1)?.lyrics, 'On Allison Road');
-    expect(grid.get(4, 1)?.lyrics, 'Fire’s in the');
-    expect(grid.get(5, 1)?.lyrics, 'On');
-    expect(grid.get(6, 1)?.lyrics, 'Dark clouds fall when');
-    expect(grid.get(6, 2)?.lyrics, 'the moon was near');
-    expect(grid.get(7, 1)?.lyrics, 'There’s no');
-    expect(grid.get(8, 1)?.lyrics, 'And I couldn’t see I was lost at the time...');
-    expect(grid.get(9, 1)?.lyrics, '(Break)');
-    expect(grid.get(10, 1)?.lyrics, 'Yeah I didn’t know');
-    expect(grid.get(11, 1)?.lyrics, 'So she fills up her sails');
-    expect(grid.get(11, 2)?.lyrics, 'with my wasted breath And');
-    expect(grid.get(11, 3)?.lyrics, 'each one’s more wasted that');
-    expect(grid.get(11, 4)?.lyrics, 'the others you can bet');
-    expect(grid.get(12, 1)?.lyrics, 'On Allison Road');
-    expect(grid.get(13, 1)?.lyrics, 'So why not drive, on');
-    expect(grid.get(14, 1)?.lyrics, 'On');
-    expect(grid.get(15, 1)?.lyrics, 'And I didn’t know I');
-    expect(grid.get(16, 1)?.lyrics, 'And I');
-    expect(grid.get(17, 1)?.lyrics, 'All I wanted to find her tonight');
-    expect(grid.get(17, 2)?.lyrics, isNull);
-    expect(grid.get(17, 3)?.lyrics, isNull);
-    expect(grid.get(17, 4)?.lyrics, isNull);
-    expect(grid.get(18, 1)?.lyrics, '(Break)');
-    expect(grid.get(18, 2)?.lyrics, 'On');
-    expect(grid.get(18, 3)?.lyrics, 'Allison');
-    expect(grid.get(18, 4)?.lyrics, 'Road');
-    expect(grid.get(19, 1)?.lyrics, 'Yeah I didn’t know');
-    expect(grid.get(20, 1)?.lyrics, '(Instrumental)');
-    expect(grid.get(21, 1)?.lyrics, '');
-    expect(grid.get(22, 1)?.lyrics, '(Instrumental)');
-    expect(grid.get(23, 1)?.lyrics, '');
-    expect(grid.get(24, 1)?.lyrics, 'I’ve lost my');
-    expect(grid.get(25, 1)?.lyrics, 'Fire’s in the');
-    expect(grid.get(26, 1)?.lyrics, 'On Allison Road,');
-    expect(grid.get(27, 1)?.lyrics, 'On');
-    expect(grid.get(27, 2)?.lyrics, 'Allison');
-    expect(grid.get(27, 3)?.lyrics, 'Road');
-    expect(grid.get(27, 4)?.lyrics, '');
+    // {
+    //   //  generate code for this test
+    //   int rows = grid.getRowCount();
+    //
+    //   for (int r = 0; r < rows; r++) {
+    //     List<SongMoment?>? row = grid.getRow(r);
+    //     if (row == null) {
+    //       continue;
+    //     }
+    //     int cols = row.length;
+    //     for (int c = 0; c < cols; c++) {
+    //       var songMoment = grid.get(r, c);
+    //       if (songMoment == null) continue;
+    //       if (c == 1) {
+    //         logger.i('expect( grid.get($r,$c)?.lyrics, ${Util.quote(songMoment.lyrics)});');
+    //       }
+    //     }
+    //   }
+    // }
+
+    if (Logger.level.index <= Level.debug.index) {
+      logger.i('grid: -------');
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        var row = grid.getRow(r);
+        if (row != null) {
+          for (var c = 0; c < row.length; c++) {
+            var songMoment = grid.get(r, c);
+            if (songMoment != null) {
+              logger.i('($r,$c): ${songMoment.toString()}: ${songMoment.lyricSection} "${songMoment.lyrics}"');
+            }
+          }
+        }
+        logger.i('-------');
+      }
+    }
+
+    expect( grid.get(0,1)?.lyrics, '(Instrumental)');
+    expect( grid.get(1,1)?.lyrics, '');
+    expect( grid.get(2,1)?.lyrics, 'I’ve lost my mind');
+    expect( grid.get(3,1)?.lyrics, 'On Allison Road\n'
+        'Fools');
+    expect( grid.get(4,1)?.lyrics, 'Fire’s in the');
+    expect( grid.get(5,1)?.lyrics, 'On');
+    expect( grid.get(6,1)?.lyrics, 'Dark clouds fall when');
+    expect( grid.get(7,1)?.lyrics, 'There’s no');
+    expect( grid.get(8,1)?.lyrics, 'And I couldn’t see I was lost at the time...');
+    expect( grid.get(9,1)?.lyrics, '(Break)\n'
+        'On');
+    expect( grid.get(10,1)?.lyrics, 'Yeah I didn’t');
+    expect( grid.get(11,1)?.lyrics, 'So she fills up her');
+    expect( grid.get(12,1)?.lyrics, 'On Allison Road\n'
+        'Now');
+    expect( grid.get(13,1)?.lyrics, 'So why not drive,');
+    expect( grid.get(14,1)?.lyrics, 'On');
+    expect( grid.get(15,1)?.lyrics, 'And I didn’t know');
+    expect( grid.get(16,1)?.lyrics, 'And I');
+    expect( grid.get(17,1)?.lyrics, 'All I wanted to find her tonight');
+    expect( grid.get(18,1)?.lyrics, '(Break)\n'
+        'On');
+    expect( grid.get(19,1)?.lyrics, 'Yeah I didn’t');
+    expect( grid.get(20,1)?.lyrics, '(Instrumental)');
+    expect( grid.get(21,1)?.lyrics, '');
+    expect( grid.get(22,1)?.lyrics, '(Instrumental)');
+    expect( grid.get(23,1)?.lyrics, '');
+    expect( grid.get(24,1)?.lyrics, 'I’ve lost');
+    expect( grid.get(25,1)?.lyrics, 'Fire’s in the');
+    expect( grid.get(26,1)?.lyrics, 'On Allison');
+    expect( grid.get(27,1)?.lyrics, 'On');
   });
 
   test('test Allison Road from json', () {
@@ -392,49 +418,38 @@ On Allison Road
     }
 
     //  pirated from above:
-    expect(grid.get(0, 1)?.lyrics, '(Instrumental)');
-    expect(grid.get(1, 1)?.lyrics, '');
-    expect(grid.get(2, 1)?.lyrics, 'I’ve lost my mind');
-    expect(grid.get(2, 2)?.lyrics, 'on what I’d find');
-    expect(grid.get(2, 3)?.lyrics, 'All of the pressure');
-    expect(grid.get(2, 4)?.lyrics, 'that I left behind');
-    expect(grid.get(3, 1)?.lyrics, 'On Allison Road');
-    expect(grid.get(4, 1)?.lyrics, 'Fire’s in the');
-    expect(grid.get(5, 1)?.lyrics, 'On');
-    expect(grid.get(6, 1)?.lyrics, 'Dark clouds fall when');
-    expect(grid.get(6, 2)?.lyrics, 'the moon was near');
-    expect(grid.get(7, 1)?.lyrics, 'There’s no');
-    expect(grid.get(8, 1)?.lyrics, 'And I couldn’t see I was lost at the time...');
-    expect(grid.get(9, 1)?.lyrics, '(Break)');
-    expect(grid.get(10, 1)?.lyrics, 'Yeah I didn’t know');
-    expect(grid.get(11, 1)?.lyrics, 'So she fills up her sails');
-    expect(grid.get(11, 2)?.lyrics, 'with my wasted breath And');
-    expect(grid.get(11, 3)?.lyrics, 'each one’s more wasted that');
-    expect(grid.get(11, 4)?.lyrics, 'the others you can bet');
-    expect(grid.get(12, 1)?.lyrics, 'On Allison Road');
-    expect(grid.get(13, 1)?.lyrics, 'So why not drive, on');
-    expect(grid.get(14, 1)?.lyrics, 'On');
-    expect(grid.get(15, 1)?.lyrics, 'And I didn’t know I');
-    expect(grid.get(16, 1)?.lyrics, 'And I');
-    expect(grid.get(17, 1)?.lyrics, 'All I wanted to find her tonight');
-    expect(grid.get(17, 2)?.lyrics, isNull);
-    expect(grid.get(17, 3)?.lyrics, isNull);
-    expect(grid.get(17, 4)?.lyrics, isNull);
-    expect(grid.get(18, 1)?.lyrics, '(Break)');
-    expect(grid.get(18, 2)?.lyrics, 'On');
-    expect(grid.get(18, 3)?.lyrics, 'Allison');
-    expect(grid.get(18, 4)?.lyrics, 'Road');
-    expect(grid.get(19, 1)?.lyrics, 'Yeah I didn’t know');
-    expect(grid.get(20, 1)?.lyrics, '(Instrumental)');
-    expect(grid.get(21, 1)?.lyrics, '');
-    expect(grid.get(22, 1)?.lyrics, '(Instrumental)');
-    expect(grid.get(23, 1)?.lyrics, '');
-    expect(grid.get(24, 1)?.lyrics, 'I’ve lost my');
-    expect(grid.get(25, 1)?.lyrics, 'Fire’s in the');
-    expect(grid.get(26, 1)?.lyrics, 'On Allison Road,');
-    expect(grid.get(27, 1)?.lyrics, 'On');
-    expect(grid.get(27, 2)?.lyrics, 'Allison');
-    expect(grid.get(27, 3)?.lyrics, 'Road');
-    expect(grid.get(27, 4)?.lyrics, '');
+    expect( grid.get(0,1)?.lyrics, '(Instrumental)');
+    expect( grid.get(1,1)?.lyrics, '');
+    expect( grid.get(2,1)?.lyrics, 'I’ve lost my mind');
+    expect( grid.get(3,1)?.lyrics, 'On Allison Road\n'
+        'Fools');
+    expect( grid.get(4,1)?.lyrics, 'Fire’s in the');
+    expect( grid.get(5,1)?.lyrics, 'On');
+    expect( grid.get(6,1)?.lyrics, 'Dark clouds fall when');
+    expect( grid.get(7,1)?.lyrics, 'There’s no');
+    expect( grid.get(8,1)?.lyrics, 'And I couldn’t see I was lost at the time...');
+    expect( grid.get(9,1)?.lyrics, '(Break)\n'
+        'On');
+    expect( grid.get(10,1)?.lyrics, 'Yeah I didn’t');
+    expect( grid.get(11,1)?.lyrics, 'So she fills up her');
+    expect( grid.get(12,1)?.lyrics, 'On Allison Road\n'
+        'Now');
+    expect( grid.get(13,1)?.lyrics, 'So why not drive,');
+    expect( grid.get(14,1)?.lyrics, 'On');
+    expect( grid.get(15,1)?.lyrics, 'And I didn’t know');
+    expect( grid.get(16,1)?.lyrics, 'And I');
+    expect( grid.get(17,1)?.lyrics, 'All I wanted to find her tonight');
+    expect( grid.get(18,1)?.lyrics, '(Break)\n'
+        'On');
+    expect( grid.get(19,1)?.lyrics, 'Yeah I didn’t');
+    expect( grid.get(20,1)?.lyrics, '(Instrumental)');
+    expect( grid.get(21,1)?.lyrics, '');
+    expect( grid.get(22,1)?.lyrics, '(Instrumental)');
+    expect( grid.get(23,1)?.lyrics, '');
+    expect( grid.get(24,1)?.lyrics, 'I’ve lost');
+    expect( grid.get(25,1)?.lyrics, 'Fire’s in the');
+    expect( grid.get(26,1)?.lyrics, 'On Allison');
+    expect( grid.get(27,1)?.lyrics, 'On');
+
   });
 }

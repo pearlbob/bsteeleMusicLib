@@ -83,7 +83,9 @@ class SongBase {
   /// All repeats are expanded.  Measure node such as comments,
   /// repeat ends, repeat counts, section headers, etc. are ignored.
   void _computeSongMoments() {
-    if (_songMoments.isNotEmpty) return;
+    if (_songMoments.isNotEmpty) {
+      return;
+    }
 
     //  force the chord parse
     _getChordSectionMap();
@@ -91,7 +93,9 @@ class SongBase {
     _songMoments = [];
     _beatsToMoment = HashMap();
 
-    if (_lyricSections.isEmpty) return;
+    if (_lyricSections.isEmpty) {
+      return;
+    }
 
     logger.d('_lyricSections size: ' + _lyricSections.length.toString());
     int sectionCount;
@@ -150,6 +154,7 @@ class SongBase {
               }
             }
           } else {
+            //  phrase is not a repeat
             List<Measure> measures = phrase.measures;
             if (measures.isNotEmpty) {
               int measureIndex = 0;
@@ -179,6 +184,7 @@ class SongBase {
           phraseIndex++;
         }
 
+        //  remember chord beats
         for (SectionVersion sv in matchingSectionVersions(sectionVersion)) {
           _chordSectionBeats[sv] = sectionVersionBeats;
         }
@@ -260,9 +266,9 @@ class SongBase {
       maxCol = max(maxCol, momentGridCoordinate.col);
     }
 
-    //  Fill the rows to a common maximum length,
+    //  Pre-fill the rows to a common maximum length,
     //  even if you have to fill with null.
-    //  This is done in preparation of the flutter table.
+    //  This is done in preparation for the flutter table.
     for (int row = 0; row < _songMomentGrid!.getRowCount(); row++) {
       if ((_songMomentGrid!.getRow(row)?.length ?? 0) <= maxCol) {
         _songMomentGrid!.set(row, maxCol, null);
@@ -332,17 +338,18 @@ class SongBase {
             ) +
         //  all later lines have to skip over the early lines
         (sectionRowNumber >= extraLines ? extraLines : 0);
+
     for (int i = 0; i < linesPerMeasure; i++) {
       if (line + i >= lines.length) {
         break;
       }
-      ret.write(lines[line + i] + ' ');
+      ret.write(lines[line + i] + '\n');
     }
     if (sectionRowNumber < extraLines && line + linesPerMeasure < lines.length) {
-      ret.write(lines[line + linesPerMeasure] + ' ');
+      ret.write(lines[line + linesPerMeasure] + '\n');
     }
 
-    return ret.toString().trimRight();
+    return ret.toString();
   }
 
   /// split the given line to the given measure.
@@ -2394,7 +2401,7 @@ class SongBase {
           whiteSpace = ''; //  ignore white space
           markedString.stripLeadingSpaces();
           //  consume newline if it's the only thing on the line
-          if ( markedString.charAt(0) == '\n'){
+          if (markedString.charAt(0) == '\n') {
             markedString.consume(1);
           }
           state = 1;
@@ -3442,7 +3449,7 @@ class SongBase {
   List<SongMoment> _songMoments = [];
   HashMap<int, SongMoment> _beatsToMoment = HashMap();
 
-  static final RegExp _spaceRegexp = RegExp(r'\s');
+  static final RegExp _spaceRegexp = RegExp(r'[ \t]');
 
 //SplayTreeSet<Metadata> metadata = new SplayTreeSet();
   static final String defaultUser = 'Unknown';
