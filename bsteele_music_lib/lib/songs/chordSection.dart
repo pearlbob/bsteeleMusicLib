@@ -55,7 +55,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     Measure? lastMeasure;
     for (int i = 0; i < 2000; i++) //  arbitrary safety hard limit
     {
-      markedString.stripLeadingSpaces();
+      markedString.stripLeadingWhitespace();
       if (markedString.isEmpty) break;
 
       //  quit if next section found

@@ -4,7 +4,7 @@ description: A starting point for Dart libraries or applications.
 # homepage: https://pub.dev/packages?q=
 
 environment:
-  sdk: '>=2.13.0-52.0.dev <3.0.0'
+  sdk: '>=2.13.0-81.0.dev <3.0.0'
 
 dependencies:
   logger: ^1.0.0-nullsafety.0
@@ -23,6 +23,6 @@ dependencies:
 
 dev_dependencies:
   pedantic: ^1.10.0-nullsafety.3
-  test: ^1.16.3-nullsafety.19
+  test: ^1.16.4-nullsafety.19
   build_web_compilers: ^2.16.3  # not nullable
   build_runner: ^1.11.1  # not nullable

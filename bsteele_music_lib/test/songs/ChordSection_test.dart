@@ -89,7 +89,6 @@ void main() {
     {
       //  - at end of repeat
       ChordSection chordSection = ChordSection.parseString(
-          '\n'
           'V:\n'
           'D G D - \n'
           'D G D -  x3\n'

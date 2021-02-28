@@ -29,7 +29,6 @@ We gonna chugalug and shout
 Gonna stimulate some action
 We gonna get some satisfaction
 We gonna find out what it is all about
-
 V: After midnight
 We gonna let it all hang down
 After midnight
@@ -39,9 +38,7 @@ Soul gonna be peaches & cream
 Gonna cause talk and suspicion
 We gonna give an exhibition
 We gonna find out what it is all about
-
 V: (instrumental)
-
 V: After midnight
 We gonna let it all hang down
 After midnight
@@ -51,8 +48,6 @@ Soul gonna be peaches & cream
 Gonna cause talk and suspicion
 We gonna give an exhibition
 We gonna find out what it is all about
-
-
 O: After midnight
 We gonna let it all hang down
 After midnight
@@ -186,19 +181,16 @@ On Allison Road
 Fools in the rain if the sun gets through
 Fire’s in the heaven of the eyes I knew
 On Allison Road
-
 BR:
 Dark clouds fall when the moon was near
 Birds fly by a.m. in her bedroom stare
 There’s no telling what I might find
 And I couldn’t see I was lost at the time...
-
 C: 
 (Break)
 On Allison Road
 Yeah I didn’t know I was lost at the time
 On Allison Road
-
 V:
 So she fills up her sails with my wasted breath
 And each one’s more wasted that the others you can bet
@@ -207,13 +199,11 @@ Now I can’t hide, on Allison Road
 So why not drive, on Allison Road
 I know I wanna love her but I can’t decide
 On Allison Road
-
 BR:
 And I didn’t know I was lost at the time
 Eyes in the sun, road wasn’t wide
 And I went looking for an exit sign
 All I wanted to find her tonight
-
 C: 
 (Break)
 On Allison Road
@@ -344,19 +334,16 @@ On Allison Road
 	"Fools in the rain if the sun gets through",
 	"Fire’s in the heaven of the eyes I knew",
 	"On Allison Road",
-	"",
 	"BR:",
 	"Dark clouds fall when the moon was near",
 	"Birds fly by a.m. in her bedroom stare",
 	"There’s no telling what I might find",
 	"And I couldn’t see I was lost at the time...",
-	"",
 	"C: ",
 	"(Break)",
 	"On Allison Road",
 	"Yeah I didn’t know I was lost at the time",
 	"On Allison Road",
-	"",
 	"V:",
 	"So she fills up her sails with my wasted breath",
 	"And each one’s more wasted that the others you can bet",
@@ -365,13 +352,11 @@ On Allison Road
 	"So why not drive, on Allison Road",
 	"I know I wanna love her but I can’t decide",
 	"On Allison Road",
-	"",
 	"BR:",
 	"And I didn’t know I was lost at the time",
 	"Eyes in the sun, road wasn’t wide",
 	"And I went looking for an exit sign",
 	"All I wanted to find her tonight",
-	"",
 	"C: ",
 	"(Break)",
 	"On Allison Road",

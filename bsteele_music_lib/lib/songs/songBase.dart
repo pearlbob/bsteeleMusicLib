@@ -2372,9 +2372,9 @@ class SongBase {
     while (markedString.isNotEmpty) {
       String c = markedString.charAt(0);
 
-      //  absorb leading white space
+      //  absorb leading white space, but allow for blank lines
       if (state == 0) {
-        if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) {
+        if (!(c == ' ' || c == '\t' || c == '\r')) {
           state = 1;
         }
       }
@@ -2384,12 +2384,19 @@ class SongBase {
         try {
           //  try to find the section version marker
           SectionVersion version = SectionVersion.parse(markedString);
-          if (lyricSection != null) _lyricSections.add(lyricSection);
+          if (lyricSection != null) {
+            _lyricSections.add(lyricSection);
+          }
 
           lyricSection = LyricSection();
           lyricSection.setSectionVersion(version);
 
           whiteSpace = ''; //  ignore white space
+          markedString.stripLeadingSpaces();
+          //  consume newline if it's the only thing on the line
+          if ( markedString.charAt(0) == '\n'){
+            markedString.consume(1);
+          }
           state = 1;
           continue;
         } catch (e) {

@@ -187,8 +187,7 @@ void main() {
       a.setBeatsPerMinute(i);
       expect(a.getBeatsPerMinute(), i);
     }
-  }
-  );
+  });
 
   test('testChordSectionEntry', () {
     SongBase a;
@@ -620,11 +619,76 @@ void main() {
     row = grid.getRow(1);
     if (row == null) throw 'row == null';
     logger.d('row: ' + row.toString());
-    expect(1+4+1+1, row.length);
+    expect(1 + 4 + 1 + 1, row.length);
     row = grid.getRow(2);
     if (row == null) throw 'row == null';
     expect(2, row.length);
     expect(grid.get(0, 5), isNull);
+  });
+
+  test('test Songs with blank lyrics lines', () {
+    SongBase a;
+    int beatsPerBar = 4;
+
+    a = SongBase.createSongBase(
+        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'v: D D C G x4 c: C C C C x 2', '''
+v:     
+  
+
+line 2
+line 3
+c:
+c line 0
+c line 1
+      
+c line 3
+v:
+v line 0
+     
+
+c2:
+
+
+    c2 line 2
+''');
+    ;
+    logger.v('<${a.rawLyrics}>');
+
+    for (var ls in a.lyricSections) {
+      logger.v('${ls.sectionVersion.toString()}');
+      var i = 1;
+      for (var line in ls.lyricsLines) {
+        logger.v('    ${i++}: $line');
+      }
+    }
+    expect(a.lyricSections.length, 4);
+
+    var ls = a.lyricSections[0];
+    expect(ls.lyricsLines.length, 4);
+    expect(ls.lyricsLines[0], '');
+    expect(ls.lyricsLines[1], '');
+    expect(ls.lyricsLines[2], 'line 2');
+    expect(ls.lyricsLines[3], 'line 3');
+
+    ls = a.lyricSections[1];
+    expect(ls.lyricsLines.length, 4);
+    expect(ls.lyricsLines[0], 'c line 0');
+    expect(ls.lyricsLines[1], 'c line 1');
+    expect(ls.lyricsLines[2], ''); //  notice that the whitespace was absorbed
+    expect(ls.lyricsLines[3], 'c line 3');
+
+    ls = a.lyricSections[2];
+    expect(ls.lyricsLines.length, 3);
+    expect(ls.lyricsLines[0], 'v line 0');
+    expect(ls.lyricsLines[1], '');
+    expect(ls.lyricsLines[2], '');
+
+    ls = a.lyricSections[3];
+    expect(ls.lyricsLines.length, 4);
+    expect(ls.lyricsLines[0], '');
+    expect(ls.lyricsLines[1], '');
+    expect(ls.lyricsLines[2], 'c2 line 2');
+    expect(ls.lyricsLines[3], '');
   });
 
   test('testOddSongs', () {
