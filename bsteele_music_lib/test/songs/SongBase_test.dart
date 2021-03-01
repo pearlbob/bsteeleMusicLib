@@ -678,10 +678,9 @@ c2:
     expect(ls.lyricsLines[3], 'c line 3');
 
     ls = a.lyricSections[2];
-    expect(ls.lyricsLines.length, 3);
+    expect(ls.lyricsLines.length, 2);
     expect(ls.lyricsLines[0], 'v line 0');
     expect(ls.lyricsLines[1], '');
-    expect(ls.lyricsLines[2], '');
 
     ls = a.lyricSections[3];
     expect(ls.lyricsLines.length, 4);

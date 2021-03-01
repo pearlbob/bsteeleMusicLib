@@ -19,6 +19,14 @@ class LyricSection implements Comparable<LyricSection> {
     _lyricsLines.add(lyricsLine);
   }
 
+  void stripLastEmptyLyricLine(){
+    if( _lyricsLines.isNotEmpty){
+      if ( _lyricsLines.last.isEmpty){
+        _lyricsLines.removeLast();
+      }
+    }
+  }
+
   @override
   String toString() {
     return _sectionVersion.toString();

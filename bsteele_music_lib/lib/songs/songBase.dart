@@ -2392,6 +2392,7 @@ class SongBase {
           //  try to find the section version marker
           SectionVersion version = SectionVersion.parse(markedString);
           if (lyricSection != null) {
+            lyricSection.stripLastEmptyLyricLine();
             _lyricSections.add(lyricSection);
           }
 
