@@ -8,7 +8,7 @@ import 'legacyDrumMeasure.dart';
 /// the special drums for a given section.
 
 @deprecated
-class LegacyDrumSection implements Comparable<LegacyDrumSection>{
+class LegacyDrumSection implements Comparable<LegacyDrumSection> {
   /// Get the section's drum measures
   List<LegacyDrumMeasure>? getDrumMeasures() {
     return drumMeasures;
@@ -19,7 +19,6 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection>{
     this.drumMeasures = drumMeasures;
   }
 
-
   @override
   int compareTo(LegacyDrumSection o) {
     if (!listsEqual(drumMeasures, o.drumMeasures)) {
@@ -29,7 +28,7 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection>{
       if (drumMeasures!.length != o.drumMeasures!.length) {
         return drumMeasures!.length < o.drumMeasures!.length ? -1 : 1;
       }
-      for ( int i =0; i < drumMeasures!.length; i++){
+      for (int i = 0; i < drumMeasures!.length; i++) {
         int ret = drumMeasures![i].compareTo(o.drumMeasures![i]);
         if (ret != 0) return ret;
       }
@@ -42,18 +41,18 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection>{
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && other is LegacyDrumSection &&
+    return runtimeType == other.runtimeType &&
+        other is LegacyDrumSection &&
         listsEqual(drumMeasures, other.drumMeasures);
   }
 
   @override
   int get hashCode {
-    if ( drumMeasures== null ) {
+    if (drumMeasures == null) {
       return 0;
     }
-    return hashObjects(drumMeasures);
+    return hashObjects(drumMeasures ?? []);
   }
 
   List<LegacyDrumMeasure>? drumMeasures;
-
 }

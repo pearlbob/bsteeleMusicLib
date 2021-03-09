@@ -406,8 +406,8 @@ coerced to reflect the songlist's last modification for that song.
           i++;
           String url = args[i];
           logger.d("url: '$url'");
-          List<Song> addSongs = Song.songListFromJson(
-                  utf8.decode(await http.readBytes(url)).replaceAll('": null,', '": "",')) //  cheap repair
+          List<Song> addSongs = Song.songListFromJson( utf8.decode(await http.readBytes(Uri.file(url)))
+                      .replaceAll('": null,', '": "",')) //  cheap repair
               ;
           allSongs.addAll(addSongs);
           break;
@@ -610,7 +610,7 @@ coerced to reflect the songlist's last modification for that song.
     for (String line in input.split('\n')) {
       if (i > 0) {
         List<String> ranking = line.split(_csvLineSplit);
-        if ( ranking[1].isNotEmpty) {
+        if (ranking[1].isNotEmpty) {
           logger.v('$i: ${ranking[0]}, ${ranking[1]}');
           SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[]..add(NameValue('cj', ranking[1]))));
         }
