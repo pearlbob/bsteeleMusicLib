@@ -1,5 +1,8 @@
+import 'package:bsteeleMusicLib/songs/measureRepeatExtension.dart';
+
 import '../appLogger.dart';
 import '../util/util.dart';
+import 'chordSectionLocation.dart';
 import 'measure.dart';
 import 'measureComment.dart';
 import 'measureNode.dart';
@@ -18,7 +21,7 @@ class MeasureRepeat extends Phrase {
   }
 
   static MeasureRepeat parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
-    if ( markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) throw 'no data to parse';
 
     int initialMark = markedString.mark();
 
@@ -67,11 +70,11 @@ class MeasureRepeat extends Phrase {
       int mark = markedString.mark();
       try {
         Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
-        if (!hasBracket &&  measure.endOfRow) {
+        if (!hasBracket && measure.endOfRow) {
           throw 'repeat not found'; //  this is not a repeat!
         }
         priorMeasure = measure;
-          measures.add(measure);
+        measures.add(measure);
         barFound = false;
         continue;
       } catch (e) {
@@ -126,6 +129,80 @@ class MeasureRepeat extends Phrase {
     if (ret != null) return ret;
     if (measureNode == _repeatMarker) return _repeatMarker;
     return null;
+  }
+
+  int repeatAt(int index) {
+    if (index < 0 || index >= measures.length * repeats) {
+      return 0;
+    }
+    return index ~/ measures.length;
+  }
+
+  @override
+  List<Measure> rowAt(int index, {expanded = false}) {
+    var ret = <Measure>[];
+
+    if (measures.isEmpty) {
+      return ret;
+    }
+
+    //  walk through all prior measures //  fixme: efficiency?
+    var repeatRowCount = 0;
+    for (var measure in measures) {
+      if (measure.endOfRow) {
+        repeatRowCount++;
+      } else if (identical(measure, measures.last)) {
+        repeatRowCount++;
+        break; //  redundant
+      }
+    }
+
+    var r = 0;
+    for (var m = 0; m < measureCount * repeats /*  safety only */; m++) {
+      var measure = measureAt(m, expanded: expanded);
+      if (measure == null) {
+        break;
+      }
+      if (r == index) {
+        ret.add(measure);
+      }
+      if (measure.endOfRow || identical(measure, measures.last)) {
+        if (r == index) {
+          var repeatRowNumber = r % repeatRowCount;
+          if (measure == measures.last) {
+            if (repeatRowNumber == 0) {
+              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatOnOneLineRight));
+            } else {
+              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
+            }
+            if (expanded) {
+              ret.add(MeasureRepeatExtension('${r~/repeatRowCount + 1}/$repeats'));
+            } else {
+              ret.add(_repeatMarker);
+            }
+          } else if (repeatRowNumber == 0) {
+            ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatUpperRight));
+          } else {
+            ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatMiddleRight));
+          }
+          return ret;
+        }
+        r++;
+      }
+    }
+
+    return ret;
+  }
+
+  @override
+  Measure? measureAt(int index, {expanded = false}) {
+    if (expanded) {
+      if (index >= measures.length * repeats) {
+        return null;
+      }
+      index %= measures.length;
+    }
+    return super.measureAt(index);
   }
 
   @override
@@ -232,7 +309,10 @@ class MeasureRepeat extends Phrase {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && other is MeasureRepeat && super == (other) && _repeatMarker == other._repeatMarker;
+    return runtimeType == other.runtimeType &&
+        other is MeasureRepeat &&
+        super == (other) &&
+        _repeatMarker == other._repeatMarker;
   }
 
   @override

@@ -379,7 +379,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
     Phrase? measureSequenceItem = _phrases[_phrases.length - 1];
     List<Measure> measures = measureSequenceItem.measures;
-    if ( measures.isEmpty) return measureSequenceItem;
+    if (measures.isEmpty) return measureSequenceItem;
     return measures[measures.length - 1];
   }
 
@@ -514,6 +514,52 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return measureCount;
   }
 
+  List<Measure> rowAt(int index, {expanded = false}) {
+    var ret = <Measure>[];
+
+    //  walk through all prior measures //  fixme: efficiency?
+    var r = 0;
+    for (var phrase in _phrases) {
+      var phraseIndex = 0;
+      for (var m = 0; m < phrase.measureCount + 1000 /*  safety only */; m++) {
+        var row = phrase.rowAt(phraseIndex, expanded: expanded);
+        if ( row.isEmpty ){
+          break;
+        }
+        if ( r == index ){
+          return row;
+        }
+        phraseIndex++;
+        r++;
+      }
+    }
+    return ret;
+  }
+
+  Measure? measureAt(int index, {expanded = false}) {
+    if (expanded) {
+      for (var phrase in _phrases) {
+        var measureCount = phrase.measureCount;
+        if (phrase.getMeasureNodeType() == MeasureNodeType.repeat) {
+          measureCount = phrase.measureCount * (phrase as MeasureRepeat).repeats;
+        }
+        if (index >= measureCount) {
+          index -= measureCount;
+        } else {
+          return phrase.measureAt(index, expanded: expanded);
+        }
+      }
+    } else {
+      for (var phrase in _phrases) {
+        if (index >= phrase.measureCount) {
+          index -= phrase.measureCount;
+        } else {
+          return phrase.measureAt(index);
+        }
+      }
+    }
+  }
+
   Phrase? lastPhrase() {
     if (_phrases.isEmpty) {
       return null;
@@ -553,7 +599,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     int ret = _sectionVersion.compareTo(o._sectionVersion);
     if (ret != 0) return ret;
 
-    if (_phrases.length != o._phrases.length) return _phrases.length < o._phrases.length ? -1 : 1;
+    if (_phrases.length != o._phrases.length) {
+      return _phrases.length < o._phrases.length ? -1 : 1;
+    }
 
     for (int i = 0; i < _phrases.length; i++) {
       ret = _phrases[i].toMarkup().compareTo(o._phrases[i].toMarkup());
@@ -567,7 +615,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (identical(this, other)) {
       return true;
     }
-    if (!(runtimeType == other.runtimeType && other is ChordSection && _sectionVersion == other._sectionVersion && measureCount == other.measureCount)) {
+    if (!(runtimeType == other.runtimeType &&
+        other is ChordSection &&
+        _sectionVersion == other._sectionVersion &&
+        measureCount == other.measureCount)) {
       return false;
     }
     //  deal with empty-ish phrases

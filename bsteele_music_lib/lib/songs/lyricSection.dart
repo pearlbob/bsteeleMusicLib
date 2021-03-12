@@ -9,19 +9,16 @@ import 'sectionVersion.dart';
 /// and the chord changes on a measure basis
 /// with ultimately beat resolution.
 class LyricSection implements Comparable<LyricSection> {
-  /// Get the lyric _sectionVersion's identifier
-  void setSectionVersion(SectionVersion _sectionVersion) {
-    this._sectionVersion = _sectionVersion;
-  }
+  LyricSection(this._sectionVersion, this.index);
 
   void add(String lyricsLine) {
     logger.v('LyricSection.add($lyricsLine)');
     _lyricsLines.add(lyricsLine);
   }
 
-  void stripLastEmptyLyricLine(){
-    if( _lyricsLines.isNotEmpty){
-      if ( _lyricsLines.last.isEmpty){
+  void stripLastEmptyLyricLine() {
+    if (_lyricsLines.isNotEmpty) {
+      if (_lyricsLines.last.isEmpty) {
         _lyricsLines.removeLast();
       }
     }
@@ -107,7 +104,8 @@ class LyricSection implements Comparable<LyricSection> {
   }
 
   SectionVersion get sectionVersion => _sectionVersion;
-  late SectionVersion _sectionVersion;
+  final SectionVersion _sectionVersion;
+  final int index;
   LegacyDrumSection drumSection = LegacyDrumSection();
 
   List<String> get lyricsLines => _lyricsLines;

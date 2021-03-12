@@ -21,11 +21,13 @@ class Phrase extends MeasureNode {
     return _measures.length;
   } //  fixme
 
-  static Phrase parseString(String string, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
+  static Phrase parseString(
+      String string, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(string), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
+  static Phrase parse(MarkedString markedString, int phraseIndex,
+      int beatsPerBar, Measure? priorMeasure) {
     if (markedString.isEmpty) throw 'no data to parse';
 
     List<Measure> measures = [];
@@ -49,7 +51,8 @@ class Phrase extends MeasureNode {
       if (Section.lookahead(markedString)) break;
 
       try {
-        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
+        Measure measure =
+            Measure.parse(markedString, beatsPerBar, priorMeasure);
         priorMeasure = measure;
         lineMeasures.add(measure);
 
@@ -394,6 +397,37 @@ class Phrase extends MeasureNode {
     return _measures[measureIndex];
   }
 
+  List<Measure> rowAt(int index, {expanded = false}) {
+    var ret = <Measure>[];
+
+    //  walk through all prior measures //  fixme: efficiency?
+    var r = 0;
+    for (var m = 0; m < measureCount + 1000 /*  safety only */; m++) {
+      var measure = measureAt(m, expanded: expanded);
+      if (measure == null) {
+        break;
+      }
+      if (r == index) {
+        ret.add(measure);
+      }
+      if (measure.endOfRow) {
+        r++;
+        if (r > index) {
+          return ret;
+        }
+      }
+    }
+
+    return ret;
+  }
+
+  Measure? measureAt(int measureIndex, {expanded = false}) {
+    if (measureIndex < 0 || measureIndex >= _measures.length) {
+      return null;
+    }
+    return _measures[measureIndex];
+  }
+
   /// Delete the first instance of the given measure if it belongs in the sequence item.
   bool delete(Measure measure) {
     if (_measures.isEmpty) return false;
@@ -426,7 +460,7 @@ class Phrase extends MeasureNode {
 
   @override
   bool isEmpty() {
-    return  _measures.isEmpty;
+    return _measures.isEmpty;
   }
 
   @override
@@ -443,7 +477,7 @@ class Phrase extends MeasureNode {
 
   @override
   String toEntry() {
-    if ( _measures.isEmpty) return '[]';
+    if (_measures.isEmpty) return '[]';
 
     StringBuffer sb = StringBuffer();
     for (Measure measure in _measures) {
@@ -486,7 +520,7 @@ class Phrase extends MeasureNode {
 
   /// Get the number of rows in this phrase after gridding.
   int get chordRowCount {
-    if ( _measures.isEmpty) return 0;
+    if (_measures.isEmpty) return 0;
     int chordRowCount = 0;
     for (Measure measure in _measures) {
       chordRowCount += (measure.endOfRow ? 1 : 0);
@@ -499,7 +533,7 @@ class Phrase extends MeasureNode {
 
   @override
   String toJson() {
-    if ( _measures.isEmpty) return ' ';
+    if (_measures.isEmpty) return ' ';
 
     StringBuffer sb = StringBuffer();
     if (_measures.isNotEmpty) {
@@ -573,9 +607,13 @@ class Phrase extends MeasureNode {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType //  distinguish yourself from subclasses
-        && other is Phrase  //  required for the following:
-        && _phraseIndex == other._phraseIndex && listsEqual(_measures, other._measures);
+    return runtimeType ==
+            other.runtimeType //  distinguish yourself from subclasses
+        &&
+        other is Phrase //  required for the following:
+        &&
+        _phraseIndex == other._phraseIndex &&
+        listsEqual(_measures, other._measures);
   }
 
   @override

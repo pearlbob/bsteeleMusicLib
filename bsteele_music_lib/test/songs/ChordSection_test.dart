@@ -330,21 +330,31 @@ void main() {
       expect(4, chordSection.getTotalMoments());
       chordSection = ChordSection.parseString('\n\tI:\n       A B C D\n\n', 4);
       expect(4, chordSection.getTotalMoments());
-      chordSection = ChordSection.parseString('v: A B C D\n'
-          'AbBb/G# Am7 Ebsus4 C7/Bb\n', 4);
+      chordSection = ChordSection.parseString(
+          'v: A B C D\n'
+          'AbBb/G# Am7 Ebsus4 C7/Bb\n',
+          4);
       expect(8, chordSection.getTotalMoments());
-      chordSection = ChordSection.parseString('v: A B C D\n'
-          'AbBb/G# Am7 Ebsus4 C7/Bb x4\n', 4);
+      chordSection = ChordSection.parseString(
+          'v: A B C D\n'
+          'AbBb/G# Am7 Ebsus4 C7/Bb x4\n',
+          4);
       expect(4 + 4 * 4, chordSection.getTotalMoments());
-      chordSection = ChordSection.parseString('v: \n'
-          'AbBb/G# Am7 Ebsus4 C7/Bb x4\n', 4);
+      chordSection = ChordSection.parseString(
+          'v: \n'
+          'AbBb/G# Am7 Ebsus4 C7/Bb x4\n',
+          4);
       expect(4 * 4, chordSection.getTotalMoments());
-      chordSection = ChordSection.parseString('v: A B C D\n\n'
-          'AbBb/G# Am7 Ebsus4 C7/Bb x4\n', 4);
+      chordSection = ChordSection.parseString(
+          'v: A B C D\n\n'
+          'AbBb/G# Am7 Ebsus4 C7/Bb x4\n',
+          4);
       expect(4 + 4 * 4, chordSection.getTotalMoments());
-      chordSection = ChordSection.parseString('v: A B C D\n\n'
+      chordSection = ChordSection.parseString(
+          'v: A B C D\n\n'
           'AbBb/G# Am7 Ebsus4 C7/Bb x4\n'
-           'G F F# E', 4);
+          'G F F# E',
+          4);
       expect(4 + 4 * 4 + 4, chordSection.getTotalMoments());
     }
   });
@@ -353,18 +363,125 @@ void main() {
     {
       ChordSection chordSection1 = ChordSection.parseString('I:       A B C D\n\n', 4);
       ChordSection chordSection2 = ChordSection.parseString('I:       A B C D\n\n', 4);
-      expect( chordSection1 == chordSection1, isTrue);
-      expect( chordSection1 == chordSection2, isTrue);
+      expect(chordSection1 == chordSection1, isTrue);
+      expect(chordSection1 == chordSection2, isTrue);
 
       chordSection2 = ChordSection.parseString('I:A B C D\n', 4);
-      expect( chordSection1 == chordSection2, isTrue);
+      expect(chordSection1 == chordSection2, isTrue);
       chordSection2 = ChordSection.parseString('I:', 4);
-      expect( chordSection1 == chordSection2, isFalse);
+      expect(chordSection1 == chordSection2, isFalse);
       chordSection1 = ChordSection.parseString('I:', 4);
-     expect( chordSection1 == chordSection2, isTrue);
+      expect(chordSection1 == chordSection2, isTrue);
       chordSection2 = ChordSection.parseString('I:[]', 4);
       logger.d('chordSection1: "${chordSection1.toMarkup()}"');
       logger.d('chordSection2: "${chordSection2.toMarkup()}"');
-      expect( chordSection1 == chordSection2, isTrue);
-    }});
+      expect(chordSection1 == chordSection2, isTrue);
+    }
+  });
+
+  test('test ChordSection measureAt', () {
+    {
+      const beatsPerBar = 4;
+      ChordSection chordSection =
+          ChordSection.parseString('I:       A B C D\n[Ab Bb\n Db Eb ]x2\nE F G\n', beatsPerBar);
+      expect(chordSection.measureAt(0), Measure.parseString('A', beatsPerBar));
+      expect(chordSection.measureAt(1), Measure.parseString('B', beatsPerBar));
+      expect(chordSection.measureAt(2), Measure.parseString('C', beatsPerBar));
+      expect(chordSection.measureAt(3), Measure.parseString('D,', beatsPerBar));
+      expect(chordSection.measureAt(7), Measure.parseString('Eb', beatsPerBar));
+      expect(chordSection.measureAt(10), Measure.parseString('G,', beatsPerBar));
+      expect(chordSection.measureAt(11), null);
+      expect(chordSection.measureAt(-3), null);
+
+      expect(chordSection.measureAt(0, expanded: true), Measure.parseString('A', beatsPerBar));
+      expect(chordSection.measureAt(1, expanded: true), Measure.parseString('B', beatsPerBar));
+      expect(chordSection.measureAt(2, expanded: true), Measure.parseString('C', beatsPerBar));
+      expect(chordSection.measureAt(3, expanded: true), Measure.parseString('D,', beatsPerBar));
+      expect(chordSection.measureAt(4, expanded: true), Measure.parseString('Ab', beatsPerBar));
+      expect(chordSection.measureAt(5, expanded: true), Measure.parseString('Bb,', beatsPerBar));
+      expect(chordSection.measureAt(7, expanded: true), Measure.parseString('Eb', beatsPerBar));
+      expect(chordSection.measureAt(10, expanded: true), Measure.parseString('Db', beatsPerBar));
+      expect(chordSection.measureAt(11, expanded: true), Measure.parseString('Eb', beatsPerBar));
+      expect(chordSection.measureAt(12, expanded: true), Measure.parseString('E', beatsPerBar));
+      expect(chordSection.measureAt(14, expanded: true), Measure.parseString('G,', beatsPerBar));
+      expect(chordSection.measureAt(15, expanded: true), null);
+    }
+  });
+
+  test('test ChordSection rowAt', () {
+    {
+      const beatsPerBar = 4;
+      ChordSection chordSection = ChordSection.parseString(
+          'I:'
+          '       A B C D\n'
+          '[Ab Bb\n Db Eb ]x2\n'
+          '[  D C G G  ]x3\n'
+          'C G E E x3\n'
+          '[A\n B\n D\n E\n ]x3\n'
+          'A G F E x3\n'
+          'E F G\n',
+          beatsPerBar);
+
+      if (Logger.level.index <= Level.debug.index) {
+        //  generate tests:
+        for (var i = 0; i < 100; i++) {
+          var row = chordSection.rowAt(i);
+          if (row.isEmpty) {
+            break;
+          }
+          logger.i('expect(chordSection.rowAt($i).toString(), \'$row\');');
+        }
+
+        logger.d('\nexpanded:');
+        var expanded = true;
+        for (var i = 0; i < 100; i++) {
+          var row = chordSection.rowAt(i, expanded: expanded);
+          if (row.isEmpty) {
+            break;
+          }
+          logger.i('expect(chordSection.rowAt($i, expanded: $expanded).toString(), \'$row\');');
+        }
+      }
+
+      //  generated from above
+      expect(chordSection.rowAt(0).toString(), '[A, B, C, D,]');
+      expect(chordSection.rowAt(1).toString(), '[Ab, Bb,, ⎤]');
+      expect(chordSection.rowAt(2).toString(), '[Db, Eb, ⎦, x2]');
+      expect(chordSection.rowAt(3).toString(), '[D, C, G, G, ], x3]');
+      expect(chordSection.rowAt(4).toString(), '[C, G, E, E, ], x3]');
+      expect(chordSection.rowAt(5).toString(), '[A,, ⎤]');
+      expect(chordSection.rowAt(6).toString(), '[B,, ⎥]');
+      expect(chordSection.rowAt(7).toString(), '[D,, ⎥]');
+      expect(chordSection.rowAt(8).toString(), '[E, ⎦, x3]');
+      expect(chordSection.rowAt(9).toString(), '[A, G, F, E, ], x3]');
+      expect(chordSection.rowAt(10).toString(), '[E, F, G,]');
+      expect(chordSection.rowAt(0, expanded: true).toString(), '[A, B, C, D,]');
+      expect(chordSection.rowAt(1, expanded: true).toString(), '[Ab, Bb,, ⎤]');
+      expect(chordSection.rowAt(2, expanded: true).toString(), '[Db, Eb, ⎦, 1/2]');
+      expect(chordSection.rowAt(3, expanded: true).toString(), '[Ab, Bb,, ⎤]');
+      expect(chordSection.rowAt(4, expanded: true).toString(), '[Db, Eb, ⎦, 2/2]');
+      expect(chordSection.rowAt(5, expanded: true).toString(), '[D, C, G, G, ], 1/3]');
+      expect(chordSection.rowAt(6, expanded: true).toString(), '[D, C, G, G, ], 2/3]');
+      expect(chordSection.rowAt(7, expanded: true).toString(), '[D, C, G, G, ], 3/3]');
+      expect(chordSection.rowAt(8, expanded: true).toString(), '[C, G, E, E, ], 1/3]');
+      expect(chordSection.rowAt(9, expanded: true).toString(), '[C, G, E, E, ], 2/3]');
+      expect(chordSection.rowAt(10, expanded: true).toString(), '[C, G, E, E, ], 3/3]');
+      expect(chordSection.rowAt(11, expanded: true).toString(), '[A,, ⎤]');
+      expect(chordSection.rowAt(12, expanded: true).toString(), '[B,, ⎥]');
+      expect(chordSection.rowAt(13, expanded: true).toString(), '[D,, ⎥]');
+      expect(chordSection.rowAt(14, expanded: true).toString(), '[E, ⎦, 1/3]');
+      expect(chordSection.rowAt(15, expanded: true).toString(), '[A,, ⎤]');
+      expect(chordSection.rowAt(16, expanded: true).toString(), '[B,, ⎥]');
+      expect(chordSection.rowAt(17, expanded: true).toString(), '[D,, ⎥]');
+      expect(chordSection.rowAt(18, expanded: true).toString(), '[E, ⎦, 2/3]');
+      expect(chordSection.rowAt(19, expanded: true).toString(), '[A,, ⎤]');
+      expect(chordSection.rowAt(20, expanded: true).toString(), '[B,, ⎥]');
+      expect(chordSection.rowAt(21, expanded: true).toString(), '[D,, ⎥]');
+      expect(chordSection.rowAt(22, expanded: true).toString(), '[E, ⎦, 3/3]');
+      expect(chordSection.rowAt(23, expanded: true).toString(), '[A, G, F, E, ], 1/3]');
+      expect(chordSection.rowAt(24, expanded: true).toString(), '[A, G, F, E, ], 2/3]');
+      expect(chordSection.rowAt(25, expanded: true).toString(), '[A, G, F, E, ], 3/3]');
+      expect(chordSection.rowAt(26, expanded: true).toString(), '[E, F, G,]');
+    }
+  });
 }

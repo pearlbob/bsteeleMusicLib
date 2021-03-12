@@ -1442,4 +1442,38 @@ o: end here''');
     expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c2:', beatsPerBar)), isNull);
     expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('o:', beatsPerBar)).toString(), 'O:0:4');
   });
+
+  test('test in song, chordSection.measureAt', () {
+    int beatsPerBar = 4;
+    SongBase a;
+
+    //  see that section identifiers are on first phrase row
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    var lyricSections = a.lyricSections;
+    var chordSection = a.getChordSection(lyricSections[1].sectionVersion);
+    expect(chordSection?.sectionVersion, SectionVersion.parseString('v:'));
+
+    expect(chordSection?.measureAt(0, expanded: false), Measure.parseString('Am', beatsPerBar));
+    expect(chordSection?.measureAt(3), Measure.parseString('FE', beatsPerBar));
+    expect(chordSection?.measureAt(4), isNull);
+    expect(chordSection?.measureAt(0, expanded: true), Measure.parseString('Am', beatsPerBar));
+    expect(chordSection?.measureAt(1, expanded: true), Measure.parseString('Am/G,', beatsPerBar));
+    expect(chordSection?.measureAt(3, expanded: true), Measure.parseString('FE', beatsPerBar));
+    expect(chordSection?.measureAt(4, expanded: true), Measure.parseString('Am', beatsPerBar));
+    expect(chordSection?.measureAt(6, expanded: true), Measure.parseString('Am/F♯', beatsPerBar));
+    expect(chordSection?.measureAt(7, expanded: true), Measure.parseString('FE', beatsPerBar));
+
+    chordSection = a.getChordSection(lyricSections[3].sectionVersion);
+    expect(chordSection?.measureAt(0, expanded: false), Measure.parseString('F', beatsPerBar));
+    expect(chordSection?.measureAt(7), Measure.parseString('F', beatsPerBar));
+  });
 }

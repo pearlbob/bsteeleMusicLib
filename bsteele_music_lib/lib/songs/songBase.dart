@@ -857,10 +857,6 @@ class SongBase {
     }
   }
 
-  void calcChordMaps() {
-    getChordSectionLocationGrid(); //  use location grid to force them all in lazy eval
-  }
-
   HashMap<GridCoordinate, ChordSectionLocation> _getGridCoordinateChordSectionLocationMap() {
     getChordSectionLocationGrid();
     return _gridCoordinateChordSectionLocationMap;
@@ -2390,14 +2386,13 @@ class SongBase {
       if (state == 1) {
         try {
           //  try to find the section version marker
-          SectionVersion version = SectionVersion.parse(markedString);
+          SectionVersion sectionVersion = SectionVersion.parse(markedString);
           if (lyricSection != null) {
             lyricSection.stripLastEmptyLyricLine();
             _lyricSections.add(lyricSection);
           }
 
-          lyricSection = LyricSection();
-          lyricSection.setSectionVersion(version);
+          lyricSection = LyricSection(sectionVersion, _lyricSections.length);
 
           whiteSpace = ''; //  ignore white space
           markedString.stripLeadingSpaces();
@@ -2424,11 +2419,7 @@ class SongBase {
             break;
           case '\n':
           case '\r':
-            if (lyricSection == null) {
-              //  oops, an old unformatted song, force a lyrics section
-              lyricSection = LyricSection();
-              lyricSection.setSectionVersion(Section.getDefaultVersion());
-            }
+            lyricSection ??= LyricSection(Section.getDefaultVersion(), _lyricSections.length);
             lyricSection.add(lyricsBuffer.toString());
             lyricsBuffer = StringBuffer();
             whiteSpace = ''; //  ignore trailing white space
@@ -2463,7 +2454,8 @@ class SongBase {
   String logGrid() {
     StringBuffer sb = StringBuffer('\n');
 
-    calcChordMaps(); //  avoid ConcurrentModificationException
+    getChordSectionLocationGrid(); //  use location grid to force them all in lazy eval
+    //  avoid ConcurrentModificationException
     for (int r = 0; r < getChordSectionLocationGrid().getRowCount(); r++) {
       List<ChordSectionLocation?>? row = chordSectionLocationGrid.getRow(r);
       if (row == null) continue;

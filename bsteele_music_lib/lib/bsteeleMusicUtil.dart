@@ -14,7 +14,7 @@ import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
-import 'package:string_similarity/string_similarity.dart';
+//import 'package:string_similarity/string_similarity.dart';
 
 import 'appLogger.dart';
 
@@ -43,7 +43,7 @@ arguments:
 -h                  this help message
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
--similar            list similar titled/artist songs
+
 -url {url}          read the given url into the utility's allSongs list
 -v                  verbose output utility's allSongs list
 -V                  very verbose output
@@ -57,6 +57,7 @@ note: the modification date and time of the songlyrics file will be
 coerced to reflect the songlist's last modification for that song.
 ''');
   }
+  //-similar            list similar titled/artist songs
 
   /// A workaround to call the unix touch command to modify the
   /// read song's file to reflect it's last modification date in the song list.
@@ -317,46 +318,47 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-similar':
-          {
-            Map<String, Song> map = {};
-            for (Song song in allSongs) {
-              map[song.songId.songId] = song;
-            }
-            List<String> keys = [];
-
-            keys.addAll(map.keys);
-            List<String> listed = [];
-            for (Song song in allSongs) {
-              if (listed.contains(song.songId.songId)) {
-                continue;
-              }
-              BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
-
-              SplayTreeSet<Rating> ratingsOrdered = SplayTreeSet((Rating rating1, Rating rating2) {
-                if (rating1.rating == rating2.rating) {
-                  return 0;
-                }
-                return rating1.rating < rating2.rating ? 1 : -1;
-              });
-              ratingsOrdered.addAll(bestMatch.ratings);
-
-              for (Rating rating in ratingsOrdered) {
-                if (rating.rating >= 1.0) {
-                  continue;
-                }
-                if (rating.rating >= 0.8) {
-                  print('"${song.title.toString()}" by ${song.artist.toString()}');
-                  Song? similar = map[rating.target];
-                  if (similar != null) {
-                    print('"${similar.title.toString()}" by ${similar.artist.toString()}');
-                    print(' ');
-                  }
-                  listed.add(rating.target);
-                }
-                break;
-              }
-            }
-          }
+          logger.e('fix -similar');
+          // {
+          //   Map<String, Song> map = {};
+          //   for (Song song in allSongs) {
+          //     map[song.songId.songId] = song;
+          //   }
+          //   List<String> keys = [];
+          //
+          //   keys.addAll(map.keys);
+          //   List<String> listed = [];
+          //   for (Song song in allSongs) {
+          //     if (listed.contains(song.songId.songId)) {
+          //       continue;
+          //     }
+          //     BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
+          //
+          //     SplayTreeSet<Rating> ratingsOrdered = SplayTreeSet((Rating rating1, Rating rating2) {
+          //       if (rating1.rating == rating2.rating) {
+          //         return 0;
+          //       }
+          //       return rating1.rating < rating2.rating ? 1 : -1;
+          //     });
+          //     ratingsOrdered.addAll(bestMatch.ratings);
+          //
+          //     for (Rating rating in ratingsOrdered) {
+          //       if (rating.rating >= 1.0) {
+          //         continue;
+          //       }
+          //       if (rating.rating >= 0.8) {
+          //         print('"${song.title.toString()}" by ${song.artist.toString()}');
+          //         Song? similar = map[rating.target];
+          //         if (similar != null) {
+          //           print('"${similar.title.toString()}" by ${similar.artist.toString()}');
+          //           print(' ');
+          //         }
+          //         listed.add(rating.target);
+          //       }
+          //       break;
+          //     }
+          //   }
+          // }
           break;
 
         case '-test':
