@@ -408,7 +408,11 @@ coerced to reflect the songlist's last modification for that song.
           i++;
           String url = args[i];
           logger.d("url: '$url'");
-          List<Song> addSongs = Song.songListFromJson( utf8.decode(await http.readBytes(Uri.file(url)))
+          var authority = url.replaceAll('http://', '');
+          var path = authority.replaceAll( RegExp(r'^[.\w]*/', caseSensitive: false), '');
+          authority = url.replaceAll(RegExp(r'\/.*'), '');
+          logger.d( 'authority: <$authority>, path: <$path>');
+          List<Song> addSongs = Song.songListFromJson( utf8.decode(await http.readBytes(Uri.http(authority,path)))
                       .replaceAll('": null,', '": "",')) //  cheap repair
               ;
           allSongs.addAll(addSongs);
