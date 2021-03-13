@@ -162,7 +162,7 @@ void main() {
     ChordSectionLocation? chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     logger.i(a.logGrid());
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
 
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
@@ -276,7 +276,7 @@ void main() {
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
     expect(chordSectionLocation, isNotNull);
     logger.i(chordSectionLocation);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
@@ -521,12 +521,52 @@ void main() {
 
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
+  });
+
+  test('test repeat chord rows', () {
+    int beatsPerBar = 4;
+    var expanded = true;
+    var m;
+
+    m = MeasureRepeat.parseString('[A B C D, E F G, D C G G ] x2', 0, beatsPerBar, null);
+    expect(m.chordRowMaxLength(), 6);
+    expanded = false;
+    expect(m.rowAt(0, expanded: expanded).length, 5);
+    expect(m.rowAt(1, expanded: expanded).length, 5);
+    expect(m.rowAt(2, expanded: expanded).length, 6);
+    expect(m.rowAt(3, expanded: expanded).length, 0);
+
+    m = MeasureRepeat.parseString('[A B C D, E F G, D C G G ] x2', 0, beatsPerBar, null);
+    expect(m.chordRowMaxLength(), 6);
+    expanded = true;
+    expect(m.rowAt(0, expanded: expanded).length, 5);
+    expect(m.rowAt(1, expanded: expanded).length, 5);
+    expect(m.rowAt(2, expanded: expanded).length, 6);
+    expect(m.rowAt(3, expanded: expanded).length, 5);
+    expect(m.rowAt(4, expanded: expanded).length, 5);
+    expect(m.rowAt(5, expanded: expanded).length, 6);
+    expect(m.rowAt(6, expanded: expanded).length, 0);
+
+    m = MeasureRepeat.parseString('[A B C D, E F G ] x2', 0, beatsPerBar, null);
+    expect(m.chordRowMaxLength(), 6);
+    expanded = true;
+    expect(m.rowAt(0, expanded: expanded).length, 5);
+    expect(m.rowAt(1, expanded: expanded).length, 6);
+    expect(m.rowAt(2, expanded: expanded).length, 5);
+    expect(m.rowAt(3, expanded: expanded).length, 6);
+
+    m = MeasureRepeat.parseString('[A B C D ] x2', 0, beatsPerBar, null);
+    expect(m.chordRowMaxLength(), 6);
+    expanded = true;
+    expect(m.rowAt(0, expanded: expanded).length, 6);
+    expect(m.rowAt(1, expanded: expanded).length, 6);
+    expect(m.rowAt(2, expanded: expanded).length, 0);
   });
 }

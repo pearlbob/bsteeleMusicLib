@@ -139,6 +139,14 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
+  int chordRowMaxLength() {
+    //  include the row markers
+    return super.chordRowMaxLength() + 2;
+  }
+
+  @override
+
+  /// get a display row at the index, including the repeat markers
   List<Measure> rowAt(int index, {expanded = false}) {
     var ret = <Measure>[];
 
@@ -156,6 +164,7 @@ class MeasureRepeat extends Phrase {
         break; //  redundant
       }
     }
+    int chordRowMaxLength = super.chordRowMaxLength();
 
     var r = 0;
     for (var m = 0; m < measureCount * repeats /*  safety only */; m++) {
@@ -168,6 +177,12 @@ class MeasureRepeat extends Phrase {
       }
       if (measure.endOfRow || identical(measure, measures.last)) {
         if (r == index) {
+          //  fill a short row
+          while (ret.length < chordRowMaxLength) {
+            ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.none));
+          }
+
+          //  place repeat markers
           var repeatRowNumber = r % repeatRowCount;
           if (measure == measures.last) {
             if (repeatRowNumber == 0) {
@@ -176,7 +191,7 @@ class MeasureRepeat extends Phrase {
               ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
             }
             if (expanded) {
-              ret.add(MeasureRepeatExtension('${r~/repeatRowCount + 1}/$repeats'));
+              ret.add(MeasureRepeatExtension('${r ~/ repeatRowCount + 1}/$repeats'));
             } else {
               ret.add(_repeatMarker);
             }

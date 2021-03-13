@@ -1476,4 +1476,60 @@ o: end here''');
     expect(chordSection?.measureAt(0, expanded: false), Measure.parseString('F', beatsPerBar));
     expect(chordSection?.measureAt(7), Measure.parseString('F', beatsPerBar));
   });
+
+  test('test in song, chordRowMaxLength', () {
+    int beatsPerBar = 4;
+    SongBase a;
+
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: Am Am/G  v: Am Am/G, Am/F♯ FE   C: F F   O: Dm C\n A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+
+    expect(a.chordRowMaxLength(), 2);
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: Am Am/G Am/F♯ FE   v: Am Am/G, Am/F♯ FE   C: F F   O: Dm C B B♭, A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+
+    expect(a.chordRowMaxLength(), 4);
+
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F   O: Dm C B B♭, A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+
+    expect(a.chordRowMaxLength(), 6);
+
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+
+    expect(a.chordRowMaxLength(), 8);
+  });
 }

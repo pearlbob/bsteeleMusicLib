@@ -397,6 +397,41 @@ class Phrase extends MeasureNode {
     return _measures[measureIndex];
   }
 
+  ///  maximum number of measures in a chord row
+  int chordRowMaxLength() {
+    //  walk through all prior measures //  fixme: efficiency?
+    var maxLength = 0;
+    var length = 0;
+    for (var m = 0; m < measureCount + 1000 /*  safety only */; m++) {
+      var measure = measureAt(m);
+      if (measure == null) {
+        break;
+      }
+      //  note: these measures do not include the repeat markers
+      length++;
+      if (measure.endOfRow || identical(measure, measures.last)) {
+        maxLength = max(maxLength, length);
+        length=0;
+      }
+    }
+    return maxLength;
+  }
+
+  int rowCount({expanded = false}) {
+    //  walk through all prior measures //  fixme: efficiency?
+    var r = 0;
+    for (var m = 0; m < measureCount + 1000 /*  safety only */; m++) {
+      var measure = measureAt(m, expanded: expanded);
+      if (measure == null) {
+        break;
+      }
+      if (measure.endOfRow || identical(measure, measures.last)) {
+        r++;
+      }
+    }
+    return r;
+  }
+
   List<Measure> rowAt(int index, {expanded = false}) {
     var ret = <Measure>[];
 

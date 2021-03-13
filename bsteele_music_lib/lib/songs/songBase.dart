@@ -3106,6 +3106,15 @@ class SongBase {
     return null;
   }
 
+  ///  maximum number of measures in any chord row
+  int chordRowMaxLength() {
+    var ret = 0;
+    for (var chordSection in getChordSections()) {
+      ret = max(ret, chordSection.chordRowMaxLength());
+    }
+    return ret;
+  }
+
   int rowBeats(int rowIndex) {
     int ret = 0;
     SongMoment? songMoment = getFirstSongMomentAtRow(rowIndex);

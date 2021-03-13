@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -514,6 +516,23 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return measureCount;
   }
 
+  ///  maximum number of measures in a chord row
+  int chordRowMaxLength() {
+    var ret = 0;
+    for (var phrase in _phrases) {
+      ret = max(ret, phrase.chordRowMaxLength());
+    }
+    return ret;
+  }
+
+  int rowCount({expanded = false}) {
+    var ret = 0;
+    for (var phrase in _phrases) {
+      ret += phrase.rowCount(expanded: expanded);
+    }
+    return ret;
+  }
+
   List<Measure> rowAt(int index, {expanded = false}) {
     var ret = <Measure>[];
 
@@ -523,10 +542,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       var phraseIndex = 0;
       for (var m = 0; m < phrase.measureCount + 1000 /*  safety only */; m++) {
         var row = phrase.rowAt(phraseIndex, expanded: expanded);
-        if ( row.isEmpty ){
+        if (row.isEmpty) {
           break;
         }
-        if ( r == index ){
+        if (r == index) {
           return row;
         }
         phraseIndex++;

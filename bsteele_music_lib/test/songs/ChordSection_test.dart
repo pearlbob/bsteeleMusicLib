@@ -443,6 +443,12 @@ void main() {
         }
       }
 
+      expect(chordSection.chordRowMaxLength(), 6);
+
+      expect(chordSection.rowCount(), 11);
+      expect(chordSection.rowCount(expanded: false), 11);
+      expect(chordSection.rowCount(expanded: true), 27);
+
       //  generated from above
       expect(chordSection.rowAt(0).toString(), '[A, B, C, D,]');
       expect(chordSection.rowAt(1).toString(), '[Ab, Bb,, ⎤]');
@@ -482,6 +488,39 @@ void main() {
       expect(chordSection.rowAt(24, expanded: true).toString(), '[A, G, F, E, ], 2/3]');
       expect(chordSection.rowAt(25, expanded: true).toString(), '[A, G, F, E, ], 3/3]');
       expect(chordSection.rowAt(26, expanded: true).toString(), '[E, F, G,]');
+    }
+  });
+
+  test('test ChordSection chordRowMaxLength', () {
+    {
+      var chordSection = ChordSection.parseString(
+          'I:'
+          'A B C D E F G G#\n'
+          'A B C D \n'
+          'A B \n',
+          beatsPerBar);
+      expect(chordSection.chordRowMaxLength(), 8);
+      chordSection = ChordSection.parseString(
+          'I:'
+          'A B \n'
+          'A B C D \n'
+          'A B C D E F G G#\n',
+          beatsPerBar);
+      expect(chordSection.chordRowMaxLength(), 8);
+      chordSection = ChordSection.parseString(
+          'I:'
+          'A B \n'
+          'A B C D \n'
+          'A B C D E F G G# x2\n',
+          beatsPerBar);
+      expect(chordSection.chordRowMaxLength(), 10);
+      chordSection = ChordSection.parseString(
+          'I:'
+          'A B \n'
+          'A B C D \n'
+          'A B C D E F G G# A# Bb x2\n',
+          beatsPerBar);
+      expect(chordSection.chordRowMaxLength(), 12); //  fixme?
     }
   });
 }
