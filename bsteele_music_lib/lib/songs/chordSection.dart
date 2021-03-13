@@ -416,6 +416,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return sb.toString();
   }
 
+
   String phrasesToMarkup() {
     if (isEmpty()) {
       return '[] ';
@@ -426,6 +427,27 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
     return sb.toString();
   }
+
+  @override
+  String toMarkupWithoutEnd() {
+    StringBuffer sb = StringBuffer();
+    sb.write(sectionVersion.toString());
+    sb.write(' ');
+    sb.write(phrasesToMarkup());
+    return sb.toString();
+  }
+
+  String phrasesToMarkupWithoutEnd() {
+    if (isEmpty()) {
+      return '[] ';
+    }
+    StringBuffer sb = StringBuffer();
+    for (Phrase phrase in _phrases) {
+      sb.write(phrase.toMarkupWithoutEnd());
+    }
+    return sb.toString();
+  }
+
 
   @override
   String toEntry() {

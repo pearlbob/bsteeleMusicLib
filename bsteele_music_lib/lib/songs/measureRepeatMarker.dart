@@ -36,6 +36,12 @@ class MeasureRepeatMarker extends Measure {
   }
 
   @override
+  String toMarkupWithoutEnd() {
+    return toString();
+  }
+
+
+  @override
   bool operator ==(other) {
     if (identical(this, other)) {
       return true;

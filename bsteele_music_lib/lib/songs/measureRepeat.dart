@@ -271,6 +271,11 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
+  String toMarkupWithoutEnd() {
+    return '[' + (measures.isEmpty ? '' : super.toMarkupWithoutEnd()) + '] x' + repeats.toString() + ' ';
+  }
+
+  @override
   String toEntry() {
     return '[' + (measures.isEmpty ? '' : super.toEntry()) + '] x' + repeats.toString() + '\n ';
   }

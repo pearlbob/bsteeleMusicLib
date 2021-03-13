@@ -46,6 +46,11 @@ class MeasureRepeatExtension extends MeasureComment {
   }
 
   @override
+  String toMarkupWithoutEnd() {
+    return markerString;
+  }
+
+  @override
   bool isRepeat() {
     return true;
   }

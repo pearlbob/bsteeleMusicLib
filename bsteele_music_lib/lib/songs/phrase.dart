@@ -511,6 +511,18 @@ class Phrase extends MeasureNode {
   }
 
   @override
+  String toMarkupWithoutEnd() {
+    if (_measures.isEmpty) return '[]';
+
+    StringBuffer sb = StringBuffer();
+    for (Measure measure in _measures) {
+      sb.write(measure.toMarkupWithoutEnd());
+      sb.write(' ');
+    }
+    return sb.toString();
+  }
+
+  @override
   String toEntry() {
     if (_measures.isEmpty) return '[]';
 

@@ -52,6 +52,9 @@ abstract class MeasureNode {
   /// Represent the measure node to the user in a string form and from storage encoding.
   String toMarkup();
 
+  /// Represent the measure node to the user in a display string for presentation
+  String toMarkupWithoutEnd();
+
   /// Represent the measure node to the user in a string form and entry ready.
   String toEntry();
 

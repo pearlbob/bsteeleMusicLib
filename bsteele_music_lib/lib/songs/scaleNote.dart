@@ -214,7 +214,9 @@ class ScaleNote implements Comparable<ScaleNote> {
   }
 
   ScaleNote transpose(Key key, int steps) {
-    if (getEnum() == ScaleNoteEnum.X) return get(ScaleNoteEnum.X);
+    if (getEnum() == ScaleNoteEnum.X) {
+      return get(ScaleNoteEnum.X);
+    }
     return key.getScaleNoteByHalfStep(halfStep + steps);
   }
 

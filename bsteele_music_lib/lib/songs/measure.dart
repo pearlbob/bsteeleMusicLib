@@ -247,6 +247,11 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return toMarkupWithEnd(null);
   }
 
+  @override
+  String toMarkupWithoutEnd() {
+    return toMarkupWithEnd(null);
+  }
+
   String toMarkupWithEnd(String? endOfRowChar) {
     if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
