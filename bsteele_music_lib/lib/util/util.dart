@@ -34,6 +34,13 @@ class Util {
 
   /// capitalize the first character
   static String firstToUpper(String s) => s[0].toUpperCase() + s.substring(1);
+
+  static String camelCaseToLowercaseSpace(String s) {
+    return s.replaceAllMapped(_singleCapRegExp, (Match match) {
+      return ' ${match.group(1)!.toLowerCase()}';
+    }).trimLeft();
+  }
+  static final  _singleCapRegExp = RegExp(r'([A-Z])');
 }
 
 /// A String with a marked location to be used in parsing.
