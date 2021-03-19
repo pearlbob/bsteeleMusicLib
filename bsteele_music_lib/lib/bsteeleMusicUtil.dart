@@ -14,7 +14,7 @@ import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
-//import 'package:string_similarity/string_similarity.dart';
+import 'package:string_similarity/string_similarity.dart';
 
 import 'appLogger.dart';
 
@@ -57,6 +57,7 @@ note: the modification date and time of the songlyrics file will be
 coerced to reflect the songlist's last modification for that song.
 ''');
   }
+
   //-similar            list similar titled/artist songs
 
   /// A workaround to call the unix touch command to modify the
@@ -319,46 +320,49 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-similar':
           logger.e('fix -similar');
-          // {
-          //   Map<String, Song> map = {};
-          //   for (Song song in allSongs) {
-          //     map[song.songId.songId] = song;
-          //   }
-          //   List<String> keys = [];
-          //
-          //   keys.addAll(map.keys);
-          //   List<String> listed = [];
-          //   for (Song song in allSongs) {
-          //     if (listed.contains(song.songId.songId)) {
-          //       continue;
-          //     }
-          //     BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
-          //
-          //     SplayTreeSet<Rating> ratingsOrdered = SplayTreeSet((Rating rating1, Rating rating2) {
-          //       if (rating1.rating == rating2.rating) {
-          //         return 0;
-          //       }
-          //       return rating1.rating < rating2.rating ? 1 : -1;
-          //     });
-          //     ratingsOrdered.addAll(bestMatch.ratings);
-          //
-          //     for (Rating rating in ratingsOrdered) {
-          //       if (rating.rating >= 1.0) {
-          //         continue;
-          //       }
-          //       if (rating.rating >= 0.8) {
-          //         print('"${song.title.toString()}" by ${song.artist.toString()}');
-          //         Song? similar = map[rating.target];
-          //         if (similar != null) {
-          //           print('"${similar.title.toString()}" by ${similar.artist.toString()}');
-          //           print(' ');
-          //         }
-          //         listed.add(rating.target);
-          //       }
-          //       break;
-          //     }
-          //   }
-          // }
+          {
+            Map<String, Song> map = {};
+            for (Song song in allSongs) {
+              map[song.songId.songId] = song;
+            }
+            List<String> keys = [];
+
+            keys.addAll(map.keys);
+            List<String> listed = [];
+            for (Song song in allSongs) {
+              if (listed.contains(song.songId.songId)) {
+                continue;
+              }
+              BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
+
+              SplayTreeSet<Rating> ratingsOrdered = SplayTreeSet((Rating rating1, Rating rating2) {
+                var r1 = rating1.rating ?? 0;
+                var r2 = rating2.rating ?? 0;
+                if (r1 == r2) {
+                  return 0;
+                }
+                return r1 < r2 ? 1 : -1;
+              });
+              ratingsOrdered.addAll(bestMatch.ratings);
+
+              for (Rating rating in ratingsOrdered) {
+                var r = rating.rating ?? 0;
+                if (r >= 1.0) {
+                  continue;
+                }
+                if (r >= 0.8) {
+                  print('"${song.title.toString()}" by ${song.artist.toString()}');
+                  Song? similar = map[rating.target];
+                  if (similar != null) {
+                    print('"${similar.title.toString()}" by ${similar.artist.toString()}');
+                    print(' ');
+                  }
+                  listed.add(rating.target ?? 'null');
+                }
+                break;
+              }
+            }
+          }
           break;
 
         case '-test':
@@ -409,11 +413,12 @@ coerced to reflect the songlist's last modification for that song.
           String url = args[i];
           logger.d("url: '$url'");
           var authority = url.replaceAll('http://', '');
-          var path = authority.replaceAll( RegExp(r'^[.\w]*/', caseSensitive: false), '');
+          var path = authority.replaceAll(RegExp(r'^[.\w]*/', caseSensitive: false), '');
           authority = url.replaceAll(RegExp(r'\/.*'), '');
-          logger.d( 'authority: <$authority>, path: <$path>');
-          List<Song> addSongs = Song.songListFromJson( utf8.decode(await http.readBytes(Uri.http(authority,path)))
-                      .replaceAll('": null,', '": "",')) //  cheap repair
+          logger.d('authority: <$authority>, path: <$path>');
+          List<Song> addSongs = Song.songListFromJson(utf8
+                  .decode(await http.readBytes(Uri.http(authority, path)))
+                  .replaceAll('": null,', '": "",')) //  cheap repair
               ;
           allSongs.addAll(addSongs);
           break;
