@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:bsteeleMusicLib/songs/timeSignature.dart';
+
 import '../util/util.dart';
 import 'chordSectionLocation.dart';
 import 'key.dart';
@@ -47,8 +49,7 @@ class Song extends SongBase implements Comparable<Song> {
     song.setCopyright(copyright);
     song.setKey(key);
     song.setBeatsPerMinute(bpm);
-    song.setBeatsPerBar(beatsPerBar);
-    song.setUnitsPerMeasure(unitsPerMeasure);
+    song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setUser(user);
     song.setChords(chords);
     song.setRawLyrics(lyrics);
@@ -222,16 +223,14 @@ class Song extends SongBase implements Comparable<Song> {
           break;
         case 'timeSignature':
           //  most of this is coping with real old events with poor formatting
-          String timeSignature = jsonSong[name];
-          RegExpMatch? mr = _timeSignatureExp.firstMatch(timeSignature);
+          String timeSignatureString = jsonSong[name];
+          RegExpMatch? mr = _timeSignatureExp.firstMatch(timeSignatureString);
           if (mr != null) {
             // parse
-            song.setBeatsPerBar(int.parse(mr.group(1)!));
-            song.setUnitsPerMeasure(int.parse(mr.group(2)!));
+            song.timeSignature = TimeSignature(int.parse(mr.group(1)!), int.parse(mr.group(2)!));
           } else {
             //  safe default
-            song.setBeatsPerBar(4);
-            song.setUnitsPerMeasure(4);
+            song.timeSignature = TimeSignature.defaultTimeSignature;
           }
           break;
         case 'chords':

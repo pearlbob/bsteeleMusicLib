@@ -265,7 +265,7 @@ coerced to reflect the songlist's last modification for that song.
                 if (lastChordSection.phrases.length == 1 && lastChordSection.phrases[0].isRepeat()) {
                   bars = lastChordSection.phrases[0].measures.length;
                 }
-                ninjams[song] = song.beatsPerBar * bars;
+                ninjams[song] = song.timeSignature.beatsPerBar * bars;
               }
             }
 

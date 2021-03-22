@@ -99,7 +99,7 @@ class MusicXml {
 ''');
 
     {
-      int beats = song.beatsPerBar;
+      int beats = song.timeSignature.beatsPerBar;
       Pitch lowRoot = Pitch.get(PitchEnum.E2); //  bass staff
       lowRoot = key.mappedPitch(lowRoot); // required once only
       Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff

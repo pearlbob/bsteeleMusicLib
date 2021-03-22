@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
@@ -50,11 +51,10 @@ class SongBase {
     setCoverArtist(null);
     copyright = '';
     setKey(Key.get(KeyEnum.C));
-    unitsPerMeasure = 4;
+    timeSignature = TimeSignature.defaultTimeSignature;
     setRawLyrics('');
     setChords('');
     setBeatsPerMinute(100);
-    setBeatsPerBar(4);
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
@@ -68,12 +68,10 @@ class SongBase {
     song.setArtist(artist);
     song.setCopyright(copyright);
     song.setKey(key);
-    song.setUnitsPerMeasure(unitsPerMeasure);
+    song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setChords(chords);
     song.setRawLyrics(lyricsToParse);
-
     song.setBeatsPerMinute(bpm);
-    song.setBeatsPerBar(beatsPerBar);
 
     return song;
   }
@@ -495,7 +493,7 @@ class SongBase {
     totalBeats = 0;
 
     List<SongMoment>? moments = getSongMoments();
-    if (beatsPerBar == 0 || defaultBpm == 0 || moments.isEmpty) return;
+    if (timeSignature.beatsPerBar == 0 || defaultBpm == 0 || moments.isEmpty) return;
 
     for (SongMoment moment in moments) {
       totalBeats += moment.getMeasure().beatCount;
@@ -683,7 +681,7 @@ class SongBase {
         logger.d(markedString.toString());
 
         try {
-          chordSection = ChordSection.parse(markedString, beatsPerBar, false);
+          chordSection = ChordSection.parse(markedString, timeSignature.beatsPerBar, false);
           if (chordSection.phrases.isEmpty) {
             emptyChordSections.add(chordSection);
           } else if (emptyChordSections.isNotEmpty) {
@@ -731,7 +729,7 @@ class SongBase {
 
         try {
           //  if it's a full section (or multiple sections) it will all be handled here
-          chordSection = ChordSection.parse(markedString, beatsPerBar, true);
+          chordSection = ChordSection.parse(markedString, timeSignature.beatsPerBar, true);
 
           //  look for multiple sections defined at once
           if (chordSection.phrases.isEmpty) {
@@ -753,7 +751,7 @@ class SongBase {
 
         //  see if it's a complete repeat
         try {
-          ret.add(MeasureRepeat.parse(markedString, phaseIndex, beatsPerBar, null));
+          ret.add(MeasureRepeat.parse(markedString, phaseIndex, timeSignature.beatsPerBar, null));
           phaseIndex++;
           continue;
         } catch (e) {
@@ -761,7 +759,8 @@ class SongBase {
         }
         //  see if it's a phrase
         try {
-          ret.add(Phrase.parse(markedString, phaseIndex, beatsPerBar, getCurrentChordSectionLocationMeasure()));
+          ret.add(Phrase.parse(
+              markedString, phaseIndex, timeSignature.beatsPerBar, getCurrentChordSectionLocationMeasure()));
           phaseIndex++;
           continue;
         } catch (e) {
@@ -769,7 +768,7 @@ class SongBase {
         }
         //  see if it's a single measure
         try {
-          var m = Measure.parse(markedString, beatsPerBar, getCurrentChordSectionLocationMeasure());
+          var m = Measure.parse(markedString, timeSignature.beatsPerBar, getCurrentChordSectionLocationMeasure());
           ret.add(m);
           continue;
         } catch (e) {
@@ -2907,7 +2906,7 @@ class SongBase {
 
   double getDefaultTimePerBar() {
     if (defaultBpm == 0) return 1;
-    return beatsPerBar * 60.0 / defaultBpm;
+    return timeSignature.beatsPerBar * 60.0 / defaultBpm;
   }
 
   double getSecondsPerBeat() {
@@ -2926,25 +2925,13 @@ class SongBase {
 
   /// Return the song's number of beats per bar
   int getBeatsPerBar() {
-    return beatsPerBar;
-  }
-
-  /// Set the song's number of beats per bar
-  void setBeatsPerBar(int beatsPerBar) {
-    //  never divide by zero
-    if (beatsPerBar <= 1) beatsPerBar = 2;
-    this.beatsPerBar = beatsPerBar;
-    _clearCachedValues();
+    return timeSignature.beatsPerBar;
   }
 
   /// Return an integer that represents the number of notes per measure
   /// represented in the sheet music.  Typically this is 4; meaning quarter notes.
   int getUnitsPerMeasure() {
-    return unitsPerMeasure;
-  }
-
-  void setUnitsPerMeasure(int unitsPerMeasure) {
-    this.unitsPerMeasure = unitsPerMeasure;
+    return timeSignature.unitsPerMeasure;
   }
 
   /// Return the song's copyright
@@ -3082,7 +3069,7 @@ class SongBase {
     int? songBeat = getBeatNumberAtTime(getBeatsPerMinute(), songTime);
     if (songBeat == null) return null;
     if (songBeat < 0) {
-      return (songBeat - beatsPerBar + 1) ~/ beatsPerBar; //  constant measure based lead in
+      return (songBeat - timeSignature.beatsPerBar + 1) ~/ timeSignature.beatsPerBar; //  constant measure based lead in
     }
 
     _computeSongMoments();
@@ -3345,8 +3332,8 @@ class SongBase {
     if (copyright != o.copyright) return false;
     if (key != o.key) return false;
     if (defaultBpm != o.defaultBpm) return false;
-    if (unitsPerMeasure != o.unitsPerMeasure) return false;
-    if (beatsPerBar != o.beatsPerBar) return false;
+    if (timeSignature != o.timeSignature) return false;
+    if (user != o.user) return false;
     if (_getChords() != o._getChords()) return false;
     if (_rawLyrics != (o._rawLyrics)) return false;
 
@@ -3372,7 +3359,7 @@ class SongBase {
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
     int ret = hash4(title, artist, coverArtist, copyright);
-    ret = ret * 17 + hash4(key.keyEnum, defaultBpm, unitsPerMeasure, beatsPerBar);
+    ret = ret * 17 + hash3(key.keyEnum, defaultBpm, timeSignature);
     ret = ret * 19 + hash3(_getChords(), _rawLyrics, _lastModifiedTime);
     ret = ret * 23 + hash2(fileName, fileVersionNumber);
     return ret;
@@ -3386,8 +3373,14 @@ class SongBase {
   String copyright = 'Unknown';
   Key key = Key.get(KeyEnum.C); //  default
   int defaultBpm = 106; //  beats per minute
-  int unitsPerMeasure = 4; //  units per measure, i.e. timeSignature numerator
-  int beatsPerBar = 4; //  beats per bar, i.e. timeSignature denominator
+  TimeSignature get timeSignature => _timeSignature;
+
+  void set timeSignature(TimeSignature timeSignature) {
+    _timeSignature = timeSignature;
+    _clearCachedValues();
+  }
+
+  TimeSignature _timeSignature = TimeSignature.defaultTimeSignature;
 
   set lastModifiedTime(int t) {
     _lastModifiedTime = t;
