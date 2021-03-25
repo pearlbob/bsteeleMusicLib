@@ -117,9 +117,6 @@ void main() {
         logger.v('    scorePart: ${part}');
 
         for (XmlElement xmlMeasure in part?.findElements('measure') ?? []) {
-          if (xmlMeasure == null) {
-            continue;
-          }
           var numberAttr = xmlMeasure.getAttribute('number');
           if (numberAttr == null) {
             throw 'null number attribute';

@@ -151,24 +151,24 @@ class Section implements Comparable<Section> {
     return _sectionsList;
   }
 
-  static late final HashMap<String, SectionEnum> _sectionEnums = HashMap.identity();
+  // static late final HashMap<String, SectionEnum> _sectionEnums = HashMap.identity();
 
-  static SectionEnum? _getSectionEnum(String s) {
-    //  lazy eval
-    if (_sectionEnums.isEmpty) {
-      for (SectionEnum se in SectionEnum.values) {
-        _sectionEnums[_sectionEnumToString(se).toLowerCase()] = se;
-
-        //  add abbreviations
-        Section section = get(se);
-        _sectionEnums[section._abbreviation.toLowerCase()] = se;
-        if (section._alternateAbbreviation != null) {
-          _sectionEnums[section._alternateAbbreviation!.toLowerCase()] = se;
-        }
-      }
-    }
-    return _sectionEnums[s];
-  }
+  // static SectionEnum? _getSectionEnum(String s) {
+  //   //  lazy eval
+  //   if (_sectionEnums.isEmpty) {
+  //     for (SectionEnum se in SectionEnum.values) {
+  //       _sectionEnums[_sectionEnumToString(se).toLowerCase()] = se;
+  //
+  //       //  add abbreviations
+  //       Section section = get(se);
+  //       _sectionEnums[section._abbreviation.toLowerCase()] = se;
+  //       if (section._alternateAbbreviation != null) {
+  //         _sectionEnums[section._alternateAbbreviation!.toLowerCase()] = se;
+  //       }
+  //     }
+  //   }
+  //   return _sectionEnums[s];
+  // }
 
   static Section? parseString(String s) {
     return _getMapStringToSection()[s.toLowerCase()];
@@ -180,7 +180,7 @@ class Section implements Comparable<Section> {
     if (m.groupCount < 2) return false;
     String sectionName = m.group(1)!;
     Section? section = parseString(sectionName.toLowerCase());
-    String sectionNumber = m.group(2)!;
+    //String sectionNumber = m.group(2)!;
     return section != null;
   }
 

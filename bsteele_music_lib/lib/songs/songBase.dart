@@ -2854,13 +2854,13 @@ class SongBase {
 
   /// Sets the song's title and song id from the given title. Leading "The " articles are rotated to the title end.
   void setTitle(String title) {
-    this.title = _theToTheEnd(title);
+    this.title = _theToTheEnd(title.trim());
     computeSongIdFromSongData();
   }
 
   /// Sets the song's artist
   void setArtist(String artist) {
-    this.artist = _theToTheEnd(artist);
+    this.artist = _theToTheEnd(artist.trim());
     computeSongIdFromSongData();
   }
 
@@ -3333,7 +3333,7 @@ class SongBase {
     if (key != o.key) return false;
     if (defaultBpm != o.defaultBpm) return false;
     if (timeSignature != o.timeSignature) return false;
-    if (user != o.user) return false;
+    // if (user != o.user) return false;  //  different user no sufficient for a change of content
     if (_getChords() != o._getChords()) return false;
     if (_rawLyrics != (o._rawLyrics)) return false;
 
@@ -3375,7 +3375,7 @@ class SongBase {
   int defaultBpm = 106; //  beats per minute
   TimeSignature get timeSignature => _timeSignature;
 
-  void set timeSignature(TimeSignature timeSignature) {
+  set timeSignature(TimeSignature timeSignature) {
     _timeSignature = timeSignature;
     _clearCachedValues();
   }
