@@ -7,15 +7,15 @@ environment:
   sdk: '>=2.13.0-162.0.dev <3.0.0'
 
 dependencies:
-  logger: ^1.0.0
-  quiver: ^3.0.0
-  http: ^0.13.1
-  archive: ^3.1.2
-  intl: ^0.17.0
-  string_similarity: ^2.0.0
+  logger:
+  quiver:
+  http:
+  archive:
+  intl:
+  string_similarity:
 
 dev_dependencies:
-  pedantic: ^1.11.0
-  test: ^1.16.8
-  system_info: ^1.0.0
-  xml: 5.0.2
+  pedantic:
+  test:
+  system_info:
+  xml:
