@@ -1238,7 +1238,7 @@ class SongBase {
   }
 
   void _clearCachedValues() {
-    logger.d('_clearCachedValues()');
+    logger.v('_clearCachedValues()');
     _chordSectionLocationGrid = null;
     _complexity = 0;
     _chordsAsMarkup = null;
@@ -3342,15 +3342,23 @@ class SongBase {
 
   bool songBaseSameAs(SongBase o) {
     //  song id built from title with reduced whitespace
-    if (!songBaseSameContent(o)) return false;
+    if (!songBaseSameContent(o)) {
+      return false;
+    }
 
     //    if (metadata != (o.metadata))
     //      return false;
-    if (lastModifiedTime != o.lastModifiedTime) return false;
+    if (lastModifiedTime != o.lastModifiedTime) {
+      return false;
+    }
 
     //  hmm, think about these
-    if (fileName != o.fileName) return false;
-    if (fileVersionNumber != o.fileVersionNumber) return false;
+    if (fileName != o.fileName) {
+      return false;
+    }
+    if (fileVersionNumber != o.fileVersionNumber) {
+      return false;
+    }
 
     return true;
   }

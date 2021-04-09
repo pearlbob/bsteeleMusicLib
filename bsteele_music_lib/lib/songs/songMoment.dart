@@ -100,7 +100,9 @@ class SongMoment implements Comparable<SongMoment> {
   @override
   int compareTo(SongMoment o) {
     //  number should be unique for a given song
-    if (momentNumber == o.momentNumber) return 0;
+    if (momentNumber == o.momentNumber) {
+      return 0;
+    }
     return momentNumber < o.momentNumber ? -1 : 1;
   }
 
@@ -135,8 +137,7 @@ class SongMoment implements Comparable<SongMoment> {
     if (identical(this, other)) {
       return true;
     }
-    return (
-        runtimeType == other.runtimeType &&
+    return (runtimeType == other.runtimeType &&
         other is SongMoment &&
         momentNumber == other.momentNumber &&
         chordSectionLocation == other.chordSectionLocation &&
@@ -157,19 +158,7 @@ class SongMoment implements Comparable<SongMoment> {
 
   @override
   int get hashCode {
-    //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = hash3(momentNumber, beatNumber, sectionBeatNumber);
-    ret = ret * 13 + hash3(repeat, repeatMax, repeatCycleBeats);
-    ret = ret * 17 + hash3(phraseIndex, measureIndex, sectionCount);
-    ret = ret * 19 + chordSectionLocation.hashCode;
-    ret = ret * 23 + lyricSection.hashCode;
-    ret = ret * 29 + chordSection.hashCode;
-    ret = ret * 31 + phrase.hashCode;
-    ret = ret * 37 + measure.hashCode;
-    ret = ret * 41 + row.hashCode;
-    ret = ret * 41 + col.hashCode;
-
-    return ret;
+    return momentNumber;  //  all else is dependent on the song
   }
 
   final int momentNumber;

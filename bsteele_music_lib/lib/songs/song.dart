@@ -250,7 +250,7 @@ class Song extends SongBase implements Comparable<Song> {
             sb.write(lyricRows[lyricRow]);
             sb.write('\n');
           }
-          song.setRawLyrics(sb.toString());
+          song.setRawLyrics(sb.toString().trim());
           break;
         case 'lastModifiedDate':
           DateTime songDateTime =
@@ -345,6 +345,7 @@ class Song extends SongBase implements Comparable<Song> {
     sb.write('\n    ],\n');
     sb.write('\"lyrics\": \n');
     sb.write('    [\n');
+
     //  lyrics content
     first = true;
     // ignore: deprecated_member_use_from_same_package
