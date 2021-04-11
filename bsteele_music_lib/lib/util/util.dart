@@ -32,6 +32,16 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
+  static String enumToString(Object o) => o.toString().split('.').last;
+
+  static T? enumFromString<T>(String key, List<T> values) {
+    try {
+      return values.firstWhere((v) => key == enumToString(v!));
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// capitalize the first character
   static String firstToUpper(String s) => s[0].toUpperCase() + s.substring(1);
 
@@ -40,7 +50,8 @@ class Util {
       return ' ${match.group(1)!.toLowerCase()}';
     }).trimLeft();
   }
-  static final  _singleCapRegExp = RegExp(r'([A-Z])');
+
+  static final _singleCapRegExp = RegExp(r'([A-Z])');
 }
 
 /// A String with a marked location to be used in parsing.

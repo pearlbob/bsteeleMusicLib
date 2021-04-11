@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:test/test.dart';
 
@@ -31,5 +32,11 @@ void main() {
     expect(Util.camelCaseToLowercaseSpace('AbcdefGhiJ'), 'abcdef ghi j');
     expect(Util.camelCaseToLowercaseSpace('abcdefGhij'), 'abcdef ghij');
     expect(Util.camelCaseToLowercaseSpace('abcdef ghij'), 'abcdef ghij');
+  });
+
+  test('test util enum name', () {
+    expect( Util.enumToString( KeyEnum.F.toString() ), 'F');
+    expect( Util.enumFromString( 'G', KeyEnum.values ), KeyEnum.G);
+    expect( Util.enumFromString( 'Gkk', KeyEnum.values ), null);
   });
 }
