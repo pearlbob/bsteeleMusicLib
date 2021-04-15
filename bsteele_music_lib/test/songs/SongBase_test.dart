@@ -24,7 +24,9 @@ String chordSectionToMultiLineString(SongBase song) {
   int rLimit = grid.getRowCount();
   for (int r = 0; r < rLimit; r++) {
     List<ChordSectionLocation?>? row = grid.getRow(r);
-    if (row == null) throw 'row == null';
+    if (row == null) {
+      throw 'row == null';
+    }
     int colLimit = row.length;
     sb.write('\t[');
     for (int c = 0; c < colLimit; c++) {
@@ -37,7 +39,9 @@ String chordSectionToMultiLineString(SongBase song) {
       sb.write('\t' + loc.toString() + ' ');
       if (loc.isMeasure) {
         Measure? measure = song.findMeasureByChordSectionLocation(loc);
-        if (measure == null) throw 'measure == null';
+        if (measure == null) {
+          throw 'measure == null';
+        }
         sb.write('measure: "${measure.toMarkup()}"'
             '${measure.endOfRow ? ', endOfRow' : ''}'
             '${measure.isRepeat() ? ', repeat' : ''}'
@@ -224,7 +228,7 @@ void main() {
 
     expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
-    expect('I: A B C D, A B C D,', a.findChordSectionByString('I:')!.toMarkup().trim());
+    expect('I: A B C D, A B C D', a.findChordSectionByString('I:')!.toMarkup().trim());
   });
 
   test('testFind', () {
@@ -490,7 +494,7 @@ void main() {
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:0:4'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:0:3'));
-    expect(m, Measure.parseString('G,', a.getBeatsPerBar())); //  default measures per row
+    expect(m, Measure.parseString('G', a.getBeatsPerBar())); //  default measures per row
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:1:0'));
     expect(Measure.parseString('C', a.getBeatsPerBar()), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:1:1'));
@@ -504,7 +508,7 @@ void main() {
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:0:4'));
     expect(Measure.parseString('E', a.getBeatsPerBar()), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:1:3'));
-    expect(m, Measure.parseString('GbB,', a.getBeatsPerBar()));
+    expect(m, Measure.parseString('GbB', a.getBeatsPerBar()));
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:1:4'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('o:0:4'));
@@ -711,10 +715,9 @@ c2:
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
     MeasureNode? measureNode = a.findMeasureNodeByLocation(location);
     logger.v('measure: ' + measureNode!.toMarkup());
-    expect(measureNode, Measure.parseString('B♭maj7,', beatsPerBar));
+    expect(measureNode, Measure.parseString('B♭maj7', beatsPerBar));
     MeasureNode? mn = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
     Measure? expectedMn = Measure.parseString('B♭maj7', beatsPerBar);
-    expectedMn.endOfRow = true;
     expect(mn, expectedMn);
 
     final int row = 0;
@@ -773,11 +776,9 @@ c2:
         'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
     Measure? m = Measure.parseString('X', a.getBeatsPerBar());
-    m.endOfRow = true;
     expect(a.findMeasureNodeByGrid(GridCoordinate(1, 2)), m);
     expect(Measure.parseString('C5D5', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(5, 4)));
     m = Measure.parseString('DC', a.getBeatsPerBar());
-    m.endOfRow = true;
     expect(a.findMeasureNodeByGrid(GridCoordinate(18, 2)), m);
     expect(Measure.parseString('C5D#', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(20, 4)));
 
@@ -1136,7 +1137,7 @@ c2:
 
     //  split a long repeat
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: A B C D E F G G# Ab Bb x2 \nc: D E F', 'i:\nc: sing chorus');
+        'I: A B C D E F, G G# Ab Bb x2 \nc: D E F', 'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.d(a.toMarkup());
@@ -1170,7 +1171,7 @@ c2:
 
     //  take a last comma off
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D ] x2 \nc: D E F A B C D E F G G#,', 'i:\nc: sing chorus');
+        'I: [A B C D ] x2 \nc: D E F A B C, D E, F G G#,', 'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.d(a.toMarkup());

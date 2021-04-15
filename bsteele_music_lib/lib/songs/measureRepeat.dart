@@ -34,8 +34,8 @@ class MeasureRepeat extends Phrase {
 
 //  look for a set of measures and comments
     bool barFound = false;
-    for (int i = 0; i < 1e3; i++) {
-      //  safety
+    for (int i = 0; i < 1e3; i++) //  safety
+    {
       markedString.stripLeadingSpaces();
       logger.v('repeat parsing: ' + markedString.remainingStringLimited(10));
       if (markedString.isEmpty) {
@@ -43,7 +43,7 @@ class MeasureRepeat extends Phrase {
         throw 'no data to parse';
       }
 
-//  extend the search for a repeat only if the line ends with a |
+      //  extend the search for a repeat only if the line ends with a |
       if (markedString.charAt(0) == '|') {
         barFound = true;
         markedString.consume(1);
@@ -64,7 +64,7 @@ class MeasureRepeat extends Phrase {
         throw 'repeat not found';
       }
 
-//  assure this is not a section
+      //  assure this is not a section
       if (Section.lookahead(markedString)) break;
 
       int mark = markedString.mark();
@@ -98,7 +98,9 @@ class MeasureRepeat extends Phrase {
     RegExpMatch? mr = repeatExp.firstMatch(markedString.toString());
     if (mr != null) {
       int repeats = int.parse(mr.group(1)!);
-      if (measures.isNotEmpty) measures[measures.length - 1].endOfRow = false;
+      if (measures.isNotEmpty) {
+        measures.last.endOfRow = false;
+      }
       MeasureRepeat ret = MeasureRepeat(measures, phraseIndex, repeats);
       logger.d(' measure repeat: ' + ret.toMarkup());
       markedString.consume(mr.group(0)!.length);
@@ -141,7 +143,7 @@ class MeasureRepeat extends Phrase {
   @override
   int chordRowMaxLength() {
     //  include the row markers
-    return super.chordRowMaxLength() + 2;
+    return super.maxMeasuresPerChordRow() + 2;
   }
 
   @override

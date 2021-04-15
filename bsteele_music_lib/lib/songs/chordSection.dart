@@ -460,7 +460,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   @override
   bool setMeasuresPerRow(int measuresPerRow) {
-    if (measuresPerRow <= 0) return false;
+    if (measuresPerRow <= 0) {
+      return false;
+    }
 
     bool ret = false;
     for (Phrase phrase in _phrases) {

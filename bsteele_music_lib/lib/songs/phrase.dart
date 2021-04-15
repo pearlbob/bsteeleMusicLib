@@ -8,6 +8,7 @@ import '../util/util.dart';
 import 'measure.dart';
 import 'measureComment.dart';
 import 'measureNode.dart';
+import 'musicConstants.dart';
 import 'section.dart';
 import 'key.dart';
 
@@ -15,19 +16,26 @@ class Phrase extends MeasureNode {
   Phrase(List<Measure> measures, int phraseIndex) : _phraseIndex = phraseIndex {
     _measures = [];
     _measures.addAll(measures);
+
+    //  fix measure row length if required
+    if (_measures.isNotEmpty) {
+      //  enforce formatting of unformatted or sloppy formatted songs
+      if ( maxMeasuresPerChordRow() > MusicConstants.maxMeasuresPerChordRow ){
+        setMeasuresPerRow(MusicConstants.nominalMeasuresPerChordRow);
+      }
+      _measures.last.endOfRow = false; //  no end of row on the end of the list
+    }
   }
 
   int getTotalMoments() {
-    return _measures.length;
-  } //  fixme
+    return _measures.length; //  fixme
+  }
 
-  static Phrase parseString(
-      String string, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
+  static Phrase parseString(String string, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(string), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static Phrase parse(MarkedString markedString, int phraseIndex,
-      int beatsPerBar, Measure? priorMeasure) {
+  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     if (markedString.isEmpty) throw 'no data to parse';
 
     List<Measure> measures = [];
@@ -51,8 +59,7 @@ class Phrase extends MeasureNode {
       if (Section.lookahead(markedString)) break;
 
       try {
-        Measure measure =
-            Measure.parse(markedString, beatsPerBar, priorMeasure);
+        Measure measure = Measure.parse(markedString, beatsPerBar, priorMeasure);
         priorMeasure = measure;
         lineMeasures.add(measure);
 
@@ -398,7 +405,13 @@ class Phrase extends MeasureNode {
   }
 
   ///  maximum number of measures in a chord row
+  ///  note: these measures will include the repeat markers for repeats
   int chordRowMaxLength() {
+    return maxMeasuresPerChordRow();
+  }
+
+  ///  note: these measures do not include the repeat markers
+  int maxMeasuresPerChordRow() {
     //  walk through all prior measures //  fixme: efficiency?
     var maxLength = 0;
     var length = 0;
@@ -411,7 +424,7 @@ class Phrase extends MeasureNode {
       length++;
       if (measure.endOfRow || identical(measure, measures.last)) {
         maxLength = max(maxLength, length);
-        length=0;
+        length = 0;
       }
     }
     return maxLength;
@@ -536,7 +549,9 @@ class Phrase extends MeasureNode {
 
   @override
   bool setMeasuresPerRow(int measuresPerRow) {
-    if (measuresPerRow <= 0) return false;
+    if (measuresPerRow <= 0) {
+      return false;
+    }
 
     bool ret = false;
     int i = 0;
@@ -546,7 +561,7 @@ class Phrase extends MeasureNode {
         if (measure.isComment()) {
           continue; //  comments get their own row
         }
-        if (i == measuresPerRow - 1 && measure != lastMeasure) {
+        if (i == measuresPerRow - 1 && !identical(measure , lastMeasure)) {
           //  new row required
           if (!measure.endOfRow) {
             measure.endOfRow = true;
@@ -654,8 +669,7 @@ class Phrase extends MeasureNode {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType ==
-            other.runtimeType //  distinguish yourself from subclasses
+    return runtimeType == other.runtimeType //  distinguish yourself from subclasses
         &&
         other is Phrase //  required for the following:
         &&

@@ -1,4 +1,3 @@
-import 'package:quiver/core.dart';
 
 import 'chordSection.dart';
 import 'chordSectionLocation.dart';

@@ -419,13 +419,15 @@ class SongBase {
 
   String songMomentMeasure(int momentNumber, Key key, int halfStepOffset) {
     _computeSongMoments();
-    if (momentNumber < 0 || _songMoments.isEmpty || momentNumber > _songMoments.length - 1) return '';
+    if (momentNumber < 0 || _songMoments.isEmpty || momentNumber >= _songMoments.length) return '';
     return _songMoments[momentNumber].getMeasure().transpose(key, halfStepOffset);
   }
 
   String songNextMomentMeasure(int momentNumber, Key key, int halfStepOffset) {
     _computeSongMoments();
-    if (momentNumber < -1 || _songMoments.isEmpty || momentNumber > _songMoments.length - 2) {
+    //  assure there is a next moment
+    if (momentNumber < -1 || _songMoments.isEmpty || momentNumber >= _songMoments.length - 1 // room for one more index
+        ) {
       return '';
     }
     return _songMoments[momentNumber + 1].getMeasure().transpose(key, halfStepOffset);
@@ -847,7 +849,7 @@ class SongBase {
       ChordSection chordSection = sortedChordSections.last;
       List<Phrase> measureSequenceItems = chordSection.phrases;
       if (measureSequenceItems.isNotEmpty) {
-        Phrase lastPhrase = measureSequenceItems[measureSequenceItems.length - 1];
+        Phrase lastPhrase = measureSequenceItems.last;
         currentChordSectionLocation = ChordSectionLocation(chordSection.sectionVersion,
             phraseIndex: measureSequenceItems.length - 1, measureIndex: lastPhrase.length - 1);
       }
@@ -882,7 +884,9 @@ class SongBase {
 
   Grid<ChordSectionLocation> getChordSectionLocationGrid() {
     //  support lazy eval
-    if (_chordSectionLocationGrid != null) return _chordSectionLocationGrid!;
+    if (_chordSectionLocationGrid != null) {
+      return _chordSectionLocationGrid!;
+    }
 
     Grid<ChordSectionLocation> grid = Grid();
     _chordSectionGridCoorinateMap = HashMap();
@@ -902,7 +906,9 @@ class SongBase {
       SectionVersion sectionVersion = chordSection.sectionVersion;
 
       //  only do a chord section once.  it might have a duplicate set of phrases and already be listed
-      if (!sectionVersionsToDo.contains(sectionVersion)) continue;
+      if (!sectionVersionsToDo.contains(sectionVersion)) {
+        continue;
+      }
       sectionVersionsToDo.remove(sectionVersion);
 
       //  start each section on it's own line
@@ -959,7 +965,7 @@ class SongBase {
           if (phrase == null) continue;
 
           //  default to max measures per row
-          int measuresPerRow = 8;
+          int measuresPerRow = MusicConstants.maxMeasuresPerChordRow;
 
           //  adjust the measures per row for songs without apparent control of the length
           int phraseSize = phrase.measures.length;
@@ -972,7 +978,7 @@ class SongBase {
               }
             }
             if (!endOfRowControlled) {
-              measuresPerRow = 4;
+              measuresPerRow = MusicConstants.nominalMeasuresPerChordRow;
             }
           }
 
@@ -1228,7 +1234,9 @@ class SongBase {
 
   HashMap<SectionVersion, GridCoordinate> getChordSectionGridCoorinateMap() {
     // force grid population from lazy eval
-    if (_chordSectionLocationGrid == null) getChordSectionLocationGrid();
+    if (_chordSectionLocationGrid == null) {
+      getChordSectionLocationGrid();
+    }
     return _chordSectionGridCoorinateMap;
   }
 
@@ -1260,7 +1268,9 @@ class SongBase {
   }
 
   String toMarkup() {
-    if (_chordsAsMarkup != null) return _chordsAsMarkup!;
+    if (_chordsAsMarkup != null) {
+      return _chordsAsMarkup!;
+    }
 
     StringBuffer sb = StringBuffer();
 
@@ -2574,14 +2584,18 @@ class SongBase {
 
   /// Set the number of measures displayed per row
   bool setMeasuresPerRow(int measuresPerRow) {
-    if (measuresPerRow <= 0) return false;
+    if (measuresPerRow <= 0) {
+      return false;
+    }
 
     bool ret = false;
     SplayTreeSet<ChordSection> set = SplayTreeSet.of(_getChordSectionMap().values);
     for (ChordSection chordSection in set) {
       ret = chordSection.setMeasuresPerRow(measuresPerRow) || ret;
     }
-    if (ret) _invalidateChords();
+    if (ret) {
+      _invalidateChords();
+    }
     return ret;
   }
 

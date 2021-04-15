@@ -5,6 +5,9 @@ enum MajorDiatonic { i, ii, iii, IV, V, VI, vii }
 enum MinorDiatonic { i, ii, III, iv, v, VI, VII }
 
 class MusicConstants {
+  static const  int maxMeasuresPerChordRow = 8;
+  static const  int nominalMeasuresPerChordRow = 4;
+
   static const String flatChar = '\u266D';
   static const String naturalChar = '\u266E';
   static const String sharpChar = '\u266F';
@@ -73,4 +76,5 @@ enum Clef {
   treble,
   bass,
 }
+
 
