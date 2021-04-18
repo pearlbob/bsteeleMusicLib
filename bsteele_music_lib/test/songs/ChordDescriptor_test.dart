@@ -60,6 +60,7 @@ void main() {
   });
 
   test('ChordDescriptor all values', () {
+    expect(ChordDescriptor.completenessTest(),0);
     ChordDescriptor chordDescriptor = ChordDescriptor.capMajor;
     logger.i('$chordDescriptor');
     for ( ChordDescriptor cd in ChordDescriptor.values){

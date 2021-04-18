@@ -20,6 +20,8 @@ class ChordComponent implements Comparable<ChordComponent> {
   static final eleventh = ChordComponent._('11', 11, 12 + 7);
   static final thirteenth = ChordComponent._('13', 13, 12 + 11);
 
+  static List<ChordComponent> get values => _chordComponentByHalfSteps;
+
   ChordComponent._(this._shortName, this._scaleNumber, this._halfSteps);
 
   static Set<ChordComponent> parse(String chordComponentString) {
@@ -64,7 +66,7 @@ class ChordComponent implements Comparable<ChordComponent> {
   }
 
   static ChordComponent getByHalfStep(int halfStep) {
-    return _chordComponentByHalfSteps[ halfStep% MusicConstants.halfStepsPerOctave];
+    return _chordComponentByHalfSteps[halfStep % MusicConstants.halfStepsPerOctave];
   }
 
   @override

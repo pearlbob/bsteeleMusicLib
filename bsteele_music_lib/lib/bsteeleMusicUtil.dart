@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
@@ -43,7 +44,7 @@ arguments:
 -h                  this help message
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
-
+-stat               statistics
 -url {url}          read the given url into the utility's allSongs list
 -v                  verbose output utility's allSongs list
 -V                  very verbose output
@@ -365,6 +366,42 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
+        case '-stat':
+          print('songs: ${allSongs.length}');
+          {
+            var covers = 0;
+            for (var song in allSongs) {
+              if (song.title.contains('cover')) {
+                covers++;
+              }
+            }
+            print('covers: $covers');
+          }
+          {
+            var chordDescriptorUsageMap = <ChordDescriptor, int>{};
+            for ( var chordDescriptor in ChordDescriptor.values ){
+              chordDescriptorUsageMap[chordDescriptor] = 0;
+            }
+            for (var song in allSongs) {
+              for (var moment in song.songMoments) {
+                for (var chord in moment.measure.chords) {
+                  var chordDescriptor = chord.scaleChord.chordDescriptor;
+                  var count = chordDescriptorUsageMap[chordDescriptor] ?? 0;
+                  chordDescriptorUsageMap[chordDescriptor] = count + 1;
+                }
+              }
+            }
+            print('chordDescriptorUsageMap: ${chordDescriptorUsageMap.keys.length}');
+            var sortedValues = SplayTreeSet<int>();
+            sortedValues.addAll(chordDescriptorUsageMap.values);
+            for (var usage in sortedValues.toList().reversed) {
+              for (var key in chordDescriptorUsageMap.keys.where((e) => chordDescriptorUsageMap[e] == usage)) {
+                print('   _${key.name}, //  ${chordDescriptorUsageMap[key]}');
+              }
+            }
+          }
+          break;
+
         case '-test':
           {
             DateTime t = DateTime.fromMillisecondsSinceEpoch(1570675021323);
@@ -653,7 +690,7 @@ coerced to reflect the songlist's last modification for that song.
   //   }
   //
   //   //print(sb.toString());
-  //   File writeTo = File(homePath() + '/allSongs.csv');
+  //   File writeTo = File(Util.homePath() + '/allSongs.csv');
   //   writeTo.writeAsStringSync(sb.toString(), flush: true);
   // }
 
@@ -665,19 +702,6 @@ coerced to reflect the songlist's last modification for that song.
   bool _force = false; //  force a file write, even if it already exists
   int _updateCount = 0;
   static RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
-}
-
-String homePath() {
-  String home = '';
-  Map<String, String> envVars = Platform.environment;
-  if (Platform.isMacOS) {
-    home = envVars['HOME'] ?? '';
-  } else if (Platform.isLinux) {
-    home = envVars['HOME'] ?? '';
-  } else if (Platform.isWindows) {
-    home = envVars['UserProfile'] ?? '';
-  }
-  return home;
 }
 
 final RegExp _csvLineSplit = RegExp(r'[\,\r]');

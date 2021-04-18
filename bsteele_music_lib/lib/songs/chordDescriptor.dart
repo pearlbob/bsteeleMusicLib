@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import '../appLogger.dart';
 import '../util/util.dart';
 import 'chordComponent.dart';
 import 'musicConstants.dart';
@@ -64,7 +65,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _sevenSharp9 = ChordDescriptor._('sevenSharp9', '7#9', 'R m3 5 m7');
 
   static ChordDescriptor get sevenFlat9 => _sevenFlat9;
-  static final ChordDescriptor _sevenFlat9 = ChordDescriptor._('sevenFlat9', '7b9', 'R m2 3 5 7');
+  static final ChordDescriptor _sevenFlat9 = ChordDescriptor._('sevenFlat9', '7b9', 'R 2 3 5 7');
 
   static ChordDescriptor get dominant9 => _dominant9;
   static final ChordDescriptor _dominant9 = ChordDescriptor._('dominant9', '9', 'R 3 5 m7 9');
@@ -182,7 +183,9 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   ChordDescriptor._(this._name, this._shortName, String structure, {ChordDescriptor? alias})
       : _alias = alias,
-        _chordComponents = ChordComponent.parse(structure);
+        _chordComponents = ChordComponent.parse(structure) {
+    _everyChordDescriptor.add(this);
+  }
 
   static ChordDescriptor parseString(String s) {
     return parse(MarkedString(s));
@@ -209,7 +212,9 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   // Returns the human name of this enum.
   @override
   String toString() {
-    if (shortName.isEmpty) return name;
+    if (shortName.isEmpty) {
+      return name;
+    }
     return shortName;
   }
 
@@ -295,49 +300,59 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static List<ChordDescriptor> get otherChordDescriptorsOrdered => _otherChordDescriptorsOrdered;
   static final List<ChordDescriptor> _otherChordDescriptorsOrdered = [
     //  less pop by short name
-    _add9,
-    _augmented,
-    _augmented5,
-    _augmented7,
-    _diminished,
-    _diminished7,
-    _jazz7b9,
-    _major7,
-    _majorSeven,
-    _major9,
-    _majorNine,
-    _minor9,
-    _minor11,
-    _minor13,
-    _minor6,
-    _minor7,
-    _mmaj7,
-    _minor7b5,
-    _msus2,
-    _msus4,
-    _flat5,
-    _sevenFlat5,
-    _sevenFlat9,
-    _sevenSharp5,
-    _sevenSharp9,
-    _suspended,
-    _suspended2,
-    _suspended4,
-    _suspendedFourth,
-    _suspended7,
-    _sevenSus,
-    _sevenSus2,
-    _sevenSus4,
-
-//  numerically named chords
-    _power5,
-    _major6,
-    _six9,
-    _dominant9,
-    _dominant11,
-    _dominant13,
+    // _major, //  112560
+    // _minor, //  31564
+    // _dominant7, //  9666
+    _minor7, //  5165
+    _power5, //  2317
+    _major7, //  1654
+    _major6, //  1060
+    _suspended2, //  991
+    _suspended4, //  754
+    _add9, //  442
+    _majorSeven, //  326
+    _dominant9, //  286
+    _sevenSus4, //  253
+    _diminished, //  189
+    _minor6, //  161
+    _major9, //  123
+    _suspendedSecond, //  123
+    _minor9, //  123
+    _augmented, //  99
+    _suspended, //  84
+    _suspendedFourth, //  72
+    _sevenSharp5, //  59
+    _maj, //  48
+    _minor7b5, //  43
+    _diminished7, //  28
+    _minor11, //  28
+    _six9, //  26
+    _msus4, //  19
+    _dominant11, //  16
+    _sevenSus, //  13
+    _augmented7, //  10
+    _capMajor, //  10
+    _mmaj7, //  9
+    _dominant13, //  9
+    _msus2, //  8
+    _sevenSharp9, //  8
+    _sevenFlat9, //  4
+    _sevenFlat5, //  2
+    _suspended7, //  2
+    _minor13, //  1
+    _augmented5, //  0
+    _jazz7b9, //  0
+    _capMajor7, //  0
+    _deltaMajor7, //  0
+    _dimMasculineOrdinalIndicator, //  0
+    _dimMasculineOrdinalIndicator7, //  0
+    _diminishedAsCircle, //  0
+    _maug, //  0
+    _majorNine, //  0
+    _flat5, //  0
+    _sevenSus2, //  0
   ];
-  static late List<ChordDescriptor> _allChordDescriptorsOrdered=[];
+  static late List<ChordDescriptor> _allChordDescriptorsOrdered = [];
 
   static final List<ChordDescriptor> _parseOrderedChordDescriptorsOrdered = [
     _sevenSus4,
@@ -399,17 +414,12 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     if (_allChordDescriptorsOrdered.isEmpty) {
       // lazy eval
       //  compute the ordered set of all chord descriptors
-      SplayTreeSet<ChordDescriptor> set = SplayTreeSet();
       for (ChordDescriptor cd in _primaryChordDescriptorsOrdered) {
-        set.add(cd);
+        _allChordDescriptorsOrdered.add(cd);
       }
       for (ChordDescriptor cd in _otherChordDescriptorsOrdered) {
-        set.add(cd);
+        _allChordDescriptorsOrdered.add(cd);
       }
-      for (ChordDescriptor cd in _parseOrderedChordDescriptorsOrdered) {
-        set.add(cd);
-      }
-      _allChordDescriptorsOrdered = set.toList();
     }
     return _allChordDescriptorsOrdered;
   }
@@ -437,4 +447,19 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 //    sb.write('\n\t)');
 //    return sb.toString();
 //  }
+  static int completenessTest() {
+    var ret = 0;
+
+    var values = ChordDescriptor.values;
+    logger.i('total: ${_everyChordDescriptor.length}');
+    for (var chordDescriptor in _everyChordDescriptor) {
+      if (!values.contains(chordDescriptor)) {
+        ret++;
+        print('missing: ${chordDescriptor.name}');
+      }
+    }
+    return ret;
+  }
+
+  static final SplayTreeSet<ChordDescriptor> _everyChordDescriptor = SplayTreeSet();
 }

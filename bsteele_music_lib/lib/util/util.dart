@@ -1,8 +1,22 @@
 import 'dart:core';
+import 'dart:io';
 
 import 'dart:math';
 
 class Util {
+  static String homePath() {
+    String home = '';
+    Map<String, String> envVars = Platform.environment;
+    if (Platform.isMacOS) {
+      home = envVars['HOME'] ?? '';
+    } else if (Platform.isLinux) {
+      home = envVars['HOME'] ?? '';
+    } else if (Platform.isWindows) {
+      home = envVars['UserProfile'] ?? '';
+    }
+    return home;
+  }
+
   /// add quotes to a string so it can be used as a dart constant
   static String? quote(String? s) {
     if (s == null) {
