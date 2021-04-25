@@ -50,6 +50,14 @@ class ScaleChord implements Comparable<ScaleChord> {
 //return new ScaleChord(scaleNote.transpose(key, halfSteps), chordDescriptor);
 //}
 
+  List<ScaleNote> chordNotes(Key key) {
+    var ret = <ScaleNote>[];
+    for (var component in _chordDescriptor.chordComponents) {
+      ret.add(scaleNote.transpose(key, component.halfSteps));
+    }
+    return ret;
+  }
+
   ScaleChord? getAlias() {
     ScaleNote? alias = _scaleNote.alias;
     if (alias == null) return null;
@@ -91,7 +99,10 @@ class ScaleChord implements Comparable<ScaleChord> {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && other is ScaleChord && _scaleNote == other._scaleNote && _chordDescriptor == other._chordDescriptor;
+    return runtimeType == other.runtimeType &&
+        other is ScaleChord &&
+        _scaleNote == other._scaleNote &&
+        _chordDescriptor == other._chordDescriptor;
   }
 
   @override

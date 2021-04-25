@@ -110,4 +110,40 @@ void main() {
     expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.A), ChordDescriptor.diminished), ScaleChord.parseString('Adim/G'));
     expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.X), ChordDescriptor.major), ScaleChord.parseString('X/G'));
   });
+
+  test('test ScaleChord scale notes', () {
+    Key key = Key.get(KeyEnum.C);
+
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.minor).chordNotes(key).toString(), '[C, E♭, G]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.dominant7).chordNotes(key).toString(),
+        '[G, B, D, F]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.dominant9).chordNotes(key).toString(),
+        '[G, B, D, F, B]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.minor7).chordNotes(key).toString(),
+        '[G, B♭, D, F]');
+
+    key = Key.get(KeyEnum.E); //  4 #
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.minor).chordNotes(key).toString(), '[C, D♯, G]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.dominant7).chordNotes(key).toString(),
+        '[G, B, D, F]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.dominant9).chordNotes(key).toString(),
+        '[G, B, D, F, B]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.minor7).chordNotes(key).toString(),
+        '[G, A♯, D, F]');
+
+    key = Key.get(KeyEnum.Ab);//  4 b
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.minor).chordNotes(key).toString(), '[C, E♭, G]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.dominant7).chordNotes(key).toString(),
+        '[G, B, D, F]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.dominant9).chordNotes(key).toString(),
+        '[G, B, D, F, B]');
+    expect(ScaleChord(ScaleNote.get(ScaleNoteEnum.G), ChordDescriptor.minor7).chordNotes(key).toString(),
+        '[G, B♭, D, F]');
+  });
 }

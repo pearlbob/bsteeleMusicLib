@@ -60,13 +60,33 @@ void main() {
   });
 
   test('ChordDescriptor all values', () {
-    expect(ChordDescriptor.completenessTest(),0);
+    expect(ChordDescriptor.completenessTest(), 0);
     ChordDescriptor chordDescriptor = ChordDescriptor.capMajor;
     logger.i('$chordDescriptor');
-    for ( ChordDescriptor cd in ChordDescriptor.values){
+    for (ChordDescriptor cd in ChordDescriptor.values) {
       logger.d('$cd');
     }
     logger.d('length: ${ChordDescriptor.values.length}');
-    expect(ChordDescriptor.values.length,51);// expect this to change when a ChordDescriptor is added!
+    expect(ChordDescriptor.values.length, 51); // expect this to change when a ChordDescriptor is added!
+  });
+
+  test('ChordDescriptor is minor', () {
+    expect(ChordDescriptor.major.isMinor(), false);
+    expect(ChordDescriptor.major.isMajor(), true);
+    expect(ChordDescriptor.minor.isMinor(), true);
+    expect(ChordDescriptor.minor.isMajor(), false);
+
+    expect(ChordDescriptor.major7.isMajor(), true);
+    expect(ChordDescriptor.dominant7.isMajor(), true);
+    expect(ChordDescriptor.dominant9.isMajor(), true);
+    expect(ChordDescriptor.add9.isMajor(), true);
+    expect(ChordDescriptor.augmented.isMajor(), true);
+    expect(ChordDescriptor.suspended.isMajor(), true);
+
+    expect(ChordDescriptor.minor7.isMinor(), true);
+    expect(ChordDescriptor.diminished.isMinor(), true);
+    expect(ChordDescriptor.minor7b5.isMinor(), true);
+    expect(ChordDescriptor.msus4.isMinor(), true);
+    expect(ChordDescriptor.dimMasculineOrdinalIndicator.isMinor(), true);
   });
 }

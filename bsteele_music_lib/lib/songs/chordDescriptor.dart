@@ -269,6 +269,14 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 //  return allChordDescriptorsOrdered;
 //}
 
+  bool isMinor() {
+    return _chordComponents.contains(ChordComponent.minorThird);
+  }
+
+  bool isMajor() {
+    return !isMinor();
+  }
+
   /// The name for the chord descriptor used internally in the software.
   /// This name will likely be understood by musicians but will not necessarily
   /// be used by them in written form.
@@ -352,7 +360,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _flat5, //  0
     _sevenSus2, //  0
   ];
-  static late List<ChordDescriptor> _allChordDescriptorsOrdered = [];
+  static final List<ChordDescriptor> _allChordDescriptorsOrdered = [];
 
   static final List<ChordDescriptor> _parseOrderedChordDescriptorsOrdered = [
     _sevenSus4,

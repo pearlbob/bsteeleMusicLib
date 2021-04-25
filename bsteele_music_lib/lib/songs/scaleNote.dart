@@ -175,7 +175,7 @@ class ScaleNote implements Comparable<ScaleNote> {
   }
 
   /// Return the ScaleNote represented by the given string.
-//  Is case sensitive.
+  //  Is case sensitive.
   static ScaleNote? parse(MarkedString markedString) {
     if (markedString.isEmpty) {
       throw ArgumentError('no data to parse');
@@ -193,7 +193,7 @@ class ScaleNote implements Comparable<ScaleNote> {
     StringBuffer stringBuffer = StringBuffer();
     stringBuffer.write(markedString.getNextChar());
 
-//  look for modifier
+    //  look for modifier
     if (markedString.isNotEmpty) {
       switch (markedString.first()) {
         case 'b':
