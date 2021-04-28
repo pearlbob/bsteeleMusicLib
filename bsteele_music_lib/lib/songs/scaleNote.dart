@@ -7,27 +7,27 @@ import 'musicConstants.dart';
 import 'key.dart';
 
 enum ScaleNoteEnum {
+  Ab,
   A,
   As,
+  Bb,
   B,
+  Bs, //   for completeness of piano expression
+  Cb, //  used for Gb (-6) key
   C,
   Cs,
+  Db,
   D,
   Ds,
+  Eb,
   E,
+  Es, //  used for Fs (+6) key
+  Fb, //   for completeness of piano expression
   F,
   Fs,
+  Gb,
   G,
   Gs,
-  Gb,
-  Eb,
-  Db,
-  Bb,
-  Ab,
-  Cb, //  used for Gb (-6) key
-  Es, //  used for Fs (+6) key
-  Bs, //   for completeness of piano expression
-  Fb, //   for completeness of piano expression
   X //  No scale note!  Used to avoid testing for null
 }
 
@@ -344,7 +344,7 @@ class ScaleNote implements Comparable<ScaleNote> {
   String get scaleString => _scaleString;
   late String _scaleString;
 
-  ScaleNote? get alias => _alias;
+  ScaleNote get alias => _alias ?? this;
   ScaleNote? _alias;
 
   late bool _isSharp;

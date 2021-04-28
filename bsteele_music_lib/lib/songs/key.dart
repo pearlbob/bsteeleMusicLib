@@ -195,6 +195,20 @@ class Key implements Comparable<Key> {
     return _getKeys()[keyEnumsByHalfStep[(_halfStep - MusicConstants.notesPerScale) % keyEnumsByHalfStep.length]]!;
   }
 
+  ScaleNote inKey(ScaleNote scaleNote) {
+    if (isSharp) {
+      if (scaleNote.isFlat) {
+        return scaleNote.alias;
+      }
+    } else {
+      //  key is flat
+      if (scaleNote.isSharp) {
+        return scaleNote.alias;
+      }
+    }
+    return scaleNote;
+  }
+
   /// Transpose the given scale note by the requested offset.
   ScaleNote transpose(ScaleNote scaleNote, int offset) {
     return getScaleNoteByHalfStep(scaleNote.halfStep + offset);
