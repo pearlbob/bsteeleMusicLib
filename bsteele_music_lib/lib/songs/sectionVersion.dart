@@ -29,10 +29,14 @@ class SectionVersion implements Comparable<SectionVersion> {
   /// used in the id.
 
   static SectionVersion parse(MarkedString markedString) {
-    if (markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) {
+      throw 'no data to parse';
+    }
 
     RegExpMatch? m = sectionRegexp.firstMatch(markedString.toString());
-    if (m == null) throw 'no section version found';
+    if (m == null) {
+      throw 'no section version found';
+    }
 
     String? sectionId = m.group(1)!;
     String? versionId = (m.groupCount >= 2 ? m.group(2)! : null);
@@ -41,7 +45,9 @@ class SectionVersion implements Comparable<SectionVersion> {
       version = int.parse(versionId);
     }
     Section? section = Section.getSection(sectionId);
-    if (section == null) throw 'no section found';
+    if (section == null) {
+      throw 'no section found';
+    }
 
     //   consume the section label
     markedString.consume(m.group(0)!.length); //  includes the separator
@@ -79,7 +85,9 @@ class SectionVersion implements Comparable<SectionVersion> {
   @override
   int compareTo(SectionVersion o) {
     int ret = _section.compareTo(o._section);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (_version != o._version) {
       return _version < o._version ? -1 : 1;

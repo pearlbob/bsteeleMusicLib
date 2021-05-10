@@ -119,14 +119,22 @@ class LegacyDrumMeasure implements Comparable<LegacyDrumMeasure> {
     } else {
       ret = (_isSilent == o._isSilent ? 0 : (_isSilent! ? -1 : 1));
     }
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     ret = highHat.compareTo(o.highHat);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     ret = snare.compareTo(o.snare);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     ret = kick.compareTo(o.kick);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     return 0;
   }
 

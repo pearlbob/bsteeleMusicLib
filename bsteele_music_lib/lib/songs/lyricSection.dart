@@ -49,35 +49,53 @@ class LyricSection implements Comparable<LyricSection> {
   @override
   int compareTo(LyricSection other) {
     int ret = _sectionVersion.compareTo(other._sectionVersion);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (_lyricsLines.isEmpty) {
-      if (other._lyricsLines.isNotEmpty) return -1;
+      if (other._lyricsLines.isNotEmpty) {
+        return -1;
+      }
     } else {
-      if (other._lyricsLines.isEmpty) return 1;
+      if (other._lyricsLines.isEmpty) {
+        return 1;
+      }
       if (_lyricsLines.length != other._lyricsLines.length) {
         return _lyricsLines.length - other._lyricsLines.length;
       }
       for (int i = 0; i < _lyricsLines.length; i++) {
         ret = _lyricsLines.elementAt(i).compareTo(other._lyricsLines.elementAt(i));
-        if (ret != 0) return ret;
+        if (ret != 0) {
+          return ret;
+        }
       }
     }
     ret = drumSection.compareTo(other.drumSection);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     ret = _sectionVersion.compareTo(other._sectionVersion);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (!listsEqual(_lyricsLines, other._lyricsLines)) {
       //  compare the lists
-      if (_lyricsLines.isEmpty) return other._lyricsLines.isEmpty ? 0 : 1;
-      if (other._lyricsLines.isEmpty) return -1;
+      if (_lyricsLines.isEmpty) {
+        return other._lyricsLines.isEmpty ? 0 : 1;
+      }
+      if (other._lyricsLines.isEmpty) {
+        return -1;
+      }
       if (_lyricsLines.length != other._lyricsLines.length) {
         return _lyricsLines.length < other._lyricsLines.length ? -1 : 1;
       }
       for (int i = 0; i < _lyricsLines.length; i++) {
         int ret = _lyricsLines[i].compareTo(other._lyricsLines[i]);
-        if (ret != 0) return ret;
+        if (ret != 0) {
+          return ret;
+        }
       }
     }
     return 0;

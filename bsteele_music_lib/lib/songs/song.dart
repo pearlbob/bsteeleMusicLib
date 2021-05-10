@@ -133,7 +133,7 @@ class Song extends SongBase implements Comparable<Song> {
 //    }
 //    //  file information available
 //    if (jsonObject.keySet().contains("file"))
-//      return songFromJsonFileObject(jsonObject);
+//      {return songFromJsonFileObject(jsonObject);}
 //
 //    //  straight song
 //    return songFromJsonObject(jsonObject);
@@ -162,10 +162,10 @@ class Song extends SongBase implements Comparable<Song> {
 //          break;
 //      }
 //    }
-//    if (song == null) return null;
+//    if (song == null) {return null;}
 //
 //    if (lastModifiedTime > song.lastModifiedTime)
-//      song.setLastModifiedTime(lastModifiedTime);
+//     { song.setLastModifiedTime(lastModifiedTime);}
 //    song.setFileName(fileName);
 //
 //    return song;
@@ -442,7 +442,9 @@ Comparator<Song> _comparatorByTitle = (Song o1, Song o2) {
 /// A comparator that sorts on the artist.
 Comparator<Song> _comparatorByArtist = (Song o1, Song o2) {
   int ret = o1.getArtist().compareTo(o2.getArtist());
-  if (ret != 0) return ret;
+  if (ret != 0) {
+    return ret;
+  }
   return o1.compareBySongId(o2);
 };
 
@@ -450,7 +452,9 @@ int _compareByLastModifiedDate(Song o1, Song o2) {
   int mod1 = o1.lastModifiedTime;
   int mod2 = o2.lastModifiedTime;
 
-  if (mod1 == mod2) return o1.compareTo(o2);
+  if (mod1 == mod2) {
+    return o1.compareTo(o2);
+  }
   return mod1 < mod2 ? 1 : -1;
 }
 
@@ -467,7 +471,9 @@ Comparator<Song> _comparatorByLastModifiedDateLast = (Song o1, Song o2) {
 /// Compares its two arguments for order my most recent modification date.
 Comparator<Song> _comparatorByVersionNumber = (Song o1, Song o2) {
   int ret = o1.compareTo(o2);
-  if (ret != 0) return ret;
+  if (ret != 0) {
+    return ret;
+  }
   if (o1.getFileVersionNumber() != o2.getFileVersionNumber()) {
     return o1.getFileVersionNumber() < o2.getFileVersionNumber() ? -1 : 1;
   }

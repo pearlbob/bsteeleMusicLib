@@ -5,7 +5,9 @@ class SongMomentLocation {
   SongMomentLocation(this._chordSectionLocation, this._index);
 
   static SongMomentLocation? parseString(String? s) {
-    if (s == null) return null;
+    if (s == null) {
+      return null;
+    }
     return parse(MarkedString(s));
   }
 
@@ -13,14 +15,18 @@ class SongMomentLocation {
     ChordSectionLocation chordSectionLocation =
         ChordSectionLocation.parse(markedString);
 
-    if (markedString.available() < 2) return null;
+    if (markedString.available() < 2) {
+      return null;
+    }
 
     RegExpMatch? mr =
         numberRegexp.firstMatch(markedString.remainingStringLimited(5));
     if (mr != null) {
       try {
         int index = int.parse(mr.group(1)!);
-        if (index <= 0) return null;
+        if (index <= 0) {
+          return null;
+        }
         markedString.consume(mr.group(0)!.length);
         return SongMomentLocation(chordSectionLocation, index);
       } catch (nfe) {

@@ -60,7 +60,9 @@ class ScaleChord implements Comparable<ScaleChord> {
 
   ScaleChord? getAlias() {
     ScaleNote? alias = _scaleNote.alias;
-    if (alias == null) return null;
+    if (alias == null) {
+      return null;
+    }
     return ScaleChord(alias, _chordDescriptor);
   }
 
@@ -88,9 +90,13 @@ class ScaleChord implements Comparable<ScaleChord> {
   @override
   int compareTo(ScaleChord o) {
     int ret = scaleNote.compareTo(o.scaleNote);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     ret = chordDescriptor.compareTo(o.chordDescriptor);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     return 0;
   }
 

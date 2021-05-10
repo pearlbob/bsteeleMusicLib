@@ -5,7 +5,9 @@ import 'key.dart';
 
 class MeasureRepeatExtension extends MeasureComment {
   static MeasureRepeatExtension get(ChordSectionLocationMarker? marker) {
-    if (marker == null) return nullMeasureRepeatExtension;
+    if (marker == null) {
+      return nullMeasureRepeatExtension;
+    }
 
     switch (marker) {
       case ChordSectionLocationMarker.repeatUpperRight:

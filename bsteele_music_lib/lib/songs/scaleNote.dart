@@ -277,13 +277,17 @@ class ScaleNote implements Comparable<ScaleNote> {
 
       //  find and assign the alias, if it exists
       for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
-        if (e1 == ScaleNoteEnum.X) continue;
+        if (e1 == ScaleNoteEnum.X) {
+          continue;
+        }
         ScaleNote scaleNote1 = get(e1);
         if (scaleNote1.isNatural || scaleNote1._alias != null) {
           continue;
         } //  don't duplicate the effort
         for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
-          if (e2 == ScaleNoteEnum.X) continue;
+          if (e2 == ScaleNoteEnum.X) {
+            continue;
+          }
           ScaleNote scaleNote2 = get(e2);
           if (scaleNote2.isNatural || scaleNote2._alias != null) {
             continue;

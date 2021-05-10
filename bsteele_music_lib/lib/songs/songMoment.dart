@@ -105,32 +105,6 @@ class SongMoment implements Comparable<SongMoment> {
     return momentNumber < o.momentNumber ? -1 : 1;
   }
 
-//  @override
-//  int compareTo(SongMoment other) {
-//    int ret = momentNumber.compareTo(other.momentNumber);
-//    if (ret != 0) return ret;
-//    ret = _phraseIndex - other._phraseIndex;
-//    if (ret != 0) return ret;
-//    ret = _measureIndex - other._measureIndex;
-//    if (ret != 0) return ret;
-//
-//    if (_labelSectionVersions == null)
-//      return other._labelSectionVersions == null ? 0 : -1;
-//    if (other._labelSectionVersions == null) return 1;
-//
-//    ret = _labelSectionVersions.length - other._labelSectionVersions.length;
-//    if (ret != 0) return ret;
-//    if (_labelSectionVersions.isNotEmpty) {
-//      for (int i = 0; i < _labelSectionVersions.length; i++) {
-//        ret = _labelSectionVersions
-//            .elementAt(i)
-//            .compareTo(other._labelSectionVersions.elementAt(i));
-//        if (ret != 0) return ret;
-//      }
-//    }
-//    return 0;
-//  }
-
   @override
   bool operator ==(other) {
     if (identical(this, other)) {

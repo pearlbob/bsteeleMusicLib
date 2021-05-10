@@ -45,7 +45,9 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   ChordAnticipationOrDelay._(this._chordAnticipationOrDelayEnum, this._shortName);
 
   static ChordAnticipationOrDelay? parse(MarkedString? markedString) {
-    if (markedString == null) throw 'no data to parse';
+    if (markedString == null) {
+      throw 'no data to parse';
+    }
     if (markedString.isNotEmpty) {
       for (ChordAnticipationOrDelay a in _getSortedByShortName()) {
         if (markedString.available() >= a.shortName.length &&
@@ -60,7 +62,9 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
 
   static ChordAnticipationOrDelay get(ChordAnticipationOrDelayEnum e) {
     var ret = _getDelays()[e];
-    if (ret != null) return ret;
+    if (ret != null) {
+      return ret;
+    }
     throw 'ChordAnticipationOrDelay not found!';
   }
 

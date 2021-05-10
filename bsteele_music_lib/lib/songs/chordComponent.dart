@@ -27,7 +27,9 @@ class ChordComponent implements Comparable<ChordComponent> {
   static Set<ChordComponent> parse(String chordComponentString) {
     Set<ChordComponent> ret = {};
     for (String s in chordComponentString.split(RegExp(r'[,. ]'))) {
-      if (s.isEmpty) continue;
+      if (s.isEmpty) {
+        continue;
+      }
 
       ChordComponent? cc;
       for (ChordComponent t in _chordComponentByHalfSteps) {

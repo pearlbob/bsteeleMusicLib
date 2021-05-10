@@ -176,8 +176,12 @@ class Section implements Comparable<Section> {
 
   static bool lookahead(MarkedString markedString) {
     RegExpMatch? m = sectionRegexp.firstMatch(markedString.remainingStringLimited(maxLength));
-    if (m == null) return false;
-    if (m.groupCount < 2) return false;
+    if (m == null) {
+      return false;
+    }
+    if (m.groupCount < 2) {
+      return false;
+    }
     String sectionName = m.group(1)!;
     Section? section = parseString(sectionName.toLowerCase());
     //String sectionNumber = m.group(2)!;

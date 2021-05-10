@@ -296,7 +296,9 @@ class Pitch implements Comparable<Pitch> {
 
   static Pitch? findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
     for (Pitch p in getPitches()) {
-      if (p.scaleNote == scaleNote && p.number >= atOrAbove.number) return p;
+      if (p.scaleNote == scaleNote && p.number >= atOrAbove.number) {
+        return p;
+      }
     }
     return null;
   }
@@ -340,14 +342,18 @@ class Pitch implements Comparable<Pitch> {
   Pitch? nextHigherPitch() {
     List<Pitch> list = (isSharp ? sharps : flats);
     int n = _number + 1;
-    if (n >= list.length) return null;
+    if (n >= list.length) {
+      return null;
+    }
     return list[n];
   }
 
   Pitch? nextLowerPitch() {
     List<Pitch> list = (isSharp ? sharps : flats);
     int n = _number - 1;
-    if (n < 0) return null;
+    if (n < 0) {
+      return null;
+    }
     return list[n];
   }
 

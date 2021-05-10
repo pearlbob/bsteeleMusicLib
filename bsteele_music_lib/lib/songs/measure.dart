@@ -21,7 +21,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   Measure.deepCopy(Measure? measure) {
-    if (measure == null) return;
+    if (measure == null) {
+      return;
+    }
 
     beatCount = measure.beatCount;
 
@@ -49,17 +51,23 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   static Measure parse(final MarkedString markedString, final int beatsPerBar, final Measure? priorMeasure,
       {bool endOfRow = false}) {
     //  should not be white space, even leading, in a measure
-    if (markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) {
+      throw 'no data to parse';
+    }
 
     List<Chord> chords = [];
     Measure? ret;
 
     for (int i = 0; i < 32; i++) //  safety
     {
-      if (markedString.isEmpty) break;
+      if (markedString.isEmpty) {
+        break;
+      }
 
       //  assure this is not a section
-      if (Section.lookahead(markedString)) break;
+      if (Section.lookahead(markedString)) {
+        break;
+      }
 
       int mark = markedString.mark();
       try {
@@ -177,7 +185,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
           } else if (totalBeats > 1) {
             //  reduce the over specification
             for (Chord c in chords) {
-              if (c.beats == 1) c.implicitBeats = true;
+              if (c.beats == 1) {
+                c.implicitBeats = true;
+              }
             }
           }
         }
@@ -186,12 +196,16 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   Chord? getChordAtBeat(double beat) {
-    if (chords.isEmpty) return null;
+    if (chords.isEmpty) {
+      return null;
+    }
 
     double beatSum = 0;
     for (Chord chord in chords) {
       beatSum += chord.beats;
-      if (beat <= beatSum) return chord;
+      if (beat <= beatSum) {
+        return chord;
+      }
     }
     return chords[chords.length - 1];
   }
@@ -215,7 +229,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       for (Chord chord in chords) {
         newChords.add(chord.transpose(key, 0));
       }
-      if (newChords == chords) return this;
+      if (newChords == chords) {
+        return this;
+      }
       Measure ret = Measure(beatCount, newChords);
       ret.endOfRow = endOfRow;
       return ret;
@@ -258,10 +274,14 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       for (Chord chord in chords) {
         sb.write(chord.toMarkup());
       }
-      if (endOfRowChar != null && endOfRow) sb.write(endOfRowChar);
+      if (endOfRowChar != null && endOfRow) {
+        sb.write(endOfRowChar);
+      }
       return sb.toString();
     }
-    if (endOfRowChar != null && endOfRow) return 'X' + endOfRowChar;
+    if (endOfRowChar != null && endOfRow) {
+      return 'X' + endOfRowChar;
+    }
     return 'X'; // no chords
   }
 
@@ -282,7 +302,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   int compareTo(Measure o) {
-    if (beatCount != o.beatCount) return beatCount < o.beatCount ? -1 : 1;
+    if (beatCount != o.beatCount) {
+      return beatCount < o.beatCount ? -1 : 1;
+    }
     if (!listsEqual(chords, o.chords)) {
       //  compare the lists
       if (chords.length != o.chords.length) {
@@ -290,7 +312,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       }
       for (int i = 0; i < chords.length; i++) {
         int ret = chords[i].compareTo(o.chords[i]);
-        if (ret != 0) return ret;
+        if (ret != 0) {
+          return ret;
+        }
       }
     }
 

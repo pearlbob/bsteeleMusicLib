@@ -45,11 +45,15 @@ class Chord implements Comparable<Chord> {
   }
 
   static Chord? parse(final MarkedString markedString, int beatsPerBar) {
-    if (markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) {
+      throw 'no data to parse';
+    }
 
     int beats = beatsPerBar; //  default only
     ScaleChord? scaleChord = ScaleChord.parse(markedString);
-    if (scaleChord == null) return null;
+    if (scaleChord == null) {
+      return null;
+    }
 
     ChordAnticipationOrDelay? anticipationOrDelay = ChordAnticipationOrDelay.parse(markedString);
     if (anticipationOrDelay == null) {
@@ -72,12 +76,16 @@ class Chord implements Comparable<Chord> {
         while (markedString.isNotEmpty && markedString.charAt(0) == '.') {
           markedString.consume(1);
           beats++;
-          if (beats >= 12) break;
+          if (beats >= 12) {
+            break;
+          }
         }
       }
     }
 
-    if (beats > beatsPerBar) throw 'too many beats in the chord'; //  whoops
+    if (beats > beatsPerBar) {
+      throw 'too many beats in the chord';
+    } //  whoops
 
     Chord ret =
         Chord(scaleChord, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, (beats == beatsPerBar)); //  fixme
@@ -103,17 +111,29 @@ class Chord implements Comparable<Chord> {
   @override
   int compareTo(Chord o) {
     int ret = _scaleChord.compareTo(o._scaleChord);
-    if (ret != 0) return ret;
-    if (slashScaleNote == null && o.slashScaleNote != null) return -1;
-    if (slashScaleNote != null && o.slashScaleNote == null) return 1;
+    if (ret != 0) {
+      return ret;
+    }
+    if (slashScaleNote == null && o.slashScaleNote != null) {
+      return -1;
+    }
+    if (slashScaleNote != null && o.slashScaleNote == null) {
+      return 1;
+    }
     if (slashScaleNote != null && o.slashScaleNote != null) {
       ret = slashScaleNote!.compareTo(o.slashScaleNote!);
-      if (ret != 0) return ret;
+      if (ret != 0) {
+        return ret;
+      }
     }
-    if (beats != o.beats) return beats < o.beats ? -1 : 1;
+    if (beats != o.beats) {
+      return beats < o.beats ? -1 : 1;
+    }
 
     ret = _anticipationOrDelay.compareTo(o._anticipationOrDelay);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (_beatsPerBar != o._beatsPerBar) {
       return _beatsPerBar < o._beatsPerBar ? -1 : 1;
@@ -164,7 +184,9 @@ class Chord implements Comparable<Chord> {
     if (root != null) {
       for (var chordComponent in _scaleChord.getChordComponents()) {
         var p = root.offsetByHalfSteps(chordComponent.halfSteps);
-        if (p != null) ret.add(p);
+        if (p != null) {
+          ret.add(p);
+        }
       }
     }
     return ret;

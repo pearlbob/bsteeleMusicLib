@@ -236,7 +236,9 @@ class Key implements Comparable<Key> {
   /// Return the key represented by the given integer value.
   static Key getKeyByValue(int keyValue) {
     for (Key key in _getKeys().values) {
-      if (key._keyValue == keyValue) return key;
+      if (key._keyValue == keyValue) {
+        return key;
+      }
     }
     return get(KeyEnum.C); //  not found, so use the default, expected to be C
   }
@@ -456,7 +458,9 @@ class Key implements Comparable<Key> {
     if (_keyValue < 0) {
       return _keyValue.abs().toString() + MusicConstants.flatChar;
     }
-    if (_keyValue > 0) return _keyValue.toString() + MusicConstants.sharpChar;
+    if (_keyValue > 0) {
+      return _keyValue.toString() + MusicConstants.sharpChar;
+    }
     return '';
   }
 
@@ -464,7 +468,9 @@ class Key implements Comparable<Key> {
     if (_keyValue < 0) {
       return _keyValue.abs().toString() + 'b';
     }
-    if (_keyValue > 0) return _keyValue.toString() + '#';
+    if (_keyValue > 0) {
+      return _keyValue.toString() + '#';
+    }
     return '';
   }
 

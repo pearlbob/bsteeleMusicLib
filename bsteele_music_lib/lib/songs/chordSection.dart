@@ -35,16 +35,22 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   static ChordSection parse(MarkedString markedString, int beatsPerBar, bool strict) {
-    if (markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) {
+      throw 'no data to parse';
+    }
 
     markedString.stripLeadingWhitespace(); //  includes newline
-    if (markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) {
+      throw 'no data to parse';
+    }
 
     SectionVersion sectionVersion;
     try {
       sectionVersion = SectionVersion.parse(markedString);
     } catch (e) {
-      if (strict) rethrow;
+      if (strict) {
+        rethrow;
+      }
 
       //  cope with badly formatted songs
       sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
@@ -58,10 +64,14 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     for (int i = 0; i < 2000; i++) //  arbitrary safety hard limit
     {
       markedString.stripLeadingWhitespace();
-      if (markedString.isEmpty) break;
+      if (markedString.isEmpty) {
+        break;
+      }
 
       //  quit if next section found
-      if (Section.lookahead(markedString)) break;
+      if (Section.lookahead(markedString)) {
+        break;
+      }
 
       try {
         //  look for a block repeat
@@ -185,7 +195,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   bool add(int index, MeasureNode? newMeasureNode) {
-    if (newMeasureNode == null) return false;
+    if (newMeasureNode == null) {
+      return false;
+    }
 
     switch (newMeasureNode.getMeasureNodeType()) {
       case MeasureNodeType.repeat:
@@ -211,7 +223,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   bool insert(int index, MeasureNode? newMeasureNode) {
-    if (newMeasureNode == null) return false;
+    if (newMeasureNode == null) {
+      return false;
+    }
 
     switch (newMeasureNode.getMeasureNodeType()) {
       case MeasureNodeType.repeat:
@@ -244,20 +258,15 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
   }
 
-//  void _addAllPhrasesAt(int index, List<Phrase> list) {
-//    if (_phrases == null) _phrases = List();
-//    if (_phrases.length < index)
-//      _phrases.addAll(list);
-//    else {
-//      for (Phrase phrase in list) _phrases.insert(index++ + 1, phrase);
-//    }
-//  }
-
   MeasureNode? findMeasureNode(MeasureNode measureNode) {
     for (Phrase measureSequenceItem in phrases) {
-      if (measureSequenceItem == measureNode) return measureSequenceItem;
+      if (measureSequenceItem == measureNode) {
+        return measureSequenceItem;
+      }
       MeasureNode? mn = measureSequenceItem.findMeasureNode(measureNode);
-      if (mn != null) return mn;
+      if (mn != null) {
+        return mn;
+      }
     }
     return null;
   }
@@ -266,7 +275,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     int index = 0;
     for (Phrase phrase in phrases) {
       int i = phrase.findMeasureNodeIndex(measureNode);
-      if (i >= 0) return index + i;
+      if (i >= 0) {
+        return index + i;
+      }
       index += phrase.length;
     }
     return -1;
@@ -274,7 +285,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   Phrase? findPhrase(MeasureNode measureNode) {
     for (Phrase phrase in phrases) {
-      if (phrase == measureNode || phrase.contains(measureNode)) return phrase;
+      if (phrase == measureNode || phrase.contains(measureNode)) {
+        return phrase;
+      }
     }
     return null;
   }
@@ -292,7 +305,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   int indexOf(Phrase phrase) {
     for (int i = 0; i < phrases.length; i++) {
       Phrase? p = phrases[i];
-      if (phrase == p) return i;
+      if (phrase == p) {
+        return i;
+      }
     }
     return -1;
   }
@@ -335,7 +350,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     try {
       Phrase? phrase = getPhrase(phraseIndex);
       bool ret = phrase?.deleteAt(measureIndex) ?? false;
-      if (ret && (phrase?.isEmpty() ?? true)) return deletePhrase(phraseIndex);
+      if (ret && (phrase?.isEmpty() ?? true)) {
+        return deletePhrase(phraseIndex);
+      }
       return ret;
     } catch (e) {
       return false;
@@ -381,7 +398,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
     Phrase? measureSequenceItem = _phrases[_phrases.length - 1];
     List<Measure> measures = measureSequenceItem.measures;
-    if (measures.isEmpty) return measureSequenceItem;
+    if (measures.isEmpty) {
+      return measureSequenceItem;
+    }
     return measures[measures.length - 1];
   }
 
@@ -398,7 +417,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   @override
   MeasureNode transposeToKey(Key? key) {
-    if (key == null) return this;
+    if (key == null) {
+      return this;
+    }
     List<Phrase>? newPhrases;
     newPhrases = [];
     for (Phrase phrase in _phrases) {
@@ -640,7 +661,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   int compareTo(ChordSection o) {
     int ret = _sectionVersion.compareTo(o._sectionVersion);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (_phrases.length != o._phrases.length) {
       return _phrases.length < o._phrases.length ? -1 : 1;
@@ -648,7 +671,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
     for (int i = 0; i < _phrases.length; i++) {
       ret = _phrases[i].toMarkup().compareTo(o._phrases[i].toMarkup());
-      if (ret != 0) return ret;
+      if (ret != 0) {
+        return ret;
+      }
     }
     return 0;
   }

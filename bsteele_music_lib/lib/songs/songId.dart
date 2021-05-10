@@ -13,7 +13,9 @@ class SongId implements Comparable<SongId> {
             (coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_' + _toSongId(coverArtist));
 
   static String _toSongId(String? s) {
-    if ( s == null ) return 'unknown';
+    if ( s == null ) {
+      return 'unknown';
+    }
     return s
         .trim()
         .replaceAllMapped(notWordOrSpaceRegExp, (Match m) => '')

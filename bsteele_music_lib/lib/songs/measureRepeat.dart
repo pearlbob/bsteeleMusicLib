@@ -21,7 +21,9 @@ class MeasureRepeat extends Phrase {
   }
 
   static MeasureRepeat parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
-    if (markedString.isEmpty) throw 'no data to parse';
+    if (markedString.isEmpty) {
+      throw 'no data to parse';
+    }
 
     int initialMark = markedString.mark();
 
@@ -30,7 +32,9 @@ class MeasureRepeat extends Phrase {
     markedString.stripLeadingSpaces();
 
     bool hasBracket = markedString.charAt(0) == '[';
-    if (hasBracket) markedString.consume(1);
+    if (hasBracket) {
+      markedString.consume(1);
+    }
 
 //  look for a set of measures and comments
     bool barFound = false;
@@ -47,7 +51,9 @@ class MeasureRepeat extends Phrase {
       if (markedString.charAt(0) == '|') {
         barFound = true;
         markedString.consume(1);
-        if (measures.isNotEmpty) measures[measures.length - 1].endOfRow = true;
+        if (measures.isNotEmpty) {
+          measures[measures.length - 1].endOfRow = true;
+        }
         continue;
       }
       if (barFound && markedString.charAt(0) == ',') {
@@ -65,7 +71,9 @@ class MeasureRepeat extends Phrase {
       }
 
       //  assure this is not a section
-      if (Section.lookahead(markedString)) break;
+      if (Section.lookahead(markedString)) {
+        break;
+      }
 
       int mark = markedString.mark();
       try {
@@ -128,8 +136,12 @@ class MeasureRepeat extends Phrase {
   @override
   MeasureNode? findMeasureNode(MeasureNode measureNode) {
     MeasureNode? ret = super.findMeasureNode(measureNode);
-    if (ret != null) return ret;
-    if (measureNode == _repeatMarker) return _repeatMarker;
+    if (ret != null) {
+      return ret;
+    }
+    if (measureNode == _repeatMarker) {
+      return _repeatMarker;
+    }
     return null;
   }
 
@@ -224,7 +236,9 @@ class MeasureRepeat extends Phrase {
 
   @override
   bool delete(Measure? measure) {
-    if (measure == null) return false;
+    if (measure == null) {
+      return false;
+    }
     if (measure == getRepeatMarker()) {
       //  fixme: improve delete repeat marker
       //  fake it
@@ -284,7 +298,9 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toJson() {
-    if (measures.isEmpty) return ' ';
+    if (measures.isEmpty) {
+      return ' ';
+    }
 
     StringBuffer sb = StringBuffer();
     if (measures.isNotEmpty) {
@@ -294,7 +310,9 @@ class MeasureRepeat extends Phrase {
       for (Measure measure in measures) {
         sb.write(measure.toJson());
         if (i == last) {
-          if (rowCount > 0) sb.write(' |');
+          if (rowCount > 0) {
+            sb.write(' |');
+          }
           sb.write(' x' + repeats.toString() + '\n');
           break;
         } else if (measure.endOfRow) {
@@ -316,13 +334,19 @@ class MeasureRepeat extends Phrase {
 
   @override
   int compareTo(Object o) {
-    if (!(o is MeasureRepeat)) return -1;
+    if (!(o is MeasureRepeat)) {
+      return -1;
+    }
 
     int ret = super.compareTo(o);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     MeasureRepeat other = o;
     ret = _repeatMarker.compareTo(other._repeatMarker);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     return 0;
   }
 

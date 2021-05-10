@@ -23,14 +23,20 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection> {
   int compareTo(LegacyDrumSection o) {
     if (!listsEqual(drumMeasures, o.drumMeasures)) {
       //  compare the lists
-      if (drumMeasures == null) return o.drumMeasures == null ? 0 : 1;
-      if (o.drumMeasures == null) return -1;
+      if (drumMeasures == null) {
+        return o.drumMeasures == null ? 0 : 1;
+      }
+      if (o.drumMeasures == null) {
+        return -1;
+      }
       if (drumMeasures!.length != o.drumMeasures!.length) {
         return drumMeasures!.length < o.drumMeasures!.length ? -1 : 1;
       }
       for (int i = 0; i < drumMeasures!.length; i++) {
         int ret = drumMeasures![i].compareTo(o.drumMeasures![i]);
-        if (ret != 0) return ret;
+        if (ret != 0) {
+          return ret;
+        }
       }
     }
     return 0;

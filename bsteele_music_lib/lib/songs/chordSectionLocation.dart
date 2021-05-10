@@ -134,17 +134,23 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   }
 
   ChordSectionLocation? priorMeasureIndexLocation() {
-    if (!_hasPhraseIndex || !_hasMeasureIndex || _measureIndex == 0) return null;
+    if (!_hasPhraseIndex || !_hasMeasureIndex || _measureIndex == 0) {
+      return null;
+    }
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex - 1);
   }
 
   ChordSectionLocation nextMeasureIndexLocation() {
-    if (!_hasPhraseIndex || !_hasMeasureIndex) return this;
+    if (!_hasPhraseIndex || !_hasMeasureIndex) {
+      return this;
+    }
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
   }
 
   ChordSectionLocation nextPhraseIndexLocation() {
-    if (!_hasPhraseIndex) return this;
+    if (!_hasPhraseIndex) {
+      return this;
+    }
     return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex);
   }
 
@@ -200,17 +206,25 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     }
 
     ret = _phraseIndex - other._phraseIndex;
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
     ret = _measureIndex - other._measureIndex;
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (_labelSectionVersions == null) {
       return other._labelSectionVersions == null ? 0 : -1;
     }
-    if (other._labelSectionVersions == null) return 1;
+    if (other._labelSectionVersions == null) {
+      return 1;
+    }
 
     ret = (_labelSectionVersions?.length ?? 0) - (other._labelSectionVersions?.length ?? 0);
-    if (ret != 0) return ret;
+    if (ret != 0) {
+      return ret;
+    }
 
     if (_labelSectionVersions == null && other._labelSectionVersions == null) {
       ret = 0;
@@ -223,7 +237,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       if (ret == 0) {
         for (int i = 0; i < _labelSectionVersions!.length; i++) {
           ret = _labelSectionVersions!.elementAt(i).compareTo(other._labelSectionVersions!.elementAt(i));
-          if (ret != 0) return ret;
+          if (ret != 0) {
+            return ret;
+          }
         }
       }
     }
