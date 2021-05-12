@@ -184,14 +184,14 @@ class ScaleNote implements Comparable<ScaleNote> {
     int c = markedString.firstUnit();
     if (c < 'A'.codeUnitAt(0) || c > 'G'.codeUnitAt(0)) {
       if (c == 'X'.codeUnitAt(0)) {
-        markedString.getNextChar();
+        markedString.pop();
         return get(ScaleNoteEnum.X);
       }
       throw ArgumentError('scale note must start with A to G');
     }
 
     StringBuffer stringBuffer = StringBuffer();
-    stringBuffer.write(markedString.getNextChar());
+    stringBuffer.write(markedString.pop());
 
     //  look for modifier
     if (markedString.isNotEmpty) {
@@ -199,13 +199,13 @@ class ScaleNote implements Comparable<ScaleNote> {
         case 'b':
         case MusicConstants.flatChar:
           stringBuffer.write('b');
-          markedString.getNextChar();
+          markedString.pop();
           break;
 
         case '#':
         case MusicConstants.sharpChar:
           stringBuffer.write('s');
-          markedString.getNextChar();
+          markedString.pop();
           break;
       }
     }

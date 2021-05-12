@@ -1543,4 +1543,16 @@ o: end here''');
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.chordRowMaxLength(), 8);
   });
+
+  test('test SongBase.shareLinesToRow()', () {
+    int beatsPerBar = 4;
+    SongBase a;
+
+    //  assure that the song can end on an empty section
+    a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
+        'V: C F C C,F F C C,  G F C G', 'v:');
+    expect(a.lyricSections.length, 1);
+    expect(a.lyricSections.first.lyricsLines.length, 1);
+    expect(a.lyricSections.first.lyricsLines[0], '');
+  });
 }

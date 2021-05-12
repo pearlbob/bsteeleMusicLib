@@ -2,93 +2,85 @@ import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('test MarkedStrings', ()
-  {
+  test('test MarkedStrings', () {
     {
-      MarkedString ms =  MarkedString('1234');
-      expect(4, ms.available());
-      ms.getNextChar();
+      MarkedString ms = MarkedString('1234');
+      expect(ms.available(), 4);
+      expect(ms.first(), '1');
+      expect(ms.pop(), '1');
       ms.mark();
-      expect(3, ms.available());
-      expect('2', ms.charAt(0));
-      expect('3', ms.charAt(1));
-      expect('4', ms.charAt(2));
+      expect(ms.available(), 3);
+      expect(ms.first(), '2');
+      expect(ms.available(), 3);
+      expect(ms.pop(), '2');
+      expect(ms.available(), 2);
+      expect(ms.pop(), '3');
+      expect(ms.available(), 1);
+      expect(ms.first(), '4');
 
-      try {
-        ms.charAt(3);
-        fail("expected to fail, but didn't");
-      }
-      on RangeError {
-        //  expected
-      }
-
-      expect('2', ms.getNextChar());
-      expect('3', ms.getNextChar());
-      expect('4', ms.getNextChar());
-      expect(0, ms.available());
-
-      try {
-        ms.getNextChar();
-        fail("expected to fail, but didn't");
-      }
-      on RangeError {
-        //  expected
-      }
+      expect(ms.charAt(3), '');
 
       ms.resetToMark();
-      expect(3, ms.available());
-      expect('2', ms.getNextChar());
-      expect('3', ms.getNextChar());
-      expect('4', ms.getNextChar());
-      expect(0, ms.available());
+      expect(ms.available(), 3);
+      expect(ms.first(), '2');
+      expect(ms.pop(), '2');
+      expect(ms.pop(), '3');
+      expect(ms.available(), 1);
+      expect(ms.pop(), '4');
+      expect(ms.available(), 0);
 
-      try {
-        ms.getNextChar();
-        fail("expected to fail, but didn't");
-      } on RangeError {
-        //  expected
-      }
+      expect(ms.pop(), '');
+      expect(ms.available(), 0);
+
+      ms.resetToMark();
+      expect(ms.available(), 3);
+      expect(ms.first(), '2');
+      expect(ms.available(), 3);
+      expect(ms.pop(), '2');
+      expect(ms.available(), 2);
+      expect(ms.pop(), '3');
+      expect(ms.available(), 1);
+      expect(ms.pop(), '4');
+      expect(ms.available(), 0);
+
+      expect(ms.first(), '');
+      expect(ms.available(), 0);
+      expect(ms.pop(), '');
+      expect(ms.available(), 0);
 
       ms.resetTo(2);
-      expect(2, ms.available());
-      expect('3', ms.getNextChar());
-      expect('4', ms.getNextChar());
-      expect(0, ms.available());
-
-      try {
-        ms.getNextChar();
-        fail("expected to fail, but didn't");
-      } on RangeError {
-        //  expected
-      }
+      expect(ms.available(), 2);
+      expect(ms.pop(), '3');
+      expect(ms.available(), 1);
+      expect(ms.first(), '4');
+      expect(ms.available(), 1);
+      expect(ms.pop(), '4');
+      expect(ms.available(), 0);
+      expect(ms.pop(), '');
     }
     {
-      MarkedString eb =  MarkedString('s');
+      MarkedString eb = MarkedString('s');
       expect(false, eb.isEmpty);
-      eb.getNextChar();
+      eb.pop();
       expect(true, eb.isEmpty);
     }
 
     {
-      MarkedString markedString =  MarkedString('1234');
-      expect(4, markedString.available());
-      expect('1', markedString.charAt(0));
-      expect('2', markedString.charAt(1));
-      expect('4', markedString.charAt(3));
-      try {
-        markedString.charAt(4);
-        fail("expected to fail, but didn't");
-      } on RangeError {
-        //  expected
-      }
-      markedString.getNextChar();
-      expect(3, markedString.available());
-      expect('2', markedString.charAt(0));
+      MarkedString markedString = MarkedString('1234');
+      expect(markedString.available(), 4);
+      expect(markedString.charAt(0), '1');
+      expect(markedString.charAt(1), '2');
+      expect(markedString.charAt(3), '4');
+      expect(markedString.charAt(4), '');
+
+      markedString.pop();
+      expect(markedString.available(), 3);
+      expect(markedString.charAt(0), '2');
     }
 
     {
       String s = '1234';
-      MarkedString markedString =  MarkedString(s);
+      MarkedString markedString = MarkedString(s);
 
       String actual = markedString.remainingStringLimited(25);
       expect(s, actual);

@@ -58,11 +58,8 @@ class ScaleChord implements Comparable<ScaleChord> {
     return ret;
   }
 
-  ScaleChord? getAlias() {
-    ScaleNote? alias = _scaleNote.alias;
-    if (alias == null) {
-      return null;
-    }
+  ScaleChord getAlias() {
+    ScaleNote alias = _scaleNote.alias;
     return ScaleChord(alias, _chordDescriptor);
   }
 

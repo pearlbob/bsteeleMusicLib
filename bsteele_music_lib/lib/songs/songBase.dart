@@ -62,7 +62,7 @@ class SongBase {
   /// The split from Song was done for testability reasons.
   /// It's much easier to test free of GWT.
   static SongBase createSongBase(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
-      int unitsPerMeasure, String chords, String lyricsToParse) {
+      int unitsPerMeasure, String chords, String rawLyrics) {
     SongBase song = SongBase();
     song.setTitle(title);
     song.setArtist(artist);
@@ -70,7 +70,7 @@ class SongBase {
     song.setKey(key);
     song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setChords(chords);
-    song.setRawLyrics(lyricsToParse);
+    song.setRawLyrics(rawLyrics);
     song.setBeatsPerMinute(bpm);
 
     return song;
@@ -301,7 +301,7 @@ class SongBase {
             //  compute lyrics for this row, when required
             if (songMoment.row != lastRow) {
               lastRow = songMoment.row;
-              rowLyrics = _shareLinesToRow(
+              rowLyrics = shareLinesToRow(
                   songMoment.chordSection.chordRowCount,
                   (songMoment.row ?? 0) - (getSongMoment(songMoment.chordSectionSongMomentNumber)?.row ?? 0),
                   songMoment.lyricSection.lyricsLines);
@@ -328,7 +328,7 @@ class SongBase {
 
   /// share the given lines to the given row.
   /// extra lines go to the early measures until depleted.
-  String _shareLinesToRow(
+  static String shareLinesToRow(
       int rowCount,
       int sectionRowNumber, //  measure number - section start measure number
       List<String> lines) {
@@ -2515,6 +2515,8 @@ class SongBase {
         try {
           //  try to find the section version marker
           SectionVersion sectionVersion = SectionVersion.parse(markedString);
+
+          //  finish any lyric section now that we have a new section version to parse
           if (lyricSection != null) {
             lyricSection.stripLastEmptyLyricLine();
             _lyricSections.add(lyricSection);

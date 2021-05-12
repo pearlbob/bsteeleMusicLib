@@ -107,20 +107,26 @@ class MarkedString {
 
   bool get isNotEmpty => _string.isNotEmpty && _index < _string.length;
 
-  String getNextChar() {
-    return _string[_index++];
+  String pop() {
+    var ret = charAt(0);
+    _index = min(_index + 1, _string.length);
+    return ret;
   }
 
   int codeUnitAt(int index) {
-    return _string[_index].codeUnitAt(0);
+    return charAt(0).codeUnitAt(0);
   }
 
   int firstUnit() {
-    return _string[_index].codeUnitAt(0);
+    return charAt(0).codeUnitAt(0);
   }
 
   String first() {
-    return _string[_index].substring(0, 1);
+    var s = charAt(0);
+    if (s.isEmpty) {
+      return '';
+    }
+    return charAt(0).substring(0, 1);
   }
 
   int indexOf(String s) {
@@ -134,8 +140,12 @@ class MarkedString {
   }
 
   ///  return character at location relative to current _index
-  String charAt(int i) {
-    return _string[_index + i];
+  String charAt(int n) {
+    var i = _index + n;
+    if (i >= _string.length) {
+      return '';
+    }
+    return _string[i];
   }
 
   void consume(int? n) {
@@ -154,7 +164,7 @@ class MarkedString {
         case ' ':
         case '\t':
         case '\r':
-          getNextChar();
+          pop();
           continue;
       }
       break;
@@ -169,7 +179,7 @@ class MarkedString {
         case '\t':
         case '\r':
         case '\n':
-          getNextChar();
+          pop();
           continue;
       }
       break;

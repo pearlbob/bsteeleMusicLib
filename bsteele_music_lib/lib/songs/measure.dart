@@ -81,14 +81,14 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         //  see if this is a chordless measure
         if (markedString.charAt(0) == 'X') {
           ret = Measure(beatsPerBar, emptyChordList);
-          markedString.getNextChar();
+          markedString.pop();
           break;
         }
 
         //  see if this is a repeat measure
         if (chords.isEmpty && markedString.charAt(0) == '-' && priorMeasure != null) {
           ret = Measure(beatsPerBar, priorMeasure.chords);
-          markedString.getNextChar();
+          markedString.pop();
           break;
         }
         break;
