@@ -109,6 +109,7 @@ class LyricSection implements Comparable<LyricSection> {
     return runtimeType == other.runtimeType &&
         other is LyricSection &&
         _sectionVersion == other._sectionVersion &&
+        _index == other._index &&
         drumSection == other.drumSection &&
         listsEqual(_lyricsLines, other._lyricsLines);
   }

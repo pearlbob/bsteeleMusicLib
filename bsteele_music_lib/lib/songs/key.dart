@@ -285,11 +285,10 @@ class Key implements Comparable<Key> {
           if ((count = useMap[diatonicScaleNote]) != null) {
             score += count! * guessWeights[i];
           } else {
-            if ((diatonic = diatonic.getAlias()) != null) {
-              diatonicScaleNote = diatonic.scaleNote;
-              if ((count = useMap[diatonicScaleNote]) != null) {
-                score += count! * guessWeights[i];
-              }
+            diatonic = diatonic.getAlias();
+            diatonicScaleNote = diatonic.scaleNote;
+            if ((count = useMap[diatonicScaleNote]) != null) {
+              score += count! * guessWeights[i];
             }
           }
         }

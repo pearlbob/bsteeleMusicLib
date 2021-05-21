@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
 import 'package:string_similarity/string_similarity.dart';
+import 'package:english_words/english_words.dart';
 
 import 'appLogger.dart';
 
@@ -49,6 +50,7 @@ arguments:
 -v                  verbose output utility's allSongs list
 -V                  very verbose output
 -w {file}           write the utility's allSongs list to the given file
+-words              show word statistics
 -x {file}           expand a songlyrics list file to the output directory
 -xmas               filter for christmas songs
 
@@ -379,7 +381,7 @@ coerced to reflect the songlist's last modification for that song.
           }
           {
             var chordDescriptorUsageMap = <ChordDescriptor, int>{};
-            for ( var chordDescriptor in ChordDescriptor.values ){
+            for (var chordDescriptor in ChordDescriptor.values) {
               chordDescriptorUsageMap[chordDescriptor] = 0;
             }
             for (var song in allSongs) {
@@ -428,6 +430,29 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
+          break;
+
+        case '-words':
+          for (var song in allSongs) {
+            logger.i('${song.title} by ${song.artist}:');
+
+            for (var lyricSection in song.lyricSections) {
+              logger.i('    ${lyricSection.sectionVersion} ${lyricSection.lyricsLines.length}');
+              var lineNumber = 0;
+
+              for (var line in lyricSection.lyricsLines) {
+                lineNumber++;
+                var syllableCount = 0;
+                for (var word in line.split(_spaceRegexp)) {
+                  if (word.isNotEmpty) {
+                    syllableCount += syllables(word);
+                  }
+                }
+                logger.i('       $lineNumber: $syllableCount: $line');
+              }
+            }
+          }
+
           break;
 
         case '-v':
@@ -705,3 +730,4 @@ coerced to reflect the songlist's last modification for that song.
 }
 
 final RegExp _csvLineSplit = RegExp(r'[\,\r]');
+final RegExp _spaceRegexp = RegExp(r'[^\w]');
