@@ -478,6 +478,11 @@ class Key implements Comparable<Key> {
     return _keyEnum.index - other._keyEnum.index;
   }
 
+  @override
+  bool operator ==(other) {
+    return runtimeType == other.runtimeType && identical(this, other);
+  }
+
   bool get isSharp => _keyValue > 0;
 
   /// Returns the name of this enum constant in a user friendly format,

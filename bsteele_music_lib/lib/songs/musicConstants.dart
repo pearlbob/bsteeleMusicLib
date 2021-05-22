@@ -1,6 +1,6 @@
 import 'chordDescriptor.dart';
 
-enum MajorDiatonic { i, ii, iii, IV, V, VI, vii }
+enum MajorDiatonic { I, ii, iii, IV, V, VI, vii }
 
 enum MinorDiatonic { i, ii, III, iv, v, VI, VII }
 
