@@ -1,6 +1,7 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/chordPro.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -43,7 +44,7 @@ String _andILoveHer = '''{t:And I Love Her}
  [BRIDGE]
  [C#m] A love like [B]ours [C#m] Could never [Abm]die
  [C#m] As long as [Abm]I Have you [B7]near me
- 
+
  [C#m] [B] [C#m] [Abm] [C#m] [Abm] [B7] [B7] 
  {sot}
  G:--------|--------|--------|--------|--------|--------|--------|--------|
@@ -63,7 +64,7 @@ String _andILoveHer = '''{t:And I Love Her}
  A:--------|4--44---|--------|4--44---|--------|4--44---|0--4----|2-------|------2-|
  E:--------|--------|--------|--------|--------|--------|--------|--------|--------|
  {eot}
- 
+
  [INSTRUMENTAL]
  ||
  [Gm] [Dm] [Gm] [Dm] [Gm] [Dm] [Bb] [C7] [F] 
@@ -73,7 +74,7 @@ String _andILoveHer = '''{t:And I Love Her}
  A:--------|--------|--------|--------|--------|--------|1--11---|3--33---|------3-|
  E:3--33---|--------|3--33---|--------|3--33---|--------|--------|--------|--------|
  {eot}
- 
+
  [VERSE]
  [F#m] Bright are the [C#m]stars that shine [F#m] Dark is the [C#m]sky
  [F#m] I know this [C#m]love of mine [A] Will never [B7]die And I [E]love her[E]
@@ -85,7 +86,7 @@ String _andILoveHer = '''{t:And I Love Her}
  A:--------|4--44---|--------|4--44---|--------|4--44---|0--4----|2-------|------2-|
  E:--------|--------|--------|--------|--------|--------|--------|--------|--------|
  {eot}
- 
+
  [CODA]
  F#m F#m E E F#m F#m D (let ring)
  
@@ -106,7 +107,45 @@ void main() {
 
   test('chordPro testing', () {
     ChordPro chordPro = ChordPro();
-   Song song = chordPro.parse(_andILoveHer);
-   logger.i('song: ${song.toJson()}');
+
+    Song song = chordPro.parse(_andILoveHer);
+    logger.i(song.toJson());
+    expect(song.title, 'And I Love Her');
+    expect(song.artist, 'The Beatles');
+    expect(song.copyright, '');
+    expect(song.timeSignature, TimeSignature.defaultTimeSignature);
+    expect(song.songMoments.length, 105);
+    expect(
+        song.rawLyrics,
+        'I:\n'
+            '\n'
+            'V:\n'
+            'I give her | all my love | That\'s all I | do\n'
+            'And if you | saw my love | You\'d love her, | too I | love her |\n'
+            '\n'
+            'V:\n'
+            'She gives me | everything | And tender | ly\n'
+            'The kiss my | lover brings | She brings to | me And I | love her |\n'
+            '\n'
+            'Br:\n'
+            'A love like | ours | Could never | die\n'
+            'As long as | I Have you | near me\n'
+            '\n'
+            'V:\n'
+            'Bright are the | stars that shine | Dark is the | sky\n'
+            'I know this | love of mine | Will never | die And I | love her |\n'
+            '\n'
+            'I1:\n'
+            '\n'
+            'V:\n'
+            'Bright are the | stars that shine | Dark is the | sky\n'
+            'I know this | love of mine | Will never | die And I | love her |\n'
+            '\n'
+            'Co:\n'
+            'F#m F#m E E F#m F#m D (let ring)\n'
+            'Tabbed by Michael Oxner\n'
+            'moxner@nbnet.nb.ca\n'
+            'August 11, 2011\n'
+            '');
   });
 }

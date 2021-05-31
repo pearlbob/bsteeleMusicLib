@@ -11,7 +11,11 @@ import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 
 import '../appLogger.dart';
 
-//final RegExp whiteSpaceRegexp = RegExp(r'\s');
+final RegExp verticalBarRegExp = RegExp(r'\|');
+final RegExp allBarsRegExp = RegExp(r'^(\s*\|)*\s*$');
+final RegExp verticalBarEndRegExp = RegExp(r'\s*\|\s*$');
+final RegExp endOfLyricLineCleanupRegExp = RegExp(r'\s*\|\s*$');
+final RegExp slashSlashRegExp = RegExp(r'//');
 final RegExp chordRegExp = RegExp(r'\[([^\]]+)\]([^\[]*)');
 final RegExp defineDirectiveRegexp = RegExp(r'^\{define:');
 final RegExp chordDirectiveRegexp = RegExp(r'^\{chord:');
@@ -19,8 +23,8 @@ final RegExp annotationRegexp = RegExp(r'^\[\*(.*)\]');
 //textfont, textsize, textcolour
 //chordfont, chordsize, chordcolour
 //tabfont, tabsize, tabcolour
-final RegExp standardMetaDataDirectiveRegexp = RegExp(r'^\{(\w+)+:\s*(.*)');
-final RegExp metaDataDirectiveRegexp = RegExp(r'^\{meta:\s*(\w+)\s+(.*)');
+final RegExp standardMetaDataDirectiveRegexp = RegExp(r'^\{(\w+)+:\s*(.*)\s*}\s*$');
+final RegExp metaDataDirectiveRegexp = RegExp(r'^\{meta:\s*(\w+)\s+(.*)\s*}\s*$');
 final RegExp experimentalDirectiveRegexp = RegExp(r'^\{x_');
 final RegExp environmentDirectiveRegexp = RegExp(r'^\{(\w+)}$');
 final RegExp endOfTabRegexp = RegExp(r'^\{\s*(end_of_tab|eot)}');
@@ -31,27 +35,31 @@ enum _ChordProState {
 }
 
 class _ChordSectionAndLyrics {
-  _ChordSectionAndLyrics(this._chordSection, this._lyrics);
+  _ChordSectionAndLyrics(this._chordSection, this._lyricsLines);
 
   ChordSection _chordSection;
-  final String _lyrics;
+  final List<String> _lyricsLines;
 }
 
 class ChordPro {
   Song parse(String songAsChordPro) {
     _song = Song.createEmptySong();
 
+    //  parse the chordpro lines
     for (var line in songAsChordPro.split('\n')) {
       logger.d('parseLine: <$line>');
       parseLine(line);
     }
     _enterCurrentChordSection(null); //  finish the last chord section
 
+    StringBuffer lyrics = StringBuffer();
+
+
+  //  map the identical sections together
+    //  add a version number when required
     {
       Map<Section, int> sectionCounts = {};
       SplayTreeSet<ChordSection> chordSections = SplayTreeSet();
-
-      lyrics.clear();
 
       for (var csl in _chordSectionAndLyricsList) {
         ChordSection? chordSectionMatch;
@@ -82,11 +90,27 @@ class ChordPro {
         logger.d('cs: ${csl._chordSection.sectionVersion.toString()}');
 
         lyrics.write(csl._chordSection.sectionVersion.toString());
-        lyrics.write(csl._lyrics);
+        lyrics.write('\n');
+        for (var line in csl._lyricsLines) {
+          if (allBarsRegExp.hasMatch(line)) {
+            lyrics.write('\n');
+          } else {
+            lyrics.write(line);
+            lyrics.write('\n');
+          }
+        }
       }
+
+      //  give all the chords to the song
       StringBuffer sb = StringBuffer();
       for (var cs in chordSections) {
-        sb.write(cs);
+        //  deal with empty sections
+        if ( cs.phrases.isEmpty || cs.phrases.first.isEmpty() ){
+          //  put in an blank measure just to get the lyics out
+          sb.write('${cs.sectionVersion}\n\tX\n');
+        } else {
+          sb.write(cs);
+        }
         logger.d(cs.toString());
       }
       _song.setChords(sb.toString());
@@ -112,6 +136,11 @@ class ChordPro {
   void parseNonEmptyLine(String line) {
     //  comment
     if (line[0] == '#') {
+      logger.d('comment: <$line>');
+      return;
+    }
+    //  extension!  // comment
+    if (slashSlashRegExp.hasMatch(line)) {
       logger.d('comment: <$line>');
       return;
     }
@@ -282,6 +311,9 @@ class ChordPro {
       return;
     }
 
+    //  strip all vertical bars from the input
+    line = line.replaceAll(verticalBarRegExp, '');
+
     Iterable<RegExpMatch> allMatches = chordRegExp.allMatches(line);
     if (allMatches.isNotEmpty) {
       logger.d('chord line: <$line>');
@@ -298,44 +330,49 @@ class ChordPro {
         }
       }
 
-      for (var match in allMatches) {
-        try {
-          Measure measure = Measure.parseString(match.group(1) ?? '', _song.timeSignature.beatsPerBar, endOfRow: false);
-          lineMeasures.add(measure);
-          logger.d('   measure: ${measure.toMarkup()} <${match.group(1)}>,<${match.group(2)}>');
-          lineLyrics.write('${match.group(2)} |');
-        } catch (e) {
-          //  not looking like a section or measures, punt it to the user as lyrics
-          logger.d('   NOT measure: <${match.group(1)}>, <${match.group(2)}>');
-          lineLyrics.clear();
-          lineLyrics.write(line);
-          lineMeasures.clear();
-          break;
+      {
+        for (var match in allMatches) {
+          try {
+            Measure measure =
+                Measure.parseString(match.group(1) ?? '', _song.timeSignature.beatsPerBar, endOfRow: false);
+            lineMeasures.add(measure);
+            logger.d('   measure: ${measure.toMarkup()} <${match.group(1)}>,<${match.group(2)}>');
+              lineLyrics.write('${match.group(2).toString().trim()} | ');
+          } catch (e) {
+            //  not looking like a section or measures, punt it to the user as lyrics
+            logger.i('   NOT measure: <${match.group(1)}>, <${match.group(2)}>');
+            lineLyrics.write(line);
+            break;
+          }
         }
       }
-      lineLyrics.write('\n');
-      lyrics.write(lineLyrics.toString());
+
+        lyricsLines.add(lineLyrics.toString().replaceAll(verticalBarEndRegExp, ''));
       if (lineMeasures.isNotEmpty) {
         lineMeasures.last.endOfRow = true;
         measures.addAll(lineMeasures);
       }
       return;
+    } else {
+      line = line.trim().replaceAll(verticalBarEndRegExp, '');
+      if (line.isNotEmpty) {
+        lyricsLines.add(line);
+        logger.d('unknown: <$line>');
+      }
     }
-    logger.d('unknown: <$line>');
   }
 
   void _enterCurrentChordSection(Section? section) {
     if (currentChordSection != null) {
       currentChordSection!.add(0, Phrase(measures, 0));
-      lyrics.write('\n');
 
-      _chordSectionAndLyricsList.add(_ChordSectionAndLyrics(currentChordSection!, lyrics.toString()));
+      _chordSectionAndLyricsList.add(_ChordSectionAndLyrics(currentChordSection!, lyricsLines));
 
       currentChordSection = null;
     }
 
-    measures.clear();
-    lyrics.clear();
+    measures = [];
+    lyricsLines = [];
 
     if (section != null) {
       currentChordSection = ChordSection(SectionVersion(section, 0), []);
@@ -352,7 +389,7 @@ class ChordPro {
   }
 
   final List<_ChordSectionAndLyrics> _chordSectionAndLyricsList = [];
-  StringBuffer lyrics = StringBuffer();
+  List<String> lyricsLines = [];
   List<Measure> measures = [];
   ChordSection? currentChordSection;
   _ChordProState state = _ChordProState.normal;
