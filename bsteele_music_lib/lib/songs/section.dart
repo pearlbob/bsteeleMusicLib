@@ -138,6 +138,8 @@ class Section implements Comparable<Section> {
           mapStringToSection[section._alternateAbbreviation!.toLowerCase()] = section;
         }
       }
+      //  additions:
+      mapStringToSection['instrumental'] = Section.get(SectionEnum.intro);
     }
     return mapStringToSection;
   }

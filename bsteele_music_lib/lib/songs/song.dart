@@ -32,17 +32,8 @@ class Song extends SongBase implements Comparable<Song> {
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
-  static Song createSong(
-      String title,
-      String artist,
-      String copyright,
-      Key key,
-      int bpm,
-      int beatsPerBar,
-      int unitsPerMeasure,
-      String user,
-      String chords,
-      String lyrics) {
+  static Song createSong(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
+      int unitsPerMeasure, String user, String chords, String lyrics) {
     Song song = Song();
     song.setTitle(title);
     song.setArtist(artist);
@@ -52,7 +43,7 @@ class Song extends SongBase implements Comparable<Song> {
     song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setUser(user);
     song.setChords(chords);
-    song.setRawLyrics(lyrics);
+    song.rawLyrics = lyrics;
 
     return song;
   }
@@ -194,13 +185,12 @@ class Song extends SongBase implements Comparable<Song> {
 
   /// Read a single song from a JSON map
   static Song songFromJson(Map jsonSongFile) {
-    Song song = Song.createEmptySong();   //  fixme: better error modes on parse failures
+    Song song = Song.createEmptySong(); //  fixme: better error modes on parse failures
 
     Map? jsonSong = jsonSongFile['song'];
     jsonSong ??= jsonSongFile;
 
-    var fileDateTime =
-        DateTime.fromMillisecondsSinceEpoch(jsonSong['lastModifiedDate'] ?? 0);
+    var fileDateTime = DateTime.fromMillisecondsSinceEpoch(jsonSong['lastModifiedDate'] ?? 0);
     song.lastModifiedTime = fileDateTime.millisecondsSinceEpoch;
     song.setFileName(jsonSongFile['file']);
 
@@ -250,13 +240,12 @@ class Song extends SongBase implements Comparable<Song> {
             sb.write(lyricRows[lyricRow]);
             sb.write('\n');
           }
-          song.setRawLyrics(sb.toString().trim());
+          song.rawLyrics = sb.toString().trim();
           break;
         case 'lastModifiedDate':
-          DateTime songDateTime =
-              DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
+          DateTime songDateTime = DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
           if (songDateTime.isAfter(fileDateTime)) {
-            song.lastModifiedTime= songDateTime.millisecondsSinceEpoch;
+            song.lastModifiedTime = songDateTime.millisecondsSinceEpoch;
           }
           break;
         case 'user':
@@ -376,11 +365,8 @@ class Song extends SongBase implements Comparable<Song> {
     }
     ret.insert(
         0,
-        StringTriple(
-            'file date',
-            DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
-            DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime)
-                .toString()));
+        StringTriple('file date', DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
+            DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime).toString()));
     return ret;
   }
 
@@ -427,8 +413,7 @@ class Song extends SongBase implements Comparable<Song> {
     return 0;
   }
 
-  static final RegExp _timeSignatureExp =
-      RegExp(r'^\w*(\d{1,2})\w*\/\w*(\d)\w*$');
+  static final RegExp _timeSignatureExp = RegExp(r'^\w*(\d{1,2})\w*\/\w*(\d)\w*$');
 
   static final JsonDecoder jsonDecoder = JsonDecoder();
 }

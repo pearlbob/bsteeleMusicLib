@@ -1,4 +1,3 @@
-
 List<TimeSignature> knownTimeSignatures = [
   TimeSignature.defaultTimeSignature,
   TimeSignature(2, 2),
@@ -13,6 +12,14 @@ class TimeSignature {
     this.beatsPerBar,
     this.unitsPerMeasure,
   );
+
+  static TimeSignature parse(String timeSignatureAsString) {
+    RegExpMatch? m = _timeSignatureRegexp.firstMatch(timeSignatureAsString);
+    if (m == null) {
+      return TimeSignature.defaultTimeSignature;
+    }
+    return TimeSignature(int.parse(m.group(1) ?? '4'), int.parse(m.group(2) ?? '4'));
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -35,3 +42,5 @@ class TimeSignature {
   final int beatsPerBar; //  beats per bar, i.e. timeSignature numerator
   final int unitsPerMeasure; //  units per measure, i.e. timeSignature denominator
 }
+
+final RegExp _timeSignatureRegexp = RegExp(r'\s*(\d)\s*/\s*(\d)\s*$');

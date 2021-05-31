@@ -52,7 +52,7 @@ class SongBase {
     copyright = '';
     setKey(Key.get(KeyEnum.C));
     timeSignature = TimeSignature.defaultTimeSignature;
-    setRawLyrics('');
+    rawLyrics = '';
     setChords('');
     setBeatsPerMinute(100);
   }
@@ -70,7 +70,7 @@ class SongBase {
     song.setKey(key);
     song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setChords(chords);
-    song.setRawLyrics(rawLyrics);
+    song.rawLyrics = rawLyrics;
     song.setBeatsPerMinute(bpm);
 
     return song;
@@ -3341,7 +3341,7 @@ class SongBase {
     _clearCachedValues();
   }
 
-  void setRawLyrics(String rawLyrics) {
+  set rawLyrics(String rawLyrics) {
     _rawLyrics = rawLyrics;
     _parseLyrics();
   }
