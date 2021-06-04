@@ -120,7 +120,7 @@ void main() {
   test('testCurrentLocation', () {
     SongBase a = SongBase.createSongBase(
         'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'I:v: A BCm7/ADE C D', 'I:v: bob, bob, bob berand');
-    expect(MeasureEditType.append, a.getCurrentMeasureEditType());
+    expect(MeasureEditType.append, a.currentMeasureEditType);
     logger.d(a.getCurrentChordSectionLocation().toString());
 
     expect(a.getCurrentMeasureNode(), Measure.parseString('D', a.getBeatsPerBar()));
@@ -139,7 +139,7 @@ void main() {
 
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8,
         'I:v: A B C D ch3: [ E F G A ] x4 A# C D# F', 'I:v: bob, bob, bob berand');
-    expect(a.getCurrentMeasureEditType(), MeasureEditType.append);
+    expect(a.currentMeasureEditType, MeasureEditType.append);
     a.setDefaultCurrentChordLocation();
     expect(a.getCurrentMeasureNode(), Measure.parseString('F', a.getBeatsPerBar()));
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('i:0:0'));
@@ -189,7 +189,7 @@ void main() {
 
     for (int i = 50; i < 401; i++) {
       a.setBeatsPerMinute(i);
-      expect(a.getBeatsPerMinute(), i);
+      expect(a.beatsPerMinute, i);
     }
   });
 
@@ -1554,5 +1554,22 @@ o: end here''');
     expect(a.lyricSections.length, 1);
     expect(a.lyricSections.first.lyricsLines.length, 1);
     expect(a.lyricSections.first.lyricsLines[0], '');
+  });
+
+  test('test last modified time', () {
+    int now = DateTime.now().millisecondsSinceEpoch;
+    logger.i('now: $now');
+
+    int beatsPerBar = 4;
+    SongBase a;
+
+    //  assure that the song can end on an empty section
+    a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
+        'V: C F C C,F F C C,  G F C G', 'v:');
+    logger.i('a.lastModifiedTime: ${a.lastModifiedTime}');
+    expect(now <= a.lastModifiedTime, isTrue);
+    now = DateTime.now().millisecondsSinceEpoch;
+    logger.i('now: $now');
+    expect(now >= a.lastModifiedTime, isTrue);
   });
 }

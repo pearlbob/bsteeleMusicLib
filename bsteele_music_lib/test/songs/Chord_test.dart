@@ -79,7 +79,7 @@ void testChordTranspose(Key key) {
 void main() {
   Logger.level = Level.warning;
 
-  group('chords', () {
+  group('chords ', () {
     test('testSetScaleChord testing', () {
       SplayTreeSet<ScaleChord> slashScaleChords = SplayTreeSet();
       for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {

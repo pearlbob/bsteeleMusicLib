@@ -46,11 +46,11 @@ enum UpperCaseState {
 class SongBase {
   ///  Not to be used externally
   SongBase() {
-    setTitle('');
-    setArtist('');
-    setCoverArtist(null);
+    title = '';
+    artist = '';
+    coverArtist = null;
     copyright = '';
-    setKey(Key.get(KeyEnum.C));
+    key = Key.get(KeyEnum.C);
     timeSignature = TimeSignature.defaultTimeSignature;
     rawLyrics = '';
     setChords('');
@@ -64,14 +64,15 @@ class SongBase {
   static SongBase createSongBase(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
       int unitsPerMeasure, String chords, String rawLyrics) {
     SongBase song = SongBase();
-    song.setTitle(title);
-    song.setArtist(artist);
-    song.setCopyright(copyright);
-    song.setKey(key);
+    song.title = title;
+    song.artist = artist;
+    song.copyright = copyright;
+    song.key = key;
     song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setChords(chords);
     song.rawLyrics = rawLyrics;
     song.setBeatsPerMinute(bpm);
+    song.lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
 
     return song;
   }
@@ -376,18 +377,18 @@ class SongBase {
     int wordCount = words.length;
     StringBuffer ret = StringBuffer();
     int wordsPerMeasure = wordCount ~/ measureCountInRow;
-    int extrawords = wordCount.remainder(measureCountInRow);
+    int extraWords = wordCount.remainder(measureCountInRow);
     int wordIndex = rowMeasureNumber *
             (wordsPerMeasure +
                 //  all early lines have an extra one
-                (rowMeasureNumber < extrawords ? 1 : 0) //
+                (rowMeasureNumber < extraWords ? 1 : 0) //
             ) +
         //  all later lines have to skip over the early lines
-        (rowMeasureNumber >= extrawords ? extrawords : 0);
+        (rowMeasureNumber >= extraWords ? extraWords : 0);
     for (int i = 0; i < wordsPerMeasure; i++) {
       ret.write(words[wordIndex + i] + ' ');
     }
-    if (rowMeasureNumber < extrawords) {
+    if (rowMeasureNumber < extraWords) {
       ret.write(words[wordIndex + wordsPerMeasure] + ' ');
     }
 
@@ -516,14 +517,14 @@ class SongBase {
     totalBeats = 0;
 
     List<SongMoment>? moments = getSongMoments();
-    if (timeSignature.beatsPerBar == 0 || defaultBpm == 0 || moments.isEmpty) {
+    if (timeSignature.beatsPerBar == 0 || beatsPerMinute == 0 || moments.isEmpty) {
       return;
     }
 
     for (SongMoment moment in moments) {
       totalBeats += moment.getMeasure().beatCount;
     }
-    _duration = totalBeats * 60.0 / defaultBpm;
+    _duration = totalBeats * 60.0 / beatsPerMinute;
   }
 
   /// Find the chord section for the given section version.
@@ -1518,7 +1519,7 @@ class SongBase {
   void preMod(MeasureNode? measureNode) {
     logger.d('startingChords(\"' + toMarkup() + '\");');
     logger.d(' pre(MeasureEditType.' +
-        getCurrentMeasureEditType().toString() +
+        currentMeasureEditType.toString() +
         ', \"' +
         getCurrentChordSectionLocation().toString() +
         '\"' +
@@ -1535,7 +1536,7 @@ class SongBase {
   void postMod() {
     logger.d('resultChords(\"' + toMarkup() + '\");');
     logger.d('post(MeasureEditType.' +
-        getCurrentMeasureEditType().toString() +
+        currentMeasureEditType.toString() +
         ', \"' +
         getCurrentChordSectionLocation().toString() +
         '\"' +
@@ -1566,7 +1567,7 @@ class SongBase {
 
   /// Edit the given measure in or out of the song based on the data from the edit location.
   bool editMeasureNode(MeasureNode? measureNode) {
-    MeasureEditType editType = getCurrentMeasureEditType();
+    MeasureEditType editType = currentMeasureEditType;
 
     if (editType == MeasureEditType.delete) {
       return deleteCurrentChordSectionLocation();
@@ -2129,7 +2130,7 @@ class SongBase {
       setCurrentChordSectionLocation(location);
       resetLastModifiedDateToNow();
 
-      switch (getCurrentMeasureEditType()) {
+      switch (currentMeasureEditType) {
         // case MeasureEditType.replace:
         case MeasureEditType.delete:
           if (getCurrentChordSectionLocationMeasureNode() == null) {
@@ -2146,7 +2147,7 @@ class SongBase {
   }
 
   /// Collapse adjacent phrases into a single phrase
-  /// that have come togeter due to an edit.
+  /// that have come together due to an edit.
   void collapsePhrases(ChordSectionLocation? location) {
     if (location == null) {
       return;
@@ -2441,7 +2442,7 @@ class SongBase {
     return _getChordSectionMap()[sectionVersion];
   }
 
-  ChordSection? findChordSectionbyMarkedString(MarkedString markedString) {
+  ChordSection? findChordSectionByMarkedString(MarkedString markedString) {
     SectionVersion sectionVersion = SectionVersion.parse(markedString);
     return _getChordSectionMap()[sectionVersion];
   }
@@ -2472,7 +2473,7 @@ class SongBase {
 
   void guessTheKey() {
     //  fixme: key guess based on chords section or lyrics?
-    setKey(Key.guessKey(findScaleChordsUsed().keys));
+    key = Key.guessKey(findScaleChordsUsed().keys);
   }
 
   HashMap<ScaleChord, int> findScaleChordsUsed() {
@@ -2741,7 +2742,7 @@ class SongBase {
    * @param bpmEntry             the song's number of beats per minute
    * @param beatsPerBarEntry     the song's default number of beats per par
    * @param user                 the app user's name
-   * @param unitsPerMeasureEntry the inverse of the note duration fraction per entry, for exmple if each beat is
+   * @param unitsPerMeasureEntry the inverse of the note duration fraction per entry, for example if each beat is
    *                             represented by a quarter note, the units per measure would be 4.
    * @param chordsTextEntry      the string transport form of the song's chord sequence description
    * @param lyricsTextEntry      the string transport form of the song's section sequence and lyrics
@@ -2880,7 +2881,7 @@ class SongBase {
       }
     }
 
-    if (newSong.getMessage() == null) {
+    if (newSong.message == null) {
       for (ChordSection chordSection in newSong.getChordSections()) {
         for (Phrase phrase in chordSection.phrases) {
           for (Measure measure in phrase.measures) {
@@ -2892,14 +2893,14 @@ class SongBase {
       }
     }
 
-    newSong.setMessage(null);
+    newSong.message = null;
 
-    if (newSong.getMessage() == null) {
+    if (newSong.message == null) {
 //  an early song with default (no) structure?
       if (newSong._lyricSections.isNotEmpty &&
           newSong._lyricSections.length == 1 &&
           newSong._lyricSections[0].sectionVersion == Section.getDefaultVersion()) {
-        newSong.setMessage('song looks too simple, is there really no structure?');
+        newSong.message = 'song looks too simple, is there really no structure?';
       }
     }
 
@@ -2917,8 +2918,8 @@ class SongBase {
       ret.add(StringTriple('artist:', a.getArtist(), b.getArtist()));
     }
     {
-      var aCoverArtist = a.getCoverArtist();
-      var bCoverArtist = b.getCoverArtist();
+      var aCoverArtist = a.coverArtist;
+      var bCoverArtist = b.coverArtist;
       if (aCoverArtist != null && bCoverArtist != null && aCoverArtist.compareTo(bCoverArtist) != 0) {
         ret.add(StringTriple('cover:', aCoverArtist, bCoverArtist));
       }
@@ -2929,8 +2930,8 @@ class SongBase {
     if (a.getKey().compareTo(b.getKey()) != 0) {
       ret.add(StringTriple('key:', a.getKey().toString(), b.getKey().toString()));
     }
-    if (a.getBeatsPerMinute() != b.getBeatsPerMinute()) {
-      ret.add(StringTriple('BPM:', a.getBeatsPerMinute().toString(), b.getBeatsPerMinute().toString()));
+    if (a.beatsPerMinute != b.beatsPerMinute) {
+      ret.add(StringTriple('BPM:', a.beatsPerMinute.toString(), b.beatsPerMinute.toString()));
     }
     if (a.getBeatsPerBar() != b.getBeatsPerBar()) {
       ret.add(StringTriple('per bar:', a.getBeatsPerBar().toString(), b.getBeatsPerBar().toString()));
@@ -2996,22 +2997,6 @@ class SongBase {
   }
 
   /// Sets the song's title and song id from the given title. Leading "The " articles are rotated to the title end.
-  void setTitle(String title) {
-    this.title = _theToTheEnd(title.trim());
-    computeSongIdFromSongData();
-  }
-
-  /// Sets the song's artist
-  void setArtist(String artist) {
-    this.artist = _theToTheEnd(artist.trim());
-    computeSongIdFromSongData();
-  }
-
-  void setCoverArtist(String? coverArtist) {
-    this.coverArtist = _theToTheEnd(coverArtist ?? '');
-    computeSongIdFromSongData();
-  }
-
   String _theToTheEnd(String s) {
     if (s.length <= 4) {
       return s;
@@ -3026,43 +3011,22 @@ class SongBase {
     return s;
   }
 
-  void resetLastModifiedDateToNow() {
-    lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
-  }
-
   void computeSongIdFromSongData() {
     _songId = SongId.computeSongId(title, artist, coverArtist);
   }
 
-  /// Sets the copyright for the song.  All songs should have a copyright.
-  void setCopyright(String copyright) {
-    this.copyright = copyright;
-  }
-
-  /// Set the key for this song.
-  void setKey(Key? key) {
-    if (key != null) {
-      this.key = key;
-    }
-  }
-
-  /// Return the song default beats per minute.
-  int getBeatsPerMinute() {
-    return defaultBpm;
-  }
-
   double getDefaultTimePerBar() {
-    if (defaultBpm == 0) {
+    if (beatsPerMinute == 0) {
       return 1;
     }
-    return timeSignature.beatsPerBar * 60.0 / defaultBpm;
+    return timeSignature.beatsPerBar * 60.0 / beatsPerMinute;
   }
 
   double getSecondsPerBeat() {
-    if (defaultBpm == 0) {
+    if (beatsPerMinute == 0) {
       return 1;
     }
-    return 60.0 / defaultBpm;
+    return 60.0 / beatsPerMinute;
   }
 
   /// Set the song default beats per minute.
@@ -3072,7 +3036,7 @@ class SongBase {
     } else if (bpm > 1000) {
       bpm = 1000;
     }
-    defaultBpm = bpm;
+    beatsPerMinute = bpm;
     _duration = null;
   }
 
@@ -3120,7 +3084,7 @@ class SongBase {
 
   /// Return the default beats per minute.
   int getDefaultBpm() {
-    return defaultBpm;
+    return beatsPerMinute;
   }
 
   Iterable<ChordSection> getChordSections() {
@@ -3211,7 +3175,7 @@ class SongBase {
     if (songMoment == null) {
       return 0;
     }
-    return songMoment.getBeatNumber() * getBeatsPerMinute() / 60.0;
+    return songMoment.getBeatNumber() * beatsPerMinute / 60.0;
   }
 
   static int? getBeatNumberAtTime(int bpm, double songTime) {
@@ -3225,11 +3189,11 @@ class SongBase {
 
   /// determine the song's current moment given the time from the beginning to the current time
   int? getSongMomentNumberAtSongTime(double songTime) {
-    if (getBeatsPerMinute() <= 0) {
+    if (beatsPerMinute <= 0) {
       return null;
     } //  we're done with this song play
 
-    int? songBeat = getBeatNumberAtTime(getBeatsPerMinute(), songTime);
+    int? songBeat = getBeatNumberAtTime(beatsPerMinute, songTime);
     if (songBeat == null) {
       return null;
     }
@@ -3348,26 +3312,6 @@ class SongBase {
 
   void setTotalBeats(int totalBeats) {
     this.totalBeats = totalBeats;
-  }
-
-  void setDefaultBpm(int defaultBpm) {
-    this.defaultBpm = defaultBpm;
-  }
-
-  String? getCoverArtist() {
-    return coverArtist;
-  }
-
-  String? getMessage() {
-    return _message;
-  }
-
-  void setMessage(String? message) {
-    _message = message;
-  }
-
-  MeasureEditType getCurrentMeasureEditType() {
-    return currentMeasureEditType;
   }
 
   void setCurrentMeasureEditType(MeasureEditType measureEditType) {
@@ -3507,11 +3451,11 @@ class SongBase {
     if (artist != o.artist) {
       return false;
     }
-    if (coverArtist.isNotEmpty) {
+    if (coverArtist?.isNotEmpty ?? false) {
       if (coverArtist != o.coverArtist) {
         return false;
       }
-    } else if (o.coverArtist.isNotEmpty) {
+    } else if (o.coverArtist?.isNotEmpty ?? false) {
       return false;
     }
     if (copyright != o.copyright) {
@@ -3520,7 +3464,7 @@ class SongBase {
     if (key != o.key) {
       return false;
     }
-    if (defaultBpm != o.defaultBpm) {
+    if (beatsPerMinute != o.beatsPerMinute) {
       return false;
     }
     if (timeSignature != o.timeSignature) {
@@ -3545,9 +3489,11 @@ class SongBase {
 
     //    if (metadata != (o.metadata)){
     //      return false;}
-    if (lastModifiedTime != o.lastModifiedTime) {
-      return false;
-    }
+
+    //  song base is the same, no matter when last modified
+    // if (lastModifiedTime != o.lastModifiedTime) {
+    //   return false;
+    // }
 
     //  hmm, think about these
     if (fileName != o.fileName) {
@@ -3564,31 +3510,114 @@ class SongBase {
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
     int ret = hash4(title, artist, coverArtist, copyright);
-    ret = ret * 17 + hash3(key.keyEnum, defaultBpm, timeSignature);
-    ret = ret * 19 + hash3(_getChords(), _rawLyrics, _lastModifiedTime);
-    ret = ret * 23 + hash2(fileName, fileVersionNumber);
+    ret = ret * 17 + hash3(key.keyEnum, beatsPerMinute, timeSignature);
+    ret = ret * 19 + hash4(_getChords(), _rawLyrics, fileName, fileVersionNumber);
+    //  note:   _lastModifiedTime intentionally not included
     return ret;
   }
 
 //  primary values
-  String title = '';
-  String artist = '';
-  String user = defaultUser;
-  String coverArtist = '';
-  String copyright = 'Unknown';
-  Key key = Key.get(KeyEnum.C); //  default
-  int defaultBpm = 106; //  beats per minute
-  TimeSignature get timeSignature => _timeSignature;
+
+  String get title => _title;
+
+  set title(String s) {
+    s = _theToTheEnd(s.trim());
+    if (_title != s) {
+      _title = s;
+      resetLastModifiedDateToNow();
+      computeSongIdFromSongData();
+    }
+  }
+
+  String _title = '';
+
+  String get artist => _artist;
+
+  set artist(String s) {
+    s = _theToTheEnd(s.trim());
+    if (_artist != s) {
+      _artist = s;
+      resetLastModifiedDateToNow();
+      computeSongIdFromSongData();
+    }
+  }
+
+  String _artist = '';
+
+  String get user => _user;
+
+  set user(String s) {
+    if (_user != s) {
+      _user = s;
+      resetLastModifiedDateToNow();
+    }
+  }
+
+  String _user = defaultUser;
+
+  String? get coverArtist => _coverArtist;
+
+  set coverArtist(String? s) {
+    s = _theToTheEnd(s ?? '');
+    if (_coverArtist != s) {
+      _coverArtist = s;
+      resetLastModifiedDateToNow();
+      computeSongIdFromSongData();
+    }
+  }
+
+  String? _coverArtist = '';
+
+  String get copyright => _copyright;
+
+  set copyright(String s) {
+    if (_copyright != s) {
+      _copyright = s;
+      resetLastModifiedDateToNow();
+    }
+  }
+
+  String _copyright = 'Unknown';
+
+  Key get key => _key;
+
+  set key(Key k) {
+    if (_key != k) {
+      _key = k;
+      resetLastModifiedDateToNow();
+    }
+  }
+
+  Key _key = Key.get(KeyEnum.C); //  default
+
+  int get beatsPerMinute => _beatsPerMinute;
+
+  set beatsPerMinute(int k) {
+    if (_beatsPerMinute != k) {
+      _beatsPerMinute = k;
+      resetLastModifiedDateToNow();
+    }
+  }
+
+  int _beatsPerMinute = 106; //  beats per minute
 
   set timeSignature(TimeSignature timeSignature) {
     _timeSignature = timeSignature;
+    resetLastModifiedDateToNow();
     _clearCachedValues();
   }
 
+  TimeSignature get timeSignature => _timeSignature;
+
   TimeSignature _timeSignature = TimeSignature.defaultTimeSignature;
 
+  /// should only be used for testing
   set lastModifiedTime(int t) {
     _lastModifiedTime = t;
+  }
+
+  void resetLastModifiedDateToNow() {
+    lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
   }
 
   int get lastModifiedTime => _lastModifiedTime;
@@ -3643,6 +3672,13 @@ class SongBase {
 
   int _complexity = 0;
   String? _chordsAsMarkup;
+
+  String? get message => _message;
+
+  set message(String? m) {
+    _message = m;
+  }
+
   String? _message;
 
   List<SongMoment> get songMoments => getSongMoments();

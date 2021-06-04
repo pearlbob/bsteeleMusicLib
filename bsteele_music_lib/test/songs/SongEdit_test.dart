@@ -56,7 +56,7 @@ class TestSong {
   void post(MeasureEditType type, String locationString, String? measureNodeString) {
     measureNodeString = _deMusic(measureNodeString);
 
-    expect(_myA.getCurrentMeasureEditType(), type);
+    expect(_myA.currentMeasureEditType, type);
     expect(_myA.getCurrentChordSectionLocation().toString(), locationString);
 
     logger.d('getCurrentMeasureNode(): ' + _myA.getCurrentMeasureNode().toString());
@@ -115,7 +115,8 @@ void main() {
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C B F F  O: Dm C B B♭ A  ');
     ts.pre(MeasureEditType.delete, 'C:0:7', 'B,', 'null');
-    ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G C F F  O: Dm C B B♭ A  ');
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G C F F  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.delete, 'C:0:7', 'F');
 
     ts.startingChords(
@@ -137,7 +138,8 @@ void main() {
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C G G  O: Dm C B B♭ A  ');
     ts.pre(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x2 ', '[] x3 ');
-    ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x3  C: F F C C, G G C G, G  O: Dm C B B♭ A  ');
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x3  C: F F C C, G G C G, G  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'I2:0', '[Am Am/G Am/F♯ FE ] x3 ');
 
     ts.startingChords(
@@ -247,15 +249,15 @@ void main() {
 
     ts.startingChords(
         'I: CXCC XCCC CXCC XCCC (bass-only)  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Cmaj7 Cmaj7'
-            '  C: A♭ A♭ E♭ E♭ B♭ B♭ G G'
-            '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Em A7'
-            ' F F G G Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 (fade)  ');
+        '  C: A♭ A♭ E♭ E♭ B♭ B♭ G G'
+        '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Em A7'
+        ' F F G G Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 (fade)  ');
     ts.pre(MeasureEditType.append, 'I:0:4', '(bass-only)', 'XCCC ');
     ts.resultChords(
         'I: CXCC XCCC CXCC XCCC (bass-only) XCCC  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Cmaj7 Cmaj7'
-            '  C: Ab Ab Eb Eb Bb Bb G G'
-            '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Em A7,'
-            ' F F G G, Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 Cmaj7 (fade)');
+        '  C: Ab Ab Eb Eb Bb Bb G G'
+        '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Em A7,'
+        ' F F G G, Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 Cmaj7 (fade)');
     ts.post(MeasureEditType.append, 'I:0:5', 'XCCC');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
@@ -408,7 +410,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newPhrase = Phrase.parseString('Db C B A', 0, beatsPerBar, null);
@@ -431,7 +433,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[]x1', 0, beatsPerBar, null);
@@ -468,7 +470,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newSection = ChordSection.parseString('v: A D C D', beatsPerBar);
@@ -503,7 +505,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -519,7 +521,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newMeasure = Measure.parseString('F', beatsPerBar);
@@ -550,7 +552,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -579,7 +581,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -609,7 +611,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -642,7 +644,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -671,7 +673,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -700,7 +702,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -730,7 +732,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -759,7 +761,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -788,7 +790,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -817,7 +819,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -847,7 +849,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -875,7 +877,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
@@ -904,7 +906,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
@@ -935,7 +937,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v:', beatsPerBar)), isTrue);
@@ -965,7 +967,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.deleteCurrentSelection(), isTrue);
@@ -995,7 +997,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x3', 0, beatsPerBar, null);
@@ -1028,7 +1030,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x1', 0, beatsPerBar, null);
@@ -1059,7 +1061,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[] x1', 0, beatsPerBar, null);
@@ -1089,7 +1091,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x4', 0, beatsPerBar, null);
@@ -1123,7 +1125,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[ ] x3', 0, beatsPerBar, null);
@@ -1153,7 +1155,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newRepeat = MeasureRepeat.parseString('[ D C G G] x3', 0, beatsPerBar, null);
@@ -1220,7 +1222,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newMeasure = Measure.parseString('Gm', beatsPerBar);
@@ -1257,7 +1259,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.deleteCurrentSelection(), isTrue);
@@ -1287,7 +1289,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.deleteCurrentSelection(), isTrue);
@@ -1315,7 +1317,7 @@ void main() {
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
-        _a.getCurrentMeasureEditType().toString() +
+        _a.currentMeasureEditType.toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newMeasure = Measure.parseString('F', beatsPerBar);
@@ -1326,5 +1328,34 @@ void main() {
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(location, _a.getCurrentChordSectionLocation());
+  });
+
+  test('test last modified time after an edit', () {
+    int now = DateTime.now().millisecondsSinceEpoch;
+    logger.i('now: $now');
+
+    int beatsPerBar = 4;
+
+    //  assure that the song can end on an empty section
+    _a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
+        'V: C F C C,F F C C,  G F C G', 'v:');
+    logger.i('a.lastModifiedTime: ${_a.lastModifiedTime}');
+    int t0 = _a.lastModifiedTime;
+    expect(now <= _a.lastModifiedTime, isTrue);
+    now = DateTime.now().millisecondsSinceEpoch;
+    logger.i('now: $now');
+    expect(now >= _a.lastModifiedTime, isTrue);
+
+    ts.startingChords('I: A G D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
+    ts.pre(MeasureEditType.delete, 'I:0:1', 'G', 'null');
+    int t1 = _a.lastModifiedTime;
+    expect(t0 <= t1, isTrue);
+    ts.resultChords('I: A D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
+    ts.post(MeasureEditType.delete, 'I:0:1', 'D');
+    now = DateTime.now().millisecondsSinceEpoch;
+    logger.i('t1: $t1');
+    logger.i('now: $now');
+    expect(now >= t1, isTrue);
+    expect(t1 == _a.lastModifiedTime, isTrue);
   });
 }

@@ -283,7 +283,7 @@ coerced to reflect the songlist's last modification for that song.
               }
               for (Song song in sortedSongs) {
                 print('"${song.title}" by "${song.artist}"'
-                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                    '${song.coverArtist?.isNotEmpty ?? false ? ' cover by "${song.coverArtist}' : ''}'
                     ':  /bpi ${i}');
               }
             }

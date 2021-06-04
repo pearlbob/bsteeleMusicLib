@@ -49,7 +49,7 @@ class SongUpdate {
 
   void assignSong(Song song) {
     this.song = song;
-    currentBeatsPerMinute = song.getBeatsPerMinute();
+    currentBeatsPerMinute = song.beatsPerMinute;
     currentKey = song.getKey();
   }
 
@@ -136,7 +136,7 @@ class SongUpdate {
 
   /// @return the currentBeatsPerMinute
   int getCurrentBeatsPerMinute() {
-    return currentBeatsPerMinute > 0 ? currentBeatsPerMinute : song.getBeatsPerMinute();
+    return currentBeatsPerMinute > 0 ? currentBeatsPerMinute : song.beatsPerMinute;
   }
 
   void setState(SongUpdateState state) {

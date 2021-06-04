@@ -35,10 +35,10 @@ class Song extends SongBase implements Comparable<Song> {
   static Song createSong(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
       int unitsPerMeasure, String user, String chords, String lyrics) {
     Song song = Song();
-    song.setTitle(title);
-    song.setArtist(artist);
-    song.setCopyright(copyright);
-    song.setKey(key);
+    song.title=title;
+    song.artist=artist;
+    song.copyright = copyright;
+    song.key = key;
     song.setBeatsPerMinute(bpm);
     song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     song.setUser(user);
@@ -56,7 +56,7 @@ class Song extends SongBase implements Comparable<Song> {
         getArtist(),
         getCopyright(),
         getKey(),
-        getBeatsPerMinute(),
+        beatsPerMinute,
         getBeatsPerBar(),
         getUnitsPerMeasure(),
         getUser(),
@@ -67,7 +67,7 @@ class Song extends SongBase implements Comparable<Song> {
     ret.lastModifiedTime = lastModifiedTime;
     ret.setTotalBeats(getTotalBeats());
     ret.setCurrentChordSectionLocation(ChordSectionLocation.copy(getCurrentChordSectionLocation()));
-    ret.setCurrentMeasureEditType(getCurrentMeasureEditType());
+    ret.setCurrentMeasureEditType(currentMeasureEditType);
     return ret;
   }
 
@@ -197,19 +197,19 @@ class Song extends SongBase implements Comparable<Song> {
     for (String name in jsonSong.keys) {
       switch (name) {
         case 'title':
-          song.setTitle(jsonSong[name]);
+          song.title=jsonSong[name];
           break;
         case 'artist':
-          song.setArtist(jsonSong[name]);
+          song.artist=jsonSong[name];
           break;
         case 'copyright':
-          song.setCopyright(jsonSong[name]);
+          song.copyright = jsonSong[name];
           break;
         case 'key':
-          song.setKey(Key.parseString(jsonSong[name]));
+          song.key = Key.parseString(jsonSong[name]) ?? Key.getDefault();
           break;
         case 'defaultBpm':
-          song.setDefaultBpm(jsonSong[name] as int);
+          song.beatsPerMinute = (jsonSong[name] as int);
           break;
         case 'timeSignature':
           //  most of this is coping with real old events with poor formatting

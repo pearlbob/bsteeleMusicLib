@@ -146,6 +146,8 @@ void main() {
       instance.setMomentNumber(expResult);
       expect(instance.getMomentNumber(), expResult);
 
+      instance.song.lastModifiedTime = 0; //  for testing only
+
       expect(instance.toJson(), '''{
 "state": "idle",
 "currentKey": "C",

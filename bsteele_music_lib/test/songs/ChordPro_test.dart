@@ -111,7 +111,7 @@ void main() {
     Song song = chordPro.parse(_andILoveHer);
     logger.i(song.toJson());
     expect(song.title, 'And I Love Her');
-    expect(song.artist, 'The Beatles');
+    expect(song.artist, 'Beatles, The ');
     expect(song.copyright, '');
     expect(song.timeSignature, TimeSignature.defaultTimeSignature);
     expect(song.songMoments.length, 105);
