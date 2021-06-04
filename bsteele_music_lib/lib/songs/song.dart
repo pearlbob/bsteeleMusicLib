@@ -416,6 +416,8 @@ class Song extends SongBase implements Comparable<Song> {
   static final RegExp _timeSignatureExp = RegExp(r'^\w*(\d{1,2})\w*\/\w*(\d)\w*$');
 
   static final JsonDecoder jsonDecoder = JsonDecoder();
+
+  static const String unknownUser = 'unknown';
 }
 
 /// A comparator that sorts by song title and then artist.

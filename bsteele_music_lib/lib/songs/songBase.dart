@@ -2837,6 +2837,10 @@ class SongBase {
         throw 'Units per measure has to be 2, 4, or 8';
     }
 
+    if( user.isEmpty || user == Song.unknownUser ){
+      throw 'Please enter your user name.';
+    }
+
     Song newSong = Song.createSong(
         title, artist, copyright, key, bpm, beatsPerBar, unitsPerMeasure, user, chordsTextEntry, lyricsTextEntry);
     newSong.resetLastModifiedDateToNow();
@@ -3468,6 +3472,9 @@ class SongBase {
       return false;
     }
     if (timeSignature != o.timeSignature) {
+      return false;
+    }
+    if (user != o.user) {
       return false;
     }
     // if (user != o.user) {return false;}  //  different user no sufficient for a change of content
