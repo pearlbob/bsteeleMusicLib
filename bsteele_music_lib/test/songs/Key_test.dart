@@ -429,9 +429,23 @@ void main() {
 
       for (int i = -6; i <= 6; i++) {
         Key offsetKey = Key.getKeyByHalfStep(off + i);
-        logger.i('\t+$i: ${offsetKey.toString()}   ${key.toString()}');
+        logger.i('\t${i>=0?'+':''}$i: ${offsetKey.toString()}   ${key.toString()}');
       }
     }
+
+    expect(Key.getKeyByHalfStep(0).keyEnum, KeyEnum.A);
+    expect(Key.getKeyByHalfStep(1).keyEnum, KeyEnum.Bb);
+    expect(Key.getKeyByHalfStep(2).keyEnum, KeyEnum.B);
+    expect(Key.getKeyByHalfStep(3).keyEnum, KeyEnum.C);
+    expect(Key.getKeyByHalfStep(4).keyEnum, KeyEnum.Db);
+    expect(Key.getKeyByHalfStep(5).keyEnum, KeyEnum.D);
+    expect(Key.getKeyByHalfStep(6).keyEnum, KeyEnum.Eb);
+    expect(Key.getKeyByHalfStep(7).keyEnum, KeyEnum.E);
+    expect(Key.getKeyByHalfStep(8).keyEnum, KeyEnum.F);
+    expect(Key.getKeyByHalfStep(9).keyEnum, KeyEnum.Gb);
+    expect(Key.getKeyByHalfStep(10).keyEnum, KeyEnum.G);
+    expect(Key.getKeyByHalfStep(11).keyEnum, KeyEnum.Ab);
+    expect(Key.getKeyByHalfStep(12).keyEnum, KeyEnum.A);
   });
 
   test('test getKeyByHalfStep()', () {
