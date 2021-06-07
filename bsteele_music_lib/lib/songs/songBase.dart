@@ -72,7 +72,7 @@ class SongBase {
     song.setChords(chords);
     song.rawLyrics = rawLyrics;
     song.setBeatsPerMinute(bpm);
-    song.lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
+    song.resetLastModifiedDateToNow();
 
     return song;
   }
@@ -2843,7 +2843,6 @@ class SongBase {
 
     Song newSong = Song.createSong(
         title, artist, copyright, key, bpm, beatsPerBar, unitsPerMeasure, user, chordsTextEntry, lyricsTextEntry);
-    newSong.resetLastModifiedDateToNow();
 
     if (newSong.getChordSections().isEmpty) {
       throw 'The song has no chord sections! ';
@@ -3474,10 +3473,7 @@ class SongBase {
     if (timeSignature != o.timeSignature) {
       return false;
     }
-    if (user != o.user) {
-      return false;
-    }
-    // if (user != o.user) {return false;}  //  different user no sufficient for a change of content
+    // if (user != o.user) {return false;}  //  different user not sufficient for a change of content
     if (_getChords() != o._getChords()) {
       return false;
     }
@@ -3531,7 +3527,6 @@ class SongBase {
     s = _theToTheEnd(s.trim());
     if (_title != s) {
       _title = s;
-      resetLastModifiedDateToNow();
       computeSongIdFromSongData();
     }
   }
@@ -3544,7 +3539,6 @@ class SongBase {
     s = _theToTheEnd(s.trim());
     if (_artist != s) {
       _artist = s;
-      resetLastModifiedDateToNow();
       computeSongIdFromSongData();
     }
   }
@@ -3556,7 +3550,6 @@ class SongBase {
   set user(String s) {
     if (_user != s) {
       _user = s;
-      resetLastModifiedDateToNow();
     }
   }
 
@@ -3568,7 +3561,6 @@ class SongBase {
     s = _theToTheEnd(s ?? '');
     if (_coverArtist != s) {
       _coverArtist = s;
-      resetLastModifiedDateToNow();
       computeSongIdFromSongData();
     }
   }
@@ -3580,7 +3572,6 @@ class SongBase {
   set copyright(String s) {
     if (_copyright != s) {
       _copyright = s;
-      resetLastModifiedDateToNow();
     }
   }
 
@@ -3591,7 +3582,6 @@ class SongBase {
   set key(Key k) {
     if (_key != k) {
       _key = k;
-      resetLastModifiedDateToNow();
     }
   }
 
@@ -3602,7 +3592,6 @@ class SongBase {
   set beatsPerMinute(int k) {
     if (_beatsPerMinute != k) {
       _beatsPerMinute = k;
-      resetLastModifiedDateToNow();
     }
   }
 
@@ -3610,7 +3599,6 @@ class SongBase {
 
   set timeSignature(TimeSignature timeSignature) {
     _timeSignature = timeSignature;
-    resetLastModifiedDateToNow();
     _clearCachedValues();
   }
 
