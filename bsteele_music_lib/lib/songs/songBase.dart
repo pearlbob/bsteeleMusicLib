@@ -3308,11 +3308,6 @@ class SongBase {
     _clearCachedValues();
   }
 
-  set rawLyrics(String rawLyrics) {
-    _rawLyrics = rawLyrics;
-    _parseLyrics();
-  }
-
   void setTotalBeats(int totalBeats) {
     this.totalBeats = totalBeats;
   }
@@ -3624,6 +3619,11 @@ class SongBase {
 //  normally the chords data is held in the chord section map
   HashMap<SectionVersion, ChordSection> _chordSectionMap = HashMap();
 
+
+  set rawLyrics(String rawLyrics) {
+    _rawLyrics = rawLyrics;
+    _parseLyrics();
+  }
   String get rawLyrics => _rawLyrics;
   String _rawLyrics = '';
 

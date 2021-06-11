@@ -17,7 +17,7 @@ enum PitchEnum {
   A0,
   As0,
   Bb0,
-  B0,
+  B0,// 5 string bass low string
   Bs0,
   Cb1,
   C1,
@@ -26,7 +26,7 @@ enum PitchEnum {
   D1,
   Ds1,
   Eb1,
-  E1,
+  E1,  //  41.2hz, 4 string bass low string
   Es1,
   Fb1,
   F1,
@@ -48,7 +48,7 @@ enum PitchEnum {
   D2,
   Ds2,
   Eb2,
-  E2,
+  E2,   //  82.4hz, guitar low string
   Es2,
   Fb2,
   F2,
@@ -208,7 +208,7 @@ class Pitch implements Comparable<Pitch> {
     }
     _number = n;
 
-    _frequency = 440.0 * pow(2, ((_number + 1) - 49) / 12);
+    _frequency = 440.0 * MusicConstants.halfStepsToRatio((_number + 1) - 49) ;
   }
 
   static Pitch get(PitchEnum se) {

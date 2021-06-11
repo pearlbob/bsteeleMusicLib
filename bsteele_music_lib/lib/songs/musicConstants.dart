@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'chordDescriptor.dart';
 
 enum MajorDiatonic { I, ii, iii, IV, V, VI, vii }
@@ -36,6 +38,10 @@ class MusicConstants {
 
   static const int minBpm = 50;
   static const int maxBpm = 400;
+
+  static double halfStepsToRatio( int halfSteps ){
+    return pow(2, (halfSteps / 12)) as double;
+  }
 
   //  has to be ahead of it's use since it's static
   static final List<ChordDescriptor> _majorDiatonicChordModifiers = [

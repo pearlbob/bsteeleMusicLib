@@ -1572,4 +1572,37 @@ o: end here''');
     logger.i('now: $now');
     expect(now >= a.lastModifiedTime, isTrue);
   });
+
+  test('test empty lyrics rows', () {
+    int beatsPerBar = 4;
+    SongBase a;
+    String s;
+
+    a = SongBase.createSongBase('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
+        'V: C F C C,F F C C,  G F C G', 'v:');
+
+    logger.i('a.rawLyrics: <${a.rawLyrics}>');
+    s = 'v:';
+    expect(a.rawLyrics, s);
+
+    a.rawLyrics = s;
+    logger.i('a.rawLyrics: <${a.rawLyrics}>');
+    expect(a.rawLyrics, s);
+
+    s = 'v:\n';
+    a.rawLyrics = s;
+    logger.i('a.rawLyrics: <${a.rawLyrics}>');
+    expect(a.rawLyrics, s);
+
+    s = 'v:\n\n';
+    a.rawLyrics = s;
+    logger.i('a.rawLyrics: <${a.rawLyrics}>');
+    expect(a.rawLyrics, s);
+
+    s = 'v:\n\n\n';
+    a.rawLyrics = s;
+    logger.i('a.rawLyrics: <${a.rawLyrics}>');
+    expect(a.rawLyrics, s);
+
+  });
 }
