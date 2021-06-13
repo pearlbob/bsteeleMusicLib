@@ -2527,11 +2527,12 @@ class SongBase {
 
           whiteSpace = ''; //  ignore white space
           markedString.stripLeadingSpaces();
-          //  consume newline if it's the only thing on the line
+
+          //  consume newline if it's the only thing on the line after the section declaration
           if (markedString.charAt(0) == '\n') {
             markedString.consume(1);
           }
-          state = 1;
+          state = 0;
           continue;
         } catch (e) {
           logger.v('not section: ${markedString.remainingStringLimited(25)}');
@@ -2550,8 +2551,18 @@ class SongBase {
             break;
           case '\n':
           case '\r':
+            //  insert verse if missing the section declaration
             lyricSection ??= LyricSection(Section.getDefaultVersion(), _lyricSections.length);
-            lyricSection.add(lyricsBuffer.toString());
+
+            //  add the lyrics
+            if (lyricsBuffer.isNotEmpty) {
+              lyricSection.addLine(lyricsBuffer.toString());
+            } else
+            {
+              //  or a missing newline
+              lyricSection.addLine('\n');
+            }
+
             lyricsBuffer = StringBuffer();
             whiteSpace = ''; //  ignore trailing white space
             state = 0;
@@ -2573,7 +2584,10 @@ class SongBase {
 
     //  last one is not terminated by another section
     if (lyricSection != null) {
-      lyricSection.add(lyricsBuffer.toString());
+      if (lyricsBuffer.isNotEmpty) {
+        lyricSection.addLine(lyricsBuffer.toString());
+      }
+      lyricSection.stripLastEmptyLyricLine();
       _lyricSections.add(lyricSection);
     }
 
@@ -2837,7 +2851,7 @@ class SongBase {
         throw 'Units per measure has to be 2, 4, or 8';
     }
 
-    if( user.isEmpty || user == Song.unknownUser ){
+    if (user.isEmpty || user == Song.unknownUser) {
       throw 'Please enter your user name.';
     }
 
@@ -3619,11 +3633,11 @@ class SongBase {
 //  normally the chords data is held in the chord section map
   HashMap<SectionVersion, ChordSection> _chordSectionMap = HashMap();
 
-
   set rawLyrics(String rawLyrics) {
     _rawLyrics = rawLyrics;
     _parseLyrics();
   }
+
   String get rawLyrics => _rawLyrics;
   String _rawLyrics = '';
 

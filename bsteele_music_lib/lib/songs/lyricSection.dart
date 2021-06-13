@@ -11,14 +11,14 @@ import 'sectionVersion.dart';
 class LyricSection implements Comparable<LyricSection> {
   LyricSection(this._sectionVersion, this._index);
 
-  void add(String lyricsLine) {
+  void addLine(String lyricsLine) {
     logger.v('LyricSection.add($lyricsLine)');
     _lyricsLines.add(lyricsLine);
   }
 
   void stripLastEmptyLyricLine() {
     if (_lyricsLines.isNotEmpty) {
-      if (_lyricsLines.last.isEmpty) {
+      if (_lyricsLines.last.isEmpty || _lyricsLines.last == '\n') {
         _lyricsLines.removeLast();
       }
     }

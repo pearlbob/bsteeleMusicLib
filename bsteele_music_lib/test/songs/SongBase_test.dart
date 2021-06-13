@@ -12,6 +12,7 @@ import 'package:bsteeleMusicLib/songs/phrase.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
+import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
 import 'package:logger/logger.dart';
@@ -654,6 +655,8 @@ c2:
 
 
     c2 line 2
+
+
 ''');
     ;
     logger.v('<${a.rawLyrics}>');
@@ -669,8 +672,8 @@ c2:
 
     var ls = a.lyricSections[0];
     expect(ls.lyricsLines.length, 4);
-    expect(ls.lyricsLines[0], '');
-    expect(ls.lyricsLines[1], '');
+    expect(ls.lyricsLines[0], '\n');
+    expect(ls.lyricsLines[1], '\n');
     expect(ls.lyricsLines[2], 'line 2');
     expect(ls.lyricsLines[3], 'line 3');
 
@@ -678,20 +681,20 @@ c2:
     expect(ls.lyricsLines.length, 4);
     expect(ls.lyricsLines[0], 'c line 0');
     expect(ls.lyricsLines[1], 'c line 1');
-    expect(ls.lyricsLines[2], ''); //  notice that the whitespace was absorbed
+    expect(ls.lyricsLines[2], '\n'); //  notice that the whitespace was absorbed
     expect(ls.lyricsLines[3], 'c line 3');
 
     ls = a.lyricSections[2];
     expect(ls.lyricsLines.length, 2);
     expect(ls.lyricsLines[0], 'v line 0');
-    expect(ls.lyricsLines[1], '');
+    expect(ls.lyricsLines[1], '\n');
 
     ls = a.lyricSections[3];
     expect(ls.lyricsLines.length, 4);
-    expect(ls.lyricsLines[0], '');
-    expect(ls.lyricsLines[1], '');
+    expect(ls.lyricsLines[0], '\n');
+    expect(ls.lyricsLines[1], '\n');
     expect(ls.lyricsLines[2], 'c2 line 2');
-    expect(ls.lyricsLines[3], '');
+    expect(ls.lyricsLines[3], '\n');
   });
 
   test('testOddSongs', () {
@@ -1552,8 +1555,7 @@ o: end here''');
     a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
         'V: C F C C,F F C C,  G F C G', 'v:');
     expect(a.lyricSections.length, 1);
-    expect(a.lyricSections.first.lyricsLines.length, 1);
-    expect(a.lyricSections.first.lyricsLines[0], '');
+    expect(a.lyricSections.first.lyricsLines.length, 0);
   });
 
   test('test last modified time', () {
@@ -1573,36 +1575,111 @@ o: end here''');
     expect(now >= a.lastModifiedTime, isTrue);
   });
 
+  String _songLyricsAsString(Song a) {
+    StringBuffer sb = StringBuffer();
+
+    bool firstSection = true;
+    for ( var lyricSection in a.lyricSections){
+      if (firstSection ){
+        firstSection = false;
+      } else {
+        sb.write(', ');
+      }
+      sb.write('${lyricSection.sectionVersion}');
+
+      for ( var line in lyricSection.lyricsLines){
+        sb.write(' "$line"');
+      }
+    }
+    return sb.toString();
+  }
+
   test('test empty lyrics rows', () {
     int beatsPerBar = 4;
-    SongBase a;
+    Song a;
     String s;
 
-    a = SongBase.createSongBase('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
-        'V: C F C C,F F C C,  G F C G', 'v:');
+    a = Song.createSong('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4, 'pearlbob',
+        'i: D C G G V: C F C C,F F C C,  G F C G', 'i: v:');
 
-    logger.i('a.rawLyrics: <${a.rawLyrics}>');
+    logger.d('a.rawLyrics: <${a.rawLyrics}>');
+
+    expect(_songLyricsAsString(a), 'I:, V:');
+
     s = 'v:';
-    expect(a.rawLyrics, s);
-
     a.rawLyrics = s;
-    logger.i('a.rawLyrics: <${a.rawLyrics}>');
     expect(a.rawLyrics, s);
 
-    s = 'v:\n';
-    a.rawLyrics = s;
-    logger.i('a.rawLyrics: <${a.rawLyrics}>');
-    expect(a.rawLyrics, s);
+    a.rawLyrics = 'v:\n';
+    expect(_songLyricsAsString(a), 'V:');
 
-    s = 'v:\n\n';
-    a.rawLyrics = s;
-    logger.i('a.rawLyrics: <${a.rawLyrics}>');
-    expect(a.rawLyrics, s);
+    a.rawLyrics = 'v:\n\n';
+    expect(_songLyricsAsString(a), 'V:');
 
-    s = 'v:\n\n\n';
-    a.rawLyrics = s;
-    logger.i('a.rawLyrics: <${a.rawLyrics}>');
-    expect(a.rawLyrics, s);
+    a.rawLyrics = 'v:\n\n\n';
+    expect(_songLyricsAsString(a), 'V: "\n"');
 
+    a.rawLyrics = 'v:\nA\n';
+    expect(_songLyricsAsString(a), 'V: "A"');
+
+    a.rawLyrics = 'v:\nA\n\n';
+    expect(_songLyricsAsString(a), 'V: "A"');
+
+    a.rawLyrics = 'v: A';
+    expect(_songLyricsAsString(a), 'V: "A"');
+
+    a.rawLyrics = 'v: A\n';
+    expect(_songLyricsAsString(a), 'V: "A"');
+
+    a.rawLyrics = 'i:v:\n';
+    expect(_songLyricsAsString(a), 'I:, V:');
+
+    a.rawLyrics = 'i:\n\nv:\n\n';
+    expect(_songLyricsAsString(a), 'I:, V:');
+    a.rawLyrics = 'i:\n\nv:\n\nv:\n\n';
+    expect(_songLyricsAsString(a), 'I:, V:, V:');
+
+    a.rawLyrics = 'i:\n\n\n';
+    expect(_songLyricsAsString(a), 'I: "\n"');
+
+    a.rawLyrics = 'i:\n\n\nv:\n\n\n';
+    expect(_songLyricsAsString(a), 'I: "\n", V: "\n"');
+
+    a.rawLyrics = 'i:\n\n\nv:\n\n\nv:\n\n\n';
+    // for (var lyricSection in a.lyricSections) {
+    //   logger.i('${lyricSection.sectionVersion}  lines: ${lyricSection.lyricsLines.length}');
+    //   for (var line in lyricSection.lyricsLines) {
+    //     logger.i('    "$line"');
+    //   }
+    // }
+    // logger.i(a.toJson());
+    expect(_songLyricsAsString(a), 'I: "\n", V: "\n", V: "\n"');
+
+    a.rawLyrics = 'i: A\n\nv: B\n\n';
+    expect(_songLyricsAsString(a), 'I: "A", V: "B"');
+    a.rawLyrics = 'i: A\n\nv: B\n\nv: C\n\n';
+    expect(_songLyricsAsString(a), 'I: "A", V: "B", V: "C"');
+
+    a.rawLyrics = 'i: a\n\n\n';
+    expect(_songLyricsAsString(a), 'I: "a" "\n"');
+
+    a.rawLyrics = 'i: a\n\n\nv: b\n\n\n';
+    expect(_songLyricsAsString(a), 'I: "a" "\n", V: "b" "\n"');
+
+    a.rawLyrics = 'i: a\n\n\nv: b\n\n\nv: c\n\n\n';
+    expect(_songLyricsAsString(a), 'I: "a" "\n", V: "b" "\n", V: "c" "\n"');
+
+    a.rawLyrics = 'i:\n(instrumental)\nv: give me shelter\n';
+    expect(_songLyricsAsString(a), 'I: "(instrumental)", V: "give me shelter"');
+
+    a.rawLyrics = 'i:v:\n';
+    expect(_songLyricsAsString(a), 'I:, V:');
+
+    a.rawLyrics = 'a\n\n\n';  //  default to verse
+    expect(_songLyricsAsString(a), 'V: "a" "\n"');
+
+    //  two blank lines
+    a.rawLyrics = 'i: A\n\n\n\nv: B\n\n\n\nv: C\n\n\n\n';
+    expect(_songLyricsAsString(a), 'I: "A" "\n" "\n", V: "B" "\n" "\n", V: "C" "\n" "\n"');
   });
 }
