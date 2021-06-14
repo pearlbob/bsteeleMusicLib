@@ -2500,6 +2500,10 @@ class SongBase {
     _lyricSections = [];
 
     MarkedString markedString = MarkedString(_rawLyrics);
+
+    //  strip initial blank lines
+    markedString.stripLeadingWhitespace();
+
     while (markedString.isNotEmpty) {
       String c = markedString.charAt(0);
 
