@@ -2494,7 +2494,6 @@ class SongBase {
 
   void _parseLyrics() {
     int state = 0;
-    String whiteSpace = '';
     StringBuffer lyricsBuffer = StringBuffer();
     LyricSection? lyricSection;
 
@@ -2525,14 +2524,13 @@ class SongBase {
 
           lyricSection = LyricSection(sectionVersion, _lyricSections.length);
 
-          whiteSpace = ''; //  ignore white space
           markedString.stripLeadingSpaces();
 
           //  consume newline if it's the only thing on the line after the section declaration
           if (markedString.charAt(0) == '\n') {
             markedString.consume(1);
           }
-          state = 0;
+          state = 1;  //  collect leading white space on first line
           continue;
         } catch (e) {
           logger.v('not section: ${markedString.remainingStringLimited(25)}');
@@ -2545,10 +2543,6 @@ class SongBase {
       if (state == 2) {
         //  absorb all characters to a newline
         switch (c) {
-          case ' ':
-          case '\t':
-            whiteSpace = whiteSpace + c;
-            break;
           case '\n':
           case '\r':
             //  insert verse if missing the section declaration
@@ -2564,13 +2558,10 @@ class SongBase {
             }
 
             lyricsBuffer = StringBuffer();
-            whiteSpace = ''; //  ignore trailing white space
             state = 0;
             break;
           default:
-            lyricsBuffer.write(whiteSpace);
             lyricsBuffer.write(c);
-            whiteSpace = '';
             break;
         }
       }

@@ -128,7 +128,7 @@ void main() {
       SongUpdate instance = SongUpdate();
 
       Song a = Song.createSong('A', 'bobby', 'bsteele.com', Key.getDefault(), 106, 4, 4, 'bob',
-          'i1: D D D D v: A B C D x4', 'i1: v: bob, bob, bob berand');
+          'i1: D D D D v: A B C D x4', 'i1:\nv:\nbob, bob, bob berand\n');
       instance.song = a;
       int expResult = 10;
       instance.setMomentNumber(expResult);
@@ -169,7 +169,9 @@ void main() {
     ],
 "lyrics": 
     [
-	"i1: v: bob, bob, bob berand"
+	"i1:",
+	"v:",
+	"bob, bob, bob berand"
     ]
 }
 ,
@@ -183,6 +185,7 @@ void main() {
 
       SongUpdate? instance2 = SongUpdate.fromJson(instance.toJson());
       expect(instance2 != null, true);
+      expect(instance2 == instance, isTrue);
       expect(instance2, instance);
       expect(instance, instance2);
     }

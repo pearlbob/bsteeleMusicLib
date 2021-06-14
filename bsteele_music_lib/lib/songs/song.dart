@@ -35,8 +35,8 @@ class Song extends SongBase implements Comparable<Song> {
   static Song createSong(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
       int unitsPerMeasure, String user, String chords, String lyrics) {
     Song song = Song();
-    song.title=title;
-    song.artist=artist;
+    song.title = title;
+    song.artist = artist;
     song.copyright = copyright;
     song.key = key;
     song.setBeatsPerMinute(bpm);
@@ -197,10 +197,10 @@ class Song extends SongBase implements Comparable<Song> {
     for (String name in jsonSong.keys) {
       switch (name) {
         case 'title':
-          song.title=jsonSong[name];
+          song.title = jsonSong[name];
           break;
         case 'artist':
-          song.artist=jsonSong[name];
+          song.artist = jsonSong[name];
           break;
         case 'copyright':
           song.copyright = jsonSong[name];
@@ -240,7 +240,7 @@ class Song extends SongBase implements Comparable<Song> {
             sb.write(lyricRows[lyricRow]);
             sb.write('\n');
           }
-          song.rawLyrics = sb.toString().trim();
+          song.rawLyrics = sb.toString(); // no trim!
           break;
         case 'lastModifiedDate':
           DateTime songDateTime = DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
@@ -337,20 +337,45 @@ class Song extends SongBase implements Comparable<Song> {
 
     //  lyrics content
     first = true;
-    // ignore: deprecated_member_use_from_same_package
-    for (String s in getLyricsAsString().split('\n')) {
-      if (first) {
-        first = false;
-      } else {
-        sb.write(',\n');
+    {
+      var list = rawLyrics.split('\n');
+      //  since empty strings map to a newline, the are significant and should be removed if added by the split
+      if (list.last.isEmpty) {
+        list.removeAt(list.length - 1);
       }
-      sb.write('\t');
+      for (String s in list) {
+        if (first) {
+          first = false;
+        } else {
+          sb.write(',\n');
+        }
+        sb.write('\t');
 
-      sb.write(jsonEncode(s));
+        sb.write(jsonEncode(s));
+      }
     }
     sb.write('\n    ]\n');
     sb.write('}\n');
 
+    return sb.toString();
+  }
+
+  String lyricsAsString() {
+    StringBuffer sb = StringBuffer();
+
+    bool firstSection = true;
+    for (var lyricSection in lyricSections) {
+      if (firstSection) {
+        firstSection = false;
+      } else {
+        sb.write(', ');
+      }
+      sb.write('${lyricSection.sectionVersion}');
+
+      for (var line in lyricSection.lyricsLines) {
+        sb.write(' "$line"');
+      }
+    }
     return sb.toString();
   }
 
