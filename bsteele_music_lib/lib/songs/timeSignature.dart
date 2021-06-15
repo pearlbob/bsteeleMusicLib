@@ -1,4 +1,4 @@
-List<TimeSignature> knownTimeSignatures = [
+const List<TimeSignature> knownTimeSignatures = [
   TimeSignature.defaultTimeSignature,
   TimeSignature(2, 2),
   TimeSignature(2, 4),
@@ -8,7 +8,7 @@ List<TimeSignature> knownTimeSignatures = [
 
 /// beats per bar over units per measure ( 2, 4, 8 )
 class TimeSignature {
-  TimeSignature(
+  const TimeSignature(
     this.beatsPerBar,
     this.unitsPerMeasure,
   );
@@ -37,7 +37,7 @@ class TimeSignature {
     return '$beatsPerBar/$unitsPerMeasure';
   }
 
-  static TimeSignature defaultTimeSignature = TimeSignature(4, 4);
+  static const TimeSignature defaultTimeSignature = TimeSignature(4, 4);
 
   final int beatsPerBar; //  beats per bar, i.e. timeSignature numerator
   final int unitsPerMeasure; //  units per measure, i.e. timeSignature denominator

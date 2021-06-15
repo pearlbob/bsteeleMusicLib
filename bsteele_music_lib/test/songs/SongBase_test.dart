@@ -807,6 +807,60 @@ c2:
     expect(Measure.parseString('Gm7', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(0, 3)));
     expect(Measure.parseString('Cm', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(2, 1)));
     expect(Measure.parseString('F', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(2, 2)));
+
+    //  leading blank lines
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        Key.getDefault(),
+        100,
+        4,
+        4,
+        '\n'
+        '   \n'
+        '\n'
+        'I1:\n'
+            'CD CD CD A\n' //  toss the dot as a comment
+            'D X\n'
+            '\n'
+            'V:\n'
+            'D7 D7 CD CD\n'
+            'D7 D7 CD CD\n'
+            'D7 D7 CD CD\n'
+            'D7 D7 CD D.\n'
+            '\n'
+            'I2:\n'
+            'CD CD CD D.\n'
+            'D\n'
+            '\n'
+            'C1:\n'
+            'DB♭ B♭ DC C\n'
+            'DB♭ B♭ DC C\n'
+            'DB♭ B♭ DC DC\n'
+            'DC\n'
+            '\n'
+            'I3:\n'
+            'D\n'
+            '\n'
+            'C2:\n'
+            'DB♭ B♭ DC C\n'
+            'DB♭ B♭ DC C\n'
+            'DB♭ B♭ DC C\n'
+            'DB♭ B♭ DC DC\n'
+            'DC DC\n'
+            '\n'
+            'I4:\n'
+            'C5D5 C5D5 C5D5 C5D5 x7\n'
+            '\n'
+            'O:\n'
+            'C5D5 C5D5 C5D5 C5D5\n'
+            'C5D5 C5D5 C5D5 C5D#',
+        'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
+
+    //  assure parse was successful
+    expect(a.lyricSections.first.sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 1));
+    expect(a.lyricSections.last.sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
   });
 
   test('testGridStuff', () {
