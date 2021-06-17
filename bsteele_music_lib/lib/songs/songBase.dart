@@ -92,6 +92,7 @@ class SongBase {
     _songMoments = [];
     _beatsToMoment = HashMap();
 
+    _parseLyrics();
     if (_lyricSections.isEmpty) {
       return;
     }
@@ -929,6 +930,9 @@ class SongBase {
     if (_chordSectionLocationGrid != null) {
       return _chordSectionLocationGrid!;
     }
+    if (_isLyricsParseRequired) {
+      _parseLyrics();
+    }
 
     Grid<ChordSectionLocation> grid = Grid();
     _chordSectionGridCoordinateMap = HashMap();
@@ -1311,6 +1315,7 @@ class SongBase {
 
   void _clearCachedValues() {
     logger.v('_clearCachedValues()');
+    _isLyricsParseRequired = true;
     _chordSectionLocationGrid = null;
     _complexity = 0;
     _chordsAsMarkup = null;
@@ -2493,6 +2498,9 @@ class SongBase {
   }
 
   void _parseLyrics() {
+    if (!_isLyricsParseRequired) {
+      return;
+    }
     int state = 0;
     StringBuffer lyricsBuffer = StringBuffer();
     LyricSection? lyricSection;
@@ -2534,7 +2542,7 @@ class SongBase {
           if (markedString.charAt(0) == '\n') {
             markedString.consume(1);
           }
-          state = 1;  //  collect leading white space on first line
+          state = 1; //  collect leading white space on first line
           continue;
         } catch (e) {
           logger.v('not section: ${markedString.remainingStringLimited(25)}');
@@ -2555,8 +2563,7 @@ class SongBase {
             //  add the lyrics
             if (lyricsBuffer.isNotEmpty) {
               lyricSection.addLine(lyricsBuffer.toString());
-            } else
-            {
+            } else {
               //  or a missing newline
               lyricSection.addLine('\n');
             }
@@ -2588,6 +2595,7 @@ class SongBase {
 
     //  safety with lazy eval
     _clearCachedValues();
+    _isLyricsParseRequired = false;
   }
 
   /// Debug only!  a string form of the song chord section grid
@@ -3630,7 +3638,7 @@ class SongBase {
 
   set rawLyrics(String rawLyrics) {
     _rawLyrics = rawLyrics;
-    _parseLyrics();
+    _clearCachedValues();
   }
 
   String get rawLyrics => _rawLyrics;
@@ -3651,10 +3659,16 @@ class SongBase {
     return _duration!;
   }
 
+  bool _isLyricsParseRequired = true;
+
   double? _duration; //  units of seconds
   int totalBeats = 0;
 
-  List<LyricSection> get lyricSections => _lyricSections;
+  List<LyricSection> get lyricSections {
+    _parseLyrics();
+    return _lyricSections;
+  }
+
   List<LyricSection> _lyricSections = [];
   HashMap<SectionVersion, GridCoordinate> _chordSectionGridCoordinateMap = HashMap();
 

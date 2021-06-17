@@ -38,6 +38,7 @@ bsteeleMusicUtil:
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
 -cjwrite {file)     format the song metada data
+-cjwritesongs {file)     write song list of cj songs
 -cjread {file)      add song metada data
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
@@ -167,13 +168,44 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           i++;
-          File outputFile = File(args[i]);
+          {
+            File outputFile = File(args[i]);
 
-          if (await outputFile.exists() && !_force) {
-            logger.e('"${outputFile.path}" already exists for -w without -f');
+            if (await outputFile.exists() && !_force) {
+              logger.e('"${outputFile.path}" already exists for -w without -f');
+              exit(-1);
+            }
+            await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
+          }
+          break;
+        case '-cjwritesongs': // {file)
+          //  assert there is another arg
+          if (i >= args.length - 1) {
+            logger.e('missing directory path for -a');
             exit(-1);
           }
-          await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
+          i++;
+          {
+            File outputFile = File(args[i]);
+
+            if (await outputFile.exists() && !_force) {
+              logger.e('"${outputFile.path}" already exists for -w without -f');
+              exit(-1);
+            }
+            SplayTreeSet<Song> cjSongs = SplayTreeSet();
+            for (Song song in allSongs) {
+              NameValue? nameValue = SongMetadata.songMetadataAt(song.songId.songId, 'cj');
+              if (nameValue != null) {
+                cjSongs.add(song);
+                logger.i('"${song.songId.songId}","${nameValue.value}"');
+              }
+
+            }
+
+            logger.i('cjSongs: ${cjSongs.length}');
+
+            await outputFile.writeAsString(Song.listToJson(cjSongs.toList()), flush: true);
+          }
           break;
         case '-cjcsvwrite': // {file}  format the song data as a CSV version of the CJ ranking metadata
           //  assert there is another arg
@@ -182,13 +214,15 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           i++;
-          File outputFile = File(args[i]);
+          {
+            File outputFile = File(args[i]);
 
-          if (await outputFile.exists() && !_force) {
-            logger.e('"${outputFile.path}" already exists for -w without -f');
-            exit(-1);
+            if (await outputFile.exists() && !_force) {
+              logger.e('"${outputFile.path}" already exists for -w without -f');
+              exit(-1);
+            }
+            await outputFile.writeAsString(_cjCsvRanking(), flush: true);
           }
-          await outputFile.writeAsString(_cjCsvRanking(), flush: true);
           break;
         case '-cjcsvread': // {file}
           //  insist there is another arg
@@ -419,17 +453,19 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           i++;
-          File outputFile = File(args[i]);
+          {
+            File outputFile = File(args[i]);
 
-          if (await outputFile.exists() && !_force) {
-            logger.e('"${outputFile.path}" already exists for -w without -f');
-            exit(-1);
+            if (await outputFile.exists() && !_force) {
+              logger.e('"${outputFile.path}" already exists for -w without -f');
+              exit(-1);
+            }
+            if (allSongs.isEmpty) {
+              logger.e('allSongs is empty for -w');
+              exit(-1);
+            }
+            await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
           }
-          if (allSongs.isEmpty) {
-            logger.e('allSongs is empty for -w');
-            exit(-1);
-          }
-          await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
           break;
 
         case '-words':

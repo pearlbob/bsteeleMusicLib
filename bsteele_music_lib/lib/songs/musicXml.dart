@@ -312,29 +312,36 @@ class MusicXml {
       for (ChordDescriptor cd in ChordDescriptor.values) {
         String value = cd.name;
         switch (cd.name) {
-          // case 'add9':
-          // case 'augmented5':
-          // case 'jazz7b9':
-          // case 'mmaj7':
-          // case 'minor7b5':
-          // case 'msus2':
-          // case 'msus4':
-          // case 'flat5':
-          // case 'sevenFlat5':
-          // case 'sevenFlat9':
-          // case 'sevenSharp5':
-          // case 'sevenSharp9':
-          //
-          // case 'suspended7':
-          // case 'sevenSus':
-          // case 'sevenSus2':
-          // case 'sevenSus4':
-          // case 'six9':
-
+          case 'add9':
+          case 'augmented5':
+          case 'jazz7b9':
+          case 'mmaj7':
+          case 'minor7b5':
+          case 'msus2':
+          case 'msus4':
+          case 'flat5':
+          case 'sevenFlat5':
+          case 'sevenFlat9':
+          case 'sevenSharp5':
+          case 'sevenSharp9':
+          case 'suspended7':
+          case 'sevenSus':
+          case 'sevenSus2':
+          case 'sevenSus4':
+          case 'six9':
           case 'minor':
           case 'major':
           case 'augmented':
           case 'diminished':
+          case 'suspendedSecond':
+          case 'maj':
+          case 'capMajor':
+          case 'capMajor7':
+          case 'deltaMajor7':
+          case 'dimMasculineOrdinalIndicator':
+          case 'dimMasculineOrdinalIndicator7':
+          case 'diminishedAsCircle':
+          case 'maug':
             //  identity map
             value = cd.name;
             break;
