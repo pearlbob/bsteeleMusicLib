@@ -93,16 +93,16 @@ class SongBase {
     _beatsToMoment = HashMap();
 
     _parseLyrics();
-    if (_lyricSections.isEmpty) {
+    if (lyricSections.isEmpty) {
       return;
     }
 
-    logger.d('_lyricSections size: ' + _lyricSections.length.toString());
+    logger.d('lyricSections size: ' + lyricSections.length.toString());
     int sectionCount;
     HashMap<SectionVersion, int> sectionVersionCountMap = HashMap<SectionVersion, int>();
     _chordSectionBeats = HashMap<SectionVersion, int>();
     int beatNumber = 0;
-    for (LyricSection lyricSection in _lyricSections) {
+    for (LyricSection lyricSection in lyricSections) {
       ChordSection? chordSection = findChordSectionByLyricSection(lyricSection);
       if (chordSection == null) {
         continue;
@@ -283,11 +283,11 @@ class SongBase {
       }
     }
 
-    if (_lyricSections.isNotEmpty) {
+    if (lyricSections.isNotEmpty) {
       {
         if (_debugging) {
           int i = 0;
-          for (LyricSection ls in _lyricSections) {
+          for (LyricSection ls in lyricSections) {
             logger.i('lyricSection $i: ${ls.toString()}');
             for (String lyricsLine in ls.lyricsLines) {
               logger.i('     $i: ${lyricsLine.toString()}');
@@ -2875,7 +2875,7 @@ class SongBase {
     for (ChordSection chordSection in newSong.getChordSections()) {
       SectionVersion chordSectionVersion = chordSection.sectionVersion;
       bool found = false;
-      for (LyricSection lyricSection in newSong._lyricSections) {
+      for (LyricSection lyricSection in newSong.lyricSections) {
         if (chordSectionVersion == lyricSection.sectionVersion) {
           found = true;
           break;
@@ -2887,7 +2887,7 @@ class SongBase {
     }
 
 //  see that all lyric sections have a chord section
-    for (LyricSection lyricSection in newSong._lyricSections) {
+    for (LyricSection lyricSection in newSong.lyricSections) {
       SectionVersion lyricSectionVersion = lyricSection.sectionVersion;
       bool found = false;
       for (ChordSection chordSection in newSong.getChordSections()) {
@@ -2916,10 +2916,10 @@ class SongBase {
     newSong.message = null;
 
     if (newSong.message == null) {
-//  an early song with default (no) structure?
-      if (newSong._lyricSections.isNotEmpty &&
-          newSong._lyricSections.length == 1 &&
-          newSong._lyricSections[0].sectionVersion == Section.getDefaultVersion()) {
+      //  an early song with default (no) structure?
+      if (newSong.lyricSections.isNotEmpty &&
+          newSong.lyricSections.length == 1 &&
+          newSong.lyricSections[0].sectionVersion == Section.getDefaultVersion()) {
         newSong.message = 'song looks too simple, is there really no structure?';
       }
     }
@@ -2978,11 +2978,11 @@ class SongBase {
 
 //  lyrics
     {
-      int limit = min(a._lyricSections.length, b._lyricSections.length);
+      int limit = min(a.lyricSections.length, b.lyricSections.length);
       for (int i = 0; i < limit; i++) {
-        LyricSection aLyricSection = a._lyricSections[i];
+        LyricSection aLyricSection = a.lyricSections[i];
         SectionVersion sectionVersion = aLyricSection.sectionVersion;
-        LyricSection bLyricSection = b._lyricSections[i];
+        LyricSection bLyricSection = b.lyricSections[i];
         int lineLimit = min(aLyricSection.lyricsLines.length, bLyricSection.lyricsLines.length);
         for (int j = 0; j < lineLimit; j++) {
           String aLine = aLyricSection.lyricsLines[j];
