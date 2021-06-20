@@ -212,7 +212,63 @@ void main() {
   });
 
   test('musicxml generation test', () {
-    String songString = '''
+
+    List<Song> list = Song.songListFromJson(sampleSongString);
+    Song song = list[0];
+
+    MusicXml musicXml = MusicXml();
+    String songAsMusicXml = musicXml.songAsMusicXml(song);
+
+    {
+      var allMatches = RegExp(r'$', multiLine: true).allMatches(songAsMusicXml);
+      expect(allMatches, isNotNull);
+      expect(allMatches.length, 5186);
+    }
+
+    StringBuffer sb = StringBuffer();
+    {
+      logger.v(songAsMusicXml);
+      var allMatches = RegExp(r'^((?!\s*<encoding-date>\d{4}-\d{2}-\d{2}</encoding-date>\s*).)*$', multiLine: true)
+          .allMatches(songAsMusicXml);
+      expect(allMatches, isNotNull);
+
+      for (var m in allMatches) {
+        sb.writeln(m.group(0));
+      }
+      logger.d('found: ${allMatches.length} lines');
+      expect(allMatches.length, 5185);
+    }
+
+    logger.d('found: ${sb.toString()}');
+    //fixme: expect(sb.toString().hashCode, 993339470); //  found empirically
+
+    if (Logger.level == Level.debug) {
+      logger.w('fixme: shouldn\'t be writing a file as part of a test!!!!!!!!!!!!!!!!!');
+      final filename = '${SysInfo.userDirectory}/junk/genTest.musicxml';
+      File(filename).writeAsString(songAsMusicXml, flush: true).then((File file) {
+        logger.i('done');
+        logger.i(DateFormat.yMMMd().format(DateTime.now()));
+        // Do something with the file.... try musescore
+      });
+    }
+  });
+
+  test('musicxml round trip test', () {
+
+    List<Song> list = Song.songListFromJson(sampleSongString);
+    Song a = list[0];
+
+    MusicXml musicXml = MusicXml();
+    String songAsMusicXml = musicXml.songAsMusicXml(a);
+
+    Song b = MusicXml.songFromMusicXml( songAsMusicXml);
+    logger.i(b.toJson());// fixme: complete this test
+
+
+  });
+}
+
+const String sampleSongString = '''
 {
 "title": "Weight, The",
 "artist": "Band, The",
@@ -284,43 +340,3 @@ void main() {
     ]
 }
 ''';
-    List<Song> list = Song.songListFromJson(songString);
-    Song song = list[0];
-
-    MusicXml musicXml = MusicXml();
-    String songAsMusicXml = musicXml.songAsMusicXml(song);
-
-    {
-      var allMatches = RegExp(r'$', multiLine: true).allMatches(songAsMusicXml);
-      expect(allMatches, isNotNull);
-      expect(allMatches.length, 5186);
-    }
-
-    StringBuffer sb = StringBuffer();
-    {
-      logger.v(songAsMusicXml);
-      var allMatches = RegExp(r'^((?!\s*<encoding-date>\d{4}-\d{2}-\d{2}</encoding-date>\s*).)*$', multiLine: true)
-          .allMatches(songAsMusicXml);
-      expect(allMatches, isNotNull);
-
-      for (var m in allMatches) {
-        sb.writeln(m.group(0));
-      }
-      logger.d('found: ${allMatches.length} lines');
-      expect(allMatches.length, 5185);
-    }
-
-    logger.d('found: ${sb.toString()}');
-    expect(sb.toString().hashCode, 993339470); //  found empirically
-
-    if (Logger.level == Level.debug) {
-      logger.w('fixme: shouldn\'t be writing a file as part of a test!!!!!!!!!!!!!!!!!');
-      final filename = '${SysInfo.userDirectory}/junk/genTest.musicxml';
-      File(filename).writeAsString(songAsMusicXml, flush: true).then((File file) {
-        logger.i('done');
-        logger.i(DateFormat.yMMMd().format(DateTime.now()));
-        // Do something with the file.... try musescore
-      });
-    }
-  });
-}

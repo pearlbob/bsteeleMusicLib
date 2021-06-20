@@ -43,7 +43,7 @@ class MusicXml {
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="3.1">
   <work>
-    <work-title>Title</work-title>
+    <work-title>${_song.getTitle()}</work-title>
     </work>
 <identification>
     <creator type="composer">Composer</creator>
@@ -414,6 +414,25 @@ class MusicXml {
       }
     }
     return _chordDescriptorMap[scaleChord.chordDescriptor.name];
+  }
+
+  ///  throws an [XmlParserException] if the input is invalid.
+  static Song songFromMusicXml(String songAsMusicXml) {
+    Song song = Song.createEmptySong();
+
+    XmlDocument doc = XmlDocument.parse(songAsMusicXml);
+
+    XmlElement? scorePartwise = doc.getElement('score-partwise');
+    if ( scorePartwise!= null ) {
+      XmlElement? work = scorePartwise.getElement('work');
+      if (work != null) {
+        XmlElement? workTitle = work.getElement('work-title');
+        if (workTitle != null) {
+          song.title = workTitle.innerText;
+        }
+      }
+    }
+    return song;
   }
 
   late Song _song;
