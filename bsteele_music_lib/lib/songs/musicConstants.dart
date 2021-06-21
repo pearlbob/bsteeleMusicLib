@@ -38,6 +38,7 @@ class MusicConstants {
 
   static const int minBpm = 50;
   static const int maxBpm = 400;
+  static const int defaultBpm = 106;
 
   static double halfStepsToRatio( int halfSteps ){
     return pow(2, (halfSteps / 12)) as double;

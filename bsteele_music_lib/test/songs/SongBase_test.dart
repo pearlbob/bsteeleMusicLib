@@ -5,9 +5,10 @@ import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/gridCoordinate.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
+import 'package:bsteeleMusicLib/songs/musicConstants.dart';
 import 'package:bsteeleMusicLib/songs/phrase.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
@@ -15,6 +16,7 @@ import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
+import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -46,8 +48,8 @@ String chordSectionToMultiLineString(SongBase song) {
         sb.write('measure: "${measure.toMarkup()}"'
             '${measure.endOfRow ? ', endOfRow' : ''}'
             '${measure.isRepeat() ? ', repeat' : ''}'
-            //
-            );
+          //
+        );
       }
       sb.write('\n');
     }
@@ -62,65 +64,167 @@ void main() {
 
   test('testEquals', () {
     SongBase a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     SongBase b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
 
     expect(a == a, isTrue);
     expect(a.hashCode == a.hashCode, isTrue);
     expect(a == b, isTrue);
     expect(a.hashCode == b.hashCode, isTrue);
     b = SongBase.createSongBase(
-        'B', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'B',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
     b = SongBase.createSongBase(
-        'A', 'bobby', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bobby',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
     b = SongBase.createSongBase(
-        'A', 'bob', 'photos.bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
-    logger.d('a.getSongId(): ' + a.getSongId().hashCode.toString());
-    logger.d('b.getSongId(): ' + b.getSongId().hashCode.toString());
+        'A',
+        'bob',
+        'photos.bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
+    logger.d('a.getSongId(): ' + a
+        .getSongId()
+        .hashCode
+        .toString());
+    logger.d('b.getSongId(): ' + b
+        .getSongId()
+        .hashCode
+        .toString());
     expect(a.getSongId().compareTo(b.getSongId()), 0);
     expect(a.getSongId(), b.getSongId());
     expect(a.hashCode != b.hashCode, isTrue);
 
     b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.get(KeyEnum.Ab), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.get(music_key.KeyEnum.Ab),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
     b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 102, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        102,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
     b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 3, 8, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        3,
+        8,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     //top
     expect(a.hashCode != b.hashCode, isTrue);
 
     b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        8,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
     b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A A C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A A C D',
+        'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
     b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand.');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand.');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
   });
 
   test('testCurrentLocation', () {
     SongBase a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'I:v: A BCm7/ADE C D', 'I:v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        8,
+        'I:v: A BCm7/ADE C D',
+        'I:v: bob, bob, bob berand');
     expect(MeasureEditType.append, a.currentMeasureEditType);
     logger.d(a.getCurrentChordSectionLocation().toString());
 
@@ -138,8 +242,16 @@ void main() {
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:3')); //  move to end
     expect(Measure.parseString('D', a.getBeatsPerBar()), a.getCurrentMeasureNode());
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8,
-        'I:v: A B C D ch3: [ E F G A ] x4 A# C D# F', 'I:v: bob, bob, bob berand');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        8,
+        'I:v: A B C D ch3: [ E F G A ] x4 A# C D# F',
+        'I:v: bob, bob, bob berand');
     expect(a.currentMeasureEditType, MeasureEditType.append);
     a.setDefaultCurrentChordLocation();
     expect(a.getCurrentMeasureNode(), Measure.parseString('F', a.getBeatsPerBar()));
@@ -165,7 +277,7 @@ void main() {
     // {
     //   //  trivial first!
     //   a = SongBase.createSongBase(
-    //       'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'I: A B C D v: D C G G', 'v: bob, bob, bob berand');
+    //       'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8, 'I: A B C D v: D C G G', 'v: bob, bob, bob berand');
     //
     //   SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>.of(a.getChordSections());
     //   ChordSection chordSection = chordSections.first;
@@ -175,9 +287,17 @@ void main() {
     //   expect(phrase.measures.length, 4);
     //   expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.B));
     // }
-    {
+        {
       a = SongBase.createSongBase(
-          'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 8, 'I:v: A B C D', 'I:v: bob, bob, bob berand');
+          'A',
+          'bob',
+          'bsteele.com',
+          music_key.Key.getDefault(),
+          100,
+          4,
+          8,
+          'I:v: A B C D',
+          'I:v: bob, bob, bob berand');
 
       SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>.of(a.getChordSections());
       ChordSection chordSection = chordSections.first;
@@ -199,7 +319,15 @@ void main() {
 
     //  empty sections
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: v: t:', 'i: dude v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'i: v: t:',
+        'i: dude v: bob, bob, bob berand');
 
     expect(
       a.toMarkup().trim(),
@@ -225,7 +353,15 @@ void main() {
 
     //  auto rows of 4 when 8 or more measures entered at once
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: v: t:', 'i: dude v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'i: v: t:',
+        'i: dude v: bob, bob, bob berand');
 
     expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
@@ -233,8 +369,16 @@ void main() {
   });
 
   test('testFind', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-        'i: A B C D v: E F G A# t: Gm Gm', 'i: dude v: bob, bob, bob berand');
+    SongBase a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'i: A B C D v: E F G A# t: Gm Gm',
+        'i: dude v: bob, bob, bob berand');
 
     expect(a.findChordSectionByString('ch:'), isNull);
     ChordSection? chordSection = a.findChordSectionByString('i:');
@@ -257,8 +401,16 @@ void main() {
 
   test('testSetRepeats', () {
     {
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase.createSongBase(
+          'A',
+          'bob',
+          'bsteele.com',
+          music_key.Key.getDefault(),
+          100,
+          4,
+          4,
+          'i: A B C D v: E F G A#',
+          'i: v: bob, bob, bob berand');
 
       MeasureNode? m = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocation(m);
@@ -274,15 +426,31 @@ void main() {
     }
 
     {
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase.createSongBase(
+          'A',
+          'bob',
+          'bsteele.com',
+          music_key.Key.getDefault(),
+          100,
+          4,
+          4,
+          'i: A B C D v: E F G A#',
+          'i: v: bob, bob, bob berand');
 
       logger.d(a.logGrid());
       Grid<ChordSectionLocation> grid;
 
       grid = a.getChordSectionLocationGrid();
       for (int row = 0; row < grid.getRowCount(); row++) {
-        a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: A B C D v: E F G A#',
+        a = SongBase.createSongBase(
+            'A',
+            'bob',
+            'bsteele.com',
+            music_key.Key.getDefault(),
+            100,
+            4,
+            4,
+            'i: A B C D v: E F G A#',
             'i: v: bob, bob, bob berand');
         grid = a.getChordSectionLocationGrid();
         List<ChordSectionLocation?>? cols = grid.getRow(row);
@@ -301,7 +469,7 @@ void main() {
                 expect(
                     s,
                     'I: A B C D'
-                            '  V: [E F G A# ] x' +
+                        '  V: [E F G A# ] x' +
                         r.toString());
               }
             }
@@ -313,10 +481,20 @@ void main() {
 
   test('test findChordSectionLocation()', () {
     SongBase a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: A B C D v: E B C D', 'i: v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'i: A B C D v: E B C D',
+        'i: v: bob, bob, bob berand');
 
     logger.d(a.logGrid());
-    logger.d('moment count: ${a.getSongMoments().length}');
+    logger.d('moment count: ${a
+        .getSongMoments()
+        .length}');
     for (SongMoment moment in a.getSongMoments()) {
       logger.d('moment: $moment');
       ChordSection? chordSection = a.findChordSectionBySectionVersion(moment.chordSection.sectionVersion);
@@ -335,7 +513,15 @@ void main() {
     List<Measure> measures;
 
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D',
+        'v: bob, bob, bob berand');
     chordSections.addAll(a.getChordSections());
     expect(1, chordSections.length);
     chordSection = chordSections.first;
@@ -343,7 +529,15 @@ void main() {
     expect(4, measures.length);
 
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'v: A B C D (yo)', 'v: bob, bob, bob berand');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'v: A B C D (yo)',
+        'v: bob, bob, bob berand');
     chordSections.clear();
     chordSections.addAll(a.getChordSections());
     expect(1, chordSections.length);
@@ -361,7 +555,7 @@ void main() {
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         4,
         4,
@@ -458,7 +652,7 @@ void main() {
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -539,8 +733,16 @@ void main() {
 
   test('testMeasureDelete', () {
     int beatsPerBar = 4;
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'i: A B C D V: D E F F# ', 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    SongBase a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'i: A B C D V: D E F F# ',
+        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
 
     ChordSectionLocation loc;
 
@@ -582,14 +784,30 @@ void main() {
   });
 
   test('testLastLineWithoutNewline', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-        'i: A B C D V: D E F F# ', 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
+    SongBase a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'i: A B C D V: D E F F# ',
+        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
     String lyrics = 'i:\n'
         'v: bob, bob, bob berand\n'
         'c: sing chorus here \n'
         'o: last line of outro';
     //logger.d(    a.getRawLyrics());
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'i: A B C D V: D E F F# ',
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        4,
+        4,
+        'i: A B C D V: D E F F# ',
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
     expect(lyrics, a.rawLyrics);
   });
@@ -601,7 +819,7 @@ void main() {
         'Rio',
         'Duran Duran',
         'Sony/ATV Music Publishing LLC',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         4,
         4,
@@ -636,7 +854,15 @@ void main() {
     int beatsPerBar = 4;
 
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'v: D D C G x4 c: C C C C x 2', '''
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'v: D D C G x4 c: C C C C x 2',
+        '''
 v:     
   
 
@@ -706,7 +932,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -736,7 +962,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         4,
         4,
@@ -790,7 +1016,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         4,
         4,
@@ -813,14 +1039,14 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         4,
         4,
         '\n'
-        '   \n'
-        '\n'
-        'I1:\n'
+            '   \n'
+            '\n'
+            'I1:\n'
             'CD CD CD A\n' //  toss the dot as a comment
             'D X\n'
             '\n'
@@ -875,7 +1101,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -896,7 +1122,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -915,7 +1141,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -929,7 +1155,15 @@ c2:
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:')), GridCoordinate(0, 0));
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('C:')), GridCoordinate(2, 0));
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'I: V: c: G D G D ',
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: V: c: G D G D ',
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
 
     logger.d(a.toMarkup());
@@ -962,7 +1196,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1001,7 +1235,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1012,7 +1246,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1029,7 +1263,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1056,7 +1290,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1074,7 +1308,15 @@ c2:
     SongBase a;
 
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'I: [A B C D, E F]  x2  ', 'i:\n');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D, E F]  x2  ',
+        'i:\n');
     a.debugSongMoments();
     {
       //  verify repeats stay on correct row
@@ -1106,7 +1348,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1121,7 +1363,9 @@ c2:
         SongMoment? songMoment = a.getSongMoment(momentNumber);
         if (songMoment == null) break;
         expect(beats, songMoment.getBeatNumber());
-        beats += songMoment.getMeasure().beatCount;
+        beats += songMoment
+            .getMeasure()
+            .beatCount;
       }
     }
     {
@@ -1162,7 +1406,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1193,32 +1437,64 @@ c2:
     SongBase a;
 
     //  split a long repeat
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: A B C D E F, G G# Ab Bb x2 \nc: D E F', 'i:\nc: sing chorus');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: A B C D E F, G G# Ab Bb x2 \nc: D E F',
+        'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
 
     //  don't fix what's not broken
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D, E F G G#, Ab Bb] x2 \nc: D E F', 'i:\nc: sing chorus');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D, E F G G#, Ab Bb] x2 \nc: D E F',
+        'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
     logger.d(a.toMarkup());
     expect(a.toMarkup().trim(), 'I: [A B C D, E F G G#, Ab Bb ] x2  C: D E F');
 
     //  take the comma off a repeat
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D, E F G G#, ] x2 \nc: D E F', 'i:\nc: sing chorus');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D, E F G G#, ] x2 \nc: D E F',
+        'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
     logger.d(a.toMarkup());
     expect(a.toMarkup().trim(), 'I: [A B C D, E F G G# ] x2  C: D E F');
 
     //  not the first section
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D ] x2 \nc: D E F A B C D, E F G G#', 'i:\nc: sing chorus');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D ] x2 \nc: D E F A B C D, E F G G#',
+        'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.d(a.toMarkup());
@@ -1227,8 +1503,16 @@ c2:
     expect('I: [A B C D ] x2  C: D E F A, B C D E, F G G#', a.toMarkup().trim());
 
     //  take a last comma off
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D ] x2 \nc: D E F A B C, D E, F G G#,', 'i:\nc: sing chorus');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D ] x2 \nc: D E F A B C, D E, F G G#,',
+        'i:\nc: sing chorus');
     logger.d(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.d(a.toMarkup());
@@ -1279,7 +1563,15 @@ c2:
 
     for (int bpm = 60; bpm < 132; bpm++) {
       a = SongBase.createSongBase(
-          'A', 'bob', 'bsteele.com', Key.getDefault(), bpm, beatsPerBar, 4, 'I: A B C D E F  x2  ', 'i:\n');
+          'A',
+          'bob',
+          'bsteele.com',
+          music_key.Key.getDefault(),
+          bpm,
+          beatsPerBar,
+          4,
+          'I: A B C D E F  x2  ',
+          'i:\n');
 
       double dt = 60.0 / (dtDiv * bpm);
 
@@ -1323,23 +1615,63 @@ c2:
     SongBase a;
 
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'I: A B C D V: A B C D', 'i:\nv:\n');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: A B C D V: A B C D',
+        'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: V: A B C D  ');
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'I: A B C D V: [A B C D] x2', 'i:\nv:\n');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: A B C D V: [A B C D] x2',
+        'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: A B C D  V: [A B C D ] x2  ');
     a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'I: [A B C D] x2 V: A B C D ', 'i:\nv:\n');
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D] x2 V: A B C D ',
+        'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: [A B C D ] x2  V: A B C D  ');
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D] x2 V: [A B C D] x2', 'i:\nv:\n');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D] x2 V: [A B C D] x2',
+        'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: V: [A B C D ] x2  ');
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D] x2 V: [A B C D] x4', 'i:\nv:\n');
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [A B C D] x2 V: [A B C D] x4',
+        'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: [A B C D ] x2  V: [A B C D ] x4  ');
   });
@@ -1356,7 +1688,7 @@ c2:
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1402,8 +1734,16 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G F F  O: Dm C B B♭ A  ', '''
+    a = SongBase.createSongBase(
+        'A',
+        'bob',
+        'bsteele.com',
+        music_key.Key.getDefault(),
+        100,
+        beatsPerBar,
+        4,
+        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G F F  O: Dm C B B♭ A  ',
+        '''
 c: cMake me an angel that flies from Montgomery
 	cMake me a poster of an old rodeo
 	cJust give me one thing that I can hold on to
@@ -1489,7 +1829,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1510,7 +1850,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1543,7 +1883,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1555,7 +1895,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1568,7 +1908,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1580,7 +1920,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1592,7 +1932,7 @@ o: end here''');
         'A',
         'bob',
         'bsteele.com',
-        Key.getDefault(),
+        music_key.Key.getDefault(),
         100,
         beatsPerBar,
         4,
@@ -1606,38 +1946,65 @@ o: end here''');
     SongBase a;
 
     //  assure that the song can end on an empty section
-    a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
-        'V: C F C C,F F C C,  G F C G', 'v:');
+    a = SongBase.createSongBase(
+        '12 Bar Blues',
+        'All',
+        'Unknown',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'V: C F C C,F F C C,  G F C G',
+        'v:');
     expect(a.lyricSections.length, 1);
     expect(a.lyricSections.first.lyricsLines.length, 0);
   });
 
   test('test last modified time', () {
-    int now = DateTime.now().millisecondsSinceEpoch;
+    int now = DateTime
+        .now()
+        .millisecondsSinceEpoch;
     logger.i('now: $now');
 
     int beatsPerBar = 4;
     SongBase a;
 
     //  assure that the song can end on an empty section
-    a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
-        'V: C F C C,F F C C,  G F C G', 'v:');
+    a = SongBase.createSongBase(
+        '12 Bar Blues',
+        'All',
+        'Unknown',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'V: C F C C,F F C C,  G F C G',
+        'v:');
     logger.i('a.lastModifiedTime: ${a.lastModifiedTime}');
     expect(now <= a.lastModifiedTime, isTrue);
-    now = DateTime.now().millisecondsSinceEpoch;
+    now = DateTime
+        .now()
+        .millisecondsSinceEpoch;
     logger.i('now: $now');
     expect(now >= a.lastModifiedTime, isTrue);
   });
-
- 
 
   test('test empty lyrics rows', () {
     int beatsPerBar = 4;
     Song a;
     String s;
 
-    a = Song.createSong('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4, 'pearlbob',
-        'i: D C G G V: C F C C,F F C C,  G F C G', 'i: v:');
+    a = Song.createSong(
+        'ive go the blanks',
+        'bob',
+        'bob',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'pearlbob',
+        'i: D C G G V: C F C C,F F C C,  G F C G',
+        'i: v:');
 
     logger.d('a.rawLyrics: <${a.rawLyrics}>');
 
@@ -1733,11 +2100,29 @@ o: end here''');
     int beatsPerBar = 4;
     Song a, b;
 
-    a = Song.createSong('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4, 'pearlbob',
-        'i: D C G G V: C F C C,F F C C,  G F C G', someRawLyrics);
+    a = Song.createSong(
+        'ive go the blanks',
+        'bob',
+        'bob',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'pearlbob',
+        'i: D C G G V: C F C C,F F C C,  G F C G',
+        someRawLyrics);
 
-    b = Song.createSong('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4, 'pearlbob',
-        'i: D C G G V: C F C C,F F C C,  G F C G', a.rawLyrics);
+    b = Song.createSong(
+        'ive go the blanks',
+        'bob',
+        'bob',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'pearlbob',
+        'i: D C G G V: C F C C,F F C C,  G F C G',
+        a.rawLyrics);
 
     logger.d('testRawLyricsLoop(  ${someRawLyrics.replaceAll('\n', '\\n')})');
     logger.d('a.lyricsAsString(): ${a.lyricsAsString().replaceAll('\n', '\\n')}');
@@ -1745,18 +2130,35 @@ o: end here''');
     expect(a.songBaseSameContent(b), isTrue);
     expect(someRawLyrics, a.rawLyrics);
     expect(someRawLyrics, b.rawLyrics);
-
   }
 
   test('test lyrics parse loop', () {
     int beatsPerBar = 4;
     Song a, b;
 
-    a = Song.createSong('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4, 'pearlbob',
-        'i: D C G G V: C F C C,F F C C,  G F C G', 'i: v:');
+    a = Song.createSong(
+        'ive go the blanks',
+        'bob',
+        'bob',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'pearlbob',
+        'i: D C G G V: C F C C,F F C C,  G F C G',
+        'i: v:');
 
-    b = Song.createSong('ive go the blanks', 'bob', 'bob', Key.get(KeyEnum.C), 106, beatsPerBar, 4, 'pearlbob',
-        'i: D C G G V: C F C C,F F C C,  G F C G', a.rawLyrics);
+    b = Song.createSong(
+        'ive go the blanks',
+        'bob',
+        'bob',
+        music_key.Key.get(music_key.KeyEnum.C),
+        106,
+        beatsPerBar,
+        4,
+        'pearlbob',
+        'i: D C G G V: C F C C,F F C C,  G F C G',
+        a.rawLyrics);
     // expect(a.lyricsAsString(), b.lyricsAsString());
     // expect(a.songBaseSameContent(b), isTrue);
     //
@@ -1789,6 +2191,215 @@ o: end here''');
     testRawLyricsLoop('i: A\n\n\n\nB\n\n\n\nv: C\n\n\n\n');
 
     testRawLyricsLoop('i:\n A B\nv: C D  \n');
+  });
 
+  test('test songBase from constructor', () {
+    int beatsPerBar = 4;
+    int unitsPerMeasure = 4;
+    SongBase a;
+
+    a = SongBase.from();
+    expect(a.title, 'unknown');
+    a = SongBase.from(title: 'bob song');
+    expect(a.title, 'bob song');
+    a = SongBase.from(title: 'the bob song');
+    expect(a.title, 'bob song, the ');
+    expect(a.artist, 'unknown');
+    expect(a.coverArtist, isEmpty);
+
+    a = SongBase.from(title: 'bob song', artist: 'bob');
+    expect(a.title, 'bob song');
+    expect(a.artist, 'bob');
+    a = SongBase.from(title: 'bob song', artist: 'the bob');
+    expect(a.title, 'bob song');
+    expect(a.artist, 'bob, the ');
+    expect(a.coverArtist, isEmpty);
+
+    {
+      var coverArtist = 'not really bob';
+      a = SongBase.from(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
+      expect(a.title, 'bob song');
+      expect(a.artist, 'bob, the ');
+      expect(a.coverArtist, isNotEmpty);
+      expect(a.coverArtist, coverArtist);
+
+      coverArtist = 'the not real bob';
+      a = SongBase.from(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
+      expect(a.title, 'bob song');
+      expect(a.artist, 'bob, the ');
+      expect(a.coverArtist, isNotEmpty);
+      expect(a.coverArtist, 'not real bob, the ');
+    }
+
+    a = SongBase.from(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar);
+    expect(a.title, 'bob song');
+    expect(a.artist, 'bob');
+    expect(a.timeSignature.beatsPerBar, beatsPerBar);
+
+    a = SongBase.from(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar, unitsPerMeasure: unitsPerMeasure);
+    expect(a.title, 'bob song');
+    expect(a.artist, 'bob');
+    expect(a.timeSignature.beatsPerBar, beatsPerBar);
+    expect(a.timeSignature.unitsPerMeasure, unitsPerMeasure);
+    expect(a.timeSignature, TimeSignature(beatsPerBar, unitsPerMeasure));
+    expect(a.beatsPerMinute, MusicConstants.defaultBpm);
+
+    {
+      int beatsPerMinute = MusicConstants.defaultBpm;
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: beatsPerMinute);
+      expect(a.title, 'bob song');
+      expect(a.artist, 'bob');
+      expect(a.timeSignature.beatsPerBar, beatsPerBar);
+      expect(a.timeSignature.unitsPerMeasure, unitsPerMeasure);
+      expect(a.timeSignature, TimeSignature(beatsPerBar, unitsPerMeasure));
+      expect(a.beatsPerMinute, beatsPerMinute);
+    }
+
+    {
+      for (var beatsPerMinute = MusicConstants.minBpm; beatsPerMinute <= MusicConstants.maxBpm; beatsPerMinute++) {
+        logger.d('bpm: $beatsPerMinute');
+        a = SongBase.from(
+            title: 'bob song',
+            artist: 'bob',
+            beatsPerBar: beatsPerBar,
+            unitsPerMeasure: unitsPerMeasure,
+            beatsPerMinute: beatsPerMinute);
+        expect(a.beatsPerMinute, beatsPerMinute);
+      }
+    }
+    {
+      int beatsPerMinute = MusicConstants.minBpm - 1;
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: beatsPerMinute);
+      expect(a.beatsPerMinute, MusicConstants.minBpm);
+
+      beatsPerMinute = MusicConstants.maxBpm + 1;
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: beatsPerMinute);
+      expect(a.beatsPerMinute, MusicConstants.maxBpm);
+    }
+
+    {
+      int beatsPerMinute = MusicConstants.defaultBpm;
+      var copyright = '2021 bob';
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: beatsPerMinute,
+          copyright: copyright);
+      expect(a.copyright, copyright);
+
+      copyright = 'the copyright from 2021';
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: beatsPerMinute,
+          copyright: copyright);
+      expect(a.copyright, copyright);
+    }
+
+    {
+      for (var timeSignature in knownTimeSignatures) {
+        a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: timeSignature.beatsPerBar,
+          unitsPerMeasure: timeSignature.unitsPerMeasure,
+        );
+        expect(a.timeSignature, timeSignature);
+      }
+    }
+
+    {
+      var chords = 'i: A B C D v: D C G G';
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: MusicConstants.defaultBpm,
+          copyright: '2021 bob',
+          chords: chords,
+          rawLyrics: 'i: intro\nv: i got you');
+      logger.d('lyrics: ${a.lyricSections.toString()}');
+      expect(a.lyricSections.length, 2);
+      expect(a.lyricSections.last.lyricsLines.last, 'i got you');
+      expect(a.lyricSections.first.lyricsLines.last, 'intro');
+      expect(a.key, music_key.Key.getDefault());
+
+      a = SongBase.from(
+        title: 'bob song',
+        artist: 'bob',
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: unitsPerMeasure,
+        beatsPerMinute: MusicConstants.defaultBpm,
+        copyright: '2021 bob',
+        chords: chords,
+      );
+      logger.d('lyrics: ${a.lyricSections.toString()}');
+      expect(a.lyricSections.length, 0);
+      try {
+        a.checkSong();
+        expect(true, isFalse); //  not expected, i.e. expect exception thrown
+      } catch (e) {
+        expect(e.toString(), 'no lyrics given!');
+      }
+
+      expect(a.key, music_key.Key.getDefault());
+    }
+
+    {
+      //  try some permutations
+      List<String> chordList = ['', 'i: A B C D', 'i: A B C D v: D C X X'];
+      List<String> lyricsList = ['', 'i: (instrumental)', 'i: (instrumental)\n  v: sing some words'];
+      for (var title in ['title 1', 'bobs song', 'not bobs song']) {
+        for (var artist in ['bob', 'fred', 'joe']) {
+          for (var coverArtist in ['', 'bob', 'not bob', 'hidden']) {
+            for (var timeSignature in knownTimeSignatures) {
+              for (var beatsPerMinute = MusicConstants.minBpm;
+              beatsPerMinute <= MusicConstants.maxBpm;
+              beatsPerMinute++) {
+                for (var index = 0; index < chordList.length; index++) {
+                  a = SongBase.from(
+                    title: title,
+                    artist: artist,
+                    coverArtist: coverArtist,
+                    beatsPerBar: timeSignature.beatsPerBar,
+                    unitsPerMeasure: timeSignature.unitsPerMeasure,
+                    beatsPerMinute: beatsPerMinute,
+                    chords: chordList[index],
+                    rawLyrics: lyricsList[index],
+                  );
+                  expect(a.title, title);
+                  expect(a.artist, artist);
+                  expect(a.coverArtist, coverArtist);
+                  expect(a.timeSignature, timeSignature);
+                  expect(a.beatsPerMinute, beatsPerMinute);
+                  expect(a.getChordSections().length, index);
+                  expect(a.lyricSections.length, index);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   });
 }

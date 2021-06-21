@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 

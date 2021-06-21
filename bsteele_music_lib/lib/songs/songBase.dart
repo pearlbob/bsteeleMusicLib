@@ -48,13 +48,35 @@ class SongBase {
   SongBase() {
     title = '';
     artist = '';
-    coverArtist = null;
+    coverArtist = '';
     copyright = '';
     key = Key.get(KeyEnum.C);
     timeSignature = TimeSignature.defaultTimeSignature;
     rawLyrics = '';
     setChords('');
     setBeatsPerMinute(100);
+  }
+
+  SongBase.from(
+      {String title = 'unknown',
+      String artist = 'unknown',
+      String coverArtist ='',
+      String copyright = 'unknown',
+      Key? key,
+      int beatsPerMinute = MusicConstants.defaultBpm,
+      int beatsPerBar = 4,
+      int unitsPerMeasure = 4,
+      String chords = '',
+      String rawLyrics = ''}) {
+    this.title = title;
+    this.artist = artist;
+    this.coverArtist = coverArtist;
+    this.copyright = copyright;
+    this.key = key ?? Key.getDefault();
+    this.beatsPerMinute = beatsPerMinute;
+    timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
+    setChords(chords);
+    this.rawLyrics = rawLyrics;
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
@@ -2940,7 +2962,7 @@ class SongBase {
     {
       var aCoverArtist = a.coverArtist;
       var bCoverArtist = b.coverArtist;
-      if (aCoverArtist != null && bCoverArtist != null && aCoverArtist.compareTo(bCoverArtist) != 0) {
+      if (aCoverArtist.compareTo(bCoverArtist) != 0 && aCoverArtist.isNotEmpty ) {
         ret.add(StringTriple('cover:', aCoverArtist, bCoverArtist));
       }
     }
@@ -3466,11 +3488,11 @@ class SongBase {
     if (artist != o.artist) {
       return false;
     }
-    if (coverArtist?.isNotEmpty ?? false) {
+    if (coverArtist.isNotEmpty ) {
       if (coverArtist != o.coverArtist) {
         return false;
       }
-    } else if (o.coverArtist?.isNotEmpty ?? false) {
+    } else if (o.coverArtist.isNotEmpty ) {
       return false;
     }
     if (copyright != o.copyright) {
@@ -3567,17 +3589,17 @@ class SongBase {
 
   String _user = defaultUser;
 
-  String? get coverArtist => _coverArtist;
+  String get coverArtist => _coverArtist;
 
-  set coverArtist(String? s) {
-    s = _theToTheEnd(s ?? '');
+  set coverArtist(String s) {
+    s = _theToTheEnd(s);//  fixme: null or empty?
     if (_coverArtist != s) {
       _coverArtist = s;
       computeSongIdFromSongData();
     }
   }
 
-  String? _coverArtist = '';
+  String _coverArtist = '';
 
   String get copyright => _copyright;
 
@@ -3602,12 +3624,14 @@ class SongBase {
   int get beatsPerMinute => _beatsPerMinute;
 
   set beatsPerMinute(int k) {
+    k = max(MusicConstants.minBpm, min(MusicConstants.maxBpm, k));
     if (_beatsPerMinute != k) {
       _beatsPerMinute = k;
+      //fixme: do something on beatsPerMinute change
     }
   }
 
-  int _beatsPerMinute = 106; //  beats per minute
+  int _beatsPerMinute = MusicConstants.defaultBpm; //  beats per minute
 
   set timeSignature(TimeSignature timeSignature) {
     _timeSignature = timeSignature;
