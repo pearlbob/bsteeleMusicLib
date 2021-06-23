@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
@@ -7,6 +9,10 @@ import 'package:quiver/core.dart';
 import 'chordAnticipationOrDelay.dart';
 import 'key.dart';
 
+final _pianoA = Pitch.get(PitchEnum.A3); //  the A below middle C, i.e. C4.  Used as a minimum root for piano chords.
+final _bassE = Pitch.get(PitchEnum.E1); //  the low E of a four string bass guitar
+
+///
 class Chord implements Comparable<Chord> {
   Chord(ScaleChord scaleChord, int beats, int beatsPerBar, ScaleNote? slashScaleNote,
       ChordAnticipationOrDelay anticipationOrDelay, bool implicitBeats)
@@ -61,7 +67,7 @@ class Chord implements Comparable<Chord> {
     }
 
     ScaleNote? slashScaleNote;
-//  note: X chords can have a slash chord
+    //  note: X chords can have a slash chord
     if (markedString.isNotEmpty && markedString.charAt(0) == '/') {
       markedString.consume(1);
       slashScaleNote = ScaleNote.parse(markedString);
@@ -180,16 +186,24 @@ class Chord implements Comparable<Chord> {
 
   List<Pitch> getPitches(Pitch atOrAbove) {
     List<Pitch> ret = [];
-    Pitch? root = Pitch.findPitch(_scaleChord.scaleNote, atOrAbove);
-    if (root != null) {
-      for (var chordComponent in _scaleChord.getChordComponents()) {
-        var p = root.offsetByHalfSteps(chordComponent.halfSteps);
-        if (p != null) {
-          ret.add(p);
-        }
+    Pitch root = Pitch.findPitch(_scaleChord.scaleNote, atOrAbove);
+    for (var chordComponent in _scaleChord.getChordComponents()) {
+      var p = root.offsetByHalfSteps(chordComponent.halfSteps);
+      if (p != null) {
+        ret.add(p);
       }
     }
     return ret;
+  }
+
+  List<Pitch> pianoChordPitches() {
+    Pitch root = Pitch.findPitch(scaleChord.scaleNote, _pianoA);
+    SplayTreeSet<Pitch> pitches = SplayTreeSet();
+    pitches.addAll(getPitches(root));
+    if (slashScaleNote != null) {
+      pitches.add(Pitch.findPitch(slashScaleNote!, _bassE));
+    }
+    return pitches.toList(growable: false);
   }
 
   @override
@@ -219,7 +233,7 @@ class Chord implements Comparable<Chord> {
   int get beatsPerBar => _beatsPerBar;
   late int _beatsPerBar;
 
-  bool implicitBeats = true;
+  bool implicitBeats = true; //  fixme: explain this variable's purpose
   ScaleNote? slashScaleNote;
 
   ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;

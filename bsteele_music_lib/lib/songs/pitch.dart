@@ -293,13 +293,17 @@ class Pitch implements Comparable<Pitch> {
     return _pitchMap;
   }
 
-  static Pitch? findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
+  static Pitch findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
+    Pitch lastPitch = getPitches().first;// anything that's not null
     for (Pitch p in getPitches()) {
-      if (p.scaleNote == scaleNote && p.number >= atOrAbove.number) {
-        return p;
+      if (p.scaleNote == scaleNote ) {
+        lastPitch = p;
+        if (p.number >= atOrAbove.number) {
+          return p;
+        }
       }
     }
-    return null;
+    return lastPitch; //  only close, better than nothing
   }
 
   static Pitch findFlatFromFrequency(double frequency) {

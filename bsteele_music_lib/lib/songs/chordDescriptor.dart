@@ -9,7 +9,7 @@ import 'musicConstants.dart';
 // The modifier to a chord specification that describes the basic type of chord.
 // Typical values are major, minor, dominant7, etc.
 // <p>
-// Try:  https://www.scales-chords.com/chord/
+// For piano chords, try:  https://www.scales-chords.com/chord/
 //
 class ChordDescriptor implements Comparable<ChordDescriptor> {
   //  longest short names must come first!

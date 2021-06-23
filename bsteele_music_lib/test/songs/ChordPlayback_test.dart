@@ -59,12 +59,11 @@ void main() {
           continue;
         }
         Pitch? pitch = Pitch.findPitch(scaleNote, _atOrAbove);
-        assert(pitch != null);
         int beats = beatsPerBar; //  default only
 
         for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
           ScaleChord scaleChord =
-              ScaleChord(pitch!.getScaleNote(), chordDescriptor);
+              ScaleChord(pitch.getScaleNote(), chordDescriptor);
 
           ChordAnticipationOrDelay anticipationOrDelay =
               ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);

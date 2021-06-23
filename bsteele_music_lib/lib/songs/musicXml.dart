@@ -167,16 +167,14 @@ class MusicXml {
 
         for (Chord chord in songMoment.getMeasure().chords) {
           Pitch? p = Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot);
-          if (p != null) {
-            Pitch pitch = key.mappedPitch(p);
-            sb.write('''
+          Pitch pitch = key.mappedPitch(p);
+          sb.write('''
   <note><!--  bass note: $pitch    -->
     ${_pitchAsMusicXml(pitch)}
     ${_noteDuration(chord.beats)}
     <staff>2</staff>
     </note>
 ''');
-          }
         }
 
         //  end the measure
@@ -423,7 +421,7 @@ class MusicXml {
     XmlDocument doc = XmlDocument.parse(songAsMusicXml);
 
     XmlElement? scorePartwise = doc.getElement('score-partwise');
-    if ( scorePartwise!= null ) {
+    if (scorePartwise != null) {
       XmlElement? work = scorePartwise.getElement('work');
       if (work != null) {
         XmlElement? workTitle = work.getElement('work-title');

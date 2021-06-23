@@ -5,6 +5,7 @@ import 'package:bsteeleMusicLib/songs/chord.dart';
 import 'package:bsteeleMusicLib/songs/chordAnticipationOrDelay.dart';
 import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:logger/logger.dart';
@@ -187,6 +188,72 @@ void main() {
   });
       ''');
       }
+    });
+
+    test('test piano pitches ', () {
+      int beats = 4;
+      int beatsPerBar = 4;
+      ChordDescriptor chordDescriptor = ChordDescriptor.major;
+
+      Logger.level = Level.info;
+
+      if (Logger.level.index <= Level.debug.index) {
+        for (ScaleNote sn in ScaleNote.values) {
+          if (sn.isSilent) {
+            continue;
+          }
+          logger.i('$sn:');
+          for (var chordDescriptor in ChordDescriptor.values) {
+            ScaleChord scaleChord = ScaleChord(sn, chordDescriptor);
+            Chord chord = Chord(scaleChord, beats, beatsPerBar, null, ChordAnticipationOrDelay.defaultValue, true);
+            logger.i('  $chord: ${chordDescriptor.chordComponents}: ${chord.pianoChordPitches()}');
+          }
+        }
+      }
+      expect(
+          Chord(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.major), beats, beatsPerBar, null,
+                  ChordAnticipationOrDelay.defaultValue, true)
+              .pianoChordPitches(),
+          [Pitch.get(PitchEnum.C4), Pitch.get(PitchEnum.E4), Pitch.get(PitchEnum.G4)]);
+      expect(
+          Chord(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.minor), beats, beatsPerBar, null,
+                  ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th), true)
+              .pianoChordPitches(),
+          [Pitch.get(PitchEnum.C4), Pitch.get(PitchEnum.Eb4), Pitch.get(PitchEnum.G4)]);
+      expect(
+          Chord(ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.dominant7), beats, beatsPerBar, null,
+                  ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th), true)
+              .pianoChordPitches(),
+          [Pitch.get(PitchEnum.C4), Pitch.get(PitchEnum.E4), Pitch.get(PitchEnum.G4), Pitch.get(PitchEnum.Bb4)]);
+      expect(
+          Chord(
+                  ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.dominant7),
+                  beats,
+                  beatsPerBar,
+                  ScaleNote.get(ScaleNoteEnum.G),
+                  ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+                  true)
+              .pianoChordPitches(),
+          [
+            Pitch.get(PitchEnum.G1),
+            Pitch.get(PitchEnum.C4),
+            Pitch.get(PitchEnum.E4),
+            Pitch.get(PitchEnum.G4),
+            Pitch.get(PitchEnum.Bb4)
+          ]);
+
+      //  G♯maj9: {R, 3, 5, 7, 9}: [G♯4, C5, D♯5, G5, C6]
+      expect(
+          Chord(ScaleChord(ScaleNote.get(ScaleNoteEnum.Gs), ChordDescriptor.major9), beats, beatsPerBar, null,
+                  ChordAnticipationOrDelay.defaultValue, true)
+              .pianoChordPitches(),
+          [
+            Pitch.get(PitchEnum.Gs4),
+            Pitch.get(PitchEnum.C5),
+            Pitch.get(PitchEnum.Ds5),
+            Pitch.get(PitchEnum.G5),
+            Pitch.get(PitchEnum.C6)
+          ]);
     });
   });
 }
