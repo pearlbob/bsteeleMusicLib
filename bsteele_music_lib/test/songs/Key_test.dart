@@ -482,28 +482,51 @@ void main() {
     expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.D4)), 4.5);
     expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.Ds4)), 4.5);
 
-    //  bass clef algorithm is for bass!   not piano!
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.C3)), -1);
+    //  this bass clef algorithm is for piano!
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.C4)), -1);
 
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.B2)), -0.5);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Bb2)), -0.5);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.A2)), 0);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.As2)), 0);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gs2)), 1 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.G2)), 1 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.F2)), 2 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E2)), 3 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.D2)), 4 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.C2)), 5 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.B1)), 6 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.A1)), 7 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gs1)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.G1)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gb1)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.F1)), 9 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Fb1)), 9 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Es1)), 10 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E1)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.B3)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Bb3)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.A3)), 0);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.As3)), 0);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gs3)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.G3)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.F3)), 2 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E3)), 3 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.D3)), 4 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.C3)), 5 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.B2)), 6 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.A2)), 7 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gs2)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.G2)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gb2)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.F2)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Fb2)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Es2)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E2)), 10 / 2);
+
+    //  this bass clef algorithm is for bass!   not piano!
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.C3)), -1);
+
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.B2)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Bb2)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.A2)), 0);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.As2)), 0);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Gs2)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.G2)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.F2)), 2 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.E2)), 3 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.D2)), 4 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.C2)), 5 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.B1)), 6 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.A1)), 7 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Gs1)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.G1)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Gb1)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.F1)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Fb1)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Es1)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.E1)), 10 / 2);
 
     int i = 0;
     for (Pitch pitch in Pitch.flats) {

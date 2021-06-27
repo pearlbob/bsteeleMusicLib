@@ -82,6 +82,7 @@ class MusicConstants {
 enum Clef {
   treble,
   bass,
+  bass8vb
 }
 
 

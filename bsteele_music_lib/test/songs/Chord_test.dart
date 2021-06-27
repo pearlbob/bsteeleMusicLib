@@ -193,7 +193,6 @@ void main() {
     test('test piano pitches ', () {
       int beats = 4;
       int beatsPerBar = 4;
-      ChordDescriptor chordDescriptor = ChordDescriptor.major;
 
       Logger.level = Level.info;
 

@@ -147,8 +147,11 @@ class Key implements Comparable<Key> {
 
   static final trebleStaffTopPitch = Pitch.get(PitchEnum.F5);
   static final double trebleStaffTop = _staffSpacesFromA0(trebleStaffTopPitch);
-  static final bassStaffTopPitch = Pitch.get(PitchEnum.A2); //fixme: should be a3 for piano!
+  static final bassStaffTopPitch = Pitch.get(PitchEnum.A3);
   static final double bassStaffTop = _staffSpacesFromA0(bassStaffTopPitch);
+  static final bass8vbStaffTopPitch = Pitch.get(PitchEnum.A2);
+  static final double bass8vbStaffTop = _staffSpacesFromA0(bass8vbStaffTopPitch);
+
 
   static double _staffSpacesFromA0(Pitch pitch) {
     return (pitch.scaleNumber +
@@ -163,6 +166,8 @@ class Key implements Comparable<Key> {
         return trebleStaffTop - _staffSpacesFromA0(pitch);
       case Clef.bass:
         return bassStaffTop - _staffSpacesFromA0(pitch);
+      case Clef.bass8vb:
+        return bass8vbStaffTop - _staffSpacesFromA0(pitch);
     }
   }
 

@@ -2159,17 +2159,17 @@ o: end here''');
         'pearlbob',
         'i: D C G G V: C F C C,F F C C,  G F C G',
         a.rawLyrics);
-    // expect(a.lyricsAsString(), b.lyricsAsString());
-    // expect(a.songBaseSameContent(b), isTrue);
-    //
-    // testRawLyricsLoop('v:');
-    // testRawLyricsLoop('v:\n');
-    // testRawLyricsLoop('v:\n\n');
-    // testRawLyricsLoop('v:\n\n\n');
-    // testRawLyricsLoop('v:\n\n\n\n');
-    //
-    // testRawLyricsLoop('v:\nA\n');
-    // testRawLyricsLoop('v:v:\nA\n\n');
+    expect(a.lyricsAsString(), b.lyricsAsString());
+    expect(a.songBaseSameContent(b), isTrue);
+
+    testRawLyricsLoop('v:');
+    testRawLyricsLoop('v:\n');
+    testRawLyricsLoop('v:\n\n');
+    testRawLyricsLoop('v:\n\n\n');
+    testRawLyricsLoop('v:\n\n\n\n');
+
+    testRawLyricsLoop('v:\nA\n');
+    testRawLyricsLoop('v:v:\nA\n\n');
     testRawLyricsLoop('v:    \n      A   \n\n');
     testRawLyricsLoop('v: A');
     testRawLyricsLoop('v: A\n');
