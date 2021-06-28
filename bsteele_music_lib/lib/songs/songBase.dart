@@ -341,7 +341,7 @@ class SongBase {
             }
 
             String lyrics = _splitWordsToMeasure(measureCountInRow, (songMoment.col ?? 1) - 1, rowLyrics);
-            songMoment.lyrics = lyrics; //  fixme: should not change a value of an object already in a hashmap!
+            songMoment.lyrics = lyrics; //  fixme: should not be changing a value of an object already in a hashmap!
           }
         }
       }
@@ -3163,7 +3163,8 @@ class SongBase {
   }
 
   List<SongMoment> getSongMoments() {
-    _computeSongMoments();
+    songMomentGrid; //  fixme: shouldn't have to compute grid just to get the lyrics on the moments!!!!!
+    //_computeSongMoments();
     return _songMoments;
   }
 

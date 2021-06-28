@@ -16,30 +16,29 @@ import 'key.dart';
 /// </p>
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
-  Measure(this.beatCount, this.chords) {
+  Measure(this._beatCount, this.chords) {
     allocateTheBeats();
   }
 
-  Measure.deepCopy(Measure? measure) {
-    if (measure == null) {
-      return;
-    }
-
-    beatCount = measure.beatCount;
-
-    //  deep copy
-    List<Chord> chords = [];
-    for (Chord chord in measure.chords) {
-      chords.add(Chord.copy(chord));
-    }
-    this.chords = chords;
-
-    endOfRow = measure.endOfRow;
-  }
+  // Measure deepCopy() {
+  //   Measure measure = Measure(_beatCount, []);
+  //
+  //   measure._beatCount = _beatCount;
+  //
+  //   //  deep copy
+  //   List<Chord> chords = [];
+  //   for (Chord chord in measure.chords) {
+  //     chords.add(Chord.copy(chord));
+  //   }
+  //   measure.chords = chords;
+  //
+  //   measure.endOfRow = endOfRow;
+  //   return measure;
+  // }
 
   /// for subclasses
   Measure.zeroArgs()
-      : beatCount = 4,
+      : _beatCount = 4,
         chords = [];
 
   /// Convenience method for testing only
@@ -137,7 +136,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         for (Chord c in chords) {
           c.implicitBeats = false;
         }
-        beatCount = explicitBeats;
+        _beatCount = explicitBeats;
         return;
       }
 
@@ -326,7 +325,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && other is Measure &&
+    return runtimeType == other.runtimeType &&
+        other is Measure &&
         beatCount == other.beatCount &&
         endOfRow == other.endOfRow &&
         listsEqual(chords, other.chords);
@@ -343,7 +343,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   /// The beat count for the measure should be set prior to chord additions
   /// to avoid awkward behavior when chords are added without a count.
   /// Defaults to 4.
-  int beatCount = 4; //  default only
+  int get beatCount => _beatCount;
+  int _beatCount = 4; //  default only
 
   /// indicate that the measure is at the end of it's row of measures in the phrase
   bool endOfRow = false;

@@ -234,12 +234,60 @@ void main() {
                   true)
               .pianoChordPitches(),
           [
-            Pitch.get(PitchEnum.G1),
+           //  slash note not included
             Pitch.get(PitchEnum.C4),
             Pitch.get(PitchEnum.E4),
             Pitch.get(PitchEnum.G4),
             Pitch.get(PitchEnum.Bb4)
           ]);
+
+      expect(
+          Chord(
+              ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.dominant7),
+              beats,
+              beatsPerBar,
+              ScaleNote.get(ScaleNoteEnum.G),
+              ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+              true)
+              .pianoSlashPitch(),
+            Pitch.get(PitchEnum.G2),
+           );
+
+      expect(
+        Chord(
+            ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.dominant7),
+            beats,
+            beatsPerBar,
+            ScaleNote.get(ScaleNoteEnum.G),
+            ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+            true)
+            .bassSlashPitch(),
+        Pitch.get(PitchEnum.G1),
+      );
+
+      expect(
+        Chord(
+            ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.dominant7),
+            beats,
+            beatsPerBar,
+            null,
+            ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+            true)
+            .pianoSlashPitch(),
+        isNull
+      );
+
+      expect(
+        Chord(
+            ScaleChord(ScaleNote.get(ScaleNoteEnum.C), ChordDescriptor.dominant7),
+            beats,
+            beatsPerBar,
+            null,
+            ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+            true)
+            .bassSlashPitch(),
+          isNull
+      );
 
       //  G♯maj9: {R, 3, 5, 7, 9}: [G♯4, C5, D♯5, G5, C6]
       expect(

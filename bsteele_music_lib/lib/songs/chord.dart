@@ -9,9 +9,6 @@ import 'package:quiver/core.dart';
 import 'chordAnticipationOrDelay.dart';
 import 'key.dart';
 
-final _pianoA = Pitch.get(PitchEnum.A3); //  the A below middle C, i.e. C4.  Used as a minimum root for piano chords.
-final _bassE = Pitch.get(PitchEnum.E1); //  the low E of a four string bass guitar
-
 ///
 class Chord implements Comparable<Chord> {
   Chord(ScaleChord scaleChord, int beats, int beatsPerBar, ScaleNote? slashScaleNote,
@@ -197,13 +194,24 @@ class Chord implements Comparable<Chord> {
   }
 
   List<Pitch> pianoChordPitches() {
-    Pitch root = Pitch.findPitch(scaleChord.scaleNote, _pianoA);
+    Pitch root = Pitch.findPitch(scaleChord.scaleNote, minimumPianoRootPitch);
     SplayTreeSet<Pitch> pitches = SplayTreeSet();
     pitches.addAll(getPitches(root));
-    if (slashScaleNote != null) {
-      pitches.add(Pitch.findPitch(slashScaleNote!, _bassE));
-    }
     return pitches.toList(growable: false);
+  }
+
+  Pitch? pianoSlashPitch() {
+    if (slashScaleNote == null) {
+      return null;
+    }
+    return Pitch.findPitch(slashScaleNote!, minimumPianoSlashPitch);
+  }
+
+  Pitch? bassSlashPitch() {
+    if (slashScaleNote == null) {
+      return null;
+    }
+    return Pitch.findPitch(slashScaleNote!, minimumBassSlashPitch);
   }
 
   @override
@@ -240,4 +248,7 @@ class Chord implements Comparable<Chord> {
   late final ChordAnticipationOrDelay _anticipationOrDelay;
 
   static final RegExp _beatSizeRegexp = RegExp(r'^\.\d');
+  static final minimumPianoRootPitch = Pitch.get(PitchEnum.A3); //  the A below middle C, i.e. C4.
+  static final minimumPianoSlashPitch = Pitch.get(PitchEnum.E2); // bottom of piano bass clef
+  static final minimumBassSlashPitch = Pitch.get(PitchEnum.E1); //  the low E of a bass guitar
 }
