@@ -5,9 +5,9 @@ import 'package:bsteeleMusicLib/songs/musicXml.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-import 'package:system_info/system_info.dart';
 import 'package:test/test.dart';
 import 'package:xml/xml.dart';
+import 'dart:io' show Platform;
 
 void main() {
   Logger.level = Level.info;
@@ -243,8 +243,9 @@ void main() {
     //fixme: expect(sb.toString().hashCode, 993339470); //  found empirically
 
     if (Logger.level == Level.debug) {
+      Map<String, String> envVars = Platform.environment;
       logger.w('fixme: shouldn\'t be writing a file as part of a test!!!!!!!!!!!!!!!!!');
-      final filename = '${SysInfo.userDirectory}/junk/genTest.musicxml';
+      final filename = '${envVars['HOME']}/junk/genTest.musicxml';
       File(filename).writeAsString(songAsMusicXml, flush: true).then((File file) {
         logger.i('done');
         logger.i(DateFormat.yMMMd().format(DateTime.now()));
