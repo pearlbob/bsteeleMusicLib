@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
 import 'package:bsteeleMusicLib/songs/musicConstants.dart';
@@ -429,7 +431,7 @@ void main() {
 
       for (int i = -6; i <= 6; i++) {
         Key offsetKey = Key.getKeyByHalfStep(off + i);
-        logger.i('\t${i>=0?'+':''}$i: ${offsetKey.toString()}   ${key.toString()}');
+        logger.i('\t${i >= 0 ? '+' : ''}$i: ${offsetKey.toString()}   ${key.toString()}');
       }
     }
 
@@ -691,6 +693,19 @@ void main() {
     expect(Key.get(KeyEnum.A).capoKey, Key.get(KeyEnum.G));
     expect(Key.get(KeyEnum.Bb).capoKey, Key.get(KeyEnum.G));
     expect(Key.get(KeyEnum.B).capoKey, Key.get(KeyEnum.G));
+  });
+
+  test('test key.inKey()', () {
+
+    for (var key in Key.values) {
+      for (var scaleNote in ScaleNote.values) {
+        logger.d('$key $scaleNote');
+        ScaleNote sn = key.inKey(scaleNote);
+        expect(sn.halfStep, scaleNote.halfStep);
+        expect(key.inKey(scaleNote.alias), sn);
+        expect(key.inKey(scaleNote), sn);
+      }
+    }
   });
 }
 
