@@ -1,3 +1,4 @@
+import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/chordComponent.dart';
 import 'package:test/test.dart';
 
@@ -34,5 +35,10 @@ void main() {
     expect(false, set.contains(ChordComponent.fourth));
     expect(false, set.contains(ChordComponent.sixth));
     expect(false, set.contains(ChordComponent.minorSeventh));
+  });
+
+  test('ChordComponent values', () {
+    logger.d(ChordComponent.values.toString());
+    expect(ChordComponent.values.toString(), '[R, m2, 2, m3, 3, 4, b5, 5, #5, 6, m7, 7]');
   });
 }

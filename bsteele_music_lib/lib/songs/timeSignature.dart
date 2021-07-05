@@ -37,7 +37,9 @@ class TimeSignature {
     return '$beatsPerBar/$unitsPerMeasure';
   }
 
-  static const TimeSignature defaultTimeSignature = TimeSignature(4, 4);
+  static const TimeSignature commonTimeSignature = TimeSignature(4, 4);
+  static const TimeSignature defaultTimeSignature = commonTimeSignature;
+
 
   final int beatsPerBar; //  beats per bar, i.e. timeSignature numerator
   final int unitsPerMeasure; //  units per measure, i.e. timeSignature denominator
