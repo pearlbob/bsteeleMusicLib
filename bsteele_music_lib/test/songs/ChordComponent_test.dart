@@ -39,6 +39,6 @@ void main() {
 
   test('ChordComponent values', () {
     logger.d(ChordComponent.values.toString());
-    expect(ChordComponent.values.toString(), '[R, m2, 2, m3, 3, 4, b5, 5, #5, 6, m7, 7]');
+    expect(ChordComponent.values.toString(), '[R, m2, 2, m3, 3, 4, b5, 5, m6, 6, m7, 7]');
   });
 }

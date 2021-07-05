@@ -13,6 +13,7 @@ class ChordComponent implements Comparable<ChordComponent> {
   static final flatFifth = ChordComponent._('b5', 5, 6);
   static final fifth = ChordComponent._('5', 5, 7);
   static final sharpFifth = ChordComponent._('#5', 5, 8);
+  static final minorSixth = ChordComponent._('m6', 6, 8);
   static final sixth = ChordComponent._('6', 6, 9);
   static final minorSeventh = ChordComponent._('m7', 7, 10);
   static final seventh = ChordComponent._('7', 7, 11);
@@ -20,7 +21,7 @@ class ChordComponent implements Comparable<ChordComponent> {
   static final eleventh = ChordComponent._('11', 11, 12 + 7);
   static final thirteenth = ChordComponent._('13', 13, 12 + 11);
 
-  static List<ChordComponent> get values => _chordComponentByHalfSteps;
+  static List<ChordComponent> get values => _majorChordComponentByHalfSteps;
 
   ChordComponent._(this._shortName, this._scaleNumber, this._halfSteps);
 
@@ -32,7 +33,7 @@ class ChordComponent implements Comparable<ChordComponent> {
       }
 
       ChordComponent? cc;
-      for (ChordComponent t in _chordComponentByHalfSteps) {
+      for (ChordComponent t in _majorChordComponentByHalfSteps) {
         if (t.shortName == s) {
           cc = t;
           break;
@@ -48,6 +49,9 @@ class ChordComponent implements Comparable<ChordComponent> {
             break;
           case 'm5':
             cc = flatFifth;
+            break;
+          case '#5':
+            cc = sharpFifth;
             break;
           case '9':
             cc = ninth;
@@ -68,7 +72,7 @@ class ChordComponent implements Comparable<ChordComponent> {
   }
 
   static ChordComponent getByHalfStep(int halfStep) {
-    return _chordComponentByHalfSteps[halfStep % MusicConstants.halfStepsPerOctave];
+    return _majorChordComponentByHalfSteps[halfStep % MusicConstants.halfStepsPerOctave];
   }
 
   @override
@@ -100,7 +104,7 @@ class ChordComponent implements Comparable<ChordComponent> {
   int get halfSteps => _halfSteps;
   final int _halfSteps;
 
-  static final _chordComponentByHalfSteps = <ChordComponent>[
+  static final _majorChordComponentByHalfSteps = <ChordComponent>[
     root,
     minorSecond,
     second,
@@ -109,7 +113,7 @@ class ChordComponent implements Comparable<ChordComponent> {
     fourth,
     flatFifth,
     fifth,
-    sharpFifth,
+    minorSixth,
     sixth,
     minorSeventh,
     seventh

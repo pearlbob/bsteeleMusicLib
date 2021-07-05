@@ -533,7 +533,8 @@ class Key implements Comparable<Key> {
     7 - 1, // 11
   ];
 
-  //                                                   0  1  2  3  3  4  5  6  7  8  9 10  11
+  //                                   1  2  3  4  5  6  7
+  //                                   0  1  2  3  4  5  6
   static const List<int> minorScale = [0, 2, 3, 5, 7, 8, 10];
 
   static final List<ChordDescriptor> diatonic7ChordModifiers = [
