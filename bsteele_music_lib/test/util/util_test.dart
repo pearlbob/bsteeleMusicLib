@@ -32,6 +32,18 @@ void main() {
     expect(Util.camelCaseToLowercaseSpace('AbcdefGhiJ'), 'abcdef ghi j');
     expect(Util.camelCaseToLowercaseSpace('abcdefGhij'), 'abcdef ghij');
     expect(Util.camelCaseToLowercaseSpace('abcdef ghij'), 'abcdef ghij');
+    expect(Util.camelCaseToLowercaseSpace('a'), 'a');
+    expect(Util.camelCaseToLowercaseSpace('A'), 'a');
+    expect(Util.camelCaseToLowercaseSpace(''), '');
+  });
+
+  test('test util underScoresToCamelCase()', () {
+    expect(Util.underScoresToCamelCase('A_bcdef_Ghi_J'), 'ABcdefGhiJ');
+    expect(Util.underScoresToCamelCase('a_bcdef_ghi_j'), 'aBcdefGhiJ');
+    expect(Util.underScoresToCamelCase('abcdef_ghij'), 'abcdefGhij');
+    expect(Util.underScoresToCamelCase('a'), 'a');
+    expect(Util.underScoresToCamelCase('A'), 'A');
+    expect(Util.underScoresToCamelCase(''), '');
   });
 
   test('test util enum name', () {

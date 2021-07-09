@@ -696,6 +696,11 @@ void main() {
   });
 
   test('test key.inKey()', () {
+    {
+      Key key = Key.get(KeyEnum.Gb);
+      logger.i('B in Gb: ${key.inKey(ScaleNote.get(ScaleNoteEnum.B))}');
+      logger.i('B tran in Gb: ${key.transpose(ScaleNote.get(ScaleNoteEnum.B), 0)}');
+    }
 
     for (var key in Key.values) {
       for (var scaleNote in ScaleNote.values) {

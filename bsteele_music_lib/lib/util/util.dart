@@ -61,7 +61,19 @@ class Util {
   }
 
   /// capitalize the first character
-  static String firstToUpper(String s) => s[0].toUpperCase() + s.substring(1);
+  static String firstToUpper(String s) {
+    if ( s.isNotEmpty ) {
+      return s[0].toUpperCase() + s.substring(1);
+    }
+    return s;
+  }
+
+  static String firstToLower(String s) {
+    if ( s.isNotEmpty ) {
+      return s[0].toLowerCase() + s.substring(1);
+    }
+    return s;
+  }
 
   static String camelCaseToLowercaseSpace(String s) {
     return s.replaceAllMapped(_singleCapRegExp, (Match match) {
@@ -69,7 +81,14 @@ class Util {
     }).trimLeft();
   }
 
+  static String underScoresToCamelCase(String s) {
+    return s.replaceAllMapped(_underScoreRegExp, (Match match) {
+      return '${match.group(1)!.toUpperCase()}';
+    }).trimLeft();
+  }
+
   static final _singleCapRegExp = RegExp(r'([A-Z])');
+  static final _underScoreRegExp = RegExp(r'_(\w)');
 }
 
 /// A String with a marked location to be used in parsing.

@@ -20,7 +20,7 @@ extension CjRankingEnumParser on String {
 
 /// name and value pair
 class NameValue implements Comparable<NameValue> {
-  NameValue(this._name, this._value);
+  const NameValue(this._name, this._value);
 
   @override
   String toString() {
@@ -28,7 +28,7 @@ class NameValue implements Comparable<NameValue> {
   }
 
   String toJson() {
-    return '{"name":"$name","value":"$value"}';
+    return '{"name":${jsonEncode(name)},"value":${jsonEncode(value)}}';
   }
 
   @override
@@ -76,6 +76,10 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return _nameValues.remove(nameValue);
   }
 
+  Iterable<NameValue> where(bool Function(NameValue nameValue) matcher) {
+    return nameValues.where(matcher);
+  }
+
   @override
   int compareTo(SongIdMetadata other) {
     int ret = _id.compareTo(other._id);
@@ -113,7 +117,7 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
       }
       sb.write(nv.toJson());
     }
-    return '{"id":"$id","metadata":[${sb.toString()}]}';
+    return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
 
   String get id => _id;
@@ -190,7 +194,7 @@ class SongMetadata {
       nameIsLikeReg = RegExp(nameIsLike, caseSensitive: false, dotAll: true);
     }
     if (valueIsLike != null) {
-      valueIsLikeReg = RegExp(valueIsLike, caseSensitive: false, dotAll: true);
+      valueIsLikeReg = RegExp(valueIsLike.isEmpty ? r'^$':valueIsLike, caseSensitive: false, dotAll: true);
     }
 
     loop:
