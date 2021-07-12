@@ -31,17 +31,21 @@ void main() {
     SongIdMetadata md2 = SongIdMetadata('id2', metadata: [NameValue('jam', 'advanced')]);
     SongIdMetadata md3 = SongIdMetadata('id3 christmas');
 
-    SplayTreeSet<SongIdMetadata> set = SongMetadata.where(idIsLike: id0);
+    SplayTreeSet<SongIdMetadata> set = SplayTreeSet();
+
+    set = SongMetadata.where(idIsLike: id0);
     expect(set.isEmpty, true);
 
     SongMetadata.set(md0);
     SongMetadata.set(md1);
     SongMetadata.set(md2);
     SongMetadata.set(md3);
-    set = SongMetadata.where(idIsLike: md0.id);
-    expect(set.isEmpty, false);
-    expect(set.length, 1);
-    expect(set.contains(md0), true);
+    for (var md in [md0, md1, md2, md3]) {
+      set = SongMetadata.where(idIsLike: md.id);
+      expect(set.isEmpty, false);
+      expect(set.length, 1);
+      expect(set.contains(md), true);
+    }
 
     set = SongMetadata.where(idIsLike: 'foo');
     expect(set.isEmpty, true);

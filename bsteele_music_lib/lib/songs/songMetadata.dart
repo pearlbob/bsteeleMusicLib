@@ -137,37 +137,41 @@ class SongMetadata {
 
   SongMetadata._internal();
 
-  static void set(SongIdMetadata idMetadata) {
-    if (!_singleton._idMetadata.add(idMetadata)) {
-      _singleton._idMetadata.remove(idMetadata);
-      _singleton._idMetadata.add(idMetadata);
+  static void set(SongIdMetadata songIdMetadata) {
+    if (!_singleton._idMetadata.add(songIdMetadata)) {
+      _singleton._idMetadata.remove(songIdMetadata);
+      _singleton._idMetadata.add(songIdMetadata);
     }
   }
 
-  static void add(SongIdMetadata idMetadata) {
+  static void add(SongIdMetadata songIdMetadata) {
     SongIdMetadata? value;
-    if ((value = _singleton._idMetadata.lookup(idMetadata)) != null) {
-      value!._nameValues.addAll(idMetadata._nameValues);
+    if ((value = _singleton._idMetadata.lookup(songIdMetadata)) != null) {
+      value!._nameValues.addAll(songIdMetadata._nameValues);
     } else {
-      set(idMetadata);
+      set(songIdMetadata);
     }
   }
 
-  static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata idMetadata) doesMatch,
+  static void remove(SongIdMetadata songIdMetadata) {
+    _singleton._idMetadata.remove(songIdMetadata);
+  }
+
+  static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata songIdMetadata) doesMatch,
       {SplayTreeSet<SongIdMetadata>? from}) {
     SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
-    for (SongIdMetadata idMetadata in from ?? _singleton._idMetadata) {
-      if (doesMatch(idMetadata)) {
-        ret.add(idMetadata);
+    for (SongIdMetadata songIdMetadata in from ?? _singleton._idMetadata) {
+      if (doesMatch(songIdMetadata)) {
+        ret.add(songIdMetadata);
       }
     }
     return ret;
   }
 
   static NameValue? songMetadataAt(final String id, final String name, {SplayTreeSet<SongIdMetadata>? from}) {
-    for (SongIdMetadata idMetadata in from ?? _singleton._idMetadata) {
-      if (idMetadata.id == id) {
-        for (NameValue nameValue in idMetadata.nameValues) {
+    for (SongIdMetadata songIdMetadata in from ?? _singleton._idMetadata) {
+      if (songIdMetadata.id == id) {
+        for (NameValue nameValue in songIdMetadata.nameValues) {
           if (nameValue.name == name) {
             return nameValue;
           }
@@ -194,57 +198,68 @@ class SongMetadata {
       nameIsLikeReg = RegExp(nameIsLike, caseSensitive: false, dotAll: true);
     }
     if (valueIsLike != null) {
-      valueIsLikeReg = RegExp(valueIsLike.isEmpty ? r'^$':valueIsLike, caseSensitive: false, dotAll: true);
+      valueIsLikeReg = RegExp(valueIsLike.isEmpty ? r'^$' : valueIsLike, caseSensitive: false, dotAll: true);
     }
 
     loop:
     for (SongIdMetadata idm in _singleton._idMetadata) {
-      if (idIsLikeReg != null && idIsLikeReg.hasMatch(idm._id)) {
-        ret.add(idm);
-        continue;
+      if (idIsLikeReg != null && !idIsLikeReg.hasMatch(idm._id)) {
+        continue loop;
       }
 
       if (nameIsLikeReg != null) {
         if (valueIsLikeReg != null) {
+          bool hasMatch = false;
           for (NameValue nv in idm._nameValues) {
-            if (valueIsLikeReg.hasMatch(nv._name) && valueIsLikeReg.hasMatch(nv._value)) {
-              ret.add(idm);
-              continue loop;
+            if (nameIsLikeReg.hasMatch(nv._name) && valueIsLikeReg.hasMatch(nv._value)) {
+              hasMatch = true;
+              break;
             }
+          }
+          if (!hasMatch) {
+            continue loop;
           }
         } else {
+          bool hasMatch = false;
           for (NameValue nv in idm._nameValues) {
             if (nameIsLikeReg.hasMatch(nv._name)) {
-              ret.add(idm);
-              continue loop;
+              hasMatch = true;
+              break;
             }
           }
-        }
-      }
-      if (valueIsLikeReg != null) {
-        for (NameValue nv in idm._nameValues) {
-          if (valueIsLikeReg.hasMatch(nv._value)) {
-            ret.add(idm);
+          if (!hasMatch) {
             continue loop;
           }
         }
+      } else if (valueIsLikeReg != null) {
+        bool hasMatch = false;
+        for (NameValue nv in idm._nameValues) {
+          if (valueIsLikeReg.hasMatch(nv._value)) {
+            hasMatch = true;
+            break;
+          }
+        }
+        if (!hasMatch) {
+          continue loop;
+        }
       }
+      ret.add(idm);
     }
     return ret;
   }
 
   SplayTreeSet<SongIdMetadata> _shallowCopyIdMetadata() {
     SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
-    for (SongIdMetadata idMetadata in _idMetadata) {
-      ret.add(idMetadata);
+    for (SongIdMetadata songIdMetadata in _idMetadata) {
+      ret.add(songIdMetadata);
     }
     return ret;
   }
 
   static SplayTreeSet<String> namesOf(SplayTreeSet<SongIdMetadata> idMetadata) {
     SplayTreeSet<String> ret = SplayTreeSet();
-    for (SongIdMetadata idMetadata in _singleton._idMetadata) {
-      for (NameValue nameValue in idMetadata.nameValues) {
+    for (SongIdMetadata songIdMetadata in _singleton._idMetadata) {
+      for (NameValue nameValue in songIdMetadata.nameValues) {
         ret.add(nameValue.name);
       }
     }
@@ -253,8 +268,8 @@ class SongMetadata {
 
   static SplayTreeSet<String> valuesOf(SplayTreeSet<SongIdMetadata> idMetadata, String name) {
     SplayTreeSet<String> ret = SplayTreeSet();
-    for (SongIdMetadata idMetadata in _singleton._idMetadata) {
-      for (NameValue nameValue in idMetadata.nameValues) {
+    for (SongIdMetadata songIdMetadata in _singleton._idMetadata) {
+      for (NameValue nameValue in songIdMetadata.nameValues) {
         if (nameValue.name == name) {
           ret.add(nameValue.value);
         }
@@ -270,13 +285,13 @@ class SongMetadata {
   static String toJson() {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (SongIdMetadata idMetadata in _singleton._idMetadata) {
+    for (SongIdMetadata songIdMetadata in _singleton._idMetadata) {
       if (first) {
         first = false;
       } else {
         sb.write(',\n');
       }
-      sb.write(idMetadata.toJson());
+      sb.write(songIdMetadata.toJson());
     }
     return '[${sb.toString()}]';
   }
