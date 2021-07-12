@@ -181,8 +181,14 @@ class SongMetadata {
     return null;
   }
 
-  static SplayTreeSet<SongIdMetadata> where({String? idIsLike, String? nameIsLike, String? valueIsLike}) {
-    if (idIsLike == null && nameIsLike == null && valueIsLike == null) {
+  static SplayTreeSet<SongIdMetadata> where(
+      {String? idIsLike, String? nameIsLike, String? valueIsLike, String? idIs, String? nameIs, String? valueIs}) {
+    if (idIsLike == null &&
+        nameIsLike == null &&
+        valueIsLike == null &&
+        idIs == null &&
+        nameIs == null &&
+        valueIs == null) {
       return _singleton._shallowCopyIdMetadata();
     }
 
@@ -195,6 +201,9 @@ class SongMetadata {
       idIsLikeReg = RegExp(idIsLike, caseSensitive: false, dotAll: true);
     }
     if (nameIsLike != null) {
+      if (nameIsLike.isEmpty) {
+        return ret; //  name can't be empty when used for selection
+      }
       nameIsLikeReg = RegExp(nameIsLike, caseSensitive: false, dotAll: true);
     }
     if (valueIsLike != null) {
@@ -205,6 +214,34 @@ class SongMetadata {
     for (SongIdMetadata idm in _singleton._idMetadata) {
       if (idIsLikeReg != null && !idIsLikeReg.hasMatch(idm._id)) {
         continue loop;
+      }
+
+      if (idIs != null && idIs != idm.id.toString()) {
+        continue loop;
+      }
+      if (nameIs != null) {
+        bool hasMatch = false;
+        for (NameValue nv in idm._nameValues) {
+          if (nameIs == nv._name) {
+            hasMatch = true;
+            break;
+          }
+        }
+        if (!hasMatch) {
+          continue loop;
+        }
+      }
+      if (valueIs != null) {
+        bool hasMatch = false;
+        for (NameValue nv in idm._nameValues) {
+          if (valueIs == nv.value) {
+            hasMatch = true;
+            break;
+          }
+        }
+        if (!hasMatch) {
+          continue loop;
+        }
       }
 
       if (nameIsLikeReg != null) {
