@@ -32,11 +32,6 @@ class NameValue implements Comparable<NameValue> {
   }
 
   @override
-  bool operator ==(other) {
-    return runtimeType == other.runtimeType && other is NameValue && _name == other._name && _value == other._value;
-  }
-
-  @override
   int compareTo(NameValue other) {
     int ret = _name.compareTo(other._name);
     if (ret != 0) {
@@ -48,6 +43,14 @@ class NameValue implements Comparable<NameValue> {
     }
     return 0;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NameValue && runtimeType == other.runtimeType && _name == other._name && _value == other._value;
+
+  @override
+  int get hashCode => _name.hashCode ^ _value.hashCode;
 
   String get name => _name;
   final String _name;
@@ -120,6 +123,17 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SongIdMetadata &&
+          runtimeType == other.runtimeType &&
+          _id == other._id &&
+          _nameValues == other._nameValues;
+
+  @override
+  int get hashCode => _id.hashCode ^ _nameValues.hashCode;
+
   String get id => _id;
   final String _id;
 
@@ -168,27 +182,35 @@ class SongMetadata {
     return ret;
   }
 
-  static NameValue? songMetadataAt(final String id, final String name, {SplayTreeSet<SongIdMetadata>? from}) {
-    for (SongIdMetadata songIdMetadata in from ?? _singleton._idMetadata) {
-      if (songIdMetadata.id == id) {
-        for (NameValue nameValue in songIdMetadata.nameValues) {
-          if (nameValue.name == name) {
-            return nameValue;
-          }
+  static SplayTreeSet<NameValue> songMetadataAt(final String id, final String name) {
+    var set = where(idIs: id, nameIs: name);
+    assert( set.length == 1);
+    var ret = SplayTreeSet<NameValue>();
+    for (var songIdMetadata in set) {
+      for (var nameValue in songIdMetadata._nameValues) {
+        if (nameValue.name == name) {
+          ret.add(nameValue);
         }
       }
     }
-    return null;
+    return ret;
   }
 
   static SplayTreeSet<SongIdMetadata> where(
-      {String? idIsLike, String? nameIsLike, String? valueIsLike, String? idIs, String? nameIs, String? valueIs}) {
+      {String? idIsLike,
+      String? nameIsLike,
+      String? valueIsLike,
+      String? idIs,
+      String? nameIs,
+      String? valueIs,
+      NameValue? nameValue}) {
     if (idIsLike == null &&
         nameIsLike == null &&
         valueIsLike == null &&
         idIs == null &&
         nameIs == null &&
-        valueIs == null) {
+        valueIs == null &&
+        nameValue == null) {
       return _singleton._shallowCopyIdMetadata();
     }
 
@@ -216,6 +238,9 @@ class SongMetadata {
         continue loop;
       }
 
+      if (nameValue != null && !idm._nameValues.contains(nameValue)) {
+        continue loop;
+      }
       if (idIs != null && idIs != idm.id.toString()) {
         continue loop;
       }
@@ -359,6 +384,16 @@ class SongMetadata {
       }
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SongMetadata && runtimeType == other.runtimeType && _idMetadata == other._idMetadata;
+
+  @override
+  int get hashCode => _idMetadata.hashCode;
+
+  static int get staticHashCode => _singleton.hashCode;
 
   static SplayTreeSet<SongIdMetadata> get idMetadata => _singleton._idMetadata;
   final SplayTreeSet<SongIdMetadata> _idMetadata = SplayTreeSet();

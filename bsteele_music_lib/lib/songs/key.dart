@@ -484,9 +484,12 @@ class Key implements Comparable<Key> {
   }
 
   @override
-  bool operator ==(other) {
-    return runtimeType == other.runtimeType && identical(this, other);
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Key && runtimeType == other.runtimeType && _keyEnum == other._keyEnum;
+
+  @override
+  int get hashCode => _keyEnum.hashCode;
 
   bool get isSharp => _keyValue > 0;
 

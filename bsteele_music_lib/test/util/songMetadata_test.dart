@@ -38,10 +38,15 @@ void main() {
     set = SongMetadata.where(idIsLike: id0);
     expect(set.isEmpty, true);
 
+    logger.i('SongMetadata.staticHashCode: ${SongMetadata.staticHashCode}');
     SongMetadata.set(md0);
+    logger.i('SongMetadata.staticHashCode: ${SongMetadata.staticHashCode}');
     SongMetadata.set(md1);
+    logger.i('SongMetadata.staticHashCode: ${SongMetadata.staticHashCode}');
     SongMetadata.set(md2);
+    logger.i('SongMetadata.staticHashCode: ${SongMetadata.staticHashCode}');
     SongMetadata.set(md3);
+    logger.i('SongMetadata.staticHashCode: ${SongMetadata.staticHashCode}');
     for (var md in [md0, md1, md2, md3]) {
       logger.i('md: $md');
       set = SongMetadata.where(idIsLike: md.id);

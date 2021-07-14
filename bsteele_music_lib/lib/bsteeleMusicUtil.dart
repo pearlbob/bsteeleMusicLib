@@ -195,10 +195,10 @@ coerced to reflect the songlist's last modification for that song.
             }
             SplayTreeSet<Song> cjSongs = SplayTreeSet();
             for (Song song in allSongs) {
-              NameValue? nameValue = SongMetadata.songMetadataAt(song.songId.songId, 'cj');
-              if (nameValue != null) {
+              var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'cj');
+              if (meta.isNotEmpty) {
                 cjSongs.add(song);
-                logger.i('"${song.songId.songId}","${nameValue.value}"');
+                logger.i('"${song.songId.songId}", cj:${meta.first.nameValues.first.value}');
               }
             }
 
@@ -853,8 +853,10 @@ coerced to reflect the songlist's last modification for that song.
         ',ranking'
         '\n');
     for (Song song in allSongs) {
-      NameValue? nameValue = SongMetadata.songMetadataAt(song.songId.songId, 'cj');
-      sb.write('"${song.songId.songId}","${nameValue?.value ?? ''}"\n');
+      var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'cj');
+      if ( meta.isNotEmpty) {
+        sb.write('"${song.songId.songId}","${meta.first.nameValues.first.value}"\n');
+      }
     }
     return sb.toString();
   }
