@@ -169,7 +169,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
             (_hasPhraseIndex ? _phraseIndex.toString() + (_hasMeasureIndex ? ':' + _measureIndex.toString() : '') : '');
       } else {
         StringBuffer sb = StringBuffer();
-        for (SectionVersion sv in _labelSectionVersions ?? []) {
+        for (SectionVersion sv in _labelSectionVersions!) {
           sb.write(sv.toString());
           sb.write(' ');
         }
