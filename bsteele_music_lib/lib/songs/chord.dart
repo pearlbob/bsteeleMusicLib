@@ -149,7 +149,13 @@ class Chord implements Comparable<Chord> {
   String toString() {
     String ret = _scaleChord.toString() +
         (slashScaleNote == null ? '' : '/' + slashScaleNote.toString()) +
-        _anticipationOrDelay.toString();
+        _anticipationOrDelay.toString() +
+        beatsToString();
+    return ret;
+  }
+
+  String beatsToString() {
+    String ret = '';
     if (!implicitBeats && beats < _beatsPerBar) {
       if (beats == 1) {
         ret += '.1';
