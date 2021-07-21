@@ -11,9 +11,8 @@ import 'key.dart';
 
 /// A measure in a section of a song.
 /// Holds the lyrics, the chord changes and their beats.
-/// <p>
+///
 /// When added, chord beat durations exceeding the measure beat count will be ignored on playback.
-/// </p>
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
   Measure(this._beatCount, this.chords) {

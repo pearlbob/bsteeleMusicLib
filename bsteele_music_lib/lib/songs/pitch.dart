@@ -1,22 +1,21 @@
-
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 
 import 'musicConstants.dart';
 
 ///
 /// All possible piano pitches and their notational alias's.
-/// <p>
+///
 /// A pitch has a human readable name based on it's piano based location.
 /// A pitch has a frequency but no duration.
-/// </p>
-/// <p>Black key pitches will have an alias at the same frequency.  This
-/// is done to help ease the mapping from keys to pitches.</p>
+///
+/// Black key pitches will have an alias at the same frequency.  This
+/// is done to help ease the mapping from keys to pitches.
 enum PitchEnum {
   // First tone on 88 key piano
   A0,
   As0,
   Bb0,
-  B0,// 5 string bass low string
+  B0, // 5 string bass low string
   Bs0,
   Cb1,
   C1,
@@ -25,7 +24,7 @@ enum PitchEnum {
   D1,
   Ds1,
   Eb1,
-  E1,  //  41.2hz, 4 string bass low string
+  E1, //  41.2hz, 4 string bass low string
   Es1,
   Fb1,
   F1,
@@ -47,7 +46,7 @@ enum PitchEnum {
   D2,
   Ds2,
   Eb2,
-  E2,   //  82.4hz, guitar low string
+  E2, //  82.4hz, guitar low string
   Es2,
   Fb2,
   F2,
@@ -207,7 +206,7 @@ class Pitch implements Comparable<Pitch> {
     }
     _number = n;
 
-    _frequency = 440.0 * MusicConstants.halfStepsToRatio((_number + 1) - 49) ;
+    _frequency = 440.0 * MusicConstants.halfStepsToRatio((_number + 1) - 49);
   }
 
   static Pitch get(PitchEnum se) {
@@ -294,9 +293,9 @@ class Pitch implements Comparable<Pitch> {
   }
 
   static Pitch findPitch(ScaleNote scaleNote, Pitch atOrAbove) {
-    Pitch lastPitch = getPitches().first;// anything that's not null
+    Pitch lastPitch = getPitches().first; // anything that's not null
     for (Pitch p in getPitches()) {
-      if (p.scaleNote == scaleNote ) {
+      if (p.scaleNote == scaleNote) {
         lastPitch = p;
         if (p.number >= atOrAbove.number) {
           return p;
@@ -419,21 +418,21 @@ class Pitch implements Comparable<Pitch> {
   final PitchEnum _pitchEnum;
 
   String get name => _name;
-  late  String _name;
+  late String _name;
 
   ScaleNote get scaleNote => _scaleNote;
-  late  ScaleNote _scaleNote;
+  late ScaleNote _scaleNote;
 
   int get scaleNumber => _scaleNote.scaleNumber;
 
   Accidental get accidental => _scaleNote.accidental;
 
   int get octaveNumber => _octaveNumber;
-  late  int _octaveNumber;
+  late int _octaveNumber;
 
   int get number => _number;
-  late  int _number;
- late double _frequency;
+  late int _number;
+  late double _frequency;
 
   late Pitch _asSharp;
   late Pitch _asFlat;

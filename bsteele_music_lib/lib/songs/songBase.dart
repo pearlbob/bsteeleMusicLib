@@ -41,7 +41,7 @@ enum UpperCaseState {
 
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
-///  mechanics to be tested in the shared code environment where debugging is easier.
+///  mechanics to be tested in the a code environment where debugging is easier.
 
 class SongBase {
   ///  Not to be used externally
@@ -57,6 +57,7 @@ class SongBase {
     setBeatsPerMinute(100);
   }
 
+  /// Constructor from a set of named arguments.
   SongBase.from(
       {String title = 'unknown',
       String artist = 'unknown',
@@ -80,9 +81,9 @@ class SongBase {
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
-  /// <p>Note that this is the base class for a song object.
+  ///
+  /// Note that this is the base class for a song object.
   /// The split from Song was done for testability reasons.
-  /// It's much easier to test free of GWT.
   static SongBase createSongBase(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
       int unitsPerMeasure, String chords, String rawLyrics) {
     SongBase song = SongBase();

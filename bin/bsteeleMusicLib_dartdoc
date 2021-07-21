@@ -3,4 +3,8 @@
 
 set dir=~/github/bsteeleMusicLib
 
-dart2native $dir/lib/bsteeleMusicUtil.dart -o ~/bin/bsteeleMusicUtil
+cd $dir/bsteele_music_lib
+
+dartdoc
+
+exit $status

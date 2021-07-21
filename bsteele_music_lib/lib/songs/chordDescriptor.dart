@@ -6,11 +6,10 @@ import 'chordComponent.dart';
 import 'musicConstants.dart';
 
 ///
-// The modifier to a chord specification that describes the basic type of chord.
-// Typical values are major, minor, dominant7, etc.
-// <p>
-// For piano chords, try:  https://www.scales-chords.com/chord/
-//
+/// The modifier to a chord specification that describes the basic type of chord.
+/// Typical values are major, minor, dominant7, etc.
+///
+/// For piano chords, try: https://www.scales-chords.com/chord/
 class ChordDescriptor implements Comparable<ChordDescriptor> {
   //  longest short names must come first!
   //  avoid starting descriptors with b, #, s to avoid confusion with scale notes

@@ -20,7 +20,7 @@ enum SongComparatorType {
 /// A song is a wrapper class for {@link SongBase} that provides
 /// file I/O routines and comparators for various sortings.
 /// This is the class most all song interactions should reference.
-/// <p>
+///
 /// The class is designed to provide some functionality outside
 /// of the main purpose of the the SongBase class.
 /// All the musical functions happen in SongBase.
@@ -414,7 +414,8 @@ class Song extends SongBase implements Comparable<Song> {
 
   /// Compare only the title and artist.
   /// To be used for general user listing purposes only.
-  /// <p>Note that leading articles will be rotated to the end.</p>
+  ///
+  /// Note that leading articles will be rotated to the end.
   @override
   int compareTo(Song o) {
     int ret = getSongId().compareTo(o.getSongId());

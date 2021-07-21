@@ -59,9 +59,9 @@ Map<SectionEnum, int> _sectionWeights = {
 /// Song structure is represented by a sequence of these sections.
 /// The section names have been borrowed from musical practice in the USA
 /// so they will likely be familiar.
-/// <p>Sections do not imply semantics but their proper suggested use
+///
+/// Sections do not imply semantics but their proper suggested use
 /// will aid in song structure readability.
-/// </p>
 
 class Section implements Comparable<Section> {
   Section._(this._sectionEnum, this._abbreviation, this._alternateAbbreviation, this._description)

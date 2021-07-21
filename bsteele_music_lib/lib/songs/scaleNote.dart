@@ -6,6 +6,7 @@ import '../util/util.dart';
 import 'musicConstants.dart';
 import 'key.dart';
 
+/// Scale note enumeration representing all possible scale notes.
 enum ScaleNoteEnum {
   Ab,
   A,
@@ -31,13 +32,16 @@ enum ScaleNoteEnum {
   X //  No scale note!  Used to avoid testing for null
 }
 
+/// Musical accidentals
 enum Accidental {
   sharp,
   flat,
   natural,
 }
 
-///
+/// A musical scale note.
+/// Does not include pitch, only a scale note.
+/// Silence is a scale note.
 class ScaleNote implements Comparable<ScaleNote> {
   ScaleNote._(ScaleNoteEnum scaleNoteE) {
     _enum = scaleNoteE;
@@ -148,6 +152,7 @@ class ScaleNote implements Comparable<ScaleNote> {
     //  alia's done at the static class level
   }
 
+  /// Return the scale note enum that represents this key's scale note.
   ScaleNoteEnum getEnum() {
     return _enum;
   }
@@ -213,6 +218,7 @@ class ScaleNote implements Comparable<ScaleNote> {
     return ScaleNote.valueOf(stringBuffer.toString());
   }
 
+  /// Transpose this key to the given key with the given steps offset.
   ScaleNote transpose(Key key, int steps) {
     if (getEnum() == ScaleNoteEnum.X) {
       return get(ScaleNoteEnum.X);
@@ -221,6 +227,7 @@ class ScaleNote implements Comparable<ScaleNote> {
   }
 
   /// Return the scale note as markup.
+  /// That is, using a lower case B for a flat or a hash sign as a sharp.
   String toMarkup() {
     return _scaleNoteMarkup;
   }
@@ -302,6 +309,7 @@ class ScaleNote implements Comparable<ScaleNote> {
     return _hashmap;
   }
 
+  /// Return the scale note class instance of the given string.
   static ScaleNote? valueOf(String name) {
     //  lazy eval
     if (_parseMap.isEmpty) {
@@ -335,38 +343,50 @@ class ScaleNote implements Comparable<ScaleNote> {
 
   late ScaleNoteEnum _enum;
 
+  /// Return the half steps from A
   int get halfStep => _halfStep;
   late int _halfStep;
 
+  /// Return the C scale number of this scale note.
   int get scaleNumber => _scaleNumber;
   late int _scaleNumber;
 
+  /// Return the scale note number as a string.
   String get scaleNoteString => _scaleNoteString;
   late String _scaleNoteString;
   late String _scaleNoteMarkup;
 
+  /// Return scale note as a string using s for sharp and b for flat.
   String get scaleString => _scaleString;
   late String _scaleString;
 
+  /// Return the alias for this note.
+  /// If the note is sharp, return its matching flat equivalent.
+  /// If the note is flat, return its matching sharp equivalent.
   ScaleNote get alias => _alias ?? this;
   ScaleNote? _alias;
 
   late bool _isSharp;
 
+  /// Return true if the scale note is sharp.
   bool get isSharp => _isSharp;
 
   late bool _isFlat;
 
+  /// Return true if the scale note is flat.
   bool get isFlat => _isFlat;
 
   late bool _isNatural;
 
+  /// Return true if the scale note is natural (not sharp or flat).
   bool get isNatural => _isNatural;
 
   late bool _isSilent;
 
+  /// Return true if the scale note is silent.
   bool get isSilent => _isSilent;
 
+  /// Return the accidental for this scale note.
   Accidental get accidental => _accidental;
   late Accidental _accidental;
 
