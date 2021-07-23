@@ -1168,7 +1168,7 @@ class SongBase {
                       phraseIndex,
                       repeatExtensionCount > 0
                           ? ChordSectionLocationMarker.repeatLowerRight
-                          : ChordSectionLocationMarker.repeatOnOneLineRight);
+                          : ChordSectionLocationMarker.none); //  just for the visuals
                   GridCoordinate coordinate = GridCoordinate(row, col);
                   _gridCoordinateChordSectionLocationMap[coordinate] = loc;
                   _gridChordSectionLocationCoordinateMap[loc] = coordinate;

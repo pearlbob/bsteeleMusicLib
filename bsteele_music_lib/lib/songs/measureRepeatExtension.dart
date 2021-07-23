@@ -24,7 +24,7 @@ class MeasureRepeatExtension extends MeasureComment {
     }
   }
 
-  MeasureRepeatExtension(this.markerString) : super.zeroArgs();
+  MeasureRepeatExtension(this.marker, this.markerString) : super.zeroArgs();
 
   @override
   MeasureNodeType getMeasureNodeType() {
@@ -67,11 +67,17 @@ class MeasureRepeatExtension extends MeasureComment {
   static final String upperLeft = '\u23A1';
   static final String lowerLeft = '\u23A3';
   static final String extension = '\u23A5';
-  static final MeasureRepeatExtension upperRightMeasureRepeatExtension = MeasureRepeatExtension(upperRight);
-  static final MeasureRepeatExtension middleRightMeasureRepeatExtension = MeasureRepeatExtension(extension);
-  static final MeasureRepeatExtension lowerRightMeasureRepeatExtension = MeasureRepeatExtension(lowerRight);
-  static final MeasureRepeatExtension onOneLineRightMeasureRepeatExtension = MeasureRepeatExtension(']');
-  static final MeasureRepeatExtension nullMeasureRepeatExtension = MeasureRepeatExtension('');
+  static final MeasureRepeatExtension upperRightMeasureRepeatExtension =
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatUpperRight, upperRight);
+  static final MeasureRepeatExtension middleRightMeasureRepeatExtension =
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatMiddleRight, extension);
+  static final MeasureRepeatExtension lowerRightMeasureRepeatExtension =
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatLowerRight, lowerRight);
+  static final MeasureRepeatExtension onOneLineRightMeasureRepeatExtension =
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatOnOneLineRight, ']');
+  static final MeasureRepeatExtension nullMeasureRepeatExtension =
+      MeasureRepeatExtension(ChordSectionLocationMarker.none, '');
 
+  final ChordSectionLocationMarker marker;
   final String markerString;
 }

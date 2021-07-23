@@ -205,7 +205,8 @@ class MeasureRepeat extends Phrase {
               ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
             }
             if (expanded) {
-              ret.add(MeasureRepeatExtension('${r ~/ repeatRowCount + 1}/$repeats'));
+              ret.add(MeasureRepeatExtension(
+                  ChordSectionLocationMarker.repeatLowerRight, '${r ~/ repeatRowCount + 1}/$repeats'));
             } else {
               ret.add(_repeatMarker);
             }
