@@ -16,6 +16,7 @@ void main() {
     expect(ChordDescriptor.augmented5, ChordDescriptor.parseString('aug5'));
     expect(ChordDescriptor.diminished, ChordDescriptor.parseString('dim'));
     expect(ChordDescriptor.suspended4, ChordDescriptor.parseString('sus4'));
+    expect(ChordDescriptor.nineSus4, ChordDescriptor.parseString('9sus4'));
     expect(ChordDescriptor.power5, ChordDescriptor.parseString('5'));
     expect(ChordDescriptor.dominant9, ChordDescriptor.parseString('9'));
     expect(ChordDescriptor.dominant13, ChordDescriptor.parseString('13'));
@@ -67,7 +68,7 @@ void main() {
       logger.d('$cd');
     }
     logger.d('length: ${ChordDescriptor.values.length}');
-    expect(ChordDescriptor.values.length, 51); // expect this to change when a ChordDescriptor is added!
+    expect(ChordDescriptor.values.length, 52); // expect this to change when a ChordDescriptor is added!
   });
 
   test('ChordDescriptor is minor', () {
@@ -88,5 +89,9 @@ void main() {
     expect(ChordDescriptor.minor7b5.isMinor(), true);
     expect(ChordDescriptor.msus4.isMinor(), true);
     expect(ChordDescriptor.dimMasculineOrdinalIndicator.isMinor(), true);
+
+    expect(ChordDescriptor.nineSus4.isMinor(), false);
+    expect(ChordDescriptor.suspended4.isMinor(), false);
+    expect(ChordDescriptor.sevenSus4.isMinor(), false);
   });
 }

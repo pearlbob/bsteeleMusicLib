@@ -311,6 +311,27 @@ void main() {
               beat1,
               beatsPerBar)));
     }
+    for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
+      m = Measure.parseString('F#m7.A9sus4', beatsPerBar);
+      expect(beatsPerBar, m.beatCount);
+      expect(2, m.chords.length);
+      Chord chord0 = m.chords[0];
+      Chord chord1 = m.chords[1];
+      int beat0 = 2;
+      int beat1 = beatsPerBar - beat0;
+      expect(
+          chord0,
+          CompareTo(Chord.byScaleChordAndBeats(
+              ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.Fs, ChordDescriptor.minor7),
+              beat0,
+              beatsPerBar)));
+      expect(
+          chord1,
+          CompareTo(Chord.byScaleChordAndBeats(
+              ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.A, ChordDescriptor.nineSus4),
+              beat1,
+              beatsPerBar)));
+    }
 
     ChordAnticipationOrDelay delayNone = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {

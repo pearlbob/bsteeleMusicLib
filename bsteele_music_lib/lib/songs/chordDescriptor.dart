@@ -104,6 +104,9 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static ChordDescriptor get suspended4 => _suspended4;
   static final ChordDescriptor _suspended4 = ChordDescriptor._('suspended4', 'sus4', 'R 4 5');
 
+  static ChordDescriptor get nineSus4 => _nineSus4;
+  static final ChordDescriptor _nineSus4 = ChordDescriptor._('nineSus4', '9sus4', 'R 4 5 m7 9');
+
   static ChordDescriptor get suspended2 => _suspended2;
   static final ChordDescriptor _suspended2 = ChordDescriptor._('suspended2', 'sus2', 'R 2 5');
 
@@ -356,12 +359,14 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _diminishedAsCircle, //  0
     _maug, //  0
     _majorNine, //  0
+    _nineSus4,
     _flat5, //  0
     _sevenSus2, //  0
   ];
   static final List<ChordDescriptor> _allChordDescriptorsOrdered = [];
 
   static final List<ChordDescriptor> _parseOrderedChordDescriptorsOrdered = [
+    _nineSus4,
     _sevenSus4,
     _sevenSus2,
     _sevenSus,

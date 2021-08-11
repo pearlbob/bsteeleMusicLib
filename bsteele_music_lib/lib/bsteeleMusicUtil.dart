@@ -5,6 +5,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
@@ -44,6 +45,7 @@ arguments:
 -cjcsvread {file}   read a cj csv format the song metadata file
 -f                  force file writes over existing files
 -h                  this help message
+-longlyrics         select for songs  with long lyrics lines
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
 -stat               statistics
@@ -261,6 +263,40 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-h':
           _help();
+          break;
+
+        case '-longlyrics':
+          {
+            Map<Song, int> longLyrics = {};
+            for (Song song in allSongs) {
+              int maxLength = 0;
+              for (var lyricSection in song.lyricSections) {
+                for (var line in lyricSection.lyricsLines) {
+                  maxLength = max(maxLength, line.length);
+                }
+              }
+              if (maxLength > 60) {
+                longLyrics[song]= maxLength;
+
+              }
+            }
+
+            SplayTreeSet<int> sortedValues = SplayTreeSet();
+            sortedValues.addAll(longLyrics.values);
+            for (int i in sortedValues.toList(growable: false).reversed) {
+              SplayTreeSet<Song> sortedSongs = SplayTreeSet();
+              for (Song song in longLyrics.keys) {
+                if (longLyrics[song] == i) {
+                  sortedSongs.add(song);
+                }
+              }
+              for (Song song in sortedSongs) {
+                print('"${song.title}" by "${song.artist}"'
+                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                    ': maxLength: $i');
+              }
+            }
+          }
           break;
 
         case '-ninjam':
@@ -854,7 +890,7 @@ coerced to reflect the songlist's last modification for that song.
         '\n');
     for (Song song in allSongs) {
       var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'cj');
-      if ( meta.isNotEmpty) {
+      if (meta.isNotEmpty) {
         sb.write('"${song.songId.songId}","${meta.first.nameValues.first.value}"\n');
       }
     }
