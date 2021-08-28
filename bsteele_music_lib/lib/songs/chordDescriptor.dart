@@ -46,7 +46,10 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _msus4 = ChordDescriptor._('msus4', 'msus4', 'R m3 4 5');
 
   static ChordDescriptor get add9 => _add9;
-  static final ChordDescriptor _add9 = ChordDescriptor._('add9', 'add9', 'R 2 3 5 7');
+  static final ChordDescriptor _add9 = ChordDescriptor._('add9', 'add9', 'R 3 5 7 9');
+
+  static ChordDescriptor get madd9 => _madd9;
+  static final ChordDescriptor _madd9 = ChordDescriptor._('madd9', 'madd9', 'R 2 m3 5 7 9');
 
   static ChordDescriptor get jazz7b9 => _jazz7b9;
   static final ChordDescriptor _jazz7b9 = ChordDescriptor._('jazz7b9', 'jazz7b9', 'R m2 3 5');
@@ -357,6 +360,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _dimMasculineOrdinalIndicator, //  0
     _dimMasculineOrdinalIndicator7, //  0
     _diminishedAsCircle, //  0
+    _madd9,
     _maug, //  0
     _majorNine, //  0
     _nineSus4,
@@ -377,6 +381,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _minor7b5,
     _msus2,
     _msus4,
+    _madd9,
     _add9,
     _jazz7b9,
     _sevenSharp5,

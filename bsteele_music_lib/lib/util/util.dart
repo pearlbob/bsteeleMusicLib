@@ -46,11 +46,7 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
-  static String enumToString(Object o) =>
-      o
-          .toString()
-          .split('.')
-          .last;
+  static String enumToString(Object o) => o.toString().split('.').last;
 
   static T? enumFromString<T>(String key, List<T> values) {
     try {
@@ -62,14 +58,14 @@ class Util {
 
   /// capitalize the first character
   static String firstToUpper(String s) {
-    if ( s.isNotEmpty ) {
+    if (s.isNotEmpty) {
       return s[0].toUpperCase() + s.substring(1);
     }
     return s;
   }
 
   static String firstToLower(String s) {
-    if ( s.isNotEmpty ) {
+    if (s.isNotEmpty) {
       return s[0].toLowerCase() + s.substring(1);
     }
     return s;

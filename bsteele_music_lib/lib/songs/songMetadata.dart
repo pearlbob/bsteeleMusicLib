@@ -344,10 +344,10 @@ class SongMetadata {
     _singleton._idMetadata.clear();
   }
 
-  static String toJson() {
+  static String toJson({Iterable<SongIdMetadata>? values}) {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (SongIdMetadata songIdMetadata in _singleton._idMetadata) {
+    for (SongIdMetadata songIdMetadata in values ?? _singleton._idMetadata) {
       if (first) {
         first = false;
       } else {

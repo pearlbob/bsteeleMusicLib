@@ -78,7 +78,7 @@ void testChordTranspose(Key key) {
 }
 
 void main() {
-  Logger.level = Level.warning;
+  Logger.level = Level.info;
 
   group('chords ', () {
     test('testSetScaleChord testing', () {
@@ -142,6 +142,8 @@ void main() {
       expect(Chord.parseString('G2/A', beatsPerBar), CompareTo(chord));
       chord = Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.G, ChordDescriptor.add9));
       expect(Chord.parseString('Gadd9A', beatsPerBar), CompareTo(chord));
+      chord = Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum.G, ChordDescriptor.madd9));
+      expect(Chord.parseString('Gmadd9A', beatsPerBar), CompareTo(chord));
 
       chord = Chord.parseString('G.1', beatsPerBar);
       expect(chord.toString(), 'G.1');

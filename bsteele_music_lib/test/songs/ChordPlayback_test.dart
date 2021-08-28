@@ -44,6 +44,8 @@ void main() {
         'C/C: C4 E4 G4 bass: C2');
 
     // invent some
+    expect(_stringChord(Chord.parseString('Gmadd9', beatsPerBar)),
+        'Gmadd9: G4 A4 B♭4 D5 G♭5 B5 bass: G1');
     expect(_stringChord(Chord.parseString('C/G', beatsPerBar)),
         'C/G: C4 E4 G4 bass: G1');
     expect(_stringChord(Chord.parseString('Am7/G', beatsPerBar)),
