@@ -61,7 +61,7 @@ class SongBase {
   SongBase.from(
       {String title = 'unknown',
       String artist = 'unknown',
-      String coverArtist ='',
+      String coverArtist = '',
       String copyright = 'unknown',
       Key? key,
       int beatsPerMinute = MusicConstants.defaultBpm,
@@ -1798,7 +1798,7 @@ class SongBase {
                     ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phrase.phraseIndex + 1));
               case MeasureEditType.insert:
                 newPhrase.setPhraseIndex(phrase.phraseIndex);
-                return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), location);
+                return standardEditCleanup(chordSection.insert(phrase.phraseIndex, newPhrase), location);
               case MeasureEditType.replace:
                 newPhrase.setPhraseIndex(phrase.phraseIndex);
                 return standardEditCleanup(
@@ -1912,14 +1912,22 @@ class SongBase {
             }
 
             if (location != null) {
+              //  insert new measures at the given measure location
               if (location.hasMeasureIndex) {
                 newLocation = ChordSectionLocation(chordSection.sectionVersion,
                     phraseIndex: phrase.phraseIndex, measureIndex: location.measureIndex + newPhrase.length - 1);
                 return standardEditCleanup(phrase.edit(editType, location.measureIndex, newPhrase), newLocation);
+              } else if (phrase is MeasureRepeat) {
+                //  insert new phrase of new measures in front of a repeat
+                newLocation = ChordSectionLocation(chordSection.sectionVersion,
+                    phraseIndex: location.hasPhraseIndex ? location.phraseIndex : 0,
+                    measureIndex: newPhrase.length - 1);
+                return standardEditCleanup(chordSection.insert(location.phraseIndex, newPhrase), newLocation);
               }
+              //  else insert the new measures at the front of the existing phrase measures with the code below
             }
 
-            //  insert new phrase in front of existing phrase
+            //  insert new phrase measures in front of existing phrase measures
             newLocation = ChordSectionLocation(chordSection.sectionVersion,
                 phraseIndex: phrase.phraseIndex, measureIndex: newPhrase.length - 1);
             return standardEditCleanup(phrase.addAllAt(0, newPhrase.measures), newLocation);
@@ -2963,7 +2971,7 @@ class SongBase {
     {
       var aCoverArtist = a.coverArtist;
       var bCoverArtist = b.coverArtist;
-      if (aCoverArtist.compareTo(bCoverArtist) != 0 && aCoverArtist.isNotEmpty ) {
+      if (aCoverArtist.compareTo(bCoverArtist) != 0 && aCoverArtist.isNotEmpty) {
         ret.add(StringTriple('cover:', aCoverArtist, bCoverArtist));
       }
     }
@@ -3490,11 +3498,11 @@ class SongBase {
     if (artist != o.artist) {
       return false;
     }
-    if (coverArtist.isNotEmpty ) {
+    if (coverArtist.isNotEmpty) {
       if (coverArtist != o.coverArtist) {
         return false;
       }
-    } else if (o.coverArtist.isNotEmpty ) {
+    } else if (o.coverArtist.isNotEmpty) {
       return false;
     }
     if (copyright != o.copyright) {
@@ -3594,7 +3602,7 @@ class SongBase {
   String get coverArtist => _coverArtist;
 
   set coverArtist(String s) {
-    s = _theToTheEnd(s);//  fixme: null or empty?
+    s = _theToTheEnd(s); //  fixme: null or empty?
     if (_coverArtist != s) {
       _coverArtist = s;
       computeSongIdFromSongData();

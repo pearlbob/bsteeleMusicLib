@@ -243,7 +243,11 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
 
     try {
-      _addPhraseAt(index, newPhrase);
+      if (_phrases.length < index) {
+        _phrases.add(newPhrase);
+      } else {
+        _phrases.insert(index, newPhrase);
+      }
     } catch (e) {
       _phrases.add(newPhrase); //  default to the end!
     }

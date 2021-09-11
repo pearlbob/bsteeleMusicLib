@@ -5,6 +5,7 @@ import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
 import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
@@ -20,7 +21,7 @@ class TestSong {
     _myA = _a;
   }
 
-  void pre(MeasureEditType type, String? locationString, String? measureNodeString, String? editEntry) {
+  void edit(MeasureEditType type, String? locationString, String? measureNodeString, String? editEntry) {
     //  de-music character the result
     measureNodeString = _deMusic(measureNodeString);
 
@@ -97,153 +98,153 @@ void main() {
     Measure? newMeasure;
 
     ts.startingChords('');
-    ts.pre(MeasureEditType.append, '', '', 'i: [A B C D]');
+    ts.edit(MeasureEditType.append, '', '', 'i: [A B C D]');
     ts.resultChords('I: A B C D ');
     ts.post(MeasureEditType.append, 'I:', 'I: A B C D');
 
     ts.startingChords('');
-    ts.pre(MeasureEditType.append, '', '', SongBase.entryToUppercase('i: [a b c d]'));
+    ts.edit(MeasureEditType.append, '', '', SongBase.entryToUppercase('i: [a b c d]'));
     ts.resultChords('I: A B C D ');
     ts.post(MeasureEditType.append, 'I:', 'I: A B C D');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.replace, 'C:', 'C: F F C C G G F F ', 'C: F F C C G G C B F F ');
+    ts.edit(MeasureEditType.replace, 'C:', 'C: F F C C G G F F ', 'C: F F C C G G C B F F ');
     ts.resultChords(
         'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G C B, F F  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'C:', 'C: F F C C, G G C B, F F ');
 
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C B F F  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.delete, 'C:0:7', 'B,', 'null');
+    ts.edit(MeasureEditType.delete, 'C:0:7', 'B,', 'null');
     ts.resultChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G C F F  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.delete, 'C:0:7', 'F');
 
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C F F  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.delete, 'C:0:7', 'F,', 'null');
+    ts.edit(MeasureEditType.delete, 'C:0:7', 'F,', 'null');
     ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G C F  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.delete, 'C:0:7', 'F');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C F  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.delete, 'C:0:7', 'F', 'null');
+    ts.edit(MeasureEditType.delete, 'C:0:7', 'F', 'null');
     ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.delete, 'C:0:6', 'C');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.append, 'C:0:6', 'C', 'G G ');
+    ts.edit(MeasureEditType.append, 'C:0:6', 'C', 'G G ');
     ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C G G  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'C:0:8', 'G');
 
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G C G G  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x2 ', '[] x3 ');
+    ts.edit(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x2 ', '[] x3 ');
     ts.resultChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x3  C: F F C C, G G C G, G  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'I2:0', '[Am Am/G Am/F♯ FE ] x3 ');
 
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x3  C: F F C C G G C G G  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x3 ', '[] x1 ');
+    ts.edit(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x3 ', '[] x1 ');
     ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: Am Am/G Am/F♯ FE  C: F F C C, G G C G, G  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'I2:0:3', 'FE');
 
     //  allow more chords on a row if there is at least one end of row
     ts.startingChords(
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x3  C: F F C C, G G C G G  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x3 ', '[] x1 ');
+    ts.edit(MeasureEditType.replace, 'I2:0', '[Am Am/G Am/F♯ FE ] x3 ', '[] x1 ');
     ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: Am Am/G Am/F♯ FE  C: F F C C, G G C G G  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'I2:0:3', 'FE');
 
     ts.startingChords('I: A G D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
-    ts.pre(MeasureEditType.delete, 'I:0:1', 'G', 'null');
+    ts.edit(MeasureEditType.delete, 'I:0:1', 'G', 'null');
     ts.resultChords('I: A D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
     ts.post(MeasureEditType.delete, 'I:0:1', 'D');
 
     ts.startingChords('I: A G D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
-    ts.pre(MeasureEditType.replace, 'I:0:1', 'G', 'B C');
+    ts.edit(MeasureEditType.replace, 'I:0:1', 'G', 'B C');
     ts.resultChords('I: A B C D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
     ts.post(MeasureEditType.append, 'I:0:2', 'C');
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.append, 'V:0:11', 'G', 'PC: []');
+    ts.edit(MeasureEditType.append, 'V:0:11', 'G', 'PC: []');
     ts.resultChords('V: C F C C, F F C C, G F C G  PC: [] ');
     ts.post(MeasureEditType.append, 'PC:', 'PC: []');
     ts.startingChords('V: C F C C F F C C G F C G  PC: [] ');
-    ts.pre(MeasureEditType.replace, 'PC:', 'PC: []', 'PC: []');
+    ts.edit(MeasureEditType.replace, 'PC:', 'PC: []', 'PC: []');
     ts.resultChords('V: C F C C, F F C C, G F C G  PC: [] ');
     ts.post(MeasureEditType.append, 'PC:', 'PC: []');
     ts.startingChords('V: C F C C, F F C C, G F C G  PC:  ');
-    ts.pre(MeasureEditType.append, 'PC:', 'PC: []', 'O: []');
+    ts.edit(MeasureEditType.append, 'PC:', 'PC: []', 'O: []');
     ts.resultChords('V: C F C C, F F C C, G F C G  PC: []  O: [] ');
     ts.post(MeasureEditType.append, 'O:', 'O: []');
     ts.startingChords('V: C F C C, F F C C, G F C G  PC: []  O: [] ');
-    ts.pre(MeasureEditType.replace, 'O:', 'O: []', 'O: []');
+    ts.edit(MeasureEditType.replace, 'O:', 'O: []', 'O: []');
     ts.resultChords('V: C F C C, F F C C, G F C G  PC: []  O: [] ');
     ts.post(MeasureEditType.append, 'O:', 'O: []');
 
     //  delete the section
     ts.startingChords('V: [C♯m A♭ F A♭ ] x4 C  C: [C G B♭ F ] x4  ');
-    ts.pre(MeasureEditType.delete, 'V:', 'V: [C♯m A♭ F A♭ ] x4 C ', 'null');
+    ts.edit(MeasureEditType.delete, 'V:', 'V: [C♯m A♭ F A♭ ] x4 C ', 'null');
     ts.resultChords('C: [C G B♭ F ] x4  ');
     ts.post(MeasureEditType.delete, 'C:', 'C: [C G B♭ F ] x4 ');
 
     ts.startingChords('C: [C G B♭ F ] x4  ');
-    ts.pre(MeasureEditType.delete, 'C:', 'C: [C G B♭ F ] x4 ', 'null');
+    ts.edit(MeasureEditType.delete, 'C:', 'C: [C G B♭ F ] x4 ', 'null');
     ts.resultChords('');
     ts.post(MeasureEditType.append, 'V:', null);
 
     ts.startingChords('V: [C♯m A♭ F A♭ ] x4 C  PC2:  C: T: [C G B♭ F ] x4  ');
-    ts.pre(MeasureEditType.delete, 'PC2:', 'PC2: [C G B♭ F ] x4', 'null');
+    ts.edit(MeasureEditType.delete, 'PC2:', 'PC2: [C G B♭ F ] x4', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C  C: T: [C G B♭ F ] x4  ');
     ts.post(MeasureEditType.delete, 'V:', 'V: [C♯m A♭ F A♭ ] x4 C ');
 
     ts.startingChords('V: [C♯m A♭ F A♭ ] x4 C  C: T: [C G B♭ F ] x4  ');
-    ts.pre(MeasureEditType.delete, 'V:', 'V: [C♯m A♭ F A♭ ] x4 C ', 'null');
+    ts.edit(MeasureEditType.delete, 'V:', 'V: [C♯m A♭ F A♭ ] x4 C ', 'null');
     ts.resultChords('C: T: [C G B♭ F ] x4  ');
     ts.post(MeasureEditType.delete, 'C:', 'C: [C G B♭ F ] x4 ');
 
     ts.startingChords('C: T: [C G B♭ F ] x4  ');
-    ts.pre(MeasureEditType.delete, 'C:', 'C: [C G B♭ F ] x4 ', 'null');
+    ts.edit(MeasureEditType.delete, 'C:', 'C: [C G B♭ F ] x4 ', 'null');
     ts.resultChords('T: [C G B♭ F ] x4  ');
     ts.post(MeasureEditType.delete, 'T:', 'T: [C G B♭ F ] x4 ');
 
     ts.startingChords('T: [C G B♭ F ] x4  ');
-    ts.pre(MeasureEditType.delete, 'T:', 'T: [C G B♭ F ] x4 ', 'null');
+    ts.edit(MeasureEditType.delete, 'T:', 'T: [C G B♭ F ] x4 ', 'null');
     ts.resultChords('');
     ts.post(MeasureEditType.append, 'V:', null);
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.append, 'V:0:7', 'C,', 'C PC:');
+    ts.edit(MeasureEditType.append, 'V:0:7', 'C,', 'C PC:');
     ts.resultChords('V: C F C C, F F C C, C G F C G  PC: []');
     ts.post(MeasureEditType.append, 'PC:', 'PC: []');
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.append, 'V:0:7', 'C,', 'PC:');
+    ts.edit(MeasureEditType.append, 'V:0:7', 'C,', 'PC:');
     ts.resultChords('V: C F C C, F F C C, G F C G  PC: []');
     ts.post(MeasureEditType.append, 'PC:', 'PC: []');
 
     ts.startingChords('V: (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.pre(MeasureEditType.delete, 'V:0:0', '(Prechorus)', 'null');
+    ts.edit(MeasureEditType.delete, 'V:0:0', '(Prechorus)', 'null');
     ts.resultChords('V: C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
 
     ts.startingChords('V: (Verse) [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.pre(MeasureEditType.delete, 'V:0:0', '(Verse)', 'null');
+    ts.edit(MeasureEditType.delete, 'V:0:0', '(Verse)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:0:0', 'C♯m');
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:0'));
     expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong._deMusic('[C♯m A♭ F A♭ ] x4 '));
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:1:0'));
     expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), '(Prechorus)');
-    ts.pre(MeasureEditType.delete, 'V:1:0', '(Prechorus)', 'null');
+    ts.edit(MeasureEditType.delete, 'V:1:0', '(Prechorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:1:0', 'C');
-    ts.pre(MeasureEditType.delete, 'V:1:1', '(C/)', 'null');
+    ts.edit(MeasureEditType.delete, 'V:1:1', '(C/)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:1:1', '(chorus)');
-    ts.pre(MeasureEditType.delete, 'V:1:1', '(chorus)', 'null');
+    ts.edit(MeasureEditType.delete, 'V:1:1', '(chorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:2:0', 'C');
-    ts.pre(MeasureEditType.delete, 'V:3:0', '(Tag Chorus)', 'null');
+    ts.edit(MeasureEditType.delete, 'V:3:0', '(Tag Chorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4  ');
     ts.post(MeasureEditType.delete, 'V:2:3', 'F');
 
@@ -252,7 +253,7 @@ void main() {
         '  C: A♭ A♭ E♭ E♭ B♭ B♭ G G'
         '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Em A7'
         ' F F G G Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 (fade)  ');
-    ts.pre(MeasureEditType.append, 'I:0:4', '(bass-only)', 'XCCC ');
+    ts.edit(MeasureEditType.append, 'I:0:4', '(bass-only)', 'XCCC ');
     ts.resultChords(
         'I: CXCC XCCC CXCC XCCC (bass-only) XCCC  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Cmaj7 Cmaj7'
         '  C: Ab Ab Eb Eb Bb Bb G G'
@@ -261,34 +262,34 @@ void main() {
     ts.post(MeasureEditType.append, 'I:0:5', 'XCCC');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.append, 'I:0', '[Am Am/G Am/F♯ FE ] x4 ', 'E ');
+    ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F♯ FE ] x4 ', 'E ');
     ts.resultChords('I: V: [Am Am/G Am/F♯ FE ] x4 E  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'I:1:0', 'E');
 
     ts.startingChords('I: V: O: E♭sus2 B♭ Gm7 Em F F7 G7 G Em Em Em Em Em Em Em Em Em C  C: [Cm F B♭ E♭ ] x3 Cm F  ');
-    ts.pre(MeasureEditType.delete, 'I:0:14', 'Em', 'null');
+    ts.edit(MeasureEditType.delete, 'I:0:14', 'Em', 'null');
     //  note: one Em has been deleted:
     ts.resultChords('I: V: O: E♭sus2 B♭ Gm7 Em, F F7 G7 G, Em Em Em Em, Em Em Em, Em C  C: [Cm F B♭ E♭ ] x3 Cm F  ');
     ts.post(MeasureEditType.delete, 'I:0:14', 'Em,');
 
     ts.startingChords('I: V: O: E♭sus2 B♭ Gm7 C  C: [Cm F B♭ E♭ ] x3 Cm F  ');
-    ts.pre(MeasureEditType.append, 'I:0:2', 'Gm7', 'Em7 ');
+    ts.edit(MeasureEditType.append, 'I:0:2', 'Gm7', 'Em7 ');
     ts.resultChords('I: V: O: E♭sus2 B♭ Gm7 Em7 C  C: [Cm F B♭ E♭ ] x3 Cm F  ');
     ts.post(MeasureEditType.append, 'I:0:3', 'Em7');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
-    ts.pre(MeasureEditType.replace, 'V:0:2', 'Am/F♯', 'Am/G ');
+    ts.edit(MeasureEditType.replace, 'V:0:2', 'Am/F♯', 'Am/G ');
     ts.resultChords('I: V: [Am Am/G Am/G FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
     ts.post(MeasureEditType.append, 'V:0:2', 'Am/G');
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.replace, 'V:0:3', 'C,', '[] x1 ');
+    ts.edit(MeasureEditType.replace, 'V:0:3', 'C,', '[] x1 ');
     ts.resultChords('V: C F C C, F F C C, G F C G  ');
     ts.post(MeasureEditType.replace, 'V:0:3', 'C,');
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
     //                    0 1 2 3  4 5 6 7 8 9 0 1
-    ts.pre(MeasureEditType.replace, 'V:0:6', 'C', '[] x2 ');
+    ts.edit(MeasureEditType.replace, 'V:0:6', 'C', '[] x2 ');
     ts.resultChords('V: C F C C [F F C C ] x2 G F C G ');
     //               0 1 2 3  4 5 6 7      8 9 0 1
     //               0 1 2 3  0 1 2 3      0 1 2 3
@@ -296,71 +297,71 @@ void main() {
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
     //                 0 1 2 3 4 5 6 7 8 9 0 1
-    ts.pre(MeasureEditType.replace, 'V:0:6', 'C', '[] x3 ');
+    ts.edit(MeasureEditType.replace, 'V:0:6', 'C', '[] x3 ');
     ts.resultChords('V: C F C C [F F C C ] x3 G F C G  ');
     ts.post(MeasureEditType.append, 'V:1', '[F F C C ] x3');
 
     ts.startingChords('I:  V:  ');
-    ts.pre(MeasureEditType.append, 'V:', 'V: []', 'Dm ');
+    ts.edit(MeasureEditType.append, 'V:', 'V: []', 'Dm ');
     ts.resultChords('I: []  V: Dm  ');
     ts.post(MeasureEditType.append, 'V:0:0', 'Dm');
 
     ts.startingChords('I:  V:  ');
-    ts.pre(MeasureEditType.replace, 'V:', 'V: []', 'Dm ');
+    ts.edit(MeasureEditType.replace, 'V:', 'V: []', 'Dm ');
     ts.resultChords('I: []  V: Dm  ');
     ts.post(MeasureEditType.append, 'V:0:0', 'Dm');
 
     ts.startingChords('V: C F F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.delete, 'V:', 'V: C F F C, C F F C, C G F C, G ', null);
+    ts.edit(MeasureEditType.delete, 'V:', 'V: C F F C, C F F C, C G F C, G ', null);
     ts.resultChords('');
     ts.post(MeasureEditType.append, 'V:', null);
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.append, 'V:0:11', 'G', '- ');
+    ts.edit(MeasureEditType.append, 'V:0:11', 'G', '- ');
     ts.resultChords('V: C F C C, F F C C, G F C G G  ');
     ts.post(MeasureEditType.append, 'V:0:12', 'G');
 
     ts.startingChords('V: C F C C F F C C G F C G G  ');
-    ts.pre(MeasureEditType.append, 'V:0:1', 'F', '-');
+    ts.edit(MeasureEditType.append, 'V:0:1', 'F', '-');
     ts.resultChords('V: C F F C C, F F C C, G F C G, G  ');
     ts.post(MeasureEditType.append, 'V:0:2', 'F');
 
     ts.startingChords('V: C F F C C F F C C G F C G G  ');
-    ts.pre(MeasureEditType.append, 'V:0:2', 'F', '  -  ');
+    ts.edit(MeasureEditType.append, 'V:0:2', 'F', '  -  ');
     ts.resultChords('V: C F F F C, C F F C, C G F C, G G  ');
     ts.post(MeasureEditType.append, 'V:0:3', 'F');
 
     ts.startingChords('V: C F C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.append, 'V:0:1', 'F', '-');
+    ts.edit(MeasureEditType.append, 'V:0:1', 'F', '-');
     ts.resultChords('V: C F F C C, F F C C, G F C G  ');
     ts.post(MeasureEditType.append, 'V:0:2', 'F');
 
     ts.startingChords('I:  V:  ');
-    ts.pre(MeasureEditType.append, 'V:', 'V: []', 'T: ');
+    ts.edit(MeasureEditType.append, 'V:', 'V: []', 'T: ');
     ts.resultChords('I: []  V: []  T: [] '); //  fixme: why is this?
     ts.post(MeasureEditType.append, 'T:', 'T: [] ');
 
     ts.startingChords('V: C F C C F F C C [G F C G ] x4  ');
-    ts.pre(MeasureEditType.replace, 'V:1', '[G F C G ] x4 ', 'B ');
+    ts.edit(MeasureEditType.replace, 'V:1', '[G F C G ] x4 ', 'B ');
     ts.resultChords('V: C F C C F F C C B  ');
     //               0 1 2 3 4 5 6 7 8
     ts.post(MeasureEditType.append, 'V:0:8', 'B');
 
     //  insert into a repeat
     ts.startingChords('V: [C F C C ] x2 F F C C G F C G  ');
-    ts.pre(MeasureEditType.insert, 'V:0:1', 'F', 'Dm ');
+    ts.edit(MeasureEditType.insert, 'V:0:1', 'F', 'Dm ');
     ts.resultChords('V: [C Dm F C C ] x2 F F C C G F C G  ');
     ts.post(MeasureEditType.append, 'V:0:1', 'Dm');
 
     //  append into the middle
     ts.startingChords('V: C Dm C C F F C C G F C G  ');
-    ts.pre(MeasureEditType.append, 'V:0:1', 'Dm', 'Em ');
+    ts.edit(MeasureEditType.append, 'V:0:1', 'Dm', 'Em ');
     ts.resultChords('V: C Dm Em C C, F F C C, G F C G  ');
     ts.post(MeasureEditType.append, 'V:0:2', 'Em');
 
     //  replace second measure
     ts.startingChords('V: C F C C F F C C G F C G  '); //
-    ts.pre(MeasureEditType.replace, 'V:0:1', 'F', 'Dm '); //
+    ts.edit(MeasureEditType.replace, 'V:0:1', 'F', 'Dm '); //
     ts.resultChords('V: C Dm C C, F F C C, G F C G  '); //
     ts.post(MeasureEditType.append, 'V:0:1', 'Dm'); //
 
@@ -1347,7 +1348,7 @@ void main() {
     expect(now >= _a.lastModifiedTime, isTrue);
 
     ts.startingChords('I: A G D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
-    ts.pre(MeasureEditType.delete, 'I:0:1', 'G', 'null');
+    ts.edit(MeasureEditType.delete, 'I:0:1', 'G', 'null');
     int t1 = _a.lastModifiedTime;
     expect(t0 <= t1, isTrue);
     ts.resultChords('I: A D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
@@ -1357,5 +1358,73 @@ void main() {
     logger.i('now: $now');
     expect(now >= t1, isTrue);
     expect(t1 == _a.lastModifiedTime, isTrue);
+  });
+
+  test('test edit around a repeat', () {
+    //  insert repeat prior to first repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.insert, 'I:0', null, '[A A A A] x2 ');
+    ts.resultChords('I: [A A A A ] x2 [A B C D ] x4 ');
+    ts.post(MeasureEditType.append, 'I:0', '[A A A A ] x2');
+
+    //  insert repeat prior to first repeat of many
+    ts.startingChords('i: [A B C D] x4 [ D C G G ] x3');
+    ts.edit(MeasureEditType.insert, 'I:0', null, '[A A A A] x2');
+    ts.resultChords('I: [A A A A ] x2 [A B C D ] x4 [D C G G ] x3');
+    ts.post(MeasureEditType.append, 'I:0', '[A A A A ] x2');
+
+    //  append repeat after repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.append, 'I:0', null, '[G G G G] x2');
+    ts.resultChords('I: [A B C D ] x4 [G G G G ] x2 ');
+    ts.post(MeasureEditType.append, 'I:1', '[G G G G ] x2');
+
+    //  append measure to the end of a repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.append, null, null, 'G');
+    ts.resultChords('I: [A B C D G ] x4 ');
+    ts.post(MeasureEditType.append, 'I:0:4', 'G');
+
+    //  insert phrase prior to first repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.insert, 'I:0', null, 'E');
+    ts.resultChords('I: E [A B C D ] x4 ');
+    ts.post(MeasureEditType.append, 'I:0:0', 'E');
+
+    //  insert phrase prior to first repeat of many
+    ts.startingChords('i: [A B C D] x4 [ D C G G ] x3');
+    ts.edit(MeasureEditType.insert, 'I:0', null, 'E');
+    ts.resultChords('I: E [A B C D ] x4 [D C G G ] x3');
+    ts.post(MeasureEditType.append, 'I:0:0', 'E');
+
+    //  insert measure on first repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.insert, 'I:0:0', null, 'G');
+    ts.resultChords('I: [G A B C D ] x4 ');
+    ts.post(MeasureEditType.append, 'I:0:0', 'G');
+    var lastLocation = _a.findLastChordSectionLocation(
+        _a.findChordSectionBySectionVersion(SectionVersion.bySection(Section.get(SectionEnum.intro))));
+    logger.i('lastChordSectionLocation: $lastLocation');
+    expect(lastLocation.toString(), 'I:0:4');
+
+    //  append phrase after repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.append, 'I:0', null, 'G');
+    ts.resultChords('I: [A B C D ] x4 G ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'G');
+
+    //  append measure to the end of a repeat
+    ts.startingChords('i: [A B C D] x4');
+    ts.edit(MeasureEditType.append, null, null, 'G');
+    ts.resultChords('I: [A B C D G ] x4 ');
+    ts.post(MeasureEditType.append, 'I:0:4', 'G');
+
+    //  append measure to the end of a second repeat
+    ts.startingChords('i: [A B C D] x4 [E F G] x4');
+    ts.edit(MeasureEditType.append, 'I:1:2', null, 'Ab');
+    ts.resultChords('I: [A B C D ] x4 [E F G Ab ] x4 ');
+    ts.post(MeasureEditType.append, 'I:1:3', 'Ab');
+
+    ;
   });
 }
