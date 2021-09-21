@@ -54,20 +54,20 @@ class TestSong {
     expect(_myA.toMarkup().trim(), _deMusic(chords)!.trim());
   }
 
-  void post(MeasureEditType type, String locationString, String? measureNodeString) {
-    measureNodeString = _deMusic(measureNodeString);
+  void post(MeasureEditType type, String currentLocationString, String? currentMeasureNodeString) {
+    currentMeasureNodeString = _deMusic(currentMeasureNodeString);
 
     expect(_myA.currentMeasureEditType, type);
-    expect(_myA.getCurrentChordSectionLocation().toString(), locationString);
+    expect(_myA.getCurrentChordSectionLocation().toString(), currentLocationString);
 
     logger.d('getCurrentMeasureNode(): ' + _myA.getCurrentMeasureNode().toString());
-    if (measureNodeString == null) {
+    if (currentMeasureNodeString == null) {
       logger.d('measureNodeString: null');
       expect(_myA.getCurrentMeasureNode(), isNull);
     } else {
-      logger.d('measureNodeString: ' + measureNodeString);
+      logger.d('measureNodeString: ' + currentMeasureNodeString);
       expect(_myA.getCurrentMeasureNode(), isNotNull);
-      expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), measureNodeString.trim());
+      expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), currentMeasureNodeString.trim());
     }
   }
 

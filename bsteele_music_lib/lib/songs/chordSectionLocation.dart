@@ -61,8 +61,17 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     _initPhraseIndex(phraseIndex);
   }
 
-  ChordSectionLocation.withRepeatMarker(this._sectionVersion, int phraseIndex, this._repeats) : _labelSectionVersions = null {
+  ChordSectionLocation.withRepeatMarker(this._sectionVersion, int phraseIndex, this._repeats)
+      : _labelSectionVersions = null {
     _initPhraseIndex(phraseIndex);
+  }
+
+  ChordSectionLocation asSection() {
+    return ChordSectionLocation(_sectionVersion);
+  }
+
+  ChordSectionLocation asPhrase() {
+    return ChordSectionLocation(_sectionVersion, phraseIndex: phraseIndex);
   }
 
   void _initPhraseIndex(int phraseIndex) {
