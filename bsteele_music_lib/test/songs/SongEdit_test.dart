@@ -25,6 +25,7 @@ class TestSong {
     //  de-music character the result
     measureNodeString = _deMusic(measureNodeString);
 
+    //  setup for edit as requested
     _myA.setCurrentMeasureEditType(type);
     if (locationString != null && locationString.isNotEmpty) {
       _myA.setCurrentChordSectionLocation(ChordSectionLocation.parseString(locationString));
@@ -36,6 +37,7 @@ class TestSong {
       }
     }
 
+    //  process the edits
     logger.d('editEntry: ' + (editEntry ?? 'null'));
     logger.v('edit loc: ' + _myA.getCurrentChordSectionLocation().toString());
     List<MeasureNode> measureNodes = _myA.parseChordEntry(editEntry);
@@ -45,6 +47,7 @@ class TestSong {
       for (MeasureNode measureNode in measureNodes) {
         logger.d('edit: ' + measureNode.toMarkup());
       }
+      //  the edit is here:
       expect(_myA.editList(measureNodes), isTrue);
     }
     logger.v('after edit loc: ' + _myA.getCurrentChordSectionLocation().toString());
@@ -1408,10 +1411,23 @@ void main() {
     expect(lastLocation.toString(), 'I:0:4');
 
     //  append phrase after repeat
+    ts.startingChords('i: [A B C D] x4 G');
+    ts.edit(MeasureEditType.append, 'I:1:0', null, 'A');
+    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    ts.resultChords('I: [A B C D ] x4 G A');
+    ts.post(MeasureEditType.append, 'I:1:1', 'A');
+
+    //  append phrase after repeat, assure the phrase index works!
     ts.startingChords('i: [A B C D] x4');
     ts.edit(MeasureEditType.append, 'I:0', null, 'G');
+    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
     ts.resultChords('I: [A B C D ] x4 G ');
     ts.post(MeasureEditType.append, 'I:1:0', 'G');
+    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    ts.edit(MeasureEditType.append, 'I:1:0', null, 'A');
+    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    ts.resultChords('I: [A B C D ] x4 G A');
+    ts.post(MeasureEditType.append, 'I:1:1', 'A');
 
     //  append measure to the end of a repeat
     ts.startingChords('i: [A B C D] x4');
@@ -1425,6 +1441,14 @@ void main() {
     ts.resultChords('I: [A B C D ] x4 [E F G Ab ] x4 ');
     ts.post(MeasureEditType.append, 'I:1:3', 'Ab');
 
-    ;
+  });
+
+  test('test edit at end of section', () {
+    //  append after end of section
+    ts.startingChords('i: A B C D');
+    ts.edit(MeasureEditType.append, 'I:0', null, 'X');
+    ts.resultChords('I: A B C D, X ');
+    ts.post(MeasureEditType.append, 'I:0:4', 'X ');
+
   });
 }

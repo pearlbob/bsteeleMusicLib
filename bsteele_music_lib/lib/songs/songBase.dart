@@ -1581,6 +1581,7 @@ class SongBase {
     }
 
     for (MeasureNode measureNode in measureNodes) {
+      //  process each measure node
       if (!editMeasureNode(measureNode)) {
         return false;
       }
@@ -1860,7 +1861,15 @@ class SongBase {
                 return standardEditCleanup(phrase.edit(editType, location.measureIndex, newPhrase), newLocation);
               }
               if (location.hasPhraseIndex) {
+                //  assure prior end of row if appending to the end of a phrase
+                if (!phrase.isEmpty() && !phrase.isRepeat()) {
+                  var priorLocation = ChordSectionLocation(chordSection.sectionVersion,
+                      phraseIndex: phraseIndex, measureIndex: phrase.length - 1);
+                  setChordSectionLocationMeasureEndOfRow(priorLocation, true);
+                }
+
                 phraseIndex = location.phraseIndex + 1;
+                newPhrase.setPhraseIndex(phraseIndex);
                 newLocation = ChordSectionLocation(chordSection.sectionVersion,
                     phraseIndex: phraseIndex, measureIndex: newPhrase.length - 1);
                 return standardEditCleanup(chordSection.add(phraseIndex, newPhrase), newLocation);

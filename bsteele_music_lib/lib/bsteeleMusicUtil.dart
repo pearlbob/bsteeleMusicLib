@@ -45,6 +45,7 @@ arguments:
 -cjcsvread {file}   read a cj csv format the song metadata file
 -f                  force file writes over existing files
 -h                  this help message
+-html               HTML song list
 -longlyrics         select for songs  with long lyrics lines
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
@@ -265,6 +266,44 @@ coerced to reflect the songlist's last modification for that song.
           _help();
           break;
 
+        case '-html':
+          {
+            print(
+                '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CJ Songlist</title>
+	<style>
+            .title {
+                font-weight: bold
+			}
+            .artist {
+				font-style: italic;
+			}
+ 			.coverArtist {
+				font-style: italic;
+			}
+
+        </style>
+</head>
+<body>
+<h1>Community Jams Songlist</h1>
+<ul>
+''');
+            for (Song song in allSongs) {
+              print('<li><span class="title">${song.title}</span> by <span class="artist">${song.artist}</span>'
+                  '${song.coverArtist.isNotEmpty ? ' cover by <span class="coverArtist">${song.coverArtist}</span>' : ''}'
+                  '</li>');
+            }
+            print(
+                '''</ul>
+</body>
+</html>
+''');
+          }
+          break;
+
         case '-longlyrics':
           {
             Map<Song, int> longLyrics = {};
@@ -276,8 +315,7 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               if (maxLength > 60) {
-                longLyrics[song]= maxLength;
-
+                longLyrics[song] = maxLength;
               }
             }
 

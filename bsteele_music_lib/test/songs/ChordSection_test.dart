@@ -121,7 +121,7 @@ void main() {
           4);
       expect(chordSection, isNotNull);
       Measure m = chordSection.phrases[0].measures[0];
-      assert(m is Measure);
+      assert(m.toMarkup() == 'A');
     }
     try {
       //  invented garbage is comment, verse is presumed

@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 import 'package:xml/xml.dart';
-import 'dart:io' show Platform;
 
 void main() {
   Logger.level = Level.info;
