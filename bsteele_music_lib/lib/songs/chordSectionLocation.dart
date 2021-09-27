@@ -165,10 +165,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   @override
   String toString() {
-    if (_repeats != null) {
-      return ':x$_repeats';
-    }
-    return getId();
+    return getId() + (_repeats != null ? ':x$_repeats' : '');
   }
 
   String getId() {
