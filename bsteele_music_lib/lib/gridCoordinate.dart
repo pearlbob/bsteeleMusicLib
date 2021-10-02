@@ -1,7 +1,7 @@
 import 'package:quiver/core.dart';
 
 class GridCoordinate implements Comparable<GridCoordinate> {
-  GridCoordinate(this._row, this._col);
+  const GridCoordinate(this._row, this._col);
 
   @override
   String toString() {

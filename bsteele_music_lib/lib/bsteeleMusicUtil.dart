@@ -869,7 +869,6 @@ coerced to reflect the songlist's last modification for that song.
   void _addAllSongsFromFile(File inputFile) {
     logger.d('_addAllSongsFromFile: $inputFile');
 
-    if (!(inputFile is File)) return;
     if (!inputFile.path.endsWith('.songlyrics')) return;
     if (_verbose) logger.i('$inputFile');
 

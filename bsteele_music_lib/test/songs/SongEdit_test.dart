@@ -238,15 +238,19 @@ void main() {
     expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong._deMusic('[C♯m A♭ F A♭ ] x4 '));
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:1:0'));
     expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), '(Prechorus)');
+
     ts.edit(MeasureEditType.delete, 'V:1:0', '(Prechorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:1:0', 'C');
+
     ts.edit(MeasureEditType.delete, 'V:1:1', '(C/)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:1:1', '(chorus)');
+
     ts.edit(MeasureEditType.delete, 'V:1:1', '(chorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.post(MeasureEditType.delete, 'V:2:0', 'C');
+    ts.post(MeasureEditType.delete, 'V:1:0', 'C');
+
     ts.edit(MeasureEditType.delete, 'V:3:0', '(Tag Chorus)', 'null');
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4  ');
     ts.post(MeasureEditType.delete, 'V:2:3', 'F');
@@ -346,7 +350,7 @@ void main() {
 
     ts.startingChords('V: C F C C F F C C [G F C G ] x4  ');
     ts.edit(MeasureEditType.replace, 'V:1', '[G F C G ] x4 ', 'B ');
-    ts.resultChords('V: C F C C F F C C B  ');
+    ts.resultChords('V: C F C C F F C C, B  ');
     //               0 1 2 3 4 5 6 7 8
     ts.post(MeasureEditType.append, 'V:0:8', 'B');
 
@@ -445,14 +449,14 @@ void main() {
     logger.d(_a.toMarkup());
     expect(
       _a.toMarkup().trim(),
-      'V: C F C C GB F C Dm7 G F C G',
+      'V: C F C C, GB F C Dm7, G F C G',
     );
     //                        0 1 2 3 4  5 6 7   8 9 0 1
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
-    expect('V:0:7', _a.getCurrentChordSectionLocation().toString());
-    expect('Dm7', _a.getCurrentMeasureNode()!.toMarkup());
+    expect(_a.getCurrentChordSectionLocation().toString(), 'V:0:7' );
+    expect(_a.getCurrentMeasureNode()!.toMarkup(),'Dm7,' );
 
     //   current type	current edit loc	entry	replace entry	 edit type	 edit loc	result
     logger.d('section	append	section(s)		replace	section(s)	add or replace section(s), de-dup');

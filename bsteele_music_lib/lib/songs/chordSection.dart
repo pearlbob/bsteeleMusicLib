@@ -262,6 +262,52 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
   }
 
+  /// Collapse adjacent phrases into a single phrase
+  /// that have come together due to an edit.
+  bool collapsePhrases() {
+    int limit = getPhraseCount();
+    if (limit <= 1) {
+      return false;
+    } //  no work to do
+
+    bool ret = false;
+    Phrase? lastPhrase;
+    for (int i = 0; i < getPhraseCount(); i++) {
+      Phrase? phrase = getPhrase(i);
+      assert(phrase != null);
+      if (phrase!.isEmpty()) {
+        deletePhrase(i);
+        ret = true;
+        i--; //  back up and collapse with the new version as the lastPhrase!   fixme: too tricky
+        continue;
+      }
+      if (lastPhrase == null) {
+        if (phrase.getMeasureNodeType() == MeasureNodeType.phrase) {
+          lastPhrase = phrase;
+        }
+        continue;
+      }
+      if (phrase.getMeasureNodeType() == MeasureNodeType.phrase) {
+        //  join two contiguous phrases
+        lastPhrase.lastMeasure?.endOfRow = true; //  assure odd rows are preserved
+        lastPhrase.add(phrase.measures);
+        deletePhrase(i);
+        ret = true;
+        i--; //  back up and collapse with the new version as the lastPhrase!   fixme: too tricky
+      } else {
+        lastPhrase = null;
+      }
+    }
+    if ( ret ){
+      //  re-number the phrases on a collapse
+      var i = 0;
+      for ( var phase in _phrases ){
+        phase.setPhraseIndex(i++);
+      }
+    }
+    return ret;
+  }
+
   MeasureNode? findMeasureNode(MeasureNode measureNode) {
     for (Phrase measureSequenceItem in phrases) {
       if (measureSequenceItem == measureNode) {
@@ -344,9 +390,18 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   bool deletePhrase(int phraseIndex) {
     try {
       _phrases.removeAt(phraseIndex);
+      _renumberPhraseIndexes();
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  void _renumberPhraseIndexes(){  //  fixme: remove phraseIndex?
+    //  re-number the phrases
+    var i = 0;
+    for ( var phase in _phrases ){
+      phase.setPhraseIndex(i++);
     }
   }
 
@@ -441,7 +496,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return sb.toString();
   }
 
-
   String phrasesToMarkup() {
     if (isEmpty()) {
       return '[] ';
@@ -472,7 +526,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
     return sb.toString();
   }
-
 
   @override
   String toEntry() {
@@ -545,6 +598,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   Phrase? getPhrase(int index) {
+    if (index < 0 || index >= _phrases.length) {
+      return null;
+    }
     return _phrases[index];
   }
 

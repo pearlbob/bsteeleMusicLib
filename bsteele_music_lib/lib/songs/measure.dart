@@ -16,24 +16,12 @@ import 'key.dart';
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
   Measure(this._beatCount, this.chords) {
-    allocateTheBeats();
+    _allocateTheBeats();
   }
 
-  // Measure deepCopy() {
-  //   Measure measure = Measure(_beatCount, []);
-  //
-  //   measure._beatCount = _beatCount;
-  //
-  //   //  deep copy
-  //   List<Chord> chords = [];
-  //   for (Chord chord in measure.chords) {
-  //     chords.add(Chord.copy(chord));
-  //   }
-  //   measure.chords = chords;
-  //
-  //   measure.endOfRow = endOfRow;
-  //   return measure;
-  // }
+  Measure deepCopy() {
+    return Measure.parseString(toMarkup(), _beatCount, endOfRow: endOfRow); //  fixme: efficiency?  stability?
+  }
 
   /// for subclasses
   Measure.zeroArgs()
@@ -110,7 +98,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return ret;
   }
 
-  void allocateTheBeats() {
+  void _allocateTheBeats() {
     //  fixme: deal with under specified beats: eg. A.B in 4/4, implement as A.B1.
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
