@@ -533,7 +533,7 @@ void main() {
         if (measure != null) {
           expect(measure, a.findMeasureNodeByLocation(a.getChordSectionLocationGrid().get(r, c)));
           logger.d('measure(' + c.toString() + ',' + r.toString() + '): ' + measure.toMarkup());
-          ChordSectionLocation? loc = a.findChordSectionLocation(measure);
+          ChordSectionLocation? loc = a.findChordSectionLocationByGrid(GridCoordinate(r,c));
           logger.d('loc: ' + loc.toString());
           a.setCurrentChordSectionLocation(loc);
 

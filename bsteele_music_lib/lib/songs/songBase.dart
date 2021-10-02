@@ -1512,7 +1512,7 @@ class SongBase {
         //  move deleted current to end of previous section
         nextSectionVersion ??= _firstSectionVersion();
         if (nextSectionVersion != null) {
-          location = findChordSectionLocation(_getChordSectionMap()[nextSectionVersion]);
+          location = ChordSectionLocation(nextSectionVersion);
         }
       }
     }
@@ -2246,85 +2246,6 @@ class SongBase {
     return (set.isEmpty ? null : set.first);
   }
 
-  /// Find the measure sequence item for the given measure (i.e. the measure's parent container).
-  Phrase? _findPhrase(Measure? measure) {
-    if (measure == null) {
-      return null;
-    }
-
-    ChordSection? chordSection = _findChordSectionByMeasureNode(measure);
-    if (chordSection == null) {
-      return null;
-    }
-    for (Phrase msi in chordSection.phrases) {
-      for (Measure m in msi.measures) {
-        if (identical(m, measure)) {
-          return msi;
-        }
-      }
-    }
-    return null;
-  }
-
-  ///Find the chord section for the given measure node.
-  @deprecated
-  ChordSection? _findChordSectionByMeasureNode(MeasureNode? measureNode) {
-    if (measureNode == null) {
-      return null;
-    }
-
-    String? id = measureNode.getId();
-    for (ChordSection chordSection in _getChordSectionMap().values) {
-      if (id != null && id == chordSection.getId()) {
-        return chordSection;
-      }
-      MeasureNode? mn = chordSection.findMeasureNode(measureNode);
-      if (mn != null) {
-        return chordSection;
-      }
-    }
-    return null;
-  }
-
-  @deprecated
-  ChordSectionLocation? findChordSectionLocation(MeasureNode? measureNode) {
-    if (measureNode == null) {
-      return null;
-    }
-
-    Phrase? phrase;
-    try {
-      ChordSection? chordSection = _findChordSectionByMeasureNode(measureNode);
-      if (chordSection == null) {
-        return null;
-      }
-      switch (measureNode.getMeasureNodeType()) {
-        case MeasureNodeType.section:
-          return ChordSectionLocation(chordSection.sectionVersion);
-        case MeasureNodeType.repeat:
-        case MeasureNodeType.phrase:
-          phrase = chordSection.findPhrase(measureNode);
-          if (phrase == null) {
-            return null;
-          }
-          return ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phrase.phraseIndex);
-        case MeasureNodeType.decoration:
-        case MeasureNodeType.comment:
-        case MeasureNodeType.measure:
-          phrase = chordSection.findPhrase(measureNode);
-          if (phrase == null) {
-            return null;
-          }
-          return ChordSectionLocation(chordSection.sectionVersion,
-              phraseIndex: phrase.phraseIndex, measureIndex: phrase.findMeasureNodeIndex(measureNode));
-        default:
-          return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
   ChordSectionLocation? findLastChordSectionLocation(ChordSection? chordSection) {
     if (chordSection == null || chordSection.phrases.isEmpty) {
       return null;
@@ -2654,39 +2575,6 @@ class SongBase {
     return sb.toString();
   }
 
-  void addRepeat(ChordSectionLocation chordSectionLocation, MeasureRepeat repeat) {
-    MeasureNode? measureNode = findMeasureNodeByLocation(chordSectionLocation);
-    if (measureNode == null || measureNode.runtimeType != MeasureRepeat) {
-      return;
-    }
-    var repeat = measureNode as MeasureRepeat;
-
-    ChordSection? chordSection = _findChordSectionByMeasureNode(repeat);
-    if (chordSection == null) {
-      return;
-    }
-    List<Phrase> measureSequenceItems = chordSection.phrases;
-    if (measureSequenceItems.isNotEmpty) {
-      int i = measureSequenceItems.indexOf(repeat);
-      if (i >= 0) {
-        List<Phrase> copy = [];
-        copy.addAll(measureSequenceItems);
-        measureSequenceItems = copy;
-        measureSequenceItems.removeAt(i);
-        repeat.setPhraseIndex(i);
-        measureSequenceItems.insert(i, repeat);
-      } else {
-        repeat.setPhraseIndex(measureSequenceItems.length - 1);
-        measureSequenceItems.add(repeat);
-      }
-    }
-
-    chordSectionDelete(chordSection);
-    chordSection = ChordSection(chordSection.sectionVersion, measureSequenceItems);
-    _getChordSectionMap()[chordSection.sectionVersion] = chordSection;
-    _invalidateChords();
-  }
-
   void setRepeat(ChordSectionLocation chordSectionLocation, int repeats) {
     //  find the node at the location
     MeasureNode? measureNode = findMeasureNodeByLocation(chordSectionLocation);
@@ -2715,7 +2603,7 @@ class SongBase {
       var measureRepeat = phrase;
       if (repeats <= 1) {
         //  remove the repeat
-        ChordSection? chordSection = _findChordSectionByMeasureNode(measureRepeat);
+        ChordSection? chordSection = findChordSectionBySectionVersion(chordSectionLocation.sectionVersion);
         if (chordSection != null) {
           List<Phrase> phrases = chordSection.phrases;
           if (phrases.isNotEmpty) {
@@ -2793,7 +2681,7 @@ class SongBase {
         newPhrases.add(MeasureRepeat(phrase.measures, phrase.phraseIndex, repeats));
       }
 
-      ChordSection? chordSection = _findChordSectionByMeasureNode(phrase);
+      ChordSection? chordSection = findChordSectionBySectionVersion(chordSectionLocation.sectionVersion);
       if (chordSection != null) {
         //  shallow copy
         List<Phrase> phrases = List.generate(chordSection.phrases.length, (index) {
