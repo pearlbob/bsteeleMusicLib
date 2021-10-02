@@ -986,7 +986,7 @@ class SongBase {
       }
       col = 0;
 
-      logger.v('gridding: ' + sectionVersion.toString() + ' (' + row.toString() + ', ' + col.toString() + ')');
+      logger.v('griding: ' + sectionVersion.toString() + ' (' + row.toString() + ', ' + col.toString() + ')');
 
       {
         //  grid the section header
@@ -1020,7 +1020,7 @@ class SongBase {
       }
 
       //  allow for empty sections... on entry
-      if (chordSection.phrases.isEmpty) {
+      if (chordSection.chordRowCount == 0) {
         row++;
         col = offset;
       } else {
