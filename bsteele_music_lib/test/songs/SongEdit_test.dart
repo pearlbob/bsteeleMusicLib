@@ -74,6 +74,10 @@ class TestSong {
     }
   }
 
+  void setRepeat(ChordSectionLocation chordSectionLocation, int repeats) {
+    _myA.setRepeat(chordSectionLocation, repeats);
+  }
+
   static String? _deMusic(String? s) {
     if (s == null) return null;
 
@@ -455,8 +459,8 @@ void main() {
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
-    expect(_a.getCurrentChordSectionLocation().toString(), 'V:0:7' );
-    expect(_a.getCurrentMeasureNode()!.toMarkup(),'Dm7,' );
+    expect(_a.getCurrentChordSectionLocation().toString(), 'V:0:7');
+    expect(_a.getCurrentMeasureNode()!.toMarkup(), 'Dm7,');
 
     //   current type	current edit loc	entry	replace entry	 edit type	 edit loc	result
     logger.d('section	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -1444,7 +1448,46 @@ void main() {
     ts.edit(MeasureEditType.append, 'I:1:2', null, 'Ab');
     ts.resultChords('I: [A B C D ] x4 [E F G Ab ] x4 ');
     ts.post(MeasureEditType.append, 'I:1:3', 'Ab');
+  });
 
+  test('test edit in a repeat', () {
+    //  insert repeat prior to first repeat
+    for (var repeats = 2; repeats < 5; repeats++) {
+      for (var measureIndex = 0; measureIndex < 4; measureIndex++) {
+        ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
+        ts.setRepeat(
+            ChordSectionLocation(SectionVersion.bySection(Section.get(SectionEnum.verse)),
+                phraseIndex: 0, measureIndex: measureIndex),
+            repeats);
+        ts.resultChords('V: [C F C C ] x$repeats [C7 A B C, Cm F C C ] x4 G F C G');
+      }
+    }
+
+    //  adjust a repeat from within a repeat
+    for (var repeats = 2; repeats < 5; repeats++) {
+      for (var measureIndex = 0; measureIndex < 8; measureIndex++) {
+        ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
+        ts.setRepeat(
+            ChordSectionLocation(SectionVersion.bySection(Section.get(SectionEnum.verse)),
+                phraseIndex: 1, measureIndex: measureIndex),
+            repeats);
+        ts.resultChords('V: C F C C [C7 A B C, Cm F C C ] x$repeats G F C G');
+      }
+    }
+
+    // adjust a repeat from within a repeat
+    ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
+    ts.edit(MeasureEditType.replace, 'V:1:0', 'C7', 'Abm7/G');
+    ts.resultChords('V: C F C C [Abm7/G A B C, Cm F C C ] x4 G F C G');
+
+    ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
+    ts.edit(MeasureEditType.replace, 'V:1:0', 'C7', 'Abm7/G, D E');
+    ts.resultChords('V: C F C C [Abm7/G, D E A B C, Cm F C C ] x4 G F C G');
+
+    //  include a new row
+    ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
+    ts.edit(MeasureEditType.replace, 'V:1:0', 'C7', 'Abm7/G, D E,');
+    ts.resultChords('V: C F C C [Abm7/G, D E, A B C, Cm F C C ] x4 G F C G');
   });
 
   test('test edit at end of section', () {
@@ -1453,6 +1496,5 @@ void main() {
     ts.edit(MeasureEditType.append, 'I:0', null, 'X');
     ts.resultChords('I: A B C D, X ');
     ts.post(MeasureEditType.append, 'I:0:4', 'X ');
-
   });
 }

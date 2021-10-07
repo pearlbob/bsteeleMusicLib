@@ -231,7 +231,7 @@ void main() {
 
     expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
-    expect('I: A B C D, A B C D', a.findChordSectionByString('I:')!.toMarkup().trim());
+    expect(a.findChordSectionByString('I:')!.toMarkup().trim(), 'I: A B C D, A B C D,', );
   });
 
   test('testFind', () {

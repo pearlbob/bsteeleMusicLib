@@ -13,17 +13,19 @@ import 'section.dart';
 import 'key.dart';
 
 class Phrase extends MeasureNode {
-  Phrase(List<Measure> measures, int phraseIndex) : _phraseIndex = phraseIndex {
+  Phrase(List<Measure> measures, int phraseIndex, {bool allowEndOfRow = false}) : _phraseIndex = phraseIndex {
     _measures = [];
     _measures.addAll(measures);
 
     //  fix measure row length if required
     if (_measures.isNotEmpty) {
       //  enforce formatting of unformatted or sloppy formatted songs
-      if ( maxMeasuresPerChordRow() > MusicConstants.maxMeasuresPerChordRow ){
+      if (maxMeasuresPerChordRow() > MusicConstants.maxMeasuresPerChordRow) {
         setMeasuresPerRow(MusicConstants.nominalMeasuresPerChordRow);
       }
-      _measures.last.endOfRow = false; //  no end of row on the end of the list
+      if (!allowEndOfRow) {
+        _measures.last.endOfRow = false; //  no end of row on the end of the list
+      }
     }
   }
 
@@ -35,7 +37,8 @@ class Phrase extends MeasureNode {
     return parse(MarkedString(string), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
+  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure,
+      {bool allowEndOfRow = false}) {
     if (markedString.isEmpty) {
       throw 'no data to parse';
     }
@@ -144,7 +147,15 @@ class Phrase extends MeasureNode {
       throw 'no measures found in parse';
     }
 
-    return Phrase(measures, phraseIndex);
+    return Phrase(measures, phraseIndex, allowEndOfRow: allowEndOfRow);
+  }
+
+  Phrase deepCopy() {
+    List<Measure> measures = [];
+    for (var measure in _measures) {
+      measures.add(measure.deepCopy());
+    }
+    return Phrase(measures, _phraseIndex);
   }
 
   @override
@@ -158,7 +169,7 @@ class Phrase extends MeasureNode {
     for (Measure measure in _measures) {
       newMeasures.add(measure.transposeToKey(key) as Measure);
     }
-    return Phrase(newMeasures, _phraseIndex);
+    return Phrase(newMeasures, _phraseIndex, allowEndOfRow: true);
   }
 
   MeasureNode? findMeasureNode(MeasureNode measureNode) {
@@ -609,7 +620,7 @@ class Phrase extends MeasureNode {
         if (measure.isComment()) {
           continue; //  comments get their own row
         }
-        if (i == measuresPerRow - 1 && !identical(measure , lastMeasure)) {
+        if (i == measuresPerRow - 1 && !identical(measure, lastMeasure)) {
           //  new row required
           if (!measure.endOfRow) {
             measure.endOfRow = true;

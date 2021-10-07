@@ -124,6 +124,15 @@ class MeasureRepeat extends Phrase {
     return getRepeatMarker().repeats * super.getTotalMoments();
   }
 
+  @override
+  Phrase deepCopy(){
+    List<Measure> newMeasures = [];
+    for ( var measure in measures){
+      newMeasures.add(measure.deepCopy());
+    }
+    return MeasureRepeat(newMeasures, phraseIndex, repeats);
+  }
+
   int get repeats => getRepeatMarker().repeats;
 
   set repeats(int repeats) => getRepeatMarker().repeats = repeats;

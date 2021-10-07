@@ -175,7 +175,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
           lineMeasures.add(measureComment);
           continue;
         } else {
-          logger.i('here: ' + s);
+          logger.i('ChordSection parse: junk found: ' + s);
         }
       }
       logger.i("can't figure out: " + markedString.toString());

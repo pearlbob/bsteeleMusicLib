@@ -728,10 +728,10 @@ class SongBase {
     _chords = chords ?? ''; //  safety only
     _clearCachedValues(); //  force lazy eval
 
-    if (chords != null && chords.isNotEmpty) {
+    if (_chords.isNotEmpty) {
       logger.d('parseChords for: ' + getTitle());
       SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
-      MarkedString markedString = MarkedString(chords);
+      MarkedString markedString = MarkedString(_chords);
       ChordSection chordSection;
       while (markedString.isNotEmpty) {
         markedString.stripLeadingWhitespace();
@@ -822,7 +822,8 @@ class SongBase {
         //  see if it's a phrase
         try {
           ret.add(Phrase.parse(
-              markedString, phaseIndex, timeSignature.beatsPerBar, getCurrentChordSectionLocationMeasure()));
+              markedString, phaseIndex, timeSignature.beatsPerBar, getCurrentChordSectionLocationMeasure(),
+              allowEndOfRow: true));
           phaseIndex++;
           continue;
         } catch (e) {
@@ -1947,6 +1948,8 @@ class SongBase {
                 if (location.hasMeasureIndex) {
                   newLocation = ChordSectionLocation(chordSection.sectionVersion,
                       phraseIndex: phraseIndex, measureIndex: location.measureIndex + newPhrase.length - 1);
+
+                  //     fixme here??: should be add to sectionVersion, not add of measures to phrase
                   return standardEditCleanup(phrase.edit(editType, location.measureIndex, newPhrase), newLocation);
                 }
                 //  delete the phrase before replacing it
@@ -2683,9 +2686,9 @@ class SongBase {
 
       ChordSection? chordSection = findChordSectionBySectionVersion(chordSectionLocation.sectionVersion);
       if (chordSection != null) {
-        //  shallow copy
+        //  deep copy
         List<Phrase> phrases = List.generate(chordSection.phrases.length, (index) {
-          return Phrase(chordSection!.phrases[index].measures, index);
+          return chordSection!.phrases[index].deepCopy();
         });
         if (phrases.isNotEmpty) {
           int? i = phrases.indexOf(phrase);
