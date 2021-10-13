@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/grid.dart';
@@ -231,7 +232,10 @@ void main() {
 
     expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
-    expect(a.findChordSectionByString('I:')!.toMarkup().trim(), 'I: A B C D, A B C D,', );
+    expect(
+      a.findChordSectionByString('I:')!.toMarkup().trim(),
+      'I: A B C D, A B C D,',
+    );
   });
 
   test('testFind', () {
@@ -258,22 +262,25 @@ void main() {
   });
 
   test('testSetRepeats', () {
-
     {
+      //  set first row as a repeat
       SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
           'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
 
       var gridCoordinate = GridCoordinate(0, 4);
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
+      a.setCurrentChordSectionLocation(chordSectionLocation);
       logger.d(chordSectionLocation.toString());
       a.setRepeat(chordSectionLocation!, 2);
-      logger.d(a.toMarkup());
+      logger.i(a.toMarkup());
       expect(a.toMarkup().trim(), 'I: [A B C D ] x2  V: E F G A#');
+      expect(a.currentChordSectionLocation, chordSectionLocation);
 
       //  remove the repeat
       chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
       a.setRepeat(chordSectionLocation!, 1);
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#');
+      expect(a.currentChordSectionLocation, chordSectionLocation);
     }
 
     {
@@ -284,6 +291,7 @@ void main() {
       Grid<ChordSectionLocation> grid;
 
       grid = a.getChordSectionLocationGrid();
+      //  set first row as a repeat from any measure
       for (int row = 0; row < grid.getRowCount(); row++) {
         a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
             'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
@@ -295,6 +303,8 @@ void main() {
               var gridCoordinate = GridCoordinate(row, 4);
               ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
               assert(chordSectionLocation != null);
+              logger.d('chordSectionLocation: $chordSectionLocation');
+              a.setCurrentChordSectionLocation(chordSectionLocation);
               a.setRepeat(chordSectionLocation!, r);
               String s = a.toMarkup().trim();
               logger.d(s);
@@ -307,6 +317,7 @@ void main() {
                             '  V: [E F G A# ] x' +
                         r.toString());
               }
+              expect(a.currentChordSectionLocation, chordSectionLocation);
             }
           }
         }
@@ -318,13 +329,16 @@ void main() {
       SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
           'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
 
-      var gridCoordinate = GridCoordinate(1, 1+measureIndex);
+      var gridCoordinate = GridCoordinate(1, 1 + measureIndex);
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
       assert(chordSectionLocation != null);
       logger.d(chordSectionLocation.toString());
+      a.setCurrentChordSectionLocation(chordSectionLocation);
       a.setRepeat(chordSectionLocation!, 2);
-      logger.d(a.toMarkup());
+      logger.i(a.toMarkup());
       expect(a.toMarkup().trim(), 'I: A B C D  V: [E F G A# ] x2 B C C# D, D# E F F#, G  O: D E F G');
+      chordSectionLocation = ChordSectionLocation(chordSectionLocation.sectionVersion, phraseIndex: 0, measureIndex: 3);
+      expect(a.currentChordSectionLocation, chordSectionLocation);
 
       //  remove the repeat
       var loc = a.findChordSectionLocationByGrid(gridCoordinate);
@@ -332,76 +346,129 @@ void main() {
       logger.d('loc: $loc');
       a.setRepeat(loc!.asPhrase(), 1);
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
+      expect(a.currentChordSectionLocation,
+          ChordSectionLocation(chordSectionLocation.sectionVersion, phraseIndex: 0, measureIndex: 3));
     }
 
-      for (var measureIndex = 4; measureIndex < 8; measureIndex++) {
-        //  repeat a row in the middle of a phrase
-        SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-            'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+    for (var measureIndex = 4; measureIndex < 8; measureIndex++) {
+      //  repeat a row in the middle of a phrase
+      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
+          'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+      logger.i(a.toMarkup());
 
-        var gridCoordinate = GridCoordinate(2, 1+measureIndex%4);
-        ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
-        assert(chordSectionLocation != null);
-        logger.d(chordSectionLocation.toString());
-        a.setRepeat(chordSectionLocation!, 2);
-        logger.d(a.toMarkup());
-        expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A# [B C C# D ] x2 D# E F F#, G  O: D E F G');
+      var gridCoordinate = GridCoordinate(2, 1 + measureIndex % 4);
+      ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
+      assert(chordSectionLocation != null);
+      logger.d('${chordSectionLocation}: ${a.findMeasureByChordSectionLocation(chordSectionLocation)}');
+      a.setCurrentChordSectionLocation(chordSectionLocation);
+      a.setRepeat(chordSectionLocation!, 2);
+      gridCoordinate = GridCoordinate(2, 1 + 3);
+      chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
+      assert(chordSectionLocation != null);
+      logger.d('grid: ${chordSectionLocation}: ${a.findMeasureByChordSectionLocation(chordSectionLocation)}');
+      logger.i(a.toMarkup());
+      expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A# [B C C# D ] x2 D# E F F#, G  O: D E F G');
+      expect(a.currentChordSectionLocation, chordSectionLocation);
 
-        //  remove the repeat, it's location address may have changed above!
-        var loc = a.findChordSectionLocationByGrid(gridCoordinate);
-        assert(loc != null);
-        a.setRepeat(loc!.asPhrase(), 1);
-        expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
-      }
+      //  remove the repeat, it's location address may have changed above!
+      var loc = a.findChordSectionLocationByGrid(gridCoordinate);
+      assert(loc != null);
+      a.setRepeat(loc!.asPhrase(), 1);
+      expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
+      expect(a.currentChordSectionLocation,
+          ChordSectionLocation(chordSectionLocation!.sectionVersion, phraseIndex: 0, measureIndex: 7));
+    }
 
     for (var measureIndex = 9; measureIndex < 12; measureIndex++) {
       //  repeat a row in the end of a phrase
       SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
           'i: A B C D v: E F G A#, B C C# D, D# E F F# o: D E F G', 'i: v: bob, bob, bob berand');
+      logger.i(a.toMarkup());
 
-      SectionVersion sectionVersion =  SectionVersion.bySection(Section.get(SectionEnum.verse));
-      ChordSectionLocation chordSectionLocation = ChordSectionLocation(
-          sectionVersion,
-          phraseIndex: 0,
-          measureIndex: measureIndex);
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      ChordSectionLocation? chordSectionLocation =
+          ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: measureIndex);
       logger.d(chordSectionLocation.toString());
+      a.setCurrentChordSectionLocation(chordSectionLocation);
       a.setRepeat(chordSectionLocation, 2);
-      logger.d(a.toMarkup());
+      logger.i(a.toMarkup());
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D [D# E F F# ] x2  O: D E F G');
+      chordSectionLocation = ChordSectionLocation(chordSectionLocation.sectionVersion, phraseIndex: 1, measureIndex: 3);
+      logger.d(chordSectionLocation.toString());
+      expect(a.currentChordSectionLocation, chordSectionLocation);
 
       //  remove the repeat
-      var loc = ChordSectionLocation(
-          sectionVersion,
-          phraseIndex: 1,
-          measureIndex: measureIndex % 4);
+      var loc = ChordSectionLocation(sectionVersion, phraseIndex: 1, measureIndex: measureIndex % 4);
       logger.d('loc: $loc, ${loc.asPhrase()}');
       a.setRepeat(loc.asPhrase(), 1);
-       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#  O: D E F G');
+      expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#  O: D E F G');
+      expect(a.currentChordSectionLocation,
+          ChordSectionLocation(chordSectionLocation.sectionVersion, phraseIndex: 0, measureIndex: 11));
     }
 
-      for (var measureIndex = 12; measureIndex < 13; measureIndex++) {
-        //  repeat a row in the end of a phrase
-        SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-            'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+    for (var measureIndex = 12; measureIndex < 13; measureIndex++) {
+      //  repeat a row in the end of a phrase
+      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
+          'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+      logger.i(a.toMarkup());
 
-        SectionVersion sectionVersion =  SectionVersion.bySection(Section.get(SectionEnum.verse));
-        ChordSectionLocation chordSectionLocation = ChordSectionLocation(
-            sectionVersion,
-            phraseIndex: 0,
-            measureIndex: measureIndex);
-        logger.d(chordSectionLocation.toString());
-        a.setRepeat(chordSectionLocation, 2);
-        logger.d(a.toMarkup());
-        expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F# [G ] x2  O: D E F G');
-
-        //  remove the repeat
-        var loc = ChordSectionLocation(
-            sectionVersion,
-            phraseIndex: 1,
-            measureIndex: measureIndex % 4);
-        a.setRepeat(loc, 1);
-        expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      ChordSectionLocation? chordSectionLocation =
+          ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: measureIndex);
+      logger.d(chordSectionLocation.toString());
+      a.setCurrentChordSectionLocation(chordSectionLocation);
+      a.setRepeat(chordSectionLocation, 2);
+      logger.i(a.toMarkup());
+      expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F# [G ] x2  O: D E F G');
+      {
+        var gridCoordinate = GridCoordinate(4, 1 + measureIndex % 4);
+        chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
       }
+      assert(chordSectionLocation != null);
+      expect(a.currentChordSectionLocation, chordSectionLocation);
+
+      //  remove the repeat
+      var loc = ChordSectionLocation(sectionVersion, phraseIndex: 1, measureIndex: measureIndex % 4);
+      a.setRepeat(loc, 1);
+      expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
+      expect(a.currentChordSectionLocation,
+          ChordSectionLocation(chordSectionLocation!.sectionVersion, phraseIndex: 0, measureIndex: 12));
+    }
+
+    //  test where the current is not necessarily the repeat location
+    {
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      var size = 12;
+      for (var currentIndex = 4; currentIndex < 13; currentIndex++) {
+        var currentChordSectionLocation =
+            ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: currentIndex);
+        for (var measureIndex = 0; measureIndex <= size; measureIndex++) {
+          //  repeat a row in the end of a phrase
+          SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
+              'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+          logger.d('');
+          logger.i(a.toMarkup());
+
+          ChordSectionLocation? chordSectionLocation =
+              ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: measureIndex);
+          logger.d('current: $currentChordSectionLocation, chord: $chordSectionLocation');
+          a.setCurrentChordSectionLocation(currentChordSectionLocation);
+          a.setRepeat(chordSectionLocation, 2);
+          logger.i(a.toMarkup());
+          ChordSectionLocation? newLoc = a.currentChordSectionLocation;
+          assert(newLoc != null);
+
+          //  remove the repeat
+          logger.d('remove repeat: $newLoc');
+          a.setRepeat(newLoc!, 1);
+          logger.i(a.toMarkup());
+          expect(
+              a.currentChordSectionLocation,
+              ChordSectionLocation(chordSectionLocation.sectionVersion,
+                  phraseIndex: 0, measureIndex: min(4 * (measureIndex ~/ 4) + 3, size)));
+        }
+      }
+    }
   });
 
   test('test findChordSectionLocation()', () {
@@ -533,7 +600,7 @@ void main() {
         if (measure != null) {
           expect(measure, a.findMeasureNodeByLocation(a.getChordSectionLocationGrid().get(r, c)));
           logger.d('measure(' + c.toString() + ',' + r.toString() + '): ' + measure.toMarkup());
-          ChordSectionLocation? loc = a.findChordSectionLocationByGrid(GridCoordinate(r,c));
+          ChordSectionLocation? loc = a.findChordSectionLocationByGrid(GridCoordinate(r, c));
           logger.d('loc: ' + loc.toString());
           a.setCurrentChordSectionLocation(loc);
 
@@ -647,7 +714,7 @@ void main() {
     logger.d('loc: ' + a.getCurrentChordSectionLocation().toString());
     logger.d(a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation())!.toMarkup());
     expect(a.findMeasureNodeByLocation(loc), a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation()));
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup(), 'I: A B D ');
     expect(Measure.parseString('D', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
     logger.d('cur: ' + a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
@@ -976,8 +1043,8 @@ c2:
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
 
     logger.v(a.toMarkup());
-    logger.i('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
-    logger.i('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
+    logger.d('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
+    logger.d('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
 
     expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
@@ -1015,7 +1082,7 @@ c2:
         'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
 
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:')), GridCoordinate(0, 0));
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:0:0')), GridCoordinate(0, 1));
 
@@ -1025,7 +1092,7 @@ c2:
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: V: c: G D G D ', 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
 
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
 
     expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
     expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
@@ -1062,7 +1129,7 @@ c2:
         'verse: A B C D prechorus: D E F F# chorus: G D C G x3',
         'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
 
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
 
     grid = a.getChordSectionLocationGrid();
     for (int r = 0; r < grid.getRowCount(); r++) {
@@ -1262,7 +1329,7 @@ c2:
         'I: [A B C D, E F]  x2 v: D C G G c: Ab Bb C Db o: G G G G ',
         'i:\nv: verse\n c: chorus\nv: verse\n c: chorus\no: outro');
     a.debugSongMoments();
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     int size = a.getSongMomentsSize();
     for (int momentNumber = 0; momentNumber < size; momentNumber++) {
       SongMoment? songMoment = a.getSongMoment(momentNumber);
@@ -1288,33 +1355,33 @@ c2:
     //  split a long repeat
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: A B C D E F, G G# Ab Bb x2 \nc: D E F', 'i:\nc: sing chorus');
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
 
     //  don't fix what's not broken
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: [A B C D, E F G G#, Ab Bb] x2 \nc: D E F', 'i:\nc: sing chorus');
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.toMarkup().trim(), 'I: [A B C D, E F G G#, Ab Bb ] x2  C: D E F');
 
     //  take the comma off a repeat
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: [A B C D, E F G G#, ] x2 \nc: D E F', 'i:\nc: sing chorus');
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.toMarkup().trim(), 'I: [A B C D, E F G G# ] x2  C: D E F');
 
     //  not the first section
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: [A B C D ] x2 \nc: D E F A B C D, E F G G#', 'i:\nc: sing chorus');
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect('I: [A B C D ] x2  C: D E F A, B C D E, F G G#', a.toMarkup().trim());
     expect(a.setMeasuresPerRow(4), isFalse);
     expect('I: [A B C D ] x2  C: D E F A, B C D E, F G G#', a.toMarkup().trim());
@@ -1322,9 +1389,9 @@ c2:
     //  take a last comma off
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: [A B C D ] x2 \nc: D E F A B C, D E, F G G#,', 'i:\nc: sing chorus');
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
-    logger.d(a.toMarkup());
+    logger.i(a.toMarkup());
     expect('I: [A B C D ] x2  C: D E F A, B C D E, F G G#', a.toMarkup().trim());
     expect(a.setMeasuresPerRow(4), isFalse);
     expect('I: [A B C D ] x2  C: D E F A, B C D E, F G G#', a.toMarkup().trim());
@@ -1457,17 +1524,17 @@ c2:
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
 
 //    logger.v(a.toMarkup());
-//    logger.i('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
-//    logger.i('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
+//    logger.d('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
+//    logger.d('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
 
     grid = a.getChordSectionLocationGrid();
 
     List<ChordSectionLocation?>? row = grid.getRow(0);
     if (row == null) throw 'row == null';
-    logger.i(row.length.toString());
-    logger.i(grid.toMultiLineString());
-    logger.i(chordSectionToMultiLineString(a));
+    logger.d(row.length.toString());
+    logger.d(grid.toMultiLineString());
+    logger.d(chordSectionToMultiLineString(a));
   });
 
   test('test entryToUppercase', () {
@@ -1507,17 +1574,17 @@ o: end here''');
     //Grid<SongMoment> grid =
     a.songMomentGrid;
 
-    //     logger.i('a.lyricSections: ${a.lyricSections}');
+    //     logger.d('a.lyricSections: ${a.lyricSections}');
 //     // for (LyricSection lyricSection in a.lyricSections) {
-//     //   logger.i('${lyricSection}');
+//     //   logger.d('${lyricSection}');
 //     //   for (String line in lyricSection.getLyricsLines()) {
-//     //     logger.i('  "$line"');
+//     //     logger.d('  "$line"');
 //     //   }
 //     // }
 
     for (SongMoment songMoment in a.songMoments) {
-      logger.i('  ${songMoment}');
-      logger.i('      ${songMoment.lyrics}');
+      logger.d('  ${songMoment}');
+      logger.d('      ${songMoment.lyrics}');
     }
 
     // for (int measures = 2; measures <= 5; measures++) {
@@ -1531,11 +1598,11 @@ o: end here''');
     //         }
     //         lines.add(s);
     //       }
-    //       logger.i('\nmeasures: $measures, row: $rows, word: $words:');
-    //       logger.i(lines.toString());
+    //       logger.d('\nmeasures: $measures, row: $rows, word: $words:');
+    //       logger.d(lines.toString());
     //
     //       for (int m = 0; m < measures; m++) {
-    //         logger.i('     $m: ${splitWordsToMeasure(measures, m, lines)}');
+    //         logger.d('     $m: ${splitWordsToMeasure(measures, m, lines)}');
     //       }
     //     }
     //   }
@@ -1552,19 +1619,19 @@ o: end here''');
     //         }
     //         lines.add(s.trimRight());
     //       }
-    //       logger.i(
+    //       logger.d(
     //           '\nmeasureRows: $measureRows, lyricRows: $lyricRows'
     //               ', words: $words: ${lines.toString()}');
     //
     //       for (int mr = 0; mr < measureRows; mr++) {
     //         String rowString = shareLinesToRow(measureRows, mr, lines);
-    //         logger.i('     measureRow $mr: $rowString');
+    //         logger.d('     measureRow $mr: $rowString');
     //
     //         for (int measures = 1; measures <= 6; measures++) {
-    //           logger.i('       measures $measures:');
+    //           logger.d('       measures $measures:');
     //           for (int m = 0; m < measures; m++) {
     //             String s = splitWordsToMeasure(measures, m, rowString);
-    //             logger.i('          mr $mr: m:$m $s');
+    //             logger.d('          mr $mr: m:$m $s');
     //           }
     //         }
     //       }
@@ -1707,7 +1774,7 @@ o: end here''');
 
   test('test last modified time', () {
     int now = DateTime.now().millisecondsSinceEpoch;
-    logger.i('now: $now');
+    logger.d('now: $now');
 
     int beatsPerBar = 4;
     SongBase a;
@@ -1715,10 +1782,10 @@ o: end here''');
     //  assure that the song can end on an empty section
     a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', music_key.Key.get(music_key.KeyEnum.C), 106,
         beatsPerBar, 4, 'V: C F C C,F F C C,  G F C G', 'v:');
-    logger.i('a.lastModifiedTime: ${a.lastModifiedTime}');
+    logger.d('a.lastModifiedTime: ${a.lastModifiedTime}');
     expect(now <= a.lastModifiedTime, isTrue);
     now = DateTime.now().millisecondsSinceEpoch;
-    logger.i('now: $now');
+    logger.d('now: $now');
     expect(now >= a.lastModifiedTime, isTrue);
   });
 
@@ -1781,12 +1848,12 @@ o: end here''');
 
     a.rawLyrics = 'i:\n\n\nv:\n\n\nv:\n\n\n';
     // for (var lyricSection in a.lyricSections) {
-    //   logger.i('${lyricSection.sectionVersion}  lines: ${lyricSection.lyricsLines.length}');
+    //   logger.d('${lyricSection.sectionVersion}  lines: ${lyricSection.lyricsLines.length}');
     //   for (var line in lyricSection.lyricsLines) {
-    //     logger.i('    "$line"');
+    //     logger.d('    "$line"');
     //   }
     // }
-    // logger.i(a.toJson());
+    // logger.d(a.toJson());
     expect(a.lyricsAsString(), 'I: "\n", V: "\n", V: "\n"');
 
     a.rawLyrics = 'i: A\n\nv: B\n\n';

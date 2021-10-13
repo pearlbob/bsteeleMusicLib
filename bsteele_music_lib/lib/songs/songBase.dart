@@ -2585,9 +2585,10 @@ class SongBase {
       logger.d('null measureNode at: $chordSectionLocation');
       return;
     }
-    logger.d('setRepeat: $chordSectionLocation $measureNode');
+    logger.d('setRepeat: $chordSectionLocation $measureNode'
+        ', current: ${currentChordSectionLocation == null ? 'null' : chordSectionLocation.compareTo(currentChordSectionLocation!)}');
 
-    //  find it's phrase
+    //  find if it's a phrase
     Phrase? phrase;
     if (measureNode is Measure) {
       phrase = _findPhraseByLocation(chordSectionLocation);
@@ -2610,13 +2611,29 @@ class SongBase {
         if (chordSection != null) {
           List<Phrase> phrases = chordSection.phrases;
           if (phrases.isNotEmpty) {
-            int? phraseIndex = phrases.indexOf(measureRepeat);
+            int phraseIndex = phrases.indexOf(measureRepeat);
+            assert(phraseIndex >= 0);
             phrases.removeAt(phraseIndex);
             phrases.insert(phraseIndex, Phrase(measureRepeat.measures, phraseIndex));
 
             chordSectionDelete(chordSection);
             chordSection = ChordSection(chordSection.sectionVersion, phrases);
+            {
+              //  set the current chord section location to the last of the old repeat
+              var measureIndex = measureRepeat.length - 1;
+              if (phraseIndex > 0) {
+                var priorPhrase = phrases[phraseIndex - 1];
+                if (priorPhrase.runtimeType == Phrase) {
+                  //  adjust for the collapse of adjacent phrases
+                  phraseIndex--;
+                  measureIndex += priorPhrase.length;
+                }
+              }
+              currentChordSectionLocation = ChordSectionLocation(chordSection.sectionVersion,
+                  phraseIndex: phraseIndex, measureIndex: measureIndex);
+            }
             chordSection.collapsePhrases();
+
             _getChordSectionMap()[chordSection.sectionVersion] = chordSection;
             _invalidateChords();
           }
@@ -2625,12 +2642,13 @@ class SongBase {
         //  change the count
         measureRepeat.repeats = repeats;
       }
-    } else {
-      //  change phrase row to repeat
+    } else if (repeats > 1) {
+      //  change phrase row to into a repeat
 
       //  find first and last measures in the row
       List<Phrase> newPhrases = [];
       var phraseIndex = phrase.phraseIndex;
+      var repeatPhraseIndex = phraseIndex;
       if (chordSectionLocation.hasMeasureIndex) {
         //  find the current row
         var measureIndex = chordSectionLocation.measureIndex;
@@ -2652,14 +2670,17 @@ class SongBase {
         }
 
         //  add rows prior to current row
+        Phrase? firstPhrase;
         if (first > 0) {
           List<Measure> target = [];
           for (var i = 0; i < first; i++) {
             target.add(phrase.measures[i]);
           }
-          newPhrases.add(Phrase(target, phraseIndex++));
+          firstPhrase = Phrase(target, phraseIndex++);
+          newPhrases.add(firstPhrase);
         }
         //  add the current row as a repeat
+        MeasureRepeat? measureRepeat;
         {
           List<Measure> target = [];
           for (var i = first; i < last; i++) {
@@ -2668,20 +2689,29 @@ class SongBase {
           if (target.isNotEmpty) {
             target[target.length - 1] = target[target.length - 1].deepCopy()..endOfRow = false;
           }
-          newPhrases.add(MeasureRepeat(target, phraseIndex++, repeats));
+          repeatPhraseIndex = phraseIndex;
+          measureRepeat = MeasureRepeat(target, phraseIndex++, repeats);
+          newPhrases.add(measureRepeat);
         }
-        //  add rows past the current row
+        //  add the rows past the current row
+        Phrase? lastPhrase;
         if (last < phrase.length) {
           List<Measure> target = [];
           for (var i = last; i < phrase.length; i++) {
             target.add(phrase.measures[i]);
           }
-          newPhrases.add(Phrase(target, phraseIndex++));
+          lastPhrase = Phrase(target, phraseIndex++);
+          newPhrases.add(lastPhrase);
         }
-        logger.d('first: $first, last: $last, ');
+        logger.d('firstPhrase: $firstPhrase, measureRepeat: $measureRepeat, last: $lastPhrase');
+
+        //  adjust the current measure if required
+        currentChordSectionLocation = ChordSectionLocation(chordSectionLocation.sectionVersion,
+            phraseIndex: repeatPhraseIndex, measureIndex: measureRepeat.length - 1);
       } else {
         //  make a repeat of the whole phrase
         newPhrases.add(MeasureRepeat(phrase.measures, phrase.phraseIndex, repeats));
+        //  current location remains the same
       }
 
       ChordSection? chordSection = findChordSectionBySectionVersion(chordSectionLocation.sectionVersion);
@@ -2703,6 +2733,8 @@ class SongBase {
               'new sectionVersion: ${chordSection.sectionVersion}: ${_getChordSectionMap()[chordSection.sectionVersion]}');
         }
       }
+    } else {
+      //  nothing to do.  repeats x1 is a phrase
     }
 
     _invalidateChords();

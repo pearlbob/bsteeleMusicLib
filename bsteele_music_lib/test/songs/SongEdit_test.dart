@@ -1344,18 +1344,18 @@ void main() {
 
   test('test last modified time after an edit', () {
     int now = DateTime.now().millisecondsSinceEpoch;
-    logger.i('now: $now');
+    logger.d('now: $now');
 
     int beatsPerBar = 4;
 
     //  assure that the song can end on an empty section
     _a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
         'V: C F C C,F F C C,  G F C G', 'v:');
-    logger.i('a.lastModifiedTime: ${_a.lastModifiedTime}');
+    logger.d('a.lastModifiedTime: ${_a.lastModifiedTime}');
     int t0 = _a.lastModifiedTime;
     expect(now <= _a.lastModifiedTime, isTrue);
     now = DateTime.now().millisecondsSinceEpoch;
-    logger.i('now: $now');
+    logger.d('now: $now');
     expect(now >= _a.lastModifiedTime, isTrue);
 
     ts.startingChords('I: A G D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
@@ -1365,8 +1365,8 @@ void main() {
     ts.resultChords('I: A D  V: D C G G  V1: Dm  V2: Em  PC: D C G D  C: F7 G7 G Am  ');
     ts.post(MeasureEditType.delete, 'I:0:1', 'D');
     now = DateTime.now().millisecondsSinceEpoch;
-    logger.i('t1: $t1');
-    logger.i('now: $now');
+    logger.d('t1: $t1');
+    logger.d('now: $now');
     expect(now >= t1, isTrue);
     expect(t1 == _a.lastModifiedTime, isTrue);
   });
@@ -1415,25 +1415,25 @@ void main() {
     ts.post(MeasureEditType.append, 'I:0:0', 'G');
     var lastLocation = _a.findLastChordSectionLocation(
         _a.findChordSectionBySectionVersion(SectionVersion.bySection(Section.get(SectionEnum.intro))));
-    logger.i('lastChordSectionLocation: $lastLocation');
+    logger.d('lastChordSectionLocation: $lastLocation');
     expect(lastLocation.toString(), 'I:0:4');
 
     //  append phrase after repeat
     ts.startingChords('i: [A B C D] x4 G');
     ts.edit(MeasureEditType.append, 'I:1:0', null, 'A');
-    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    logger.d('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
     ts.resultChords('I: [A B C D ] x4 G A');
     ts.post(MeasureEditType.append, 'I:1:1', 'A');
 
     //  append phrase after repeat, assure the phrase index works!
     ts.startingChords('i: [A B C D] x4');
     ts.edit(MeasureEditType.append, 'I:0', null, 'G');
-    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    logger.d('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
     ts.resultChords('I: [A B C D ] x4 G ');
     ts.post(MeasureEditType.append, 'I:1:0', 'G');
-    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    logger.d('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
     ts.edit(MeasureEditType.append, 'I:1:0', null, 'A');
-    logger.i('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
+    logger.d('_a.currentChordSectionLocation ${_a.currentChordSectionLocation}');
     ts.resultChords('I: [A B C D ] x4 G A');
     ts.post(MeasureEditType.append, 'I:1:1', 'A');
 
