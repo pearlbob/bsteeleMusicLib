@@ -3,6 +3,10 @@ import 'dart:io';
 
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
+final DateFormat _dateFormat = DateFormat('yyyyMMdd_HHmmss');
+
 class Util {
   static String homePath() {
     String home = '';
@@ -69,6 +73,10 @@ class Util {
       return s[0].toLowerCase() + s.substring(1);
     }
     return s;
+  }
+
+  static String utcNow() {
+    return  _dateFormat.format(DateTime.now().toUtc());
   }
 
   static String camelCaseToLowercaseSpace(String s) {
