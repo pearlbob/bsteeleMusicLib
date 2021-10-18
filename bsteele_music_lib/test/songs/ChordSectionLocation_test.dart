@@ -128,9 +128,9 @@ void main() {
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 0)),
         Measure.parseString('F', beatsPerBar));
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 3)),
-        Measure.parseString('G#', beatsPerBar, endOfRow: true));//  test forced end of row
+        Measure.parseString('G#', beatsPerBar, endOfRow: true)); //  test forced end of row
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 7)),
-        Measure.parseString('B', beatsPerBar, endOfRow: true));//  test forced end of row
+        Measure.parseString('B', beatsPerBar, endOfRow: true)); //  test forced end of row
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 8)),
         Measure.parseString('C', beatsPerBar)); //  no end of row
 
@@ -138,5 +138,32 @@ void main() {
     expect(Measure.parseString('B', beatsPerBar),
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 4)));
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 5)), isNull);
+  });
+
+  test('ChordSectionLocation.fromString testing', () {
+    Logger.level = Level.info;
+    ChordSectionLocation loc;
+
+    expect(ChordSectionLocation.fromString('asdf:3:3'), isNull);
+    expect(ChordSectionLocation.fromString('V:3k:3'), isNull);
+    expect(ChordSectionLocation.fromString('V:3:3x'), isNull);
+    expect(ChordSectionLocation.fromString('V:3:3:x4'), isNull);
+
+    for (var sectionEnum in SectionEnum.values) {
+      var section = Section.get(sectionEnum);
+      for (var version = 0; version < 10; version++) {
+        var sectionVersion = SectionVersion(section, version);
+        loc = ChordSectionLocation(sectionVersion);
+        expect(ChordSectionLocation.fromString(loc.toString()), loc);
+        for (var phraseIndex = 0; phraseIndex <= 4; phraseIndex++) {
+          loc = ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex);
+          expect(ChordSectionLocation.fromString(loc.toString()), loc);
+          for (var measureIndex = 0; measureIndex <= 4; measureIndex++) {
+            loc = ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
+            expect(ChordSectionLocation.fromString(loc.toString()), loc);
+          }
+        }
+      }
+    }
   });
 }

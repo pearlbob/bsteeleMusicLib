@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:quiver/core.dart';
 
+import '../appLogger.dart';
 import '../util/util.dart';
 import 'sectionVersion.dart';
 
@@ -167,6 +168,38 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   String toString() {
     return getId() + (_repeats != null ? ':x$_repeats' : '');
   }
+
+  static ChordSectionLocation? fromString(String s) {
+    //logger.i('fromString($s)');
+
+    RegExpMatch? m = _chordSectionLocationRegexp.firstMatch(s);
+    // logger.i('m: $m, ${m?.groupCount}');
+    // var count = m?.groupCount ?? 0;
+    // for (var i = 0; i <= count; i++) {
+    //   logger.i('  $i: ${m?.group(i)}');
+    // }
+    if (m == null) {
+      return null;
+    }
+    try {
+      SectionVersion? sectionVersion = SectionVersion.parseString(m.group(1)!);
+      // logger.i('sectionVersion: $sectionVersion, count: $count');
+      var phraseString = m.group(2);
+      var measureString = m.group(3);
+      if (phraseString != null && measureString != null) {
+        return ChordSectionLocation(sectionVersion,
+            phraseIndex: int.parse(phraseString), measureIndex: int.parse(measureString));
+      }
+      if (phraseString != null) {
+        return ChordSectionLocation(sectionVersion, phraseIndex: int.parse(phraseString));
+      }
+      return ChordSectionLocation(sectionVersion);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static final RegExp _chordSectionLocationRegexp = RegExp(r'^([^:]+:)(\d)?(?::(\d))?$');
 
   String getId() {
     if (id == null) {
