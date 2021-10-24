@@ -7,14 +7,15 @@ import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
+import '../appLogger.dart';
 import '../grid.dart';
 import '../gridCoordinate.dart';
-import '../appLogger.dart';
 import '../util/util.dart';
 import 'chord.dart';
 import 'chordDescriptor.dart';
 import 'chordSection.dart';
 import 'chordSectionLocation.dart';
+import 'key.dart';
 import 'lyricSection.dart';
 import 'measure.dart';
 import 'measureComment.dart';
@@ -24,13 +25,12 @@ import 'measureRepeatExtension.dart';
 import 'measureRepeatMarker.dart';
 import 'musicConstants.dart';
 import 'phrase.dart';
+import 'scaleChord.dart';
 import 'section.dart';
 import 'sectionVersion.dart';
 import 'song.dart';
 import 'songId.dart';
 import 'songMoment.dart';
-import 'key.dart';
-import 'scaleChord.dart';
 
 enum UpperCaseState {
   initial,
@@ -3433,6 +3433,30 @@ class SongBase {
         (currentChordSectionLocation != null
             ? findMeasureNodeByLocation(currentChordSectionLocation).toString()
             : 'none'));
+  }
+
+  Grid<MeasureNode> toGrid({bool? expanded}) {
+    var grid = Grid<MeasureNode>();
+    var columns = 0;
+
+    for (var lyricSection in lyricSections) {
+      var chordSection = findChordSectionByLyricSection(lyricSection);
+      assert(chordSection != null);
+      if (chordSection == null) {
+        continue;
+      }
+      columns = max(columns, chordSection.chordRowMaxLength());
+    }
+
+    for (var lyricSection in lyricSections) {
+      var chordSection = findChordSectionByLyricSection(lyricSection);
+      assert(chordSection != null);
+      if (chordSection == null) {
+        continue;
+      }
+      grid.add(chordSection.toGrid(columns: columns, expanded: expanded));
+    }
+    return grid;
   }
 
   @override

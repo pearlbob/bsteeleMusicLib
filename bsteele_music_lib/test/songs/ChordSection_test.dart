@@ -1,11 +1,13 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureComment.dart';
+import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
-import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
@@ -443,7 +445,7 @@ void main() {
         }
       }
 
-      expect(chordSection.chordRowMaxLength(), 6);
+      expect(chordSection.chordRowMaxLength(), 5);
 
       expect(chordSection.rowCount(), 11);
       expect(chordSection.rowCount(expanded: false), 11);
@@ -515,7 +517,14 @@ void main() {
           'A B C D \n'
           'A B C D E F G G# x2\n',
           beatsPerBar);
-      expect(chordSection.chordRowMaxLength(), 10);
+      expect(chordSection.chordRowMaxLength(), 9);
+      chordSection = ChordSection.parseString(
+          'I:'
+          'A B \n'
+          'A B C D \n'
+          '[A B C D, E F G G#] x2\n',
+          beatsPerBar);
+      expect(chordSection.chordRowMaxLength(), 6);
       chordSection = ChordSection.parseString(
           'I:'
           'A B \n'
@@ -537,6 +546,69 @@ void main() {
           '[A B C D, E F G G#, A# Bb ]x2\n',
           beatsPerBar);
       expect(chordSection.chordRowMaxLength(), 6);
+    }
+  });
+
+  test('test ChordSection toGrid()', () {
+    ChordSection chordSection;
+    Grid<MeasureNode> grid;
+
+    chordSection = ChordSection.parseString(
+        'I:'
+        'A B,'
+        'A B C D',
+        beatsPerBar);
+    grid = chordSection.toGrid();
+    expect(grid.getRowCount(), 3);
+    expect(grid.rowLength(0), 4);
+    expect(grid.rowLength(1), 4);
+    expect(grid.rowLength(2), 4);
+
+    chordSection = ChordSection.parseString(
+        'I:'
+        'A B \n'
+        'A B C D \n'
+        'A B C D E F G G# x2\n',
+        beatsPerBar);
+    grid = chordSection.toGrid();
+    expect(grid.getRowCount(), 4);
+    expect(grid.rowLength(0), 9);
+    expect(grid.rowLength(1), 9);
+    expect(grid.rowLength(2), 9);
+    expect(grid.rowLength(3), 9);
+
+    chordSection = ChordSection.parseString(
+        'I:'
+        'A B C D E F G G#\n'
+        'A B C D \n'
+        'A B \n',
+        beatsPerBar);
+    grid = chordSection.toGrid();
+    expect(grid.getRowCount(), 4);
+    expect(grid.rowLength(1), 8);
+
+    chordSection = ChordSection.parseString(
+        'I:'
+        'A B \n'
+        'A B C D \n'
+        'A B C D, E F G G# x2\n',
+        beatsPerBar);
+    grid = chordSection.toGrid();
+    expect(grid.getRowCount(), 1 + 2 + 2);
+    for (var r = 0; r < 5; r++) {
+      expect(grid.rowLength(r), 5);
+    }
+
+    chordSection = ChordSection.parseString(
+        'I:'
+        'A B \n'
+        'A B C D \n'
+        '[A B C D, E F G G#] x2\n',
+        beatsPerBar);
+    grid = chordSection.toGrid();
+    expect(grid.getRowCount(), 1 + 2 + 2);
+    for (var r = 0; r < 5; r++) {
+      expect(grid.rowLength(r), 6);
     }
   });
 }

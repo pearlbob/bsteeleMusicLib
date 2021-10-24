@@ -1,15 +1,18 @@
+import 'dart:math';
+
 import 'package:bsteeleMusicLib/songs/measureRepeatExtension.dart';
 
 import '../appLogger.dart';
+import '../grid.dart';
 import '../util/util.dart';
 import 'chordSectionLocation.dart';
+import 'key.dart';
 import 'measure.dart';
 import 'measureComment.dart';
 import 'measureNode.dart';
 import 'measureRepeatMarker.dart';
 import 'phrase.dart';
 import 'section.dart';
-import 'key.dart';
 
 class MeasureRepeat extends Phrase {
   MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats)
@@ -39,7 +42,7 @@ class MeasureRepeat extends Phrase {
 //  look for a set of measures and comments
     bool barFound = false;
     for (int i = 0; i < 1e3; i++) //  safety
-    {
+        {
       markedString.stripLeadingSpaces();
       logger.v('repeat parsing: ' + markedString.remainingStringLimited(10));
       if (markedString.isEmpty) {
@@ -125,9 +128,9 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  Phrase deepCopy(){
+  Phrase deepCopy() {
     List<Measure> newMeasures = [];
-    for ( var measure in measures){
+    for (var measure in measures) {
       newMeasures.add(measure.deepCopy());
     }
     return MeasureRepeat(newMeasures, phraseIndex, repeats);
@@ -164,7 +167,7 @@ class MeasureRepeat extends Phrase {
   @override
   int chordRowMaxLength() {
     //  include the row markers
-    return super.maxMeasuresPerChordRow() + 2;
+    return super.maxMeasuresPerChordRow() + (rowCount() > 1 ? 1 : 0) + 1;
   }
 
   @override
@@ -335,6 +338,69 @@ class MeasureRepeat extends Phrase {
       }
     }
     return sb.toString();
+  }
+
+  @override
+  Grid<Measure> toGrid({int? columns, bool? expanded}) {
+    var grid = Grid<Measure>();
+    int row = 0;
+    int rowMod = 0;
+    int col = 0;
+    var rowCount = this.rowCount();
+    bool hasExtensions = rowCount > 1;
+    int maxCol = max(
+        columns ?? 0,
+        maxMeasuresPerChordRow() +
+            (hasExtensions ? 1 : 0) //  for repeat extension
+            +
+            1 //  for repeat marker
+        );
+
+    var limit = (expanded ?? false) ? repeats : 1;
+    var repetition = 1;
+    for (var repeatExpansion = 0; repeatExpansion < limit; repeatExpansion++) {
+      for (Measure measure in measures) {
+        grid.set(row, col++, measure);
+        if (measure.endOfRow) {
+          if (hasExtensions) {
+            //  even out all the rows
+            while (col < maxCol - 2) {
+              grid.set(row, col++, null);
+            }
+
+            //  add the extension
+            var extension;
+            if (rowMod == 0) {
+              extension = MeasureRepeatExtension.upperRightMeasureRepeatExtension;
+            } else if (rowMod == rowCount - 1) {
+              extension = MeasureRepeatExtension.lowerRightMeasureRepeatExtension;
+            } else {
+              extension = MeasureRepeatExtension.middleRightMeasureRepeatExtension;
+            }
+            grid.set(row, col++, extension);
+          }
+          if (rowMod < rowCount - 1) {
+            grid.set(row, col++, null); //  place holder for the marker at the end
+            row++;
+            rowMod = row % rowCount;
+            col = 0;
+          }
+        }
+      }
+
+      if (hasExtensions) {
+        //  even out all the rows
+        while (col < maxCol - 2) {
+          grid.set(row, col++, null);
+        }
+        grid.set(row, col++, MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      }
+      grid.set(row, col, (limit > 1 ? MeasureRepeatMarker(limit, repetition: repetition++) : _repeatMarker));
+      row++;
+      rowMod = row % rowCount;
+      col = 0;
+    }
+    return grid;
   }
 
   @override

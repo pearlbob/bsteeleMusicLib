@@ -1,7 +1,7 @@
 import 'chordSectionLocation.dart';
+import 'key.dart';
 import 'measureComment.dart';
 import 'measureNode.dart';
-import 'key.dart';
 
 class MeasureRepeatExtension extends MeasureComment {
   static MeasureRepeatExtension get(ChordSectionLocationMarker? marker) {
@@ -62,17 +62,18 @@ class MeasureRepeatExtension extends MeasureComment {
     return markerString;
   }
 
-  static final String upperRight = '\u23A4';
-  static final String lowerRight = '\u23A6';
-  static final String upperLeft = '\u23A1';
-  static final String lowerLeft = '\u23A3';
-  static final String extension = '\u23A5';
+  static final String _upperRight = '\u23A4';
+  static final String _lowerRight = '\u23A6';
+
+  // static final String _upperLeft = '\u23A1';
+  // static final String _lowerLeft = '\u23A3';
+  static final String _extension = '\u23A5';
   static final MeasureRepeatExtension upperRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatUpperRight, upperRight);
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatUpperRight, _upperRight);
   static final MeasureRepeatExtension middleRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatMiddleRight, extension);
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatMiddleRight, _extension);
   static final MeasureRepeatExtension lowerRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatLowerRight, lowerRight);
+      MeasureRepeatExtension(ChordSectionLocationMarker.repeatLowerRight, _lowerRight);
   static final MeasureRepeatExtension onOneLineRightMeasureRepeatExtension =
       MeasureRepeatExtension(ChordSectionLocationMarker.repeatOnOneLineRight, ']');
   static final MeasureRepeatExtension nullMeasureRepeatExtension =

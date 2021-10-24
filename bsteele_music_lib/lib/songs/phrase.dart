@@ -4,13 +4,14 @@ import 'dart:math';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
+import '../grid.dart';
 import '../util/util.dart';
+import 'key.dart';
 import 'measure.dart';
 import 'measureComment.dart';
 import 'measureNode.dart';
 import 'musicConstants.dart';
 import 'section.dart';
-import 'key.dart';
 
 class Phrase extends MeasureNode {
   Phrase(List<Measure> measures, int phraseIndex, {bool allowEndOfRow = false}) : _phraseIndex = phraseIndex {
@@ -650,8 +651,33 @@ class Phrase extends MeasureNode {
     }
     if (!_measures[_measures.length - 1].endOfRow) {
       chordRowCount++;
-    } //  fixme: shouldn't be needed?  last measure doesn't have endOfRow
+    } //  fixme: shouldn't be needed?  last measure doesn't have endOfRow!
     return chordRowCount;
+  }
+
+  Grid<MeasureNode> toGrid({int? columns, bool? expanded}) {
+    var grid = Grid<MeasureNode>();
+    columns = max(columns ?? 0, maxMeasuresPerChordRow());
+    int row = 0;
+    int col = 0;
+    var rowCount = this.rowCount();
+    for (Measure measure in _measures) {
+      grid.set(row, col++, measure);
+      if (measure.endOfRow) {
+        while (col < columns) {
+          grid.set(row, col++, null);
+        }
+        if (row < rowCount - 1) {
+          row++;
+          col = 0;
+        }
+      }
+    }
+    //  notice that the last measure is always missing the endOfRow
+    while (col < columns) {
+      grid.set(row, col++, null);
+    }
+    return grid;
   }
 
   @override

@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/grid.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -9,52 +9,54 @@ void main() {
   test('test set', () {
     Grid<int> grid = Grid<int>();
 
-    expect(grid.toString(), 'Grid{[[null]]}');
+    expect(grid.toString(), 'Grid{[]}');
     grid.clear();
-    expect(grid.toString(), 'Grid{[[null]]}' );
+    expect(grid.toString(), 'Grid{[]}');
 
-
-    grid.set(0,0, 1);
-    expect(grid.toString(),'Grid{[[1]]}');
-    grid.set(0,0, 1);
-    expect(grid.toString(),'Grid{[[1]]}', );
-    grid.set(0,1, 2);
-    expect(grid.toString(),'Grid{[[1, 2]]}');
-    grid.set(0,3, 4);
-    expect( grid.toString(),'Grid{[[1, 2, null, 4]]}');
-    grid.set(2,3, 4);
-    expect( grid.toString(),'Grid{[[1, 2, null, 4], [null], [null, null, null, 4]]}');
-    grid.set(-2,3, 444);
-    expect(grid.toString(),'Grid{[[1, 2, null, 444], [null], [null, null, null, 4]]}');
-    grid.set(-2,-3, 555);
-    expect(grid.toString(),'Grid{[[555, 2, null, 444], [null], [null, null, null, 4]]}');
-
-    grid.clear();
-    expect(grid.toString(),'Grid{[[null]]}');
-    grid.set(4,0, 1);
-    expect(grid.toString(),'Grid{[[null], [null], [null], [null], [1]]}');
-    grid.clear();
-    expect(grid.toString(),'Grid{[[null]]}');
-    grid.set(0,4, 1);
-    expect(grid.toString(),'Grid{[[null, null, null, null, 1]]}');
+    grid.set(0, 0, 1);
+    expect(grid.toString(), 'Grid{[[1]]}');
+    grid.set(0, 0, 1);
+    expect(
+      grid.toString(),
+      'Grid{[[1]]}',
+    );
+    grid.set(0, 1, 2);
+    expect(grid.toString(), 'Grid{[[1, 2]]}');
+    grid.set(0, 3, 4);
+    expect(grid.toString(), 'Grid{[[1, 2, null, 4]]}');
+    grid.set(2, 3, 4);
+    expect(grid.toString(), 'Grid{[[1, 2, null, 4], [null], [null, null, null, 4]]}');
+    grid.set(-2, 3, 444);
+    expect(grid.toString(), 'Grid{[[1, 2, null, 444], [null], [null, null, null, 4]]}');
+    grid.set(-2, -3, 555);
+    expect(grid.toString(), 'Grid{[[555, 2, null, 444], [null], [null, null, null, 4]]}');
 
     grid.clear();
-    expect(grid.toString(),'Grid{[[null]]}');
+    expect(grid.toString(), 'Grid{[]}');
+    grid.set(4, 0, 1);
+    expect(grid.toString(), 'Grid{[[null], [null], [null], [null], [1]]}');
+    grid.clear();
+    expect(grid.toString(), 'Grid{[]}');
+    grid.set(0, 4, 1);
+    expect(grid.toString(), 'Grid{[[null, null, null, null, 1]]}');
+
+    grid.clear();
+    expect(grid.toString(), 'Grid{[]}');
   });
 
   test('test get', () {
     Grid<int> grid = Grid<int>();
 
-    expect(grid.toString(),'Grid{[[null]]}');
-    expect(grid.get(0, 0),isNull);
-    expect(grid.get(1000, 0),isNull);
-    expect(grid.get(1000, 2345678),isNull);
-    expect(grid.get(-1, -12),isNull);
+    expect(grid.toString(), 'Grid{[]}');
+    expect(grid.get(0, 0), isNull);
+    expect(grid.get(1000, 0), isNull);
+    expect(grid.get(1000, 2345678), isNull);
+    expect(grid.get(-1, -12), isNull);
 
-    grid.set(0,0, 1);
-    grid.set(0,1, 5);
-    grid.set(0,3, 9);
-    grid.set(3,3, 12);
+    grid.set(0, 0, 1);
+    grid.set(0, 1, 5);
+    grid.set(0, 3, 9);
+    grid.set(3, 3, 12);
     logger.d(grid.toString());
     expect(grid.toString(), 'Grid{[[1, 5, null, 9], [null], [null], [null, null, null, 12]]}' );
     expect( 1,grid.get(0,0));

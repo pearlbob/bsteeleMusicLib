@@ -1,13 +1,16 @@
-import 'package:bsteeleMusicLib/gridCoordinate.dart';
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/grid.dart';
+import 'package:bsteeleMusicLib/gridCoordinate.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
+import 'package:bsteeleMusicLib/songs/measureRepeatExtension.dart';
+import 'package:bsteeleMusicLib/songs/measureRepeatMarker.dart';
 import 'package:bsteeleMusicLib/songs/phrase.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
@@ -569,10 +572,262 @@ void main() {
     expect(m.rowAt(3, expanded: expanded).length, 6);
 
     m = MeasureRepeat.parseString('[A B C D ] x2', 0, beatsPerBar, null);
-    expect(m.chordRowMaxLength(), 6);
+    expect(m.chordRowMaxLength(), 5);
     expanded = true;
     expect(m.rowAt(0, expanded: expanded).length, 6);
     expect(m.rowAt(1, expanded: expanded).length, 6);
     expect(m.rowAt(2, expanded: expanded).length, 0);
+  });
+
+  test('test repeat grid', () {
+    int phraseIndex = 0;
+    int beatsPerBar = 4;
+    String s;
+    MeasureRepeat repeat;
+    Grid<Measure> grid;
+    int r;
+
+    {
+      s = 'A B C D x2';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid();
+      expect(grid.getRowCount(), 1);
+      expect(grid.rowLength(0), 5);
+      expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2));
+    }
+    {
+      s = 'A B C D E F G A x3';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid();
+      expect(grid.getRowCount(), 1);
+      expect(grid.rowLength(0), 9);
+      expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('A', beatsPerBar));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3));
+    }
+    {
+      s = '[A B C D, E F G A#] x4';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid();
+      expect(grid.getRowCount(), 2);
+      r = 0;
+      expect(grid.rowLength(r), 4 + 1 + 1);
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), isNull);
+      r = 1;
+      expect(grid.rowLength(r), 4 + 1 + 1);
+      expect(grid.get(r, grid.rowLength(r) - 3), Measure.parseString('A#', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4));
+    }
+    {
+      s = '[A B C D, E F G A#, Bb CE C#] x2';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid();
+      expect(grid.getRowCount(), 3);
+      r = 0;
+      expect(grid.rowLength(r), 4 + 1 + 1);
+      expect(grid.get(r, grid.rowLength(0) - 3), Measure.parseString('D,', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), isNull);
+      r = 1;
+      expect(grid.rowLength(r), 4 + 1 + 1);
+      expect(grid.get(r, grid.rowLength(1) - 3), Measure.parseString('A#,', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), isNull);
+      r = 2;
+      expect(grid.rowLength(r), 4 + 1 + 1);
+      expect(grid.get(r, grid.rowLength(r) - 4), Measure.parseString('C#', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 3), isNull);
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2));
+    }
+    {
+      s = '[A, E F, Bb CE C#, A# B C D] x2';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid();
+      expect(grid.getRowCount(), 4);
+      expect(grid.rowLength(0), 4 + 1 + 1);
+      expect(grid.rowLength(1), 4 + 1 + 1);
+      expect(grid.rowLength(2), 4 + 1 + 1);
+      expect(grid.get(0, 0), Measure.parseString('A,', beatsPerBar));
+      expect(grid.get(0, 1), isNull);
+      expect(grid.get(0, 2), isNull);
+      expect(grid.get(0, 3), isNull);
+      expect(grid.get(0, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(0, 5), isNull);
+
+      expect(grid.get(1, 1), Measure.parseString('F,', beatsPerBar));
+      expect(grid.get(1, 2), isNull);
+      expect(grid.get(1, 3), isNull);
+      expect(grid.get(1, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(1, 5), isNull);
+
+      expect(grid.get(2, 2), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(2, 3), isNull);
+      expect(grid.get(2, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(2, 5), isNull);
+
+      expect(grid.get(3, 3), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(3, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(3, 5), MeasureRepeatMarker(2));
+    }
+    {
+      s = '[A# B C D, Bb CE C#, E F, A,  ] x3';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid();
+      expect(grid.getRowCount(), 4);
+      expect(grid.rowLength(0), 4 + 1 + 1);
+      expect(grid.rowLength(1), 4 + 1 + 1);
+      expect(grid.rowLength(2), 4 + 1 + 1);
+
+      expect(grid.get(0, 3), Measure.parseString('D,', beatsPerBar));
+      expect(grid.get(0, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(0, 5), isNull);
+
+      expect(grid.get(1, 2), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(1, 3), isNull);
+      expect(grid.get(1, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(1, 5), isNull);
+
+      expect(grid.get(2, 1), Measure.parseString('F,', beatsPerBar));
+      expect(grid.get(2, 2), isNull);
+      expect(grid.get(2, 3), isNull);
+      expect(grid.get(2, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(2, 5), isNull);
+
+      expect(grid.get(3, 0), Measure.parseString('A', beatsPerBar));
+      expect(grid.get(3, 1), isNull);
+      expect(grid.get(3, 2), isNull);
+      expect(grid.get(3, 3), isNull);
+      expect(grid.get(3, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(3, 5), MeasureRepeatMarker(3));
+    }
+  });
+  test('test repeat grid expanded', () {
+    int phraseIndex = 0;
+    int beatsPerBar = 4;
+    String s;
+    MeasureRepeat repeat;
+    Grid<Measure> grid;
+    int r;
+
+    {
+      s = 'A B C D x2';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid(expanded: true);
+      expect(grid.getRowCount(), 2);
+      expect(grid.rowLength(0), 5);
+      expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2));
+    }
+    {
+      s = 'A B C D E F G A x3';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid(expanded: true);
+      expect(grid.getRowCount(), 3);
+      expect(grid.rowLength(0), 9);
+      expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('A', beatsPerBar));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3));
+    }
+    {
+      s = '[A B C D, E F G A#] x4';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid(expanded: true);
+      expect(grid.getRowCount(), 8);
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 4 + 1 + 1);
+      }
+      r = 0;
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), isNull);
+      r = 1;
+      expect(grid.get(r, grid.rowLength(r) - 3), Measure.parseString('A#', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4));
+    }
+    {
+      s = '[A B C D, E F G A#, Bb CE C#] x2';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid(expanded: true);
+      expect(grid.getRowCount(), 6);
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 4 + 1 + 1);
+      }
+      r = 0;
+      expect(grid.get(r, grid.rowLength(0) - 3), Measure.parseString('D,', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), isNull);
+      r = 1;
+      expect(grid.get(r, grid.rowLength(1) - 3), Measure.parseString('A#,', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), isNull);
+      r = 2;
+      expect(grid.get(r, grid.rowLength(r) - 4), Measure.parseString('C#', beatsPerBar));
+      expect(grid.get(r, grid.rowLength(r) - 3), isNull);
+      expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2));
+    }
+    {
+      s = '[A, E F, Bb CE C#, A# B C D] x2';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid(expanded: true);
+      expect(grid.getRowCount(), 8);
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 4 + 1 + 1);
+      }
+      expect(grid.get(0, 0), Measure.parseString('A,', beatsPerBar));
+      expect(grid.get(0, 1), isNull);
+      expect(grid.get(0, 2), isNull);
+      expect(grid.get(0, 3), isNull);
+      expect(grid.get(0, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(0, 5), isNull);
+
+      expect(grid.get(1, 1), Measure.parseString('F,', beatsPerBar));
+      expect(grid.get(1, 2), isNull);
+      expect(grid.get(1, 3), isNull);
+      expect(grid.get(1, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(1, 5), isNull);
+
+      expect(grid.get(2, 2), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(2, 3), isNull);
+      expect(grid.get(2, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(2, 5), isNull);
+
+      expect(grid.get(3, 3), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(3, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(3, 5), MeasureRepeatMarker(2));
+    }
+    {
+      s = '[A# B C D, Bb CE C#, E F, A,  ] x3';
+      repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
+      grid = repeat.toGrid(expanded: true);
+      expect(grid.getRowCount(), 12);
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 4 + 1 + 1);
+      }
+
+      expect(grid.get(0, 3), Measure.parseString('D,', beatsPerBar));
+      expect(grid.get(0, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
+      expect(grid.get(0, 5), isNull);
+
+      expect(grid.get(1, 2), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(1, 3), isNull);
+      expect(grid.get(1, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(1, 5), isNull);
+
+      expect(grid.get(2, 1), Measure.parseString('F,', beatsPerBar));
+      expect(grid.get(2, 2), isNull);
+      expect(grid.get(2, 3), isNull);
+      expect(grid.get(2, 4), MeasureRepeatExtension.middleRightMeasureRepeatExtension);
+      expect(grid.get(2, 5), isNull);
+
+      expect(grid.get(3, 0), Measure.parseString('A', beatsPerBar));
+      expect(grid.get(3, 1), isNull);
+      expect(grid.get(3, 2), isNull);
+      expect(grid.get(3, 3), isNull);
+      expect(grid.get(3, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
+      expect(grid.get(3, 5), MeasureRepeatMarker(3));
+    }
   });
 }

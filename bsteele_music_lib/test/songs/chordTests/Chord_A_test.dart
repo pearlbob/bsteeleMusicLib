@@ -9,8 +9,9 @@ void main() {
 
   KeyEnum keyEnum = KeyEnum.A;
 
-  test('testChordTranspose $keyEnum', () {
-    testChordTranspose(Key.get(keyEnum));
+  group('testChordTranspose', () {
+    test('testChordTranspose $keyEnum', () {
+      testChordTranspose(Key.get(keyEnum));
+    });
   });
-
 }

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/grid.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -127,7 +128,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       {
         String s = markedString.remainingStringLimited(10);
         logger.d('s: ' + s);
-        RegExpMatch? mr = commaRegexp.firstMatch(s);
+        RegExpMatch? mr = _commaRegexp.firstMatch(s);
         if (mr != null) {
           markedString.consume(mr.group(0)!.length);
           continue;
@@ -157,7 +158,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
           s = markedString.toString();
         }
 
-        RegExpMatch? mr = commentRegExp.firstMatch(s);
+        RegExpMatch? mr = _commentRegExp.firstMatch(s);
 
         //  consume the comment
         if (mr != null) {
@@ -298,10 +299,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
         lastPhrase = null;
       }
     }
-    if ( ret ){
+    if (ret) {
       //  re-number the phrases on a collapse
       var i = 0;
-      for ( var phase in _phrases ){
+      for (var phase in _phrases) {
         phase.setPhraseIndex(i++);
       }
     }
@@ -397,10 +398,11 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
   }
 
-  void _renumberPhraseIndexes(){  //  fixme: remove phraseIndex?
+  void _renumberPhraseIndexes() {
+    //  fixme: remove phraseIndex?
     //  re-number the phrases
     var i = 0;
-    for ( var phase in _phrases ){
+    for (var phase in _phrases) {
       phase.setPhraseIndex(i++);
     }
   }
@@ -608,6 +610,33 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     _phrases = phrases;
   }
 
+  ///  note: these measures do not include the repeat markers
+  int maxMeasuresPerChordRow() {
+    var columns = 0;
+    for (var phrase in phrases) {
+      columns = max(columns, phrase.chordRowMaxLength());
+    }
+    return columns;
+  }
+
+  Grid<MeasureNode> toGrid({int? columns, bool? expanded}) {
+    var grid = Grid<MeasureNode>();
+
+    columns = max(columns ?? 0, maxMeasuresPerChordRow());
+    {
+      var col = 0;
+      grid.set(0, col++, this);
+      while (col < columns) {
+        grid.set(0, col++, null);
+      }
+    }
+
+    for (var phrase in phrases) {
+      grid.add(phrase.toGrid(columns: columns, expanded: expanded));
+    }
+    return grid;
+  }
+
   int getPhraseCount() {
     return _phrases.length;
   }
@@ -770,6 +799,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   List<Phrase> get phrases => _phrases;
   List<Phrase> _phrases;
 
-  static RegExp commaRegexp = RegExp('^\\s*,');
-  static RegExp commentRegExp = RegExp('^(\\S+)\\s+');
+  static final RegExp _commaRegexp = RegExp('^\\s*,');
+  static final RegExp _commentRegExp = RegExp('^(\\S+)\\s+');
 }

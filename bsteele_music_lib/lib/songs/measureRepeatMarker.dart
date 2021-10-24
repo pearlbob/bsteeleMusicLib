@@ -1,11 +1,11 @@
 import 'dart:core';
 
+import 'key.dart';
 import 'measure.dart';
 import 'measureNode.dart';
-import 'key.dart';
 
 class MeasureRepeatMarker extends Measure {
-  MeasureRepeatMarker(this.repeats) : super.zeroArgs();
+  MeasureRepeatMarker(this.repeats, {this.repetition}) : super.zeroArgs();
 
   @override
   MeasureNodeType getMeasureNodeType() {
@@ -32,14 +32,13 @@ class MeasureRepeatMarker extends Measure {
 
   @override
   String toString() {
-    return 'x' + repeats.toString();
+    return 'x$repeats${repetition == null ? '' : '#$repetition'}';
   }
 
   @override
   String toMarkupWithoutEnd() {
     return toString();
   }
-
 
   @override
   bool operator ==(other) {
@@ -54,5 +53,6 @@ class MeasureRepeatMarker extends Measure {
     return repeats.hashCode;
   }
 
+  int? repetition;
   int repeats;
 }

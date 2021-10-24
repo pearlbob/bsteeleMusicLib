@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:quiver/core.dart';
 
-import '../appLogger.dart';
 import '../util/util.dart';
 import 'sectionVersion.dart';
 

@@ -3,11 +3,13 @@
 class Grid<T> {
   /// Deep copy, not as a constructor
   Grid<T> deepCopy(Grid<T>? other) {
-    if (other == null) return Grid<T>();
+    if (other == null) {
+      return Grid<T>();
+    }
     int rLimit = other.getRowCount();
     for (int r = 0; r < rLimit; r++) {
       List<T?>? row = other.getRow(r);
-      int colLimit = row?.length??0;
+      int colLimit = row?.length ?? 0;
       for (int c = 0; c < colLimit; c++) {
         set(c, r, row?[c]);
       }
@@ -15,26 +17,36 @@ class Grid<T> {
     return this;
   }
 
-  bool get isEmpty => grid?.isEmpty ?? true;
+  void add(Grid<T> otherGrid) {
+    for (var row in otherGrid.grid) {
+      grid.add(row);
+    }
+  }
 
-  bool get isNotEmpty => grid?.isNotEmpty ?? false;
+  bool get isEmpty => grid.isEmpty;
+
+  bool get isNotEmpty => grid.isNotEmpty;
 
   void set(int x, int y, T? t) {
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
+    if (x < 0) {
+      x = 0;
+    }
+    if (y < 0) {
+      y = 0;
+    }
 
-    while (x >= (grid?.length ?? 0)) {
+    while (x >= grid.length) {
       //  addTo a new row to the grid
-      grid?.add(List.generate(1, (a) {
+      grid.add(List.generate(1, (a) {
         return null;
       }));
     }
 
-    List<T?>? row = grid?[x];
+    List<T?>? row = grid[x];
     if (y == row?.length) {
       row?.add(t);
     } else {
-      while (y > (row?.length??0) - 1) {
+      while (y > (row?.length ?? 0) - 1) {
         row?.add(null);
       }
       row?[y] = t;
@@ -49,17 +61,15 @@ class Grid<T> {
   String toMultiLineString() {
     StringBuffer sb = StringBuffer('Grid{\n');
 
-    if (grid != null) {
-      int rLimit = getRowCount();
-      for (int r = 0; r < rLimit; r++) {
-        List<T?>? row = getRow(r);
-        int colLimit = row?.length??0;
-        sb.write('\t[');
-        for (int c = 0; c < colLimit; c++) {
-          sb.write('\t' + (row?[c].toString()??'') + ',');
-        }
-        sb.write('\t]\n');
+    int rLimit = getRowCount();
+    for (int r = 0; r < rLimit; r++) {
+      List<T?>? row = getRow(r);
+      int colLimit = row?.length ?? 0;
+      sb.write('\t[');
+      for (int c = 0; c < colLimit; c++) {
+        sb.write('\t' + (row?[c].toString() ?? '') + ',');
       }
+      sb.write('\t]\n');
     }
     sb.write('}');
     return sb.toString();
@@ -67,7 +77,7 @@ class Grid<T> {
 
   T? get(int x, int y) {
     try {
-      List<T?>? row = grid?[x];
+      List<T?>? row = grid[x];
       if (row == null) {
         return null;
       }
@@ -78,37 +88,28 @@ class Grid<T> {
   }
 
   int getRowCount() {
-    return grid?.length??0;
+    return grid.length;
   }
 
   List<T?>? getRow(int r) {
     try {
-      return grid?[r];
+      return grid[r];
     } catch (ex) {
       return null;
     }
   }
 
-  int? rowLength(int r) {
+  int rowLength(int r) {
     try {
-      return grid?[r].length;
+      return grid[r]?.length ?? 0;
     } catch (ex) {
-      return null;
+      return 0;
     }
   }
 
   void clear() {
-    grid?.clear();
-    grid?.add(List.generate(1, (a) {
-      return null;
-    }));
+    grid.clear();
   }
 
-  final List<List<T?>>? grid =
-      //  fixme: is this required for a dart bug?
-      List.generate(1, (a) {
-    return List.generate(1, (a) {
-      return null;
-    });
-  });
+  final List<List<T?>?> grid = [];
 }

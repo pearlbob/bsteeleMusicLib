@@ -1,12 +1,12 @@
-import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
 import 'package:bsteeleMusicLib/songs/songMomentLocation.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
@@ -96,7 +96,7 @@ void main() {
         }
         lastRowLength = rowLength;
 
-        for (int col = 0; col < rowLength!; col++) {
+        for (int col = 0; col < rowLength; col++) {
           SongMoment? songMoment = songMomentGrid.get(row, col);
           String s = (songMoment == null ? 'null' : songMoment.toString());
           logger.d('\t($row,$col): $s');

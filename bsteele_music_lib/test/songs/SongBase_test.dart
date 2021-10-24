@@ -1734,7 +1734,7 @@ o: end here''');
         4,
         'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F   O: Dm C B B♭, A  ',
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
-    expect(a.chordRowMaxLength(), 6);
+    expect(a.chordRowMaxLength(), 5);
 
     a = SongBase.createSongBase(
         'A',
@@ -2155,6 +2155,256 @@ o: end here''');
           }
         }
       }
+    }
+  });
+
+  test('test songBase toGrid()', () {
+    Logger.level = Level.info;
+
+    int beatsPerBar = 4;
+    SongBase a;
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
+
+      var grid = a.toGrid();
+      logger.d('a.toGrid(): $grid');
+
+      //  assure the lengths are correct
+      for (var r = 0; r < 8; r++) {
+        expect(grid.rowLength(r), 4);
+      }
+
+      expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
+
+      expect(grid.get(2, 0), ChordSection.parseString('V: C F C C#,F F C B,  G F C Gb', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(2, i), isNull);
+      }
+      expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(3, 3), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(4, 3), Measure.parseString('B,', beatsPerBar));
+      expect(grid.get(5, 0), Measure.parseString('G', beatsPerBar));
+      expect(grid.get(5, 3), Measure.parseString('Gb', beatsPerBar));
+
+      expect(grid.get(6, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(6, i), isNull);
+      }
+      expect(grid.get(7, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(7, 3), Measure.parseString('G#', beatsPerBar));
+    }
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
+
+      var grid = a.toGrid();
+      logger.d('a.toGrid(): $grid');
+
+      //  assure the lengths are correct
+      for (var r = 0; r < 8; r++) {
+        expect(grid.rowLength(r), 5);
+      }
+
+      expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
+
+      expect(grid.get(2, 0), ChordSection.parseString('V: C F C C#,F F C B x2  G F C Gb', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(2, i), isNull);
+      }
+      expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(3, 3), Measure.parseString('C#', beatsPerBar));
+      expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(4, 3), Measure.parseString('B', beatsPerBar));
+      expect(grid.get(5, 0), Measure.parseString('G', beatsPerBar));
+      expect(grid.get(5, 3), Measure.parseString('Gb', beatsPerBar));
+
+      expect(grid.get(6, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(6, i), isNull);
+      }
+      expect(grid.get(7, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(7, 3), Measure.parseString('G#', beatsPerBar));
+    }
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb', 'i: v: o:');
+
+      var grid = a.toGrid();
+      logger.d('a.toGrid(): $grid');
+
+      //  assure the lengths are correct
+      for (var r = 0; r < 8; r++) {
+        expect(grid.rowLength(r), 6);
+      }
+
+      expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
+
+      expect(grid.get(2, 0), ChordSection.parseString('V: [C F C C#,F F C B] x2  G F C Gb', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(2, i), isNull);
+      }
+      expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(3, 3), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(4, 3), Measure.parseString('B', beatsPerBar));
+      expect(grid.get(5, 0), Measure.parseString('G', beatsPerBar));
+      expect(grid.get(5, 3), Measure.parseString('Gb', beatsPerBar));
+
+      expect(grid.get(6, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(6, i), isNull);
+      }
+      expect(grid.get(7, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(7, 3), Measure.parseString('G#', beatsPerBar));
+    }
+  });
+
+  test('test songBase toGrid(expanded:true)', () {
+    Logger.level = Level.info;
+
+    int beatsPerBar = 4;
+    SongBase a;
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
+
+      var grid = a.toGrid(expanded: true);
+      logger.d('a.toGrid(): $grid');
+
+      //  assure the lengths are correct
+      for (var r = 0; r < 8; r++) {
+        expect(grid.rowLength(r), 4);
+      }
+
+      expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
+
+      expect(grid.get(2, 0), ChordSection.parseString('V: C F C C#,F F C B,  G F C Gb', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(2, i), isNull);
+      }
+      expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(3, 3), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(4, 3), Measure.parseString('B,', beatsPerBar));
+      expect(grid.get(5, 0), Measure.parseString('G', beatsPerBar));
+      expect(grid.get(5, 3), Measure.parseString('Gb', beatsPerBar));
+
+      expect(grid.get(6, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(6, i), isNull);
+      }
+      expect(grid.get(7, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(7, 3), Measure.parseString('G#', beatsPerBar));
+    }
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
+
+      var grid = a.toGrid(expanded: true);
+      logger.d('a.toGrid(): $grid');
+
+      expect(grid.getRowCount(), 9);
+
+      //  assure the lengths are correct
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 5);
+      }
+
+      expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
+
+      expect(grid.get(2, 0), ChordSection.parseString('V: C F C C#,F F C B x2  G F C Gb', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(2, i), isNull);
+      }
+      expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(3, 3), Measure.parseString('C#', beatsPerBar));
+      expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(4, 3), Measure.parseString('B', beatsPerBar));
+      expect(grid.get(5, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(5, 3), Measure.parseString('B', beatsPerBar));
+      expect(grid.get(6, 0), Measure.parseString('G', beatsPerBar));
+      expect(grid.get(6, 3), Measure.parseString('Gb', beatsPerBar));
+
+      expect(grid.get(7, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(7, i), isNull);
+      }
+      expect(grid.get(8, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(8, 3), Measure.parseString('G#', beatsPerBar));
+    }
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb', 'i: v: o:');
+
+      var grid = a.toGrid(expanded: true);
+      logger.d('a.toGrid(): $grid');
+
+      expect(grid.getRowCount(), 10);
+
+      //  assure the lengths are correct
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 6);
+      }
+
+      expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
+
+      expect(grid.get(2, 0), ChordSection.parseString('V: [C F C C#,F F C B] x2  G F C Gb', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(2, i), isNull);
+      }
+      expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(3, 3), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(4, 3), Measure.parseString('B', beatsPerBar));
+      expect(grid.get(5, 0), Measure.parseString('C', beatsPerBar));
+      expect(grid.get(5, 3), Measure.parseString('C#,', beatsPerBar));
+      expect(grid.get(6, 0), Measure.parseString('F', beatsPerBar));
+      expect(grid.get(6, 3), Measure.parseString('B', beatsPerBar));
+      expect(grid.get(7, 0), Measure.parseString('G', beatsPerBar));
+      expect(grid.get(7, 3), Measure.parseString('Gb', beatsPerBar));
+
+      expect(grid.get(8, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
+      for (var i = 1; i < 4; i++) {
+        expect(grid.get(8, i), isNull);
+      }
+      expect(grid.get(9, 0), Measure.parseString('D', beatsPerBar));
+      expect(grid.get(9, 3), Measure.parseString('G#', beatsPerBar));
     }
   });
 }
