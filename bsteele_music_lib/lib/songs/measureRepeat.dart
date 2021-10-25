@@ -294,6 +294,22 @@ class MeasureRepeat extends Phrase {
     return super.chordRowCount * _repeatMarker.repeats;
   }
 
+  // @override
+  // int beatsInRow( int row,{bool? expanded} ){
+  //   if (measures.isEmpty) {
+  //     return 0;
+  //   }
+  //   var chordRowCount = 0;
+  //   var beats = 0;  fixme here now
+  //   for (Measure measure in measures) {
+  //     chordRowCount += (measure.endOfRow ? 1 : 0);
+  //     if ( row == chordRowCount ){
+  //       beats += measure.beatCount;
+  //     }
+  //   }
+  //   return beats;
+  // }
+
   @override
   String toMarkup() {
     return '[' + (measures.isEmpty ? '' : super.toMarkup()) + '] x' + repeats.toString() + ' ';
@@ -341,15 +357,15 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  Grid<Measure> toGrid({int? columns, bool? expanded}) {
-    var grid = Grid<Measure>();
+  Grid<MeasureNode> toGrid({int? chordColumns, bool? expanded}) {
+    var grid = Grid<MeasureNode>();
     int row = 0;
     int rowMod = 0;
     int col = 0;
     var rowCount = this.rowCount();
     bool hasExtensions = rowCount > 1;
     int maxCol = max(
-        columns ?? 0,
+        chordColumns ?? 0,
         maxMeasuresPerChordRow() +
             (hasExtensions ? 1 : 0) //  for repeat extension
             +

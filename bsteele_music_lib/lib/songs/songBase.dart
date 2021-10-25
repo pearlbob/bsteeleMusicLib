@@ -2034,6 +2034,7 @@ class SongBase {
         }
         break;
       case MeasureNodeType.decoration:
+      case MeasureNodeType.lyric:
         return false;
     }
 
@@ -3437,8 +3438,9 @@ class SongBase {
 
   Grid<MeasureNode> toGrid({bool? expanded}) {
     var grid = Grid<MeasureNode>();
-    var columns = 0;
 
+    //  find the required chord columns across all sections in the song
+    var columns = 0;
     for (var lyricSection in lyricSections) {
       var chordSection = findChordSectionByLyricSection(lyricSection);
       assert(chordSection != null);
@@ -3448,15 +3450,75 @@ class SongBase {
       columns = max(columns, chordSection.chordRowMaxLength());
     }
 
+    //  add the lyric sections
     for (var lyricSection in lyricSections) {
+      //  section by section
+
+      //  get the chord section
       var chordSection = findChordSectionByLyricSection(lyricSection);
       assert(chordSection != null);
       if (chordSection == null) {
         continue;
       }
-      grid.add(chordSection.toGrid(columns: columns, expanded: expanded));
+
+      //  convert to chord section grid
+      var sectionGrid = chordSection.toGrid(chordColumns: columns, expanded: expanded);
+
+      //  find the rows used by the chords
+      var rows = sectionGrid.getRowCount() //
+          -
+          1; //  chord section version on title row without lyrics!
+
+      //  get the lyrics spread properly across the chord row count
+      var lyrics = lyricSection.asLyrics(rows);
+
+      //  add the lyrics to the chord section grid as a final column
+      assert(rows == lyrics.length);
+      sectionGrid.set(0, columns, null); //  section version title row
+      for (var i = 1; //  offset for section version title row without lyrics
+          i <= rows;
+          i++) {
+        var lyric = lyrics[i - 1];
+        sectionGrid.set(i, columns, lyric);
+      }
+
+      //  add the lyrics section grid to the song grid
+      grid.add(sectionGrid);
     }
+
     return grid;
+  }
+
+  ///  map the grid to the song moments
+  List<GridCoordinate> songMomentToGrid({bool? expanded}) {
+    var grid = toGrid(expanded: expanded);
+    List<GridCoordinate> list = [];
+    int i = 0;
+    for (var r = 0; r < grid.getRowCount(); r++) {
+      var row = grid.getRow(r);
+      assert(row != null);
+      for (var c = 0; c < row!.length; c++) {
+        var e = grid.get(r, c);
+        switch (e.runtimeType) {
+          case Measure:
+            assert(e == songMoments[i].measure);
+            list.add(GridCoordinate(r, c));
+            logger.d('($r,$c): $e');
+            i++;
+            assert(i == list.length);
+            break;
+        }
+      }
+    }
+
+    assert(songMoments.length == list.length);
+
+    //  debug
+    for (int i = 0; i < list.length; i++) {
+      logger.i('(${list[i]}): ${songMoments[i]}');
+    }
+
+    return list;
   }
 
   @override

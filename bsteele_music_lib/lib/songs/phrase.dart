@@ -650,21 +650,36 @@ class Phrase extends MeasureNode {
       chordRowCount += (measure.endOfRow ? 1 : 0);
     }
     if (!_measures[_measures.length - 1].endOfRow) {
-      chordRowCount++;
-    } //  fixme: shouldn't be needed?  last measure doesn't have endOfRow!
+      chordRowCount++; //  fixme: shouldn't be needed?  last measure doesn't have endOfRow!
+    }
     return chordRowCount;
   }
 
-  Grid<MeasureNode> toGrid({int? columns, bool? expanded}) {
+  int beatsInRow(int row, {bool? expanded}) {
+    if (_measures.isEmpty) {
+      return 0;
+    }
+    var chordRowCount = 0;
+    var beats = 0;
+    for (Measure measure in _measures) {
+      chordRowCount += (measure.endOfRow ? 1 : 0);
+      if (row == chordRowCount) {
+        beats += measure.beatCount;
+      }
+    }
+    return beats;
+  }
+
+  Grid<MeasureNode> toGrid({int? chordColumns, bool? expanded}) {
     var grid = Grid<MeasureNode>();
-    columns = max(columns ?? 0, maxMeasuresPerChordRow());
+    chordColumns = max(chordColumns ?? 0, maxMeasuresPerChordRow());
     int row = 0;
     int col = 0;
     var rowCount = this.rowCount();
     for (Measure measure in _measures) {
       grid.set(row, col++, measure);
       if (measure.endOfRow) {
-        while (col < columns) {
+        while (col < chordColumns) {
           grid.set(row, col++, null);
         }
         if (row < rowCount - 1) {
@@ -674,7 +689,7 @@ class Phrase extends MeasureNode {
       }
     }
     //  notice that the last measure is always missing the endOfRow
-    while (col < columns) {
+    while (col < chordColumns) {
       grid.set(row, col++, null);
     }
     return grid;

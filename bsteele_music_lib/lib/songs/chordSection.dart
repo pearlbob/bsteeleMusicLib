@@ -428,21 +428,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return total;
   }
 
-  /**
-   * Return the sectionVersion beats per minute
-   * or null to default to the song BPM.
-   *
-   * @return the sectionVersion BPM or null
-   */
-//   Integer getBeatsPerMinute() {
-//    return bpm;
-//}
-
-  /// Return the sections's number of beats per bar or null to default to the song's number of beats per bar
-//       Integer getBeatsPerBar() {
-//        return beatsPerBar;
-//    }
-
   @override
   String getId() {
     return _sectionVersion.id;
@@ -619,20 +604,20 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return columns;
   }
 
-  Grid<MeasureNode> toGrid({int? columns, bool? expanded}) {
+  Grid<MeasureNode> toGrid({int? chordColumns, bool? expanded}) {
     var grid = Grid<MeasureNode>();
 
-    columns = max(columns ?? 0, maxMeasuresPerChordRow());
+    chordColumns = max(chordColumns ?? 0, maxMeasuresPerChordRow());
     {
       var col = 0;
       grid.set(0, col++, this);
-      while (col < columns) {
+      while (col < chordColumns) {
         grid.set(0, col++, null);
       }
     }
 
     for (var phrase in phrases) {
-      grid.add(phrase.toGrid(columns: columns, expanded: expanded));
+      grid.add(phrase.toGrid(chordColumns: chordColumns, expanded: expanded));
     }
     return grid;
   }

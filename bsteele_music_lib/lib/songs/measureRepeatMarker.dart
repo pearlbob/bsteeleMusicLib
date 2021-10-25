@@ -22,10 +22,6 @@ class MeasureRepeatMarker extends Measure {
     return 'RX';
   }
 
-//  int compareTo(MeasureRepeatMarker o) {
-//    return repeats < o.repeats ? -1 : (repeats > o.repeats ? 1 : 0);
-//  }
-
   bool isEndOfRow() {
     return true;
   }
@@ -53,6 +49,6 @@ class MeasureRepeatMarker extends Measure {
     return repeats.hashCode;
   }
 
-  int? repetition;
+  int? repetition; //  the cycle count of the repeats, starting at 1
   int repeats;
 }

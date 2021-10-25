@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
 import '../appLogger.dart';
 import 'legacyDrumSection.dart';
+import 'lyric.dart';
 import 'sectionVersion.dart';
 
 /// A _sectionVersion of a song that carries the lyrics, any special drum _sectionVersion,
@@ -22,6 +25,32 @@ class LyricSection implements Comparable<LyricSection> {
         _lyricsLines.removeLast();
       }
     }
+  }
+
+  List<Lyric> asLyrics(int rows) {
+    rows = max(rows, 1);
+
+    List<Lyric> lyrics = [];
+
+    int linesPerRow = lyricsLines.length ~/ rows;
+    int lineExtra = lyricsLines.length % rows;
+    var lineCount = 0;
+    String lyricString = '';
+
+    for (var i = 0; i < lyricsLines.length; i++) {
+      lyricString += (lyricString.isNotEmpty ? '\n' : '') + lyricsLines[i];
+      lineCount++;
+      if (lineCount >= linesPerRow + (lineExtra > 0 ? 1 : 0)) {
+        lyrics.add(Lyric(lyricString));
+        lyricString = '';
+        lineCount = 0;
+        lineExtra = max(0, lineExtra - 1);
+      }
+    }
+    for (var i = lyricsLines.length; i < rows; i++) {
+      lyrics.add(Lyric(''));
+    }
+    return lyrics;
   }
 
   @override
@@ -124,6 +153,7 @@ class LyricSection implements Comparable<LyricSection> {
 
   SectionVersion get sectionVersion => _sectionVersion;
   final SectionVersion _sectionVersion;
+
   int get index => _index;
   final int _index;
   LegacyDrumSection drumSection = LegacyDrumSection();

@@ -59,7 +59,7 @@ void main() {
     {
       s = 'A B C D';
       phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = phrase.toGrid(columns: 6);
+      grid = phrase.toGrid(chordColumns: 6);
       expect(grid.getRowCount(), 1);
       expect(grid.rowLength(0), 6);
       expect(grid.get(0, grid.rowLength(0) - 1 - 2), Measure.parseString('D', beatsPerBar));

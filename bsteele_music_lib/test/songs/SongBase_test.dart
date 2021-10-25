@@ -2159,8 +2159,6 @@ o: end here''');
   });
 
   test('test songBase toGrid()', () {
-    Logger.level = Level.info;
-
     int beatsPerBar = 4;
     SongBase a;
 
@@ -2173,7 +2171,8 @@ o: end here''');
 
       //  assure the lengths are correct
       for (var r = 0; r < 8; r++) {
-        expect(grid.rowLength(r), 4);
+        expect(grid.rowLength(r), 4 + 1 //  for the lyrics
+            );
       }
 
       expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
@@ -2210,7 +2209,7 @@ o: end here''');
 
       //  assure the lengths are correct
       for (var r = 0; r < 8; r++) {
-        expect(grid.rowLength(r), 5);
+        expect(grid.rowLength(r), 5 + 1);
       }
 
       expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
@@ -2240,15 +2239,25 @@ o: end here''');
     }
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb', 'i: v: o:');
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearlbob',
+          'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          'i: intro lyric\n'
+              'v: verse lyric 1\nverse lyric 2\no: outro lyric\n');
 
       var grid = a.toGrid();
-      logger.d('a.toGrid(): $grid');
+      logger.i('a.toGrid(): $grid');
 
       //  assure the lengths are correct
-      for (var r = 0; r < 8; r++) {
-        expect(grid.rowLength(r), 6);
+      for (var r = 0; r < grid.getRowCount(); r++) {
+        expect(grid.rowLength(r), 6 + 1);
       }
 
       expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
@@ -2293,7 +2302,8 @@ o: end here''');
 
       //  assure the lengths are correct
       for (var r = 0; r < 8; r++) {
-        expect(grid.rowLength(r), 4);
+        expect(grid.rowLength(r), 4 + 1 //  for lyrics column
+            );
       }
 
       expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
@@ -2332,7 +2342,7 @@ o: end here''');
 
       //  assure the lengths are correct
       for (var r = 0; r < grid.getRowCount(); r++) {
-        expect(grid.rowLength(r), 5);
+        expect(grid.rowLength(r), 5 + 1);
       }
 
       expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
@@ -2374,7 +2384,7 @@ o: end here''');
 
       //  assure the lengths are correct
       for (var r = 0; r < grid.getRowCount(); r++) {
-        expect(grid.rowLength(r), 6);
+        expect(grid.rowLength(r), 6 + 1);
       }
 
       expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));

@@ -5,6 +5,7 @@ enum MeasureNodeType {
   repeat,
   phrase,
   measure,
+  lyric,
   comment,
   decoration,
 }

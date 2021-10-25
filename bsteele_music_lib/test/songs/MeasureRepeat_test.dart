@@ -584,7 +584,7 @@ void main() {
     int beatsPerBar = 4;
     String s;
     MeasureRepeat repeat;
-    Grid<Measure> grid;
+    Grid<MeasureNode> grid;
     int r;
 
     {
@@ -709,7 +709,7 @@ void main() {
     int beatsPerBar = 4;
     String s;
     MeasureRepeat repeat;
-    Grid<Measure> grid;
+    Grid<MeasureNode> grid;
     int r;
 
     {
