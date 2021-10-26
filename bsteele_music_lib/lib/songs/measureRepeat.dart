@@ -136,6 +136,7 @@ class MeasureRepeat extends Phrase {
     return MeasureRepeat(newMeasures, phraseIndex, repeats);
   }
 
+  @override
   int get repeats => getRepeatMarker().repeats;
 
   set repeats(int repeats) => getRepeatMarker().repeats = repeats;

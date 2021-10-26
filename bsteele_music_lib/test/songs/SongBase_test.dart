@@ -2417,4 +2417,71 @@ o: end here''');
       expect(grid.get(9, 3), Measure.parseString('G#', beatsPerBar));
     }
   });
+
+  void _testSongMomentToGrid(Song a) {
+    for (var expanded in [false, true]) {
+      var grid = a.toGrid(expanded: expanded);
+      logger.d('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
+
+      List<GridCoordinate> list = a.songMomentToGrid(expanded: expanded);
+      for (var songMoment in a.songMoments) {
+        var gc = list[songMoment.momentNumber];
+        var measureNode = grid.get(gc.row, gc.col);
+        logger.d('$gc: $measureNode');
+        assert(measureNode is Measure);
+        expect(measureNode, songMoment.measure);
+      }
+    }
+  }
+
+  test('test songBase songMomentToGrid()', () {
+    Logger.level = Level.info;
+
+    int beatsPerBar = 4;
+    Song a;
+
+    {
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearlbob',
+          'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          'i: intro lyric\n'
+              'v: verse lyric\n'
+              'more verse lyrcs\n'
+              'o: outro lyric');
+      _testSongMomentToGrid(a);
+    }
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i: D C G G# x2', 'i: no lyrics here');
+      _testSongMomentToGrid(a);
+    }
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i: D C G G# x2', 'i: no lyrics here');
+      _testSongMomentToGrid(a);
+    }
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
+      _testSongMomentToGrid(a);
+    }
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'V: [C F C C#, F F C B] x2', 'v: hey!');
+      _testSongMomentToGrid(a);
+    }
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: [C F C C#, F F C B] x2,  G F C Gb', 'i: v: o:');
+      _testSongMomentToGrid(a);
+    }
+  });
 }

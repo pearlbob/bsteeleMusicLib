@@ -3490,33 +3490,54 @@ class SongBase {
   }
 
   ///  map the grid to the song moments
-  List<GridCoordinate> songMomentToGrid({bool? expanded}) {
+  List<GridCoordinate> songMomentToGrid({bool expanded = false}) {
     var grid = toGrid(expanded: expanded);
     List<GridCoordinate> list = [];
-    int i = 0;
-    for (var r = 0; r < grid.getRowCount(); r++) {
-      var row = grid.getRow(r);
-      assert(row != null);
-      for (var c = 0; c < row!.length; c++) {
-        var e = grid.get(r, c);
-        switch (e.runtimeType) {
-          case Measure:
-            assert(e == songMoments[i].measure);
-            list.add(GridCoordinate(r, c));
-            logger.d('($r,$c): $e');
-            i++;
-            assert(i == list.length);
-            break;
+    logger.v('songMoments: $songMoments');
+
+    var phraseBasisRow = 0;
+    for (var lyricSection in lyricSections) {
+      ChordSection? chordSection = findChordSectionByLyricSection(lyricSection);
+      assert(chordSection != null);
+      if (chordSection == null) {
+        continue; //  safety
+      }
+
+      phraseBasisRow++; //  skip the section title row
+
+      for (var phrase in chordSection.phrases) {
+        int endOfRowCount = phrase.rowCount(); //  rows in one repetition
+        for (var repetition = 0; repetition < phrase.repeats; repetition++) //  for possible measure repeats
+        {
+          var r = 0;
+          var c = 0;
+          for (var measureIndex = 0; measureIndex < phrase.length; measureIndex++) {
+            var measure = phrase.measures[measureIndex];
+            list.add(GridCoordinate(phraseBasisRow + r, c++));
+            if (measure.endOfRow) {
+              r++;
+              c = 0;
+            }
+          }
+          r++; //  supply the end of row for the last measure in the phrase
+          if (expanded) {
+            //  grid is showing every repetition so each one has a new basis
+            phraseBasisRow += endOfRowCount;
+          }
+        }
+        if (!expanded) {
+          //  each phrase needs a new basis
+          phraseBasisRow += endOfRowCount;
         }
       }
     }
 
     assert(songMoments.length == list.length);
 
-    //  debug
-    for (int i = 0; i < list.length; i++) {
-      logger.i('(${list[i]}): ${songMoments[i]}');
-    }
+    // //  debug
+    // for (int i = 0; i < list.length; i++) {
+    //   logger.i('${list[i]}: ${songMoments[i]}');
+    // }
 
     return list;
   }

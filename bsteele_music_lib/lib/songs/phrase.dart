@@ -555,6 +555,8 @@ class Phrase extends MeasureNode {
     return null;
   }
 
+  int get repeats => 1;
+
   @override
   MeasureNodeType getMeasureNodeType() {
     return MeasureNodeType.phrase;
