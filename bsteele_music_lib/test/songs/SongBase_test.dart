@@ -1337,7 +1337,7 @@ c2:
       GridCoordinate? coordinate = a.getMomentGridCoordinate(songMoment);
       SongMoment? songMomentAtRow = a.getFirstSongMomentAtRow(coordinate!.row);
       GridCoordinate? coordinateAtRow = a.getMomentGridCoordinate(songMomentAtRow!);
-      logger.d('songMoment: ' +
+      logger.i('songMoment: ' +
           songMoment.toString() +
           ' at: ' +
           coordinate.toString() +
@@ -2421,13 +2421,14 @@ o: end here''');
   void _testSongMomentToGrid(Song a) {
     for (var expanded in [false, true]) {
       var grid = a.toGrid(expanded: expanded);
-      logger.d('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
+      logger.i('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
 
       List<GridCoordinate> list = a.songMomentToGrid(expanded: expanded);
+      assert(list.length == a.getSongMomentsSize());
       for (var songMoment in a.songMoments) {
         var gc = list[songMoment.momentNumber];
         var measureNode = grid.get(gc.row, gc.col);
-        logger.d('$gc: $measureNode');
+        logger.i('${songMoment.momentNumber}: $gc: $measureNode');
         assert(measureNode is Measure);
         expect(measureNode, songMoment.measure);
       }

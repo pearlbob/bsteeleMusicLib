@@ -3491,7 +3491,6 @@ class SongBase {
 
   ///  map the grid to the song moments
   List<GridCoordinate> songMomentToGrid({bool expanded = false}) {
-    var grid = toGrid(expanded: expanded);
     List<GridCoordinate> list = [];
     logger.v('songMoments: $songMoments');
 

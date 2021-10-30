@@ -1,6 +1,5 @@
 import 'dart:core';
 import 'dart:io';
-
 import 'dart:math';
 
 import 'package:intl/intl.dart';
@@ -50,6 +49,14 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
+  static int intLimit(final int n, final int limit1, final int limit2) {
+    return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
+  }
+
+  static double doubleLimit(final double n, final double limit1, final double limit2) {
+    return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
+  }
+
   static String enumToString(Object o) => o.toString().split('.').last;
 
   static T? enumFromString<T>(String key, List<T> values) {
@@ -58,6 +65,23 @@ class Util {
     } catch (e) {
       return null;
     }
+  }
+
+  ///  index of the identical list item
+  ///  List.index() uses equals so it's not the same.
+  int indexOfIdentical<T>(List<T> list, T item) {
+    for (var start = 0; start < list.length; start++) // safety only
+    {
+      int ret = list.indexOf(item, start);
+      if (ret < 0) {
+        return -1;
+      }
+      if (identical(item, list[ret])) {
+        return ret;
+      }
+      start = ret;
+    }
+    return -1;
   }
 
   /// capitalize the first character
@@ -76,7 +100,7 @@ class Util {
   }
 
   static String utcNow() {
-    return  _dateFormat.format(DateTime.now().toUtc());
+    return _dateFormat.format(DateTime.now().toUtc());
   }
 
   static String camelCaseToLowercaseSpace(String s) {
