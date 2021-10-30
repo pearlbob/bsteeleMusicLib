@@ -2484,5 +2484,12 @@ o: end here''');
           4, 'pearlbob', 'i:o: D C G G# V: [C F C C#, F F C B] x2,  G F C Gb', 'i: v: o:');
       _testSongMomentToGrid(a);
     }
+
+    {
+      //  empty lyrics
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'v: G G G G, C C G G, D C G D', 'v:');
+      _testSongMomentToGrid(a);
+    }
   });
 }
