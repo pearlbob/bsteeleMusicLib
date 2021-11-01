@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/songs/song.dart';
 
 enum CjRankingEnum {
   all,
@@ -25,6 +26,10 @@ class NameValue implements Comparable<NameValue> {
   @override
   String toString() {
     return '{"$name":"$value"}';
+  }
+
+  String toShortString() {
+    return '$name:$value';
   }
 
   String toJson() {
@@ -123,6 +128,10 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
 
+  bool get isEmpty => _nameValues.isEmpty;
+
+  bool get isNotEmpty => _nameValues.isNotEmpty;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -167,8 +176,17 @@ class SongMetadata {
     }
   }
 
-  static void remove(SongIdMetadata songIdMetadata) {
-    _singleton._idMetadata.remove(songIdMetadata);
+  //  convenience method
+  static void addSong(Song song, NameValue nameValue) {
+    SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
+    add(songIdMetadata);
+  }
+
+  static void remove(SongIdMetadata songIdMetadata, NameValue nameValue) {
+    songIdMetadata.remove(nameValue);
+    if (songIdMetadata.isEmpty) {
+      _singleton._idMetadata.remove(songIdMetadata);
+    }
   }
 
   static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata songIdMetadata) doesMatch,
@@ -184,7 +202,7 @@ class SongMetadata {
 
   static SplayTreeSet<NameValue> songMetadataAt(final String id, final String name) {
     var set = where(idIs: id, nameIs: name);
-    assert( set.length == 1);
+    assert(set.length == 1);
     var ret = SplayTreeSet<NameValue>();
     for (var songIdMetadata in set) {
       for (var nameValue in songIdMetadata._nameValues) {
@@ -355,7 +373,7 @@ class SongMetadata {
       }
       sb.write(songIdMetadata.toJson());
     }
-    return '[${sb.toString()}]';
+    return '[\n${sb.toString()}\n]';
   }
 
   static void fromJson(String jsonString) {
@@ -379,8 +397,6 @@ class SongMetadata {
               break;
           }
         }
-
-        logger.d('');
       }
     }
   }
