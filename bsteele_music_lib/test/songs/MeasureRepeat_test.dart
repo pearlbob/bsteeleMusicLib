@@ -574,8 +574,8 @@ void main() {
     m = MeasureRepeat.parseString('[A B C D ] x2', 0, beatsPerBar, null);
     expect(m.chordRowMaxLength(), 5);
     expanded = true;
-    expect(m.rowAt(0, expanded: expanded).length, 6);
-    expect(m.rowAt(1, expanded: expanded).length, 6);
+    expect(m.rowAt(0, expanded: expanded).length, 5);
+    expect(m.rowAt(1, expanded: expanded).length, 5);
     expect(m.rowAt(2, expanded: expanded).length, 0);
   });
 

@@ -213,7 +213,8 @@ class MeasureRepeat extends Phrase {
           var repeatRowNumber = r % repeatRowCount;
           if (measure == measures.last) {
             if (repeatRowNumber == 0) {
-              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatOnOneLineRight));
+              //  marker not necessary!
+              //ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatOnOneLineRight));
             } else {
               ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
             }
