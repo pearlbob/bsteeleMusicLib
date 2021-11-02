@@ -66,11 +66,14 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     _initPhraseIndex(phraseIndex);
   }
 
-  ChordSectionLocation asSection() {
+  ChordSectionLocation asSectionLocation() {
     return ChordSectionLocation(_sectionVersion);
   }
 
-  ChordSectionLocation asPhrase() {
+  ChordSectionLocation? asPhraseLocation() {
+    if (!_hasPhraseIndex) {
+      return null;
+    }
     return ChordSectionLocation(_sectionVersion, phraseIndex: phraseIndex);
   }
 

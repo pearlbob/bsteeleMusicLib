@@ -344,7 +344,7 @@ void main() {
       var loc = a.findChordSectionLocationByGrid(gridCoordinate);
       assert(loc != null);
       logger.d('loc: $loc');
-      a.setRepeat(loc!.asPhrase(), 1);
+      a.setRepeat(loc!.asPhraseLocation()!, 1);
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
       expect(a.currentChordSectionLocation,
           ChordSectionLocation(chordSectionLocation.sectionVersion, phraseIndex: 0, measureIndex: 3));
@@ -373,7 +373,7 @@ void main() {
       //  remove the repeat, it's location address may have changed above!
       var loc = a.findChordSectionLocationByGrid(gridCoordinate);
       assert(loc != null);
-      a.setRepeat(loc!.asPhrase(), 1);
+      a.setRepeat(loc!.asPhraseLocation()!, 1);
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#, G  O: D E F G');
       expect(a.currentChordSectionLocation,
           ChordSectionLocation(chordSectionLocation!.sectionVersion, phraseIndex: 0, measureIndex: 7));
@@ -399,8 +399,8 @@ void main() {
 
       //  remove the repeat
       var loc = ChordSectionLocation(sectionVersion, phraseIndex: 1, measureIndex: measureIndex % 4);
-      logger.d('loc: $loc, ${loc.asPhrase()}');
-      a.setRepeat(loc.asPhrase(), 1);
+      logger.d('loc: $loc, ${loc.asPhraseLocation()}');
+      a.setRepeat(loc.asPhraseLocation()!, 1);
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A#, B C C# D, D# E F F#  O: D E F G');
       expect(a.currentChordSectionLocation,
           ChordSectionLocation(chordSectionLocation.sectionVersion, phraseIndex: 0, measureIndex: 11));

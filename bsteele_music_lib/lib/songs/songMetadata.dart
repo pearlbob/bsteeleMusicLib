@@ -373,7 +373,7 @@ class SongMetadata {
       }
       sb.write(songIdMetadata.toJson());
     }
-    return '[\n${sb.toString()}\n]';
+    return '[${sb.toString()}]';
   }
 
   static void fromJson(String jsonString) {
