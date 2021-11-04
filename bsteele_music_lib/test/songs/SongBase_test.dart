@@ -5,6 +5,7 @@ import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/gridCoordinate.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/chordSectionGridData.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
 import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 import 'package:bsteeleMusicLib/songs/measure.dart';
@@ -22,27 +23,27 @@ import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
 String chordSectionToMultiLineString(SongBase song) {
-  Grid<ChordSectionLocation> grid = song.getChordSectionLocationGrid();
+  Grid<ChordSectionGridData> grid = song.getChordSectionGrid();
   StringBuffer sb = StringBuffer('Grid{\n');
 
   int rLimit = grid.getRowCount();
   for (int r = 0; r < rLimit; r++) {
-    List<ChordSectionLocation?>? row = grid.getRow(r);
+    List<ChordSectionGridData?>? row = grid.getRow(r);
     if (row == null) {
       throw 'row == null';
     }
     int colLimit = row.length;
     sb.write('\t[');
     for (int c = 0; c < colLimit; c++) {
-      ChordSectionLocation? loc = row[c];
-      if (loc == null) {
+      ChordSectionGridData? data = row[c];
+      if (data == null) {
         sb.write('\tnull\n');
         continue;
       }
 
-      sb.write('\t' + loc.toString() + ' ');
-      if (loc.isMeasure) {
-        Measure? measure = song.findMeasureByChordSectionLocation(loc);
+      sb.write('\t' + data.toString() + ' ');
+      if (data.isMeasure) {
+        Measure? measure = song.findMeasureByChordSectionLocation(data.chordSectionLocation);
         if (measure == null) {
           throw 'measure == null';
         }
@@ -288,15 +289,15 @@ void main() {
           'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
 
       logger.d(a.logGrid());
-      Grid<ChordSectionLocation> grid;
+      Grid<ChordSectionGridData> grid;
 
-      grid = a.getChordSectionLocationGrid();
+      grid = a.getChordSectionGrid();
       //  set first row as a repeat from any measure
       for (int row = 0; row < grid.getRowCount(); row++) {
         a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
             'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
-        grid = a.getChordSectionLocationGrid();
-        List<ChordSectionLocation?>? cols = grid.getRow(row);
+        grid = a.getChordSectionGrid();
+        List<ChordSectionGridData?>? cols = grid.getRow(row);
         if (cols != null) {
           for (int col = 1; col < cols.length; col++) {
             for (int r = 6; r > 1; r--) {
@@ -530,17 +531,17 @@ void main() {
             'Ab G Gb F',
         'v: bob, bob, bob berand');
     logger.d(a.logGrid());
-    Grid<ChordSectionLocation> grid = a.getChordSectionLocationGrid();
+    Grid<ChordSectionGridData> grid = a.getChordSectionGrid();
 
     expect(grid.getRowCount(), 5);
     for (int r = 2; r < grid.getRowCount(); r++) {
-      List<ChordSectionLocation?>? row = grid.getRow(r);
+      List<ChordSectionGridData?>? row = grid.getRow(r);
       if (row == null) throw 'row == null';
 
       for (int c = 1; c < row.length; c++) {
         measure = null;
 
-        MeasureNode? node = a.findMeasureNodeByLocation(row[c]);
+        MeasureNode? node = a.findMeasureNodeByLocation(row[c]?.chordSectionLocation);
         switch (r) {
           case 0:
             switch (c) {
@@ -598,7 +599,7 @@ void main() {
         }
 
         if (measure != null) {
-          expect(measure, a.findMeasureNodeByLocation(a.getChordSectionLocationGrid().get(r, c)));
+          expect(measure, a.findMeasureNodeByLocation(a.getChordSectionGrid().get(r, c)?.chordSectionLocation));
           logger.d('measure(' + c.toString() + ',' + r.toString() + '): ' + measure.toMarkup());
           ChordSectionLocation? loc = a.findChordSectionLocationByGrid(GridCoordinate(r, c));
           logger.d('loc: ' + loc.toString());
@@ -776,9 +777,9 @@ void main() {
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
 
     logger.d(a.logGrid());
-    Grid<ChordSectionLocation> grid = a.getChordSectionLocationGrid();
+    Grid<ChordSectionGridData> grid = a.getChordSectionGrid();
     expect(10, grid.getRowCount()); //  comments on their own line add a bunch
-    List<ChordSectionLocation?>? row = grid.getRow(0);
+    List<ChordSectionGridData?>? row = grid.getRow(0);
     if (row == null) throw 'row == null';
     expect(2, row.length);
     row = grid.getRow(1);
@@ -871,8 +872,7 @@ c2:
         beatsPerBar,
         4,
         'O:'
-            'D..Dm7 Dm7 C..B♭maj7 B♭maj7\n'
-            ' x12',
+            'D..Dm7 Dm7 C..B♭maj7 B♭maj7  x12',
         'o: nothing');
     logger.v('grid: ' + a.logGrid());
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
@@ -1026,7 +1026,7 @@ c2:
   test('testGridStuff', () {
     int beatsPerBar = 4;
     SongBase a;
-    Grid<ChordSectionLocation> grid;
+    Grid<ChordSectionGridData> grid;
     ChordSectionLocation? location;
     GridCoordinate gridCoordinate;
 
@@ -1131,23 +1131,23 @@ c2:
 
     logger.i(a.toMarkup());
 
-    grid = a.getChordSectionLocationGrid();
+    grid = a.getChordSectionGrid();
     for (int r = 0; r < grid.getRowCount(); r++) {
-      List<ChordSectionLocation?>? row = grid.getRow(r);
+      List<ChordSectionGridData?>? row = grid.getRow(r);
       if (row == null) throw 'row == null';
       for (int c = 0; c < row.length; c++) {
         GridCoordinate coordinate = GridCoordinate(r, c);
         expect(coordinate, isNotNull);
         expect(coordinate.toString(), isNotNull);
-        expect(a.getChordSectionLocationGrid(), isNotNull);
-        expect(a.getChordSectionLocationGrid().getRow(r), isNotNull);
-        ChordSectionLocation? chordSectionLocation = a.getChordSectionLocationGrid().getRow(r)![c];
+        expect(a.getChordSectionGrid(), isNotNull);
+        expect(a.getChordSectionGrid().getRow(r), isNotNull);
+        ChordSectionLocation? chordSectionLocation = a.getChordSectionGrid().getRow(r)![c]?.chordSectionLocation;
         if (chordSectionLocation == null) continue;
         expect(chordSectionLocation.toString(), isNotNull);
         logger.d(coordinate.toString() + '  ' + chordSectionLocation.toString());
         ChordSectionLocation? loc = a.getChordSectionLocation(coordinate);
         logger.d(loc.toString());
-        expect(a.getChordSectionLocationGrid().getRow(r)![c], a.getChordSectionLocation(coordinate));
+        expect(a.getChordSectionGrid().get(r, c)?.chordSectionLocation, a.getChordSectionLocation(coordinate));
         expect(coordinate, a.getGridCoordinate(loc));
         expect(loc, a.getChordSectionLocation(coordinate)); //  well, yeah
       }
@@ -1507,7 +1507,7 @@ c2:
   test('test chord Grid repeats', () {
     int beatsPerBar = 4;
     SongBase a;
-    Grid<ChordSectionLocation> grid;
+    Grid<ChordSectionGridData> grid;
 //    ChordSectionLocation location;
 //    GridCoordinate gridCoordinate;
 
@@ -1528,9 +1528,9 @@ c2:
 //    logger.d('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
 
-    grid = a.getChordSectionLocationGrid();
+    grid = a.getChordSectionGrid();
 
-    List<ChordSectionLocation?>? row = grid.getRow(0);
+    List<ChordSectionGridData?>? row = grid.getRow(0);
     if (row == null) throw 'row == null';
     logger.d(row.length.toString());
     logger.d(grid.toMultiLineString());

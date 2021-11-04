@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/grid.dart';
-import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
+import 'package:bsteeleMusicLib/songs/chordSectionGridData.dart';
 import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
@@ -10,27 +10,27 @@ import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
 String chordSectionToMultiLineString(SongBase song) {
-  Grid<ChordSectionLocation> grid = song.getChordSectionLocationGrid();
+  Grid<ChordSectionGridData> grid = song.getChordSectionGrid();
   StringBuffer sb = StringBuffer('Grid{\n');
 
   int rLimit = grid.getRowCount();
   for (int r = 0; r < rLimit; r++) {
-    List<ChordSectionLocation?>? row = grid.getRow(r);
+    List<ChordSectionGridData?>? row = grid.getRow(r);
     if (row == null) {
       throw 'row == null';
     }
     int colLimit = row.length;
     sb.write('\t[');
     for (int c = 0; c < colLimit; c++) {
-      ChordSectionLocation? loc = row[c];
-      if (loc == null) {
+      ChordSectionGridData? data = row[c];
+      if (data == null) {
         sb.write('\tnull\n');
         continue;
       }
 
-      sb.write('\t' + loc.toString() + ' ');
-      if (loc.isMeasure) {
-        Measure? measure = song.findMeasureByChordSectionLocation(loc);
+      sb.write('\t' + data.toString() + ' ');
+      if (data.isMeasure) {
+        Measure? measure = song.findMeasureByChordSectionLocation(data.chordSectionLocation);
         if (measure == null) {
           throw 'measure == null';
         }

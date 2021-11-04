@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:quiver/core.dart';
 
 import '../util/util.dart';
+import 'measureRepeatExtension.dart';
 import 'sectionVersion.dart';
 
 enum ChordSectionLocationMarker { none, repeatUpperRight, repeatMiddleRight, repeatLowerRight, repeatOnOneLineRight }
@@ -168,7 +169,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   @override
   String toString() {
-    return getId() + (_repeats != null ? ':x$_repeats' : '');
+    return getId() +
+        (_marker != ChordSectionLocationMarker.none ? ':${MeasureRepeatExtension.get(_marker)}' : '') +
+        (_repeats != null ? ':x$_repeats' : '');
   }
 
   static ChordSectionLocation? fromString(String s) {

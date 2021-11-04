@@ -321,7 +321,7 @@ void main() {
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
-      ChordSectionLocationMarker.none,
+      ChordSectionLocationMarker.repeatOnOneLineRight,
     );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
@@ -352,7 +352,7 @@ void main() {
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
-      ChordSectionLocationMarker.none,
+      ChordSectionLocationMarker.repeatOnOneLineRight,
     );
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
