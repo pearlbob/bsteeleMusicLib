@@ -1937,7 +1937,7 @@ class SongBase {
                 newLocation = ChordSectionLocation(chordSection.sectionVersion,
                     phraseIndex: location.hasPhraseIndex ? location.phraseIndex : 0,
                     measureIndex: newPhrase.length - 1);
-                return standardEditCleanup(chordSection.insert(location.phraseIndex, newPhrase), newLocation);
+                return standardEditCleanup(chordSection.insert(0, newPhrase), newLocation);
               }
               //  else insert the new measures at the front of the existing phrase measures with the code below
             }

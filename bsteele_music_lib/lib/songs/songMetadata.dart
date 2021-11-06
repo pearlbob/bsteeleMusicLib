@@ -189,6 +189,21 @@ class SongMetadata {
     }
   }
 
+  static void removeAll(NameValue nameValue) {
+    _singleton._removeAll(nameValue);
+  }
+
+  void _removeAll(NameValue nameValue) {
+    final SplayTreeSet<SongIdMetadata> removeSet = SplayTreeSet();
+    for (var songIdMetadata in _idMetadata) {
+      songIdMetadata.remove(nameValue);
+      if (songIdMetadata.isEmpty) {
+        removeSet.add(songIdMetadata); //  avoid concurrency problems
+      }
+    }
+    _idMetadata.removeAll(removeSet);
+  }
+
   static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata songIdMetadata) doesMatch,
       {SplayTreeSet<SongIdMetadata>? from}) {
     SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();

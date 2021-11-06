@@ -333,7 +333,8 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   bool get isPhrase => _hasPhraseIndex == true && _hasMeasureIndex == false;
 
-  bool get isMeasure => _hasPhraseIndex == true && _hasMeasureIndex == true;
+  bool get isMeasure =>
+      _hasPhraseIndex == true && _hasMeasureIndex == true && _marker == ChordSectionLocationMarker.none;
 
   bool get isMarker => _marker != ChordSectionLocationMarker.none;
 
