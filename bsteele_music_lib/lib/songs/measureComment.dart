@@ -1,7 +1,7 @@
 import '../util/util.dart';
+import 'key.dart';
 import 'measure.dart';
 import 'measureNode.dart';
-import 'key.dart';
 
 class MeasureComment extends Measure {
   MeasureComment(this._comment) : super.zeroArgs() {
@@ -18,9 +18,7 @@ class MeasureComment extends Measure {
   }
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.comment;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.comment;
 
   static MeasureComment parseString(String s) {
     return parse(MarkedString(s));
@@ -28,7 +26,7 @@ class MeasureComment extends Measure {
 
   /// Trash can of measure parsing.  Will consume all that it sees to the end of line.
   static MeasureComment parse(MarkedString markedString) {
-    if ( markedString.isEmpty) {
+    if (markedString.isEmpty) {
       throw 'no data to parse';
     }
 

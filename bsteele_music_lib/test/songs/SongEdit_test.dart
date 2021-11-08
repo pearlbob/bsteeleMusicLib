@@ -1523,7 +1523,7 @@ void main() {
     //  from 20211106_025839
     ts.startingChords(
         'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    ts.edit(MeasureEditType.insert, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C.CmC7 '));
+    ts.edit(MeasureEditType.insert, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C.CmC7'));
     ts.resultChords(
         'I: V: C.CmC7 [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
     ts.post(MeasureEditType.append, 'I:0:0', 'C.CmC7');
@@ -1679,5 +1679,43 @@ void main() {
     ts.resultChords(
         'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B C  O: Dm C B Bb, A  ');
     ts.post(MeasureEditType.append, 'C:0:11', 'C');
+
+    //  append a phrase after a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'C7');
+
+    //  append a phrase after a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7 A b c'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7 A B C  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:3', 'C');
+
+    //  append a phrase after a section that ends in a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'C7');
+
+    //  append a phrase after a section that ends in a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7 A b c9'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7 A B C9  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:3', 'C9');
+
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'I:0:1', 'Am/G', SongBase.entryToUppercase('C '));
+    ts.resultChords('I: V: [Am C Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:1', 'C');
   });
 }

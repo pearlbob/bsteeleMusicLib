@@ -8,9 +8,7 @@ class MeasureRepeatMarker extends Measure {
   MeasureRepeatMarker(this.repeats, {this.repetition}) : super.zeroArgs();
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.decoration;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
 
   @override
   String transpose(Key key, int halfSteps) {

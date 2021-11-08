@@ -27,9 +27,7 @@ class MeasureRepeatExtension extends MeasureComment {
   MeasureRepeatExtension(this.marker, this.markerString) : super.zeroArgs();
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.decoration;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
 
   @override
   @deprecated

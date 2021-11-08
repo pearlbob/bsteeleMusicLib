@@ -200,7 +200,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       return false;
     }
 
-    switch (newMeasureNode.getMeasureNodeType()) {
+    switch (newMeasureNode.measureNodeType) {
       case MeasureNodeType.repeat:
       case MeasureNodeType.phrase:
         break;
@@ -228,7 +228,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       return false;
     }
 
-    switch (newMeasureNode.getMeasureNodeType()) {
+    switch (newMeasureNode.measureNodeType) {
       case MeasureNodeType.repeat:
       case MeasureNodeType.phrase:
         break;
@@ -283,12 +283,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
         continue;
       }
       if (lastPhrase == null) {
-        if (phrase.getMeasureNodeType() == MeasureNodeType.phrase) {
+        if (phrase.measureNodeType == MeasureNodeType.phrase) {
           lastPhrase = phrase;
         }
         continue;
       }
-      if (phrase.getMeasureNodeType() == MeasureNodeType.phrase) {
+      if (phrase.measureNodeType == MeasureNodeType.phrase) {
         //  join two contiguous phrases
         lastPhrase.lastMeasure?.endOfRow = true; //  assure odd rows are preserved
         lastPhrase.add(phrase.measures);
@@ -434,9 +434,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.section;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.section;
 
   MeasureNode? lastMeasureNode() {
     if (isEmpty()) {
@@ -678,7 +676,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (expanded) {
       for (var phrase in _phrases) {
         var measureCount = phrase.measureCount;
-        if (phrase.getMeasureNodeType() == MeasureNodeType.repeat) {
+        if (phrase.measureNodeType == MeasureNodeType.repeat) {
           measureCount = phrase.measureCount * (phrase as MeasureRepeat).repeats;
         }
         if (index >= measureCount) {

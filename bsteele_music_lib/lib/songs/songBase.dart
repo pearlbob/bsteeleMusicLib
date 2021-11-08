@@ -1620,7 +1620,7 @@ class SongBase {
     //  find the named chord section
     ChordSection? chordSection = getChordSectionByLocation(location);
     if (chordSection == null) {
-      switch (measureNode.getMeasureNodeType()) {
+      switch (measureNode.measureNodeType) {
         case MeasureNodeType.section:
           chordSection = measureNode as ChordSection;
           break;
@@ -1661,7 +1661,7 @@ class SongBase {
     ChordSection newChordSection;
     MeasureRepeat newRepeat;
     Phrase newPhrase;
-    switch (measureNode.getMeasureNodeType()) {
+    switch (measureNode.measureNodeType) {
       case MeasureNodeType.section:
         switch (editType) {
           case MeasureEditType.delete:
@@ -1702,8 +1702,7 @@ class SongBase {
               //  convert repeat to phrase
               newPhrase = Phrase(repeat.measures, location.phraseIndex);
               int phaseIndex = location.phraseIndex;
-              if (phaseIndex > 0 &&
-                  chordSection.getPhrase(phaseIndex - 1)?.getMeasureNodeType() == MeasureNodeType.phrase) {
+              if (phaseIndex > 0 && chordSection.getPhrase(phaseIndex - 1)?.measureNodeType == MeasureNodeType.phrase) {
                 //  expect combination of the two phrases
                 int newPhraseIndex = phaseIndex - 1;
                 Phrase? priorPhrase = chordSection.getPhrase(newPhraseIndex);
@@ -1833,7 +1832,7 @@ class SongBase {
               //  last of section
               Phrase? lastPhrase = chordSection.lastPhrase();
               if (lastPhrase != null) {
-                switch (lastPhrase.getMeasureNodeType()) {
+                switch (lastPhrase.measureNodeType) {
                   case MeasureNodeType.phrase:
                     location = ChordSectionLocation(chordSection.sectionVersion,
                         phraseIndex: lastPhrase.phraseIndex, measureIndex: lastPhrase.length + newPhrase.length - 1);
@@ -1883,8 +1882,10 @@ class SongBase {
             }
 
             newLocation = ChordSectionLocation(chordSection.sectionVersion,
-                phraseIndex: phrase.phraseIndex, measureIndex: phrase.measures.length + newPhrase.length - 1);
-            return standardEditCleanup(phrase.add(newPhrase.measures), newLocation);
+                phraseIndex: phrase.phraseIndex + 1, measureIndex: newPhrase.length - 1);
+            //  rely on the clean up to join to adjacent phrases
+            newPhrase.setPhraseIndex(phraseIndex + 1);
+            return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), newLocation);
 
           case MeasureEditType.insert:
             if (location == null) {
@@ -1899,7 +1900,7 @@ class SongBase {
               //  first of section
               Phrase? firstPhrase = chordSection.getPhrase(0);
               if (firstPhrase != null) {
-                switch (firstPhrase.getMeasureNodeType()) {
+                switch (firstPhrase.measureNodeType) {
                   case MeasureNodeType.phrase:
                     location = ChordSectionLocation(chordSection.sectionVersion,
                         phraseIndex: firstPhrase.phraseIndex, measureIndex: 0);
@@ -1960,9 +1961,7 @@ class SongBase {
                 //  delete the phrase before replacing it
                 phraseIndex = location.phraseIndex;
                 Phrase? priorPhrase = chordSection.getPhrase(phraseIndex - 1);
-                if (priorPhrase != null &&
-                    phraseIndex > 0 &&
-                    priorPhrase.getMeasureNodeType() == MeasureNodeType.phrase) {
+                if (priorPhrase != null && phraseIndex > 0 && priorPhrase.measureNodeType == MeasureNodeType.phrase) {
                   //  expect combination of the two phrases
 
                   location = ChordSectionLocation(chordSection.sectionVersion,
@@ -2047,7 +2046,7 @@ class SongBase {
     switch (editType) {
       case MeasureEditType.insert:
         if (location != null) {
-          switch (measureNode.getMeasureNodeType()) {
+          switch (measureNode.measureNodeType) {
             case MeasureNodeType.repeat:
             case MeasureNodeType.phrase:
               ret = chordSection.insert(location.phraseIndex, measureNode);
@@ -2082,7 +2081,7 @@ class SongBase {
           }
 
           if (location.isSection) {
-            switch (measureNode.getMeasureNodeType()) {
+            switch (measureNode.measureNodeType) {
               case MeasureNodeType.section:
                 SectionVersion? sectionVersion = location.sectionVersion;
                 if (sectionVersion != null) {
@@ -2098,7 +2097,7 @@ class SongBase {
             }
           }
           if (location.isPhrase) {
-            switch (measureNode.getMeasureNodeType()) {
+            switch (measureNode.measureNodeType) {
               case MeasureNodeType.repeat:
               case MeasureNodeType.phrase:
                 chordSection.phrases.insert(location.phraseIndex + 1, measureNode as Phrase);
@@ -2337,7 +2336,7 @@ class SongBase {
             ChordSectionLocation(location.sectionVersion, phraseIndex: location.phraseIndex, measureIndex: index);
         MeasureNode? measureNode = findMeasureNodeByLocation(location);
         if (measureNode != null) {
-          switch (measureNode.getMeasureNodeType()) {
+          switch (measureNode.measureNodeType) {
             case MeasureNodeType.measure:
               return measureNode as Measure;
             default:

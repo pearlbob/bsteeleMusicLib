@@ -142,9 +142,7 @@ class MeasureRepeat extends Phrase {
   set repeats(int repeats) => getRepeatMarker().repeats = repeats;
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.repeat;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.repeat;
 
   @override
   MeasureNode? findMeasureNode(MeasureNode measureNode) {

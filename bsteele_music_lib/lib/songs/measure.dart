@@ -5,9 +5,9 @@ import 'package:quiver/core.dart';
 
 import '../util/util.dart';
 import 'chord.dart';
+import 'key.dart';
 import 'measureNode.dart';
 import 'section.dart';
-import 'key.dart';
 
 /// A measure in a section of a song.
 /// Holds the lyrics, the chord changes and their beats.
@@ -277,9 +277,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.measure;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.measure;
 
   @override
   String toString() {

@@ -84,5 +84,5 @@ abstract class MeasureNode {
   /// The id to uniquely identify this measureNode in the song.
   String? getId();
 
-  MeasureNodeType getMeasureNodeType();
+  MeasureNodeType get measureNodeType;
 }

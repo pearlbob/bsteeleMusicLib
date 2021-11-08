@@ -13,9 +13,7 @@ class Lyric extends MeasureNode {
   }
 
   @override
-  MeasureNodeType getMeasureNodeType() {
-    return MeasureNodeType.lyric;
-  }
+  MeasureNodeType get measureNodeType => MeasureNodeType.lyric;
 
   @override
   bool setMeasuresPerRow(int measuresPerRow) {
