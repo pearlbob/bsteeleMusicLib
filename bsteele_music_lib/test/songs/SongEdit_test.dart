@@ -1717,5 +1717,13 @@ void main() {
     ts.edit(MeasureEditType.replace, 'I:0:1', 'Am/G', SongBase.entryToUppercase('C '));
     ts.resultChords('I: V: [Am C Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
     ts.post(MeasureEditType.append, 'I:0:1', 'C');
+
+    //  from 20211108_055955
+    ts.startingChords(
+        'I: V: C [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'I:1:0', 'Am', SongBase.entryToUppercase('F '));
+    ts.resultChords(
+        'I: V: C [F Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'F');
   });
 }

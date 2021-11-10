@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 
 import 'musicConstants.dart';
@@ -207,6 +209,14 @@ class Pitch implements Comparable<Pitch> {
     _number = n;
 
     _frequency = 440.0 * MusicConstants.halfStepsToRatio((_number + 1) - 49);
+  }
+
+  static const a0MidiNoteNumber = 21;
+
+  static Pitch getFromMidiNoteNumber(int noteNumber, {bool? asSharp}) {
+    List<Pitch> list = (asSharp ?? true) ? sharps : flats;
+    var index = min(max(0, noteNumber - a0MidiNoteNumber), list.length - 1);
+    return list[index];
   }
 
   static Pitch get(PitchEnum se) {
