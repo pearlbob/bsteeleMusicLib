@@ -128,9 +128,27 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
 
+  String toJsonAt(NameValue nameValue) {
+    StringBuffer sb = StringBuffer();
+    bool first = true;
+    for (NameValue nv in _nameValues) {
+      if (nv == nameValue) {
+        if (first) {
+          first = false;
+        } else {
+          sb.write(',');
+        }
+        sb.write(nv.toJson());
+      }
+    }
+    return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
+  }
+
   bool get isEmpty => _nameValues.isEmpty;
 
   bool get isNotEmpty => _nameValues.isNotEmpty;
+
+  bool contains(NameValue nameValue) => _nameValues.contains(nameValue);
 
   @override
   bool operator ==(Object other) =>
@@ -180,6 +198,12 @@ class SongMetadata {
   static void addSong(Song song, NameValue nameValue) {
     SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
     add(songIdMetadata);
+  }
+
+  //  convenience method
+  static void removeSong(Song song, NameValue nameValue) {
+    SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
+    remove(songIdMetadata, nameValue);
   }
 
   static void remove(SongIdMetadata songIdMetadata, NameValue nameValue) {
@@ -387,6 +411,22 @@ class SongMetadata {
         sb.write(',\n');
       }
       sb.write(songIdMetadata.toJson());
+    }
+    return '[${sb.toString()}]';
+  }
+
+  static String toJsonAt({Iterable<SongIdMetadata>? idValues, required NameValue nameValue}) {
+    StringBuffer sb = StringBuffer();
+    bool first = true;
+    for (SongIdMetadata songIdMetadata in idValues ?? _singleton._idMetadata) {
+      if (songIdMetadata.contains(nameValue)) {
+        if (first) {
+          first = false;
+        } else {
+          sb.write(',\n');
+        }
+        sb.write(songIdMetadata.toJsonAt(nameValue));
+      }
     }
     return '[${sb.toString()}]';
   }

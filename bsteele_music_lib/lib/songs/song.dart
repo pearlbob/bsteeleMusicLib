@@ -51,18 +51,8 @@ class Song extends SongBase implements Comparable<Song> {
   /// Copy the song to a new instance.
   Song copySong() {
     //  note: assure all arguments are immutable, or at least unique to the copy
-    Song ret = Song.createSong(
-        getTitle(),
-        getArtist(),
-        getCopyright(),
-        getKey(),
-        beatsPerMinute,
-        getBeatsPerBar(),
-        getUnitsPerMeasure(),
-        getUser(),
-        toMarkup(),
-        // ignore: deprecated_member_use_from_same_package
-        getLyricsAsString());
+    Song ret = Song.createSong(getTitle(), getArtist(), getCopyright(), getKey(), beatsPerMinute, getBeatsPerBar(),
+        getUnitsPerMeasure(), getUser(), toMarkup(), rawLyrics);
     ret.setFileName(getFileName());
     ret.lastModifiedTime = lastModifiedTime;
     ret.setTotalBeats(getTotalBeats());

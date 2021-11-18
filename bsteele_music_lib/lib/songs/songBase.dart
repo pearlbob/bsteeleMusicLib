@@ -3114,12 +3114,6 @@ class SongBase {
     return artist;
   }
 
-  /// Return the lyrics.
-  @deprecated
-  String getLyricsAsString() {
-    return _rawLyrics;
-  }
-
   /// Return the default beats per minute.
   int getDefaultBpm() {
     return beatsPerMinute;

@@ -306,7 +306,7 @@ class Phrase extends MeasureNode {
     if (_measures.length < index) {
       _measures.add(m);
     } else {
-      _measures.insert(index + 1, m);
+      _measures.insert(index, m);
     }
   }
 
@@ -389,7 +389,7 @@ class Phrase extends MeasureNode {
         }
         try {
           if (newMeasureNode.isSingleItem()) {
-            _addAt(index - 1, newMeasureNode as Measure);
+            _addAt(index, newMeasureNode as Measure);
           } else {
             addAllAt(index, (newMeasureNode as Phrase)._measures);
           }

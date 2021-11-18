@@ -103,4 +103,47 @@ void main() {
       expect(grid.get(2, 3), isNull);
     }
   });
+
+  test('test replace at locations', () {
+    Logger.level = Level.info;
+    int phraseIndex = 0;
+    int beatsPerBar = 4;
+    String s;
+    Phrase phrase;
+
+    s = 'Dm C B Bb, A';
+    var measure = Measure.parseString('F', beatsPerBar);
+
+    //
+    // for ( var i = 0; i < 8; i++ ) {
+    //   logger.i('$i:');
+    //   phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    //   logger.i(   phrase.toMarkup());
+    //   phrase.edit(MeasureEditType.replace, i, measure);
+    //   logger.i('  ${phrase.toMarkup()}');
+    // }
+    phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    phrase.edit(MeasureEditType.replace, 0, measure);
+    expect(phrase.toMarkup(), 'F C B Bb, A ');
+
+    phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    phrase.edit(MeasureEditType.replace, 1, measure);
+    expect(phrase.toMarkup(), 'Dm F B Bb, A ');
+
+    phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    phrase.edit(MeasureEditType.replace, 2, measure);
+    expect(phrase.toMarkup(), 'Dm C F Bb, A ');
+
+    phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    phrase.edit(MeasureEditType.replace, 3, measure);
+    expect(phrase.toMarkup(), 'Dm C B F A ');
+
+    phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    phrase.edit(MeasureEditType.replace, 4, measure);
+    expect(phrase.toMarkup(), 'Dm C B Bb, F ');
+
+    phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
+    phrase.edit(MeasureEditType.replace, 5, measure);
+    expect(phrase.toMarkup(), 'Dm C B Bb, A F ');
+  });
 }

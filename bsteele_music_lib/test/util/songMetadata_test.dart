@@ -200,7 +200,7 @@ void main() {
     set.removeAll(SongMetadata.where(idIs: 'christmas'));
     expect(set.isEmpty, false);
     logger.i('set: $set');
-    expect(set.length, 4);  //  'id3 christmas' != 'christmas'
+    expect(set.length, 4); //  'id3 christmas' != 'christmas'
     expect(set.contains(md0), true);
     expect(set.contains(md1), true);
     expect(set.contains(md2), true);
@@ -273,6 +273,41 @@ void main() {
       //logger.d('${Metadata.toJson()}');
       expect(SongMetadata.toJson(), original);
     }
+  });
+
+  test('test jsonAt()', () {
+    final String id0 = SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId;
+
+    //  metadata
+    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
+    SongIdMetadata md1 = SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
+        metadata: [NameValue('genre', 'rock'), NameValue('jam', 'advanced')]);
+    SongIdMetadata md2 = SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
+        metadata: [NameValue('jam', 'advanced')]);
+    SongIdMetadata md3 = SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
+        metadata: [NameValue('christmas', '')]);
+    SongMetadata.clear();
+    SongMetadata.set(md0);
+    SongMetadata.set(md1);
+    SongMetadata.set(md2);
+    SongMetadata.set(md3);
+
+    expect(
+        SongMetadata.toJsonAt(nameValue: NameValue('genre', 'rock')),
+        '[{"id":"Song_39_by_Queen","metadata":[{"name":"genre","value":"rock"}]},\n'
+        '{"id":"Song_Hey_Joe_by_Jimi_Hendrix","metadata":[{"name":"genre","value":"rock"}]}]');
+    expect(
+        SongMetadata.toJsonAt(nameValue: NameValue('jam', 'advanced')),
+        '[{"id":"Song_39_by_Queen","metadata":[{"name":"jam","value":"advanced"}]},\n'
+        '{"id":"Song_Boxer_The_by_Boxer_The","metadata":[{"name":"jam","value":"advanced"}]}]');
+    expect(SongMetadata.toJsonAt(nameValue: NameValue('christmas', '')),
+        '[{"id":"Song_Holly_Jolly_Christmas_by_Burl_Ives","metadata":[{"name":"christmas","value":""}]}]');
+
+    //  wrong name: jams not jam
+    expect(SongMetadata.toJsonAt(nameValue: NameValue('jams', 'advanced')), '[]');
+
+    //  wrong value: something not jam
+    expect(SongMetadata.toJsonAt(nameValue: NameValue('jam', 'somethingElse')), '[]');
   });
 
   bool _rockMatch(SongIdMetadata idMetadata) {

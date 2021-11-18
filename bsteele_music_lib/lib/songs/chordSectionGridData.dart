@@ -46,7 +46,8 @@ class ChordSectionGridData {
 
   @override
   String toString() {
-    return '${chordSectionLocation}_${sectionVersion}_\'${phrase?.toMarkup()}\'_$measure';
+    return '(${chordSectionLocation} ${sectionVersion} \'${phrase?.toMarkup()}\':'
+        ' ${(measure != null && isMeasure) ? measure?.toMarkupWithoutEnd() : ''})';
   }
 
   final ChordSectionLocation chordSectionLocation;

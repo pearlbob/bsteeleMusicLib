@@ -87,6 +87,8 @@ class TestSong {
     return s;
   }
 
+  SongBase get myA => _myA;
+
   SongBase _myA = SongBase();
 }
 
@@ -1230,7 +1232,7 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
+    logger.i(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
@@ -1239,7 +1241,7 @@ void main() {
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     newMeasure = Measure.parseString('Gm', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
-    logger.d(_a.toMarkup());
+    logger.i(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E Gm F F♯ [A D C D ] x3  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
@@ -1725,5 +1727,12 @@ void main() {
     ts.resultChords(
         'I: V: C [F Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
     ts.post(MeasureEditType.append, 'I:1:0', 'F');
+
+    //  from 20211118_182608
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'O:0:3', 'Bb,', SongBase.entryToUppercase('Bb,'));
+    ts.resultChords('I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'O:0:3', 'Bb,');
   });
 }
