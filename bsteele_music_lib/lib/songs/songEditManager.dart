@@ -61,7 +61,7 @@ class SongEditManager {
     _preEditSong.setCurrentChordSectionLocation(location);
     _preEditSong.currentMeasureEditType = selectedEditPoint.measureEditType;
     if (_preEditSong.editMeasureNode(measureNode)) {
-      _editPoint = EditPoint(_preEditSong.currentChordSectionLocation);
+      _editPoint = EditPoint(_preEditSong.currentChordSectionLocation, onEndOfRow: selectedEditPoint.onEndOfRow);
       if (measureNode is Measure) {
         switch (selectedEditPoint.measureEditType) {
           case MeasureEditType.insert:

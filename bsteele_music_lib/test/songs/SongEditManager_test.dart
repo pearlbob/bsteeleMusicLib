@@ -429,4 +429,21 @@ void main() {
       expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  Br: []  ');
     }
   });
+
+  test('test edit manager end of row', () {
+    {
+      //  basic measure append
+      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
+          'v: A B C D, D C G G ', 'v: bob, bob, bob berand');
+      var safeCopySong = a.copySong();
+      var manager = SongEditManager(a.copySong());
+      expect(manager.reset().toMarkup(), 'V: A B C D, D C G G  ');
+      var location = ChordSectionLocation.fromString('v:0:1');
+      var b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.append, onEndOfRow: true));
+      expect(b.toMarkup(), 'V: A B, B, C D, D C G G  ');
+      expect(manager.editPoint, EditPoint(ChordSectionLocation.fromString('v:0:2'), onEndOfRow: true));
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+      expect(manager.reset().toMarkup(), safeCopySong.toMarkup());
+    }
+  });
 }
