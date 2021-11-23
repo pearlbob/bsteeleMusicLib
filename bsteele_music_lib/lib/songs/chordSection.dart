@@ -220,6 +220,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     } catch (e) {
       _phrases.add(newPhrase); //  default to the end!
     }
+    _renumberPhraseIndexes();
     return true;
   }
 
@@ -259,7 +260,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (_phrases.length < index) {
       _phrases.add(m);
     } else {
-      _phrases.insert(index + 1, m);
+      _phrases.insert(index, m);
     }
   }
 

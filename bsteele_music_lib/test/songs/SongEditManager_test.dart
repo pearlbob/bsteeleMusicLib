@@ -1,6 +1,8 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/songs/chord.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songEditManager.dart';
@@ -10,7 +12,7 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.info;
 
-  test('test edit manager', () {
+  test('test edit manager appends', () {
     const bool all = true;
 
     if (all) {
@@ -243,6 +245,188 @@ void main() {
       expect(manager.editPoint.location, ChordSectionLocation.fromString('c:'));
       expect(a.toMarkup(), safeCopySong.toMarkup());
       expect(manager.reset().toMarkup(), safeCopySong.toMarkup());
+    }
+
+    {
+      var a = Song.createSong(
+          'A',
+          'bob',
+          'copyright bsteele.com',
+          Key.getDefault(),
+          100,
+          4,
+          4,
+          'bob',
+          'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
+          'v: bob, bob, bob berand');
+      var safeCopySong = a.copySong();
+      var manager = SongEditManager(a.copySong());
+      expect(manager.preEditSong.toMarkup(),
+          'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+      var location = ChordSectionLocation.fromString('c:0:1'); //  the append location
+      var b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.append, onEndOfRow: false));
+      expect(b.toMarkup(),
+          'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F F C C, G G F F  O: Dm C B Bb, A  ');
+      expect(manager.preEditSong.toMarkup(), b.toMarkup());
+      expect(manager.editPoint.location, ChordSectionLocation.fromString('c:0:2'));
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+      expect(manager.reset().toMarkup(), safeCopySong.toMarkup());
+    }
+
+    //
+    if (all) {
+      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
+          'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F ', 'v: bob, bob, bob berand');
+      var safeCopySong = a.copySong();
+      var manager = SongEditManager(a.copySong());
+      expect(manager.preEditSong.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  ');
+      var location = ChordSectionLocation.fromString('C:0:0'); //  the append location
+      var b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.append, onEndOfRow: false));
+      expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F F C C, G G F F  ');
+      expect(manager.preEditSong.toMarkup(), b.toMarkup());
+      expect(manager.editPoint.location, ChordSectionLocation.fromString('c:0:1'));
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+
+      //  second pass
+      var editPoint = manager.editPoint; //  the new edit point
+      manager = SongEditManager(b);
+      b = manager.preEdit(editPoint);
+      expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F F C C, G G F F  ');
+      expect(manager.preEditSong.toMarkup(), b.toMarkup());
+      expect(
+          manager.editPoint,
+          EditPoint(ChordSectionLocation.fromString('c:0:1'),
+              measureEditType: MeasureEditType.replace, onEndOfRow: false));
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+      b.setCurrentChordSectionLocation(manager.editPoint.location);
+      b.currentMeasureEditType = manager.editPoint.measureEditType;
+      var measureNode = Measure(4, [Chord.parseString('A', 4)!]);
+      b.editMeasureNode(measureNode);
+      expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F A F C C, G G F F  ');
+    }
+  });
+
+  test('test edit manager inserts', () {
+    const bool all = true;
+
+    if (all) {
+      ChordSectionLocation? location;
+      Song a = Song.createSong(
+          'A',
+          'bob',
+          'copyright bsteele.com',
+          Key.getDefault(),
+          100,
+          4,
+          4,
+          'bob',
+          'i: A B C D, D C G G v: E F G G o: G G G G',
+          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      var manager = SongEditManager(a);
+      var safeCopySong = a.copySong();
+      Song b;
+
+      logger.d('a.chords: \'${a.toMarkup()}\'');
+
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+      b = manager.preEdit(EditPoint.defaultInstance);
+      expect(b.toMarkup(), safeCopySong.toMarkup());
+      location = ChordSectionLocation.fromString('v:0:0');
+      b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.insert));
+      expect(b.toMarkup(), 'I: A B C D, D C G G  V: E E F G G  O: G G G G  ');
+      expect(manager.editPoint.location, location);
+
+      b.setCurrentChordSectionLocation(manager.editPoint.location);
+      b.currentMeasureEditType = manager.editPoint.measureEditType;
+      var measureNode = Measure(4, [Chord.parseString('A', 4)!]);
+      b.editMeasureNode(measureNode);
+      expect(b.toMarkup(), 'I: A B C D, D C G G  V: A E F G G  O: G G G G  ');
+    }
+
+    if (all) {
+      ChordSectionLocation? location;
+      Song a = Song.createSong(
+          'A',
+          'bob',
+          'copyright bsteele.com',
+          Key.getDefault(),
+          100,
+          4,
+          4,
+          'bob',
+          'i: A B C D, D C G G v: E F G G o: G G G G',
+          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      var manager = SongEditManager(a);
+      var safeCopySong = a.copySong();
+      Song b;
+
+      logger.d('a.chords: \'${a.toMarkup()}\'');
+
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+      b = manager.preEdit(EditPoint.defaultInstance);
+      expect(b.toMarkup(), safeCopySong.toMarkup());
+      location = ChordSectionLocation.fromString('v:0');
+      b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.insert));
+      expect(b.toMarkup(), 'I: A B C D, D C G G  V: E, E F G G  O: G G G G  ');
+      expect(manager.editPoint.location, location);
+    }
+
+    if (all) {
+      ChordSectionLocation? location;
+      Song a = Song.createSong(
+          'A',
+          'bob',
+          'copyright bsteele.com',
+          Key.getDefault(),
+          100,
+          4,
+          4,
+          'bob',
+          'i: A B C D, D C G G v: E F G G o: G G G G',
+          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      var manager = SongEditManager(a);
+      var safeCopySong = a.copySong();
+      Song b;
+
+      logger.d('a.chords: \'${a.toMarkup()}\'');
+
+      expect(a.toMarkup(), safeCopySong.toMarkup());
+      b = manager.preEdit(EditPoint.defaultInstance);
+      expect(b.toMarkup(), safeCopySong.toMarkup());
+      location = ChordSectionLocation.fromString('v:');
+      b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.insert));
+      expect(b.toMarkup(), 'I: A B C D, D C G G  V: E F G G  C: []  O: G G G G  ');
+      expect(manager.editPoint.location, ChordSectionLocation.fromString('C:'));
+    }
+  });
+
+  test('test edit manager adding sections', () {
+    {
+      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
+          'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F ', 'v: bob, bob, bob berand');
+      var manager = SongEditManager(a);
+      expect(manager.preEditSong.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  ');
+      var location = ChordSectionLocation.fromString('Br:'); //  the append location
+      var b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.append, onEndOfRow: false));
+      expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  Br: []  ');
+      expect(manager.preEditSong.toMarkup(), b.toMarkup());
+      expect(manager.editPoint.location, ChordSectionLocation.fromString('Br:'));
+
+      //  second pass
+      var editPoint = manager.editPoint; //  the new edit point
+      manager = SongEditManager(b);
+      b = manager.preEdit(editPoint);
+      expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  Br: []  ');
+      expect(manager.preEditSong.toMarkup(), b.toMarkup());
+      expect(
+          manager.editPoint,
+          EditPoint(ChordSectionLocation.fromString('Br:'),
+              measureEditType: MeasureEditType.replace, onEndOfRow: false));
+      b.setCurrentChordSectionLocation(manager.editPoint.location);
+      b.currentMeasureEditType = manager.editPoint.measureEditType;
+      var measureNode = Measure(4, [Chord.parseString('A', 4)!]);
+      b.editMeasureNode(measureNode);
+      expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  Br: []  ');
     }
   });
 }

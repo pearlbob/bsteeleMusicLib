@@ -443,7 +443,7 @@ void main() {
     location = ChordSectionLocation.parseString('v:1');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
+    logger.i(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
         ' ' +
@@ -1778,5 +1778,13 @@ void main() {
         TestSong.deMusic(
                 'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ')!
             .trim());
+
+    //  from 20211123_004759
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'C:0:0', 'F', SongBase.entryToUppercase('X '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F X F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:1', 'X');
   });
 }

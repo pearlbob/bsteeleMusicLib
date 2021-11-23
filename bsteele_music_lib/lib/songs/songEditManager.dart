@@ -23,32 +23,37 @@ class SongEditManager {
     var location = selectedEditPoint.location;
     var measureNode = _song.findMeasureNodeByLocation(location);
 
-    //  restrict edits to a section add if given a section
-    if (measureNode is ChordSection) {
-      measureNode = _song.suggestNewSection();
-    }
+    if (location.isSection && measureNode == null) {
+      //  new section
+      measureNode = ChordSection(location.sectionVersion!, []);
+    } else {
+      //  restrict edits to a section add if given a section
+      if (measureNode is ChordSection) {
+        measureNode = _song.suggestNewSection();
+      }
 
-    //  restrict edits to a single measure
-    if (measureNode is Phrase && measureNode.isNotEmpty) {
-      measureNode = measureNode.firstMeasure!.deepCopy();
-    }
+      //  restrict edits to a single measure
+      if (measureNode is Phrase && measureNode.isNotEmpty) {
+        measureNode = measureNode.firstMeasure!.deepCopy();
+      }
 
-    //  create new measure if one doesn't exist
-    measureNode ??= Measure(_song.getBeatsPerBar(), [
-      Chord(_song.key.getMajorScaleChord(), _song.getBeatsPerBar(), _song.getBeatsPerBar(), null,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none), true)
-    ]);
+      //  create new measure if one doesn't exist
+      measureNode ??= Measure(_song.getBeatsPerBar(), [
+        Chord(_song.key.getMajorScaleChord(), _song.getBeatsPerBar(), _song.getBeatsPerBar(), null,
+            ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none), true)
+      ]);
 
-    switch (selectedEditPoint.measureEditType) {
-      case MeasureEditType.replace:
-      case MeasureEditType.delete:
-        //  no work to be done
-        _preEditSong = song;
-        _editPoint = selectedEditPoint;
-        return _preEditSong;
-      case MeasureEditType.insert:
-      case MeasureEditType.append:
-        break;
+      switch (selectedEditPoint.measureEditType) {
+        case MeasureEditType.replace:
+        case MeasureEditType.delete:
+          //  no work to be done
+          _preEditSong = song;
+          _editPoint = selectedEditPoint;
+          return _preEditSong;
+        case MeasureEditType.insert:
+        case MeasureEditType.append:
+          break;
+      }
     }
 
     //  pre edit required, use a copy
@@ -110,7 +115,7 @@ class EditPoint {
 
   @override
   String toString() {
-    return '_EditDataPoint{'
+    return 'EditPoint{'
         ' loc: ${location.toString()}'
         ', editType: ${Util.enumToString(measureEditType)}'
         ', onEndOfRow: $onEndOfRow'

@@ -1710,7 +1710,7 @@ class SongBase {
                     phraseIndex: newPhraseIndex,
                     measureIndex: (priorPhrase?.measures.length ?? 0) + newPhrase.measures.length - 1);
                 return standardEditCleanup(
-                    chordSection.deletePhrase(phaseIndex) && chordSection.add(newPhraseIndex, newPhrase), location);
+                    chordSection.deletePhrase(phaseIndex) && chordSection.add(phaseIndex, newPhrase), location);
               }
               location = ChordSectionLocation(chordSection.sectionVersion,
                   phraseIndex: location.phraseIndex, measureIndex: newPhrase.measures.length - 1);
@@ -1885,7 +1885,7 @@ class SongBase {
                 phraseIndex: phrase.phraseIndex + 1, measureIndex: newPhrase.length - 1);
             //  rely on the clean up to join to adjacent phrases
             newPhrase.setPhraseIndex(phraseIndex + 1);
-            return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), newLocation);
+            return standardEditCleanup(chordSection.add(newPhrase.phraseIndex, newPhrase), newLocation);
 
           case MeasureEditType.insert:
             if (location == null) {
@@ -2023,7 +2023,7 @@ class SongBase {
                 break;
               case MeasureEditType.append:
                 newPhrase.setPhraseIndex(location.phraseIndex + 1);
-                return standardEditCleanup(chordSection.add(location.phraseIndex, newPhrase),
+                return standardEditCleanup(chordSection.add(newPhrase.phraseIndex, newPhrase),
                     ChordSectionLocation(location.sectionVersion, phraseIndex: newPhrase.phraseIndex, measureIndex: 0));
               case MeasureEditType.insert:
                 newPhrase.setPhraseIndex(phrase.phraseIndex);
