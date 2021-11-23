@@ -105,7 +105,7 @@ class ChordPro {
       StringBuffer sb = StringBuffer();
       for (var cs in chordSections) {
         //  deal with empty sections
-        if ( cs.phrases.isEmpty || cs.phrases.first.isEmpty() ){
+        if (cs.phrases.isEmpty || cs.phrases.first.isEmpty) {
           //  put in an blank measure just to get the lyics out
           sb.write('${cs.sectionVersion}\n\tX\n');
         } else {

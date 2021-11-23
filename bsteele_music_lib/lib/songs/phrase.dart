@@ -561,7 +561,7 @@ class Phrase extends MeasureNode {
   MeasureNodeType get measureNodeType => MeasureNodeType.phrase;
 
   @override
-  bool isEmpty() {
+  bool get isEmpty {
     return _measures.isEmpty;
   }
 

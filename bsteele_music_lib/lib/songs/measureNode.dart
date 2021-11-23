@@ -37,8 +37,13 @@ abstract class MeasureNode {
   }
 
   /// Return true if the measure node is a collection and it's empty
-  bool isEmpty() {
-    return false;
+  bool get isEmpty {
+    return true;
+  }
+
+  /// Return true if the measure node is a collection and it's not empty
+  bool get isNotEmpty {
+    return !isEmpty;
   }
 
   /// Transpose the measure node the given number of half steps from the given key.

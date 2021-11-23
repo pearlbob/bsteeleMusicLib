@@ -12,12 +12,9 @@ class SectionVersion implements Comparable<SectionVersion> {
 
   /// A constructor for the section version variation's representation.
   SectionVersion(this._section, this._version)
-      : _name =
-            _section.abbreviation + (_version > 0 ? _version.toString() : '');
+      : _name = _section.abbreviation + (_version > 0 ? _version.toString() : '');
 
-  static SectionVersion getDefault() {
-    return SectionVersion.bySection(Section.get(SectionEnum.verse));
-  }
+  static final SectionVersion defaultInstance = SectionVersion.bySection(Section.defaultInstance);
 
   static SectionVersion parseString(String s) {
     return parse(MarkedString(s));
@@ -67,9 +64,7 @@ class SectionVersion implements Comparable<SectionVersion> {
   ///Gets a more formal name for the section version that can be presented to the user.
   String getFormalName() {
     //  note: designed to go to the user display
-    return _section.formalName +
-        (_version > 0 ? _version.toString() : '') +
-        ':';
+    return _section.formalName + (_version > 0 ? _version.toString() : '') + ':';
   }
 
   @override
@@ -77,7 +72,8 @@ class SectionVersion implements Comparable<SectionVersion> {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType &&  other is SectionVersion &&
+    return runtimeType == other.runtimeType &&
+        other is SectionVersion &&
         _section == other._section &&
         _version == other._version;
   }
@@ -112,7 +108,7 @@ class SectionVersion implements Comparable<SectionVersion> {
   String get name => _name;
   final String _name;
 
-  int get weight => _section.weight + (10 - _version );
+  int get weight => _section.weight + (10 - _version);
 
   static final RegExp sectionRegexp = RegExp(r'^([a-zA-Z]+)([\d]*):');
 }

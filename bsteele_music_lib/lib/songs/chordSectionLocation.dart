@@ -47,7 +47,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     if (labelSectionVersions != null) {
       _labelSectionVersions = SplayTreeSet();
       if (labelSectionVersions.isEmpty) {
-        _labelSectionVersions?.add(SectionVersion.getDefault());
+        _labelSectionVersions?.add(SectionVersion.defaultInstance);
       } else {
         _labelSectionVersions?.addAll(labelSectionVersions);
       }
@@ -154,10 +154,11 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   }
 
   ChordSectionLocation nextMeasureIndexLocation() {
-    if (!_hasPhraseIndex || !_hasMeasureIndex) {
+    if (!_hasPhraseIndex) {
       return this;
     }
-    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: _measureIndex + 1);
+    var measureIndex = _hasMeasureIndex ? _measureIndex + 1 : 0;
+    return ChordSectionLocation(_sectionVersion, phraseIndex: _phraseIndex, measureIndex: measureIndex);
   }
 
   ChordSectionLocation nextPhraseIndexLocation() {
@@ -361,6 +362,8 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   String? id;
 
   int? _repeats;
+
+  static final ChordSectionLocation defaultInstance = ChordSectionLocation(SectionVersion.defaultInstance);
 
   static final RegExp numberRangeRegexp = RegExp('^(\\d+):(\\d+)');
   static final RegExp numberRegexp = RegExp('^(\\d+)');

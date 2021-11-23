@@ -304,7 +304,7 @@ void main() {
       ChordSection chordSection = ChordSection.parse(markedString, 4, false);
       expect(markedString, isEmpty);
       logger.i(chordSection.toString());
-      expect(chordSection.isEmpty(), isFalse);
+      expect(chordSection.isEmpty, isFalse);
       expect(chordSection.sectionVersion, SectionVersion.bySection(Section.get(SectionEnum.tag)));
     }
     {

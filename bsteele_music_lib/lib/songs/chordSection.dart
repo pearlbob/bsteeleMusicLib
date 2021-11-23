@@ -23,7 +23,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   ChordSection(this._sectionVersion, List<Phrase>? phrases) : _phrases = (phrases ?? []);
 
   static ChordSection getDefault() {
-    return ChordSection(SectionVersion.getDefault(), null);
+    return ChordSection(SectionVersion.defaultInstance, null);
   }
 
   @override
@@ -276,7 +276,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     for (int i = 0; i < getPhraseCount(); i++) {
       Phrase? phrase = getPhrase(i);
       assert(phrase != null);
-      if (phrase!.isEmpty()) {
+      if (phrase!.isEmpty) {
         deletePhrase(i);
         ret = true;
         i--; //  back up and collapse with the new version as the lastPhrase!   fixme: too tricky
@@ -411,7 +411,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     try {
       Phrase? phrase = getPhrase(phraseIndex);
       bool ret = phrase?.deleteAt(measureIndex) ?? false;
-      if (ret && (phrase?.isEmpty() ?? true)) {
+      if (ret && (phrase?.isEmpty ?? true)) {
         return deletePhrase(phraseIndex);
       }
       return ret;
@@ -437,7 +437,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   MeasureNodeType get measureNodeType => MeasureNodeType.section;
 
   MeasureNode? lastMeasureNode() {
-    if (isEmpty()) {
+    if (isEmpty) {
       return this;
     }
     Phrase? measureSequenceItem = _phrases[_phrases.length - 1];
@@ -482,7 +482,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   String phrasesToMarkup() {
-    if (isEmpty()) {
+    if (isEmpty) {
       return '[] ';
     }
     StringBuffer sb = StringBuffer();
@@ -502,7 +502,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   String phrasesToMarkupWithoutEnd() {
-    if (isEmpty()) {
+    if (isEmpty) {
       return '[] ';
     }
     StringBuffer sb = StringBuffer();
@@ -535,7 +535,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   String phrasesToEntry() {
-    if (isEmpty()) {
+    if (isEmpty) {
       return '[]';
     }
     StringBuffer sb = StringBuffer();
@@ -550,7 +550,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     StringBuffer sb = StringBuffer();
     sb.write(sectionVersion.toString());
     sb.write('\n');
-    if (isEmpty()) {
+    if (isEmpty) {
       sb.write('[]');
     } else {
       for (Phrase phrase in _phrases) {
@@ -704,7 +704,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   int get chordRowCount {
-    if (isEmpty()) {
+    if (isEmpty) {
       return 0;
     }
     int chordRowCount = 0;
@@ -715,16 +715,21 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  bool isEmpty() {
+  bool get isEmpty {
     if (_phrases.isEmpty) {
       return true;
     }
     for (Phrase phrase in _phrases) {
-      if (!phrase.isEmpty()) {
+      if (!phrase.isEmpty) {
         return false;
       }
     }
     return true;
+  }
+
+  @override
+  bool get isNotEmpty {
+    return !isEmpty;
   }
 
   /// Compares this object with the specified object for order.  Returns a

@@ -23,7 +23,7 @@ class TestSong {
 
   void edit(MeasureEditType type, String? locationString, String? measureNodeString, String? editEntry) {
     //  de-music character the result
-    measureNodeString = _deMusic(measureNodeString);
+    measureNodeString = deMusic(measureNodeString);
 
     //  setup for edit as requested
     _myA.setCurrentMeasureEditType(type);
@@ -54,11 +54,11 @@ class TestSong {
   }
 
   void resultChords(String chords) {
-    expect(_myA.toMarkup().trim(), _deMusic(chords)!.trim());
+    expect(_myA.toMarkup().trim(), deMusic(chords)!.trim());
   }
 
   void post(MeasureEditType type, String currentLocationString, String? currentMeasureNodeString) {
-    currentMeasureNodeString = _deMusic(currentMeasureNodeString);
+    currentMeasureNodeString = deMusic(currentMeasureNodeString);
 
     expect(_myA.currentMeasureEditType, type);
     expect(_myA.getCurrentChordSectionLocation().toString(), currentLocationString);
@@ -78,7 +78,7 @@ class TestSong {
     _myA.setRepeat(chordSectionLocation, repeats);
   }
 
-  static String? _deMusic(String? s) {
+  static String? deMusic(String? s) {
     if (s == null) return null;
 
     //  de-music characters in the string
@@ -241,7 +241,7 @@ void main() {
     ts.resultChords('V: [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
     ts.post(MeasureEditType.delete, 'V:0:0', 'C♯m');
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:0'));
-    expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong._deMusic('[C♯m A♭ F A♭ ] x4 '));
+    expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong.deMusic('[C♯m A♭ F A♭ ] x4 '));
     _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:1:0'));
     expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), '(Prechorus)');
 
@@ -430,7 +430,7 @@ void main() {
     newPhrase = Phrase.parseString('Db C B A', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newPhrase), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D D♭ C B A  V: D E F F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D D♭ C B A  V: D E F F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -868,7 +868,7 @@ void main() {
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('V: D E F F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('V: D E F F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -926,7 +926,7 @@ void main() {
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -986,7 +986,7 @@ void main() {
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D F F♯ [D C B A ] x2  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D F F♯ [D C B A ] x2  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1017,7 +1017,7 @@ void main() {
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F F♯ [A D C D ] x3  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯ [A D C D ] x3  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1081,7 +1081,7 @@ void main() {
     newRepeat = MeasureRepeat.parseString('[] x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1145,7 +1145,7 @@ void main() {
     newRepeat = MeasureRepeat.parseString('[ ] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: [D E F F♯ ] x3  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: [D E F F♯ ] x3  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1175,7 +1175,7 @@ void main() {
     newRepeat = MeasureRepeat.parseString('[ D C G G] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F F♯ [D C G G ] x3  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯ [D C G G ] x3  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1242,7 +1242,7 @@ void main() {
     newMeasure = Measure.parseString('Gm', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.i(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E Gm F F♯ [A D C D ] x3  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E Gm F F♯ [A D C D ] x3  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1278,7 +1278,7 @@ void main() {
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1308,7 +1308,7 @@ void main() {
         _a.getCurrentChordSectionLocationMeasureNode().toString());
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1337,7 +1337,7 @@ void main() {
     newMeasure = Measure.parseString('F', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.d(_a.toMarkup());
-    expect(_a.toMarkup().trim(), TestSong._deMusic('I: A B C D  V: D E F♯  C: D C G G'));
+    expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
     logger.d(_a.getCurrentChordSectionLocation().toString() +
         ' ' +
         _a.getCurrentChordSectionLocationMeasureNode().toString());
@@ -1734,5 +1734,49 @@ void main() {
     ts.edit(MeasureEditType.replace, 'O:0:3', 'Bb,', SongBase.entryToUppercase('Bb,'));
     ts.resultChords('I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
     ts.post(MeasureEditType.append, 'O:0:3', 'Bb,');
+
+    //  insert measure at start of repeat at start of section
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0:0', 'Am', SongBase.entryToUppercase('D'));
+    ts.resultChords(
+        'I: V: [D Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before repeat at start of section
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:', 'V: [Am Am/G Am/F# FE ] x4', SongBase.entryToUppercase('D'));
+    ts.resultChords(
+        'I: V: D [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before repeat at start of section
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0', '[Am Am/G Am/F# FE ] x4', SongBase.entryToUppercase('D'));
+    ts.resultChords(
+        'I: V: D [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before phrase at start of section
+    ts.startingChords('I: V: Am Am/G Am/F# FE I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0', 'Am Am/G Am/F# FE ', SongBase.entryToUppercase('D'));
+    ts.resultChords('I: V: D Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before phrase at start of section
+    ts.startingChords('I: V: Am Am/G Am/F# FE I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0', 'Am Am/G Am/F# FE ', SongBase.entryToUppercase('D'));
+    ts.resultChords('I: V: D Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  add new row
+    ts.myA.setChordSectionLocationMeasureEndOfRow(ts.myA.currentChordSectionLocation, true);
+    expect(
+        ts.myA.toMarkup().trim(),
+        TestSong.deMusic(
+                'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ')!
+            .trim());
   });
 }

@@ -250,5 +250,7 @@ class Section implements Comparable<Section> {
 
   static final int maxLength = 10; //  fixme: compute
 
+  static final defaultInstance = Section.get(SectionEnum.verse);
+
   static final RegExp sectionRegexp = RegExp('^([a-zA-Z]+)([\\d]*):\\s*,*');
 }

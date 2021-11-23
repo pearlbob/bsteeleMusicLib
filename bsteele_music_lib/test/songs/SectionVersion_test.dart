@@ -68,7 +68,7 @@ void main() {
   });
 
   test('hashcode', () {
-    SectionVersion sectionVersionV = SectionVersion.getDefault();
+    SectionVersion sectionVersionV = SectionVersion.defaultInstance;
     for (Section section in Section.values) {
       logger.i(section.toString());
       for (int i = 0; i < 10; i++) {
@@ -76,8 +76,7 @@ void main() {
         logger.i('section: $section, version: $i');
         expect(
             sectionVersion == sectionVersionV,
-            (section != Section.get(SectionEnum.verse) ||
-                    i != 0) // depends on the default!
+            (section != Section.get(SectionEnum.verse) || i != 0) // depends on the default!
                 ? isFalse
                 : isTrue);
       }
