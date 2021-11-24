@@ -1953,7 +1953,7 @@ class SongBase {
               if (phrase != null && location.hasPhraseIndex) {
                 if (location.hasMeasureIndex) {
                   newLocation = ChordSectionLocation(chordSection.sectionVersion,
-                      phraseIndex: phraseIndex, measureIndex: location.measureIndex + newPhrase.length - 1);
+                      phraseIndex: location.phraseIndex, measureIndex: location.measureIndex + newPhrase.length - 1);
 
                   //     fixme here??: should be add to sectionVersion, not add of measures to phrase
                   return standardEditCleanup(phrase.edit(editType, location.measureIndex, newPhrase), newLocation);
