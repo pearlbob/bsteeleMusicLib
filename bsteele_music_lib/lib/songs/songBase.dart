@@ -1635,10 +1635,9 @@ class SongBase {
       }
     }
 
-    //  default to insert if empty
+    //  all chord sections should have at least an empty phrase
     if (chordSection.phrases.isEmpty) {
       chordSection.phrases.add(Phrase([], 0));
-      //fixme?  editType = MeasureEditType.insert;
     }
 
     //  find the phrase
@@ -1650,9 +1649,7 @@ class SongBase {
         ;
       }
     }
-    if (phrase == null && chordSection.isNotEmpty) {
-      phrase = chordSection.phrases.last;
-    } //  use the default empty list
+    phrase ??= chordSection.phrases.last; //  use the default empty list
 
     bool ret = false;
 
@@ -1693,7 +1690,7 @@ class SongBase {
         newRepeat = measureNode as MeasureRepeat;
         if (newRepeat.isEmpty) {
           //  empty repeat
-          if (phrase != null && location != null && phrase.isRepeat()) {
+          if (location != null && phrase.isRepeat()) {
             //  change repeats
             MeasureRepeat repeat = phrase as MeasureRepeat;
             if (newRepeat.repeats < 2) {
@@ -1727,7 +1724,7 @@ class SongBase {
             return true; //  no change but no change was asked for
           }
 
-          if (phrase != null && !phrase.isEmpty) {
+          if (!phrase.isEmpty) {
             //  convert phrase line to a repeat
             GridCoordinate? minGridCoordinate = getGridCoordinate(location);
             if (minGridCoordinate != null) {
@@ -1794,23 +1791,21 @@ class SongBase {
           }
 
           //  non-empty repeat
-          if (phrase != null) {
-            switch (editType) {
-              case MeasureEditType.delete:
-                return standardEditCleanup(chordSection.deletePhrase(phrase.phraseIndex), location);
-              case MeasureEditType.append:
-                newPhrase.setPhraseIndex(phrase.phraseIndex + 1);
-                return standardEditCleanup(chordSection.add(phrase.phraseIndex + 1, newPhrase),
-                    ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phrase.phraseIndex + 1));
-              case MeasureEditType.insert:
-                newPhrase.setPhraseIndex(phrase.phraseIndex);
-                return standardEditCleanup(chordSection.insert(phrase.phraseIndex, newPhrase), location);
-              case MeasureEditType.replace:
-                newPhrase.setPhraseIndex(phrase.phraseIndex);
-                return standardEditCleanup(
-                    chordSection.deletePhrase(phrase.phraseIndex) && chordSection.add(newPhrase.phraseIndex, newPhrase),
-                    location);
-            }
+          switch (editType) {
+            case MeasureEditType.delete:
+              return standardEditCleanup(chordSection.deletePhrase(phrase.phraseIndex), location);
+            case MeasureEditType.append:
+              newPhrase.setPhraseIndex(phrase.phraseIndex + 1);
+              return standardEditCleanup(chordSection.add(phrase.phraseIndex + 1, newPhrase),
+                  ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phrase.phraseIndex + 1));
+            case MeasureEditType.insert:
+              newPhrase.setPhraseIndex(phrase.phraseIndex);
+              return standardEditCleanup(chordSection.insert(phrase.phraseIndex, newPhrase), location);
+            case MeasureEditType.replace:
+              newPhrase.setPhraseIndex(phrase.phraseIndex);
+              return standardEditCleanup(
+                  chordSection.deletePhrase(phrase.phraseIndex) && chordSection.add(newPhrase.phraseIndex, newPhrase),
+                  location);
           }
         }
         break;
@@ -1853,10 +1848,6 @@ class SongBase {
                   phraseIndex: phraseIndex, measureIndex: newPhrase.length - 1);
               newPhrase.setPhraseIndex(phraseIndex);
               return standardEditCleanup(chordSection.add(phraseIndex, newPhrase), location);
-            }
-
-            if (phrase == null) {
-              break;
             }
 
             if (location != null) {
@@ -1923,10 +1914,6 @@ class SongBase {
               return standardEditCleanup(chordSection.add(phraseIndex, newPhrase), location);
             }
 
-            if (phrase == null) {
-              break;
-            }
-
             if (location != null) {
               //  insert new measures at the given measure location
               if (location.hasMeasureIndex) {
@@ -1950,7 +1937,7 @@ class SongBase {
 
           case MeasureEditType.replace:
             if (location != null) {
-              if (phrase != null && location.hasPhraseIndex) {
+              if (location.hasPhraseIndex) {
                 if (location.hasMeasureIndex) {
                   newLocation = ChordSectionLocation(chordSection.sectionVersion,
                       phraseIndex: location.phraseIndex, measureIndex: location.measureIndex + newPhrase.length - 1);
@@ -1993,7 +1980,7 @@ class SongBase {
       case MeasureNodeType.comment:
         //  add measure to current phrase
         if (location != null) {
-          if (phrase != null && location.hasMeasureIndex) {
+          if (location.hasMeasureIndex) {
             newLocation = location;
             switch (editType) {
               case MeasureEditType.append:
@@ -2013,8 +2000,8 @@ class SongBase {
             return standardEditCleanup(phrase.edit(editType, location.measureIndex, measureNode), newLocation);
           }
 
-          //  add measure to chordSection by creating a new phase
-          if (phrase != null && location.hasPhraseIndex) {
+          //  add measure to chord section by creating a new phase
+          if (location.hasPhraseIndex) {
             List<Measure> measures = [];
             measures.add(measureNode as Measure);
             newPhrase = Phrase(measures, location.phraseIndex);
@@ -2026,8 +2013,10 @@ class SongBase {
                 return standardEditCleanup(chordSection.add(newPhrase.phraseIndex, newPhrase),
                     ChordSectionLocation(location.sectionVersion, phraseIndex: newPhrase.phraseIndex, measureIndex: 0));
               case MeasureEditType.insert:
+                newLocation =
+                    ChordSectionLocation(location.sectionVersion, phraseIndex: newPhrase.phraseIndex, measureIndex: 0);
                 newPhrase.setPhraseIndex(phrase.phraseIndex);
-                return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), location);
+                return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), newLocation);
               case MeasureEditType.replace:
                 newPhrase.setPhraseIndex(phrase.phraseIndex);
                 return standardEditCleanup(
@@ -2035,6 +2024,13 @@ class SongBase {
                     location);
             }
           }
+
+          //  add measure to an empty chord section
+          newPhrase = Phrase([measureNode as Measure], 0);
+          newLocation =
+              ChordSectionLocation(location.sectionVersion, phraseIndex: newPhrase.phraseIndex, measureIndex: 0);
+          newPhrase.setPhraseIndex(phrase.phraseIndex);
+          return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), newLocation);
         }
         break;
       case MeasureNodeType.decoration:
@@ -2062,22 +2058,20 @@ class SongBase {
       case MeasureEditType.append:
         //  promote marker to repeat
         if (location != null) {
-          if (phrase != null) {
-            try {
-              Measure refMeasure = phrase.getMeasure(location.measureIndex);
-              if (refMeasure is MeasureRepeatMarker && phrase.isRepeat()) {
-                MeasureRepeat measureRepeat = phrase as MeasureRepeat;
-                if (refMeasure == measureRepeat.getRepeatMarker()) {
-                  //  appending at the repeat marker forces the section to add a sequenceItem list after the repeat
-                  int phraseIndex = chordSection.indexOf(measureRepeat) + 1;
-                  newPhrase = Phrase([], phraseIndex);
-                  chordSection.phrases.insert(phraseIndex + 1, newPhrase);
-                  phrase = newPhrase;
-                }
+          try {
+            Measure refMeasure = phrase.getMeasure(location.measureIndex);
+            if (refMeasure is MeasureRepeatMarker && phrase.isRepeat()) {
+              MeasureRepeat measureRepeat = phrase as MeasureRepeat;
+              if (refMeasure == measureRepeat.getRepeatMarker()) {
+                //  appending at the repeat marker forces the section to add a sequenceItem list after the repeat
+                int phraseIndex = chordSection.indexOf(measureRepeat) + 1;
+                newPhrase = Phrase([], phraseIndex);
+                chordSection.phrases.insert(phraseIndex + 1, newPhrase);
+                phrase = newPhrase;
               }
-            } catch (e) {
-              //  ignore attempt
             }
+          } catch (e) {
+            //  ignore attempt
           }
 
           if (location.isSection) {
@@ -2115,30 +2109,28 @@ class SongBase {
         //  note: measureNode is ignored, and should be ignored
         if (location != null) {
           if (location.isMeasure) {
-            if (phrase != null) {
-              ret = phrase.deleteAt(location.measureIndex);
-              if (ret) {
-                if (location.measureIndex < phrase.length) {
+            ret = phrase.deleteAt(location.measureIndex);
+            if (ret) {
+              if (location.measureIndex < phrase.length) {
+                location = ChordSectionLocation(chordSection.sectionVersion,
+                    phraseIndex: location.phraseIndex, measureIndex: location.measureIndex);
+                measureNode = findMeasureNodeByLocation(location);
+              } else {
+                if (phrase.length > 0) {
+                  int index = phrase.length - 1;
                   location = ChordSectionLocation(chordSection.sectionVersion,
-                      phraseIndex: location.phraseIndex, measureIndex: location.measureIndex);
+                      phraseIndex: location.phraseIndex, measureIndex: index);
                   measureNode = findMeasureNodeByLocation(location);
                 } else {
-                  if (phrase.length > 0) {
-                    int index = phrase.length - 1;
+                  chordSection.deletePhrase(location.phraseIndex);
+                  if (chordSection.getPhraseCount() > 0) {
                     location = ChordSectionLocation(chordSection.sectionVersion,
-                        phraseIndex: location.phraseIndex, measureIndex: index);
+                        phraseIndex: 0, measureIndex: chordSection.getPhrase(0)!.length - 1);
                     measureNode = findMeasureNodeByLocation(location);
                   } else {
-                    chordSection.deletePhrase(location.phraseIndex);
-                    if (chordSection.getPhraseCount() > 0) {
-                      location = ChordSectionLocation(chordSection.sectionVersion,
-                          phraseIndex: 0, measureIndex: chordSection.getPhrase(0)!.length - 1);
-                      measureNode = findMeasureNodeByLocation(location);
-                    } else {
-                      //  last phase was deleted
-                      location = ChordSectionLocation(chordSection.sectionVersion);
-                      measureNode = findMeasureNodeByLocation(location);
-                    }
+                    //  last phase was deleted
+                    location = ChordSectionLocation(chordSection.sectionVersion);
+                    measureNode = findMeasureNodeByLocation(location);
                   }
                 }
               }

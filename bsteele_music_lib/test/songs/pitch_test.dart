@@ -15,23 +15,22 @@ void main() {
   });
 
   test('testParsing', () {
-    if (true) {
-      //  print table
-      for (Pitch p in Pitch.getPitches()) {
-        StringBuffer sb = StringBuffer();
-        sb.write(p.name);
-        while (sb.length < 4) {
-          sb.write(' ');
-        }
-        if (p.number <= 9) {
-          sb.write(' ');
-        }
-        sb.write(p.number);
+    //  print table
+    for (Pitch p in Pitch.getPitches()) {
+      StringBuffer sb = StringBuffer();
+      sb.write(p.name);
+      while (sb.length < 4) {
         sb.write(' ');
-        sb.write(p.frequency.toStringAsFixed(6));
-        print(sb.toString());
       }
+      if (p.number <= 9) {
+        sb.write(' ');
+      }
+      sb.write(p.number);
+      sb.write(' ');
+      sb.write(p.frequency.toStringAsFixed(6));
+      print(sb.toString());
     }
+
     expect(Pitch.get(PitchEnum.A1).frequency, closeTo(55.0, 1e-20));
     expect(Pitch.get(PitchEnum.E1).frequency, closeTo(41.2034, 1e-4));
     expect(Pitch.get(PitchEnum.A2).frequency, closeTo(110.0, 1e-20));

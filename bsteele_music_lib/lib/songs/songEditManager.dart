@@ -14,61 +14,81 @@ import 'measureNode.dart';
 final ChordSectionLocation defaultLocation = // last resort, better than null
     ChordSectionLocation(SectionVersion.bySection(Section.get(SectionEnum.chorus)));
 
+enum SongEditScale {
+  section,
+  //  phrase,
+  measure,
+}
+
 /// Manage edits for the user interface to simplify its structure
 class SongEditManager {
   SongEditManager(this._song) : _preEditSong = _song;
 
   /// pre edit the song to convert inserts and appends into their resulting edits to aid in the entry of content
-  Song preEdit(EditPoint selectedEditPoint) {
-    var location = selectedEditPoint.location;
+  Song preEdit(EditPoint editPoint) {
+    var location = editPoint.location;
     var measureNode = _song.findMeasureNodeByLocation(location);
 
-    if (location.isSection && measureNode == null) {
-      //  new section
-      measureNode = ChordSection(location.sectionVersion!, []);
-    } else {
-      //  restrict edits to a section add if given a section
-      if (measureNode is ChordSection) {
-        measureNode = _song.suggestNewSection();
-      }
+    var songEditScale = editPoint.songEditScale;
 
-      //  restrict edits to a single measure
-      if (measureNode is Phrase && measureNode.isNotEmpty) {
-        measureNode = measureNode.firstMeasure!.deepCopy();
-      }
+    switch (songEditScale) {
+      case SongEditScale.section:
+        if (location.isSection) {
+          if (measureNode == null) {
+            //  new section
+            measureNode = ChordSection(location.sectionVersion!, []);
+          } else {
+            //  restrict edits to a section add if given a section
+            if (measureNode is ChordSection) {
+              measureNode = _song.suggestNewSection();
+            }
+          }
+        } else {
+          assert(false); //  shouldn't happen
+        }
+        break;
+      case SongEditScale.measure:
+        {
+          //  restrict edits to a single measure
+          if (measureNode is Phrase && measureNode.isNotEmpty) {
+            measureNode = measureNode.firstMeasure!.deepCopy();
+          }
+          //  create new measure if one doesn't exist
+          if (measureNode == null || measureNode.isEmpty) {
+            measureNode = Measure(_song.getBeatsPerBar(), [
+              Chord(_song.key.getMajorScaleChord(), _song.getBeatsPerBar(), _song.getBeatsPerBar(), null,
+                  ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none), true)
+            ]);
+          }
+        }
+        break;
+    }
 
-      //  create new measure if one doesn't exist
-      measureNode ??= Measure(_song.getBeatsPerBar(), [
-        Chord(_song.key.getMajorScaleChord(), _song.getBeatsPerBar(), _song.getBeatsPerBar(), null,
-            ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none), true)
-      ]);
-
-      switch (selectedEditPoint.measureEditType) {
-        case MeasureEditType.replace:
-        case MeasureEditType.delete:
-          //  no work to be done
-          _preEditSong = song;
-          _editPoint = selectedEditPoint;
-          return _preEditSong;
-        case MeasureEditType.insert:
-        case MeasureEditType.append:
-          break;
-      }
+    switch (editPoint.measureEditType) {
+      case MeasureEditType.replace:
+      case MeasureEditType.delete:
+        //  no work to be done
+        _preEditSong = song;
+        _editPoint = editPoint;
+        return _preEditSong;
+      case MeasureEditType.insert:
+      case MeasureEditType.append:
+        break;
     }
 
     //  pre edit required, use a copy
     _preEditSong = song.copySong();
     _preEditSong.setCurrentChordSectionLocation(location);
-    _preEditSong.currentMeasureEditType = selectedEditPoint.measureEditType;
+    _preEditSong.currentMeasureEditType = editPoint.measureEditType;
     if (_preEditSong.editMeasureNode(measureNode)) {
-      _editPoint = EditPoint(_preEditSong.currentChordSectionLocation, onEndOfRow: selectedEditPoint.onEndOfRow);
+      _editPoint = EditPoint(_preEditSong.currentChordSectionLocation, onEndOfRow: editPoint.onEndOfRow);
       if (measureNode is Measure) {
-        switch (selectedEditPoint.measureEditType) {
+        switch (editPoint.measureEditType) {
           case MeasureEditType.insert:
             break;
           case MeasureEditType.append:
             //  append on new row with a single new measure on the new row
-            if (selectedEditPoint.onEndOfRow) {
+            if (editPoint.onEndOfRow) {
               _preEditSong.setChordSectionLocationMeasureEndOfRow(location, true);
               _preEditSong.setChordSectionLocationMeasureEndOfRow(_preEditSong.currentChordSectionLocation, true);
             } else {
@@ -102,12 +122,14 @@ class SongEditManager {
 //  internal class to hold handy data for each point in the chord section edit display
 class EditPoint {
   EditPoint(ChordSectionLocation? loc, {this.measureEditType = MeasureEditType.replace, this.onEndOfRow = false})
-      : location = loc ?? defaultLocation;
+      : location = loc ?? defaultLocation,
+        songEditScale = SongEditScale.measure;
 
   EditPoint.byChordSection(ChordSection chordSection,
       {this.onEndOfRow = false, this.measureEditType = MeasureEditType.replace})
       : location = ChordSectionLocation(chordSection.sectionVersion),
-        measureNode = chordSection;
+        measureNode = chordSection,
+        songEditScale = SongEditScale.section;
 
   bool matches(EditPoint? o) {
     return o != null && location == o.location && measureEditType == o.measureEditType;
@@ -119,6 +141,7 @@ class EditPoint {
         ' loc: ${location.toString()}'
         ', editType: ${Util.enumToString(measureEditType)}'
         ', onEndOfRow: $onEndOfRow'
+        ', scale: ${Util.enumToString(songEditScale)}'
         '${(measureNode == null ? '' : ', measureNode: $measureNode')}'
         '}';
   }
@@ -144,10 +167,11 @@ class EditPoint {
   @override
   int get hashCode => Object.hashAll([location, measureEditType, measureNode]);
 
-  static final EditPoint defaultInstance = EditPoint(ChordSectionLocation.defaultInstance);
+  static final EditPoint defaultInstance = EditPoint.byChordSection(ChordSection(SectionVersion.defaultInstance, []));
 
   ChordSectionLocation location;
   bool onEndOfRow = false;
   MeasureEditType measureEditType = MeasureEditType.replace; //  default
   MeasureNode? measureNode;
+  final SongEditScale songEditScale;
 }

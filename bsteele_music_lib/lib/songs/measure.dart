@@ -277,6 +277,11 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
+  bool get isEmpty {
+    return false;
+  }
+
+  @override
   MeasureNodeType get measureNodeType => MeasureNodeType.measure;
 
   @override
