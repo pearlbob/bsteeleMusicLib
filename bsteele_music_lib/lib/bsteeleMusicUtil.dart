@@ -13,11 +13,11 @@ import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
+import 'package:english_words/english_words.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
 import 'package:string_similarity/string_similarity.dart';
-import 'package:english_words/english_words.dart';
 
 import 'appLogger.dart';
 
@@ -47,6 +47,7 @@ arguments:
 -h                  this help message
 -html               HTML song list
 -longlyrics         select for songs  with long lyrics lines
+-longsections       select for songs  with long sections
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
 -stat               statistics
@@ -268,8 +269,7 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-html':
           {
-            print(
-                '''<!DOCTYPE html>
+            print('''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -296,8 +296,7 @@ coerced to reflect the songlist's last modification for that song.
                   '${song.coverArtist.isNotEmpty ? ' cover by <span class="coverArtist">${song.coverArtist}</span>' : ''}'
                   '</li>');
             }
-            print(
-                '''</ul>
+            print('''</ul>
 </body>
 </html>
 ''');
@@ -325,6 +324,39 @@ coerced to reflect the songlist's last modification for that song.
               SplayTreeSet<Song> sortedSongs = SplayTreeSet();
               for (Song song in longLyrics.keys) {
                 if (longLyrics[song] == i) {
+                  sortedSongs.add(song);
+                }
+              }
+              for (Song song in sortedSongs) {
+                print('"${song.title}" by "${song.artist}"'
+                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                    ': maxLength: $i');
+              }
+            }
+          }
+          break;
+
+        case '-longsections':
+          {
+            Map<Song, int> longSections = {};
+            for (Song song in allSongs) {
+              int maxLength = 0;
+              for (var lyricSection in song.lyricSections) {
+                maxLength = max(maxLength, lyricSection.lyricsLines.length);
+                maxLength =
+                    max(maxLength, song.findChordSectionByLyricSection(lyricSection)?.rowCount(expanded: true) ?? 0);
+              }
+              if (maxLength >= 10) {
+                longSections[song] = maxLength;
+              }
+            }
+
+            SplayTreeSet<int> sortedValues = SplayTreeSet();
+            sortedValues.addAll(longSections.values);
+            for (int i in sortedValues.toList(growable: false).reversed) {
+              SplayTreeSet<Song> sortedSongs = SplayTreeSet();
+              for (Song song in longSections.keys) {
+                if (longSections[song] == i) {
                   sortedSongs.add(song);
                 }
               }
