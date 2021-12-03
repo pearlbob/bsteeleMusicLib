@@ -180,6 +180,7 @@ class SongMetadata {
 
   static void set(SongIdMetadata songIdMetadata) {
     if (!_singleton._idMetadata.add(songIdMetadata)) {
+      //  the metadata already matches a key, so remove the old and try again
       _singleton._idMetadata.remove(songIdMetadata);
       _singleton._idMetadata.add(songIdMetadata);
     }

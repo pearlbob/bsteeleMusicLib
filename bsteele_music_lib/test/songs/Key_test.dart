@@ -1,4 +1,3 @@
-
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
@@ -709,6 +708,21 @@ void main() {
         expect(key.inKey(scaleNote.alias), sn);
         expect(key.inKey(scaleNote), sn);
       }
+    }
+  });
+
+  test('test Gb', () {
+    expect(Key.values.length, KeyEnum.values.length);
+    expect(Key.values.toList().length, KeyEnum.values.length);
+    expect(Key.values.toList().reversed.length, KeyEnum.values.length);
+    var map = Key.values.toList().reversed.map((Key value) {
+      logger.i('Key value: $value');
+      return value;
+    });
+    expect(map.length, KeyEnum.values.length);
+
+    for (var key in Key.values) {
+      logger.i('$key ${key.toMarkup()}');
     }
   });
 }

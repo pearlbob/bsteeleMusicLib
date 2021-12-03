@@ -124,6 +124,13 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
         //  ignore
       }
 
+      //  if it's not one of the above, it's a comment
+
+      //  if strict, no comments allowed
+      if (strict) {
+        throw 'proper measure nodes not found';
+      }
+
       //  consume unused commas
       {
         String s = markedString.remainingStringLimited(10);
@@ -537,7 +544,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   String phrasesToEntry() {
     if (isEmpty) {
-      return '[]';
+      return '  []';
     }
     StringBuffer sb = StringBuffer();
     for (Phrase phrase in _phrases) {

@@ -144,6 +144,14 @@ class MarkedString {
     return _markIndex;
   }
 
+  int getNextWhiteSpaceIndex() {
+    RegExpMatch? m = whiteSpaceRegExp.firstMatch(_string.substring(_index));
+    if (m == null) {
+      return _string.length;
+    }
+    return _index + m.start;
+  }
+
   /// Return the current location to the mark
   void resetToMark() {
     _index = _markIndex;
@@ -245,6 +253,8 @@ class MarkedString {
   int _index = 0;
   int _markIndex = 0;
   final String _string;
+
+  static final RegExp whiteSpaceRegExp = RegExp(r'\s');
 }
 
 class StringTriple {

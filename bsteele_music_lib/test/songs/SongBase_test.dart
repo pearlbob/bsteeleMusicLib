@@ -199,44 +199,104 @@ void main() {
   });
 
   test('testChordSectionEntry', () {
-    SongBase a;
+    {
+      //  empty sections
+      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
+          'i: dude v: bob, bob, bob berand');
 
-    //  empty sections
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
-        'i: dude v: bob, bob, bob berand');
+      expect(
+        a.toMarkup().trim(),
+        'I: []  V: []  T: []',
+      );
+      expect(a.editList(a.parseChordEntry('t: G G C G')), isTrue);
+      expect(a.toMarkup().trim(), 'I: []  V: []  T: G G C G');
+      expect(a.editList(a.parseChordEntry('I: V:  A B C D')), isTrue);
+      expect(
+        a.toMarkup().trim(),
+        'I: V: A B C D  T: G G C G',
+      );
 
-    expect(
-      a.toMarkup().trim(),
-      'I: []  V: []  T: []',
-    );
-    expect(a.editList(a.parseChordEntry('t: G G C G')), isTrue);
-    expect(a.toMarkup().trim(), 'I: []  V: []  T: G G C G');
-    expect(a.editList(a.parseChordEntry('I: V:  A B C D')), isTrue);
-    expect(
-      a.toMarkup().trim(),
-      'I: V: A B C D  T: G G C G',
-    );
+      expect(
+        a.findChordSectionByString('I:')!.toMarkup().trim(),
+        'I: A B C D',
+      );
+      expect(
+        a.findChordSectionByString('V:')!.toMarkup().trim(),
+        'V: A B C D',
+      );
+      expect(a.findChordSectionByString('T:')!.toMarkup().trim(), 'T: G G C G');
 
-    expect(
-      a.findChordSectionByString('I:')!.toMarkup().trim(),
-      'I: A B C D',
-    );
-    expect(
-      a.findChordSectionByString('V:')!.toMarkup().trim(),
-      'V: A B C D',
-    );
-    expect(a.findChordSectionByString('T:')!.toMarkup().trim(), 'T: G G C G');
+      //  auto rows of 4 when 8 or more measures entered at once
+      a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
+          'i: dude v: bob, bob, bob berand');
 
-    //  auto rows of 4 when 8 or more measures entered at once
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
-        'i: dude v: bob, bob, bob berand');
+      expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
-    expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
+      expect(
+        a.findChordSectionByString('I:')!.toMarkup().trim(),
+        'I: A B C D, A B C D,',
+      );
+    }
+    {
+      //  empty sections
+      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
+          'i: dude v: bob, bob, bob berand');
 
-    expect(
-      a.findChordSectionByString('I:')!.toMarkup().trim(),
-      'I: A B C D, A B C D,',
-    );
+      expect(
+        a.toMarkup().trim(),
+        'I: []  V: []  T: []',
+      );
+      var e = SongBase.entryToUppercase('v: a b c d, e e e e/a');
+      expect(e, 'v: A B C D, E E E E/A');
+      expect(a.editList(a.parseChordEntry(e)), isTrue);
+      expect(a.toMarkup().trim(), 'I: []  V: A B C D, E E E E/A  T: []');
+      expect(a.editList(a.parseChordEntry('I: V:  A B C D')), isTrue);
+    }
+
+    {
+      //  multiple sections
+      SongBase a = SongBase.createSongBase(
+          'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v:', 'v: bob, bob, bob berand');
+
+      expect(a.toMarkup().trim(), 'V: []');
+      var e = SongBase.entryToUppercase('i:v: a b c d, e e e e/a');
+      expect(e, 'i:v: A B C D, E E E E/A');
+      expect(a.editList(a.parseChordEntry(e)), isTrue);
+      expect(a.toMarkup().trim(), 'I: V: A B C D, E E E E/A');
+      expect(a.editList(a.parseChordEntry('I: A A A A')), isTrue);
+      expect(a.toMarkup().trim(), 'I: A A A A  V: A B C D, E E E E/A');
+    }
+
+    {
+      //  multiple sections
+      SongBase a = SongBase.createSongBase(
+          'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v:', 'v: bob, bob, bob berand');
+
+      expect(a.toMarkup().trim(), 'V: []');
+      var e = SongBase.entryToUppercase('i:v: a b c d, e e e e/a  c: D c g a/g');
+      expect(e, 'i:v: A B C D, E E E E/A  C: D C G A/G');
+      expect(
+          a.parseChordEntry(e).toString(),
+          '[I:\n'
+          'A B C D, E E E E/A \n'
+          ', V:\n'
+          'A B C D, E E E E/A \n'
+          ', C:\n'
+          'D C G A/G \n'
+          ']');
+      expect(a.editList(a.parseChordEntry(e)), isTrue);
+      expect(a.toMarkup().trim(), 'I: V: A B C D, E E E E/A  C: D C G A/G');
+      expect(a.editList(a.parseChordEntry('I: A A A A')), isTrue);
+      expect(a.toMarkup().trim(), 'I: A A A A  V: A B C D, E E E E/A  C: D C G A/G');
+    }
+
+    {
+      //  unchanged by repetition
+      var e = SongBase.entryToUppercase('i:v: abb b c d#/b, e e esus7 e/a  c: D c g a/g');
+      expect(e, 'i:v: AbB B C D#/B, E E Esus7 E/A  C: D C G A/G');
+      e = SongBase.entryToUppercase(e);
+      expect(e, 'i:v: AbB B C D#/B, E E Esus7 E/A  C: D C G A/G');
+    }
   });
 
   test('testFind', () {
@@ -437,7 +497,7 @@ void main() {
     }
 
     //  test where the current is not necessarily the repeat location
-    {
+        {
       SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
       var size = 12;
       for (var currentIndex = 4; currentIndex < 13; currentIndex++) {
@@ -2490,6 +2550,27 @@ o: end here''');
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'v: G G G G, C C G G, D C G D', 'v:');
       _testSongMomentToGrid(a);
+    }
+  });
+
+  test('test songBase validateChords', () {
+    Logger.level = Level.info;
+
+    int beatsPerBar = 4;
+    // expect(SongBase.validateChords('', beatsPerBar), null);
+    // expect(SongBase.validateChords('i: A', beatsPerBar), null);
+    var markedString = SongBase.validateChords(
+        SongBase.entryToUppercase('i: d c g g, [ A B c/f# d/gb ] x4 v: [ C F ] x14 asus7 ajklm b C D'), beatsPerBar);
+    if (markedString == null) {
+      expect(markedString, isNotNull); //  fail
+    } else {
+      logger.i('m: \'$markedString\'');
+
+      expect(markedString.toString(), 'jklm B C D');
+      expect(markedString.getMark(), 55);
+      expect(markedString.getNextWhiteSpaceIndex(), 59);
+      expect(
+          markedString.remainingStringLimited(markedString.getNextWhiteSpaceIndex() - markedString.getMark()), 'jklm');
     }
   });
 }

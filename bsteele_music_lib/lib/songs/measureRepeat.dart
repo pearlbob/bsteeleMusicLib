@@ -322,7 +322,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toEntry() {
-    return '[' + (measures.isEmpty ? '' : super.toEntry()) + '] x' + repeats.toString() + '\n ';
+    return '  [' + (measures.isEmpty ? '' : super.toEntry()) + '] x' + repeats.toString() + '\n ';
   }
 
   @override

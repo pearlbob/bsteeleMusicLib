@@ -596,13 +596,14 @@ class Phrase extends MeasureNode {
   @override
   String toEntry() {
     if (_measures.isEmpty) {
-      return '[]';
+      return '  []';
     }
 
     StringBuffer sb = StringBuffer();
+    sb.write('  ');
     for (Measure measure in _measures) {
       sb.write(measure.toEntry());
-      sb.write(' ');
+      sb.write(measure.endOfRow ? '  ' : ' ');
     }
     return sb.toString();
   }

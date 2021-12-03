@@ -725,6 +725,40 @@ class SongBase {
   }
 
   /// Parse the current string representation of the song's chords into the song internal structures.
+  static MarkedString? validateChords(final String chords, int beatsPerBar) {
+    if (chords.isEmpty) {
+      return null;
+    }
+
+    SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
+    MarkedString markedString = MarkedString(chords);
+    ChordSection chordSection;
+    while (markedString.isNotEmpty) {
+      markedString.stripLeadingWhitespace();
+      if (markedString.isEmpty) {
+        break;
+      }
+      logger.i(markedString.toString());
+
+      try {
+        chordSection = ChordSection.parse(markedString, beatsPerBar, true);
+        if (chordSection.phrases.isEmpty) {
+          emptyChordSections.add(chordSection);
+        } else if (emptyChordSections.isNotEmpty) {
+          //  share the common measure sequence items
+          for (ChordSection wasEmptyChordSection in emptyChordSections) {
+            wasEmptyChordSection.setPhrases(chordSection.phrases);
+          }
+          emptyChordSections.clear();
+        }
+      } catch (e) {
+        return markedString;
+      }
+    }
+    return null;
+  }
+
+  /// Parse the current string representation of the song's chords into the song internal structures.
   void _parseChords(final String? chords) {
     _chords = chords ?? ''; //  safety only
     _clearCachedValues(); //  force lazy eval
@@ -1365,8 +1399,9 @@ class SongBase {
     return sb.toString();
   }
 
-  String toMarkup() {
-    if (_chordsAsMarkup != null) {
+  String toMarkup({bool asEntry = false}) {
+    //  lazy shortcut
+    if (!asEntry && _chordsAsMarkup != null) {
       return _chordsAsMarkup!;
     }
 
@@ -1404,12 +1439,13 @@ class SongBase {
           sb.write(' ');
         }
       }
+      sb.write(asEntry ? '\n' : '');
 
       //  chord section phrases (only) to output
       if (chordSection != null) {
-        sb.write(chordSection.phrasesToMarkup());
+        sb.write(asEntry ? chordSection.phrasesToEntry() : chordSection.phrasesToMarkup());
       }
-      sb.write(' '); //  for human readability only
+      sb.write(asEntry ? '\n' : ' '); //  for human readability only
     }
     _chordsAsMarkup = sb.toString();
     return _chordsAsMarkup!;
