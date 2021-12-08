@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
+import 'package:meta/meta.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -605,11 +606,6 @@ class SongBase {
     for (int i = 0; i < entry.length; i++) {
       String c = entry[i];
 
-      //  map newlines!
-      if (c == '\n') {
-        c = ',';
-      }
-
       switch (state) {
         case UpperCaseState.flatIsPossible:
           if (c == 'b') {
@@ -724,10 +720,11 @@ class SongBase {
     return sb.toString();
   }
 
-  /// Parse the current string representation of the song's chords into the song internal structures.
+  /// Validate the string representation of a chord entry
+  /// Return null if valid.  Return a marked string of the offending portion if not valid.
   static MarkedString? validateChords(final String chords, int beatsPerBar) {
     if (chords.isEmpty) {
-      return null;
+      return null; //  valid
     }
 
     SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
@@ -738,7 +735,6 @@ class SongBase {
       if (markedString.isEmpty) {
         break;
       }
-      logger.i(markedString.toString());
 
       try {
         chordSection = ChordSection.parse(markedString, beatsPerBar, true);
@@ -752,9 +748,28 @@ class SongBase {
           emptyChordSections.clear();
         }
       } catch (e) {
-        return markedString;
+        return markedString; //  invalid
       }
     }
+    return null; //  valid
+  }
+
+  /// Validate the string representation of a potential lyrics entry for the current song.
+  /// Return null if valid.  Return a marked string of the offending portion if not valid.
+  LyricParseException? validateLyrics(final String lyrics) {
+    if (lyrics.isEmpty) {
+      return null;
+    }
+    try {
+      List<LyricSection> lyricSections = _parseLyricSections(lyrics, strict: true);
+      if (lyricSections.isEmpty) {
+        throw LyricParseException('No lyric section given', MarkedString(lyrics.substring(0, min(lyrics.length, 20))));
+      }
+      logger.v('lyricSections: $lyricSections');
+    } on LyricParseException catch (e) {
+      return e;
+    }
+
     return null;
   }
 
@@ -1273,13 +1288,13 @@ class SongBase {
   }
 
   /// Find all matches to the given section version, including the given section version itself
-  SplayTreeSet<SectionVersion> matchingSectionVersions(SectionVersion? multSectionVersion) {
+  SplayTreeSet<SectionVersion> matchingSectionVersions(SectionVersion? multipleSectionVersion) {
     SplayTreeSet<SectionVersion> ret = SplayTreeSet();
-    if (multSectionVersion == null) {
+    if (multipleSectionVersion == null) {
       return ret;
     }
-    ChordSection? multChordSection = findChordSectionBySectionVersion(multSectionVersion);
-    if (multChordSection == null) {
+    ChordSection? multipleChordSection = findChordSectionBySectionVersion(multipleSectionVersion);
+    if (multipleChordSection == null) {
       return ret;
     }
 
@@ -1288,9 +1303,9 @@ class SongBase {
       var values = _getChordSectionMap().values;
       set.addAll(values);
       for (ChordSection chordSection in set) {
-        if (multSectionVersion == chordSection.sectionVersion) {
-          ret.add(multSectionVersion);
-        } else if (chordSection.phrases == multChordSection.phrases) {
+        if (multipleSectionVersion == chordSection.sectionVersion) {
+          ret.add(multipleSectionVersion);
+        } else if (chordSection.phrases == multipleChordSection.phrases) {
           ret.add(chordSection.sectionVersion);
         }
       }
@@ -2483,13 +2498,22 @@ class SongBase {
     if (!_isLyricsParseRequired) {
       return;
     }
+
+    _lyricSections = _parseLyricSections(_rawLyrics);
+
+    //  safety with lazy eval
+    _clearCachedValues();
+    _isLyricsParseRequired = false;
+  }
+
+  List<LyricSection> _parseLyricSections(final String lyrics, {bool strict = false}) {
     int state = 0;
     StringBuffer lyricsBuffer = StringBuffer();
     LyricSection? lyricSection;
 
-    _lyricSections = [];
+    List<LyricSection> lyricSections = [];
 
-    MarkedString markedString = MarkedString(_rawLyrics);
+    MarkedString markedString = MarkedString(lyrics);
 
     //  strip initial blank lines
     markedString.stripLeadingWhitespace();
@@ -2508,15 +2532,22 @@ class SongBase {
       if (state == 1) {
         try {
           //  try to find the section version marker
+          markedString.mark();
           SectionVersion sectionVersion = SectionVersion.parse(markedString);
 
           //  finish any lyric section now that we have a new section version to parse
           if (lyricSection != null) {
             lyricSection.stripLastEmptyLyricLine();
-            _lyricSections.add(lyricSection);
+            lyricSections.add(lyricSection);
           }
 
-          lyricSection = LyricSection(sectionVersion, _lyricSections.length);
+          var chordSection = findChordSectionBySectionVersion(sectionVersion);
+          if (chordSection == null && strict) {
+            markedString.resetToMark();
+            throw LyricParseException('Section version not found', markedString);
+          }
+
+          lyricSection = LyricSection(sectionVersion, lyricSections.length);
 
           markedString.stripLeadingSpaces();
 
@@ -2526,9 +2557,14 @@ class SongBase {
           }
           state = 1; //  collect leading white space on first line
           continue;
-        } catch (e) {
+        } on String catch (e) {
           logger.v('not section: ${markedString.remainingStringLimited(25)}');
-          //  ignore
+          //  ignore, this is typical of lyrics lines
+        } catch (e) {
+          if (strict) {
+            //  rethrow the parse exception
+            rethrow;
+          }
         }
         state = 2;
       }
@@ -2539,8 +2575,8 @@ class SongBase {
         switch (c) {
           case '\n':
           case '\r':
-            //  insert verse if missing the section declaration
-            lyricSection ??= LyricSection(Section.getDefaultVersion(), _lyricSections.length);
+          //  insert verse if missing the section declaration
+            lyricSection ??= LyricSection(Section.getDefaultVersion(), lyricSections.length);
 
             //  add the lyrics
             if (lyricsBuffer.isNotEmpty) {
@@ -2554,6 +2590,10 @@ class SongBase {
             state = 0;
             break;
           default:
+            if (strict && lyricSection == null) {
+              //  if strict, we must have a section prior to non-white characters
+              throw LyricParseException('Lyrics prior to section version', markedString);
+            }
             lyricsBuffer.write(c);
             break;
         }
@@ -2566,18 +2606,16 @@ class SongBase {
       markedString.consume(1);
     }
 
-    //  last one is not terminated by another section
+    //  the last one is not terminated by another section
     if (lyricSection != null) {
       if (lyricsBuffer.isNotEmpty) {
         lyricSection.addLine(lyricsBuffer.toString());
       }
       lyricSection.stripLastEmptyLyricLine();
-      _lyricSections.add(lyricSection);
+      lyricSections.add(lyricSection);
     }
 
-    //  safety with lazy eval
-    _clearCachedValues();
-    _isLyricsParseRequired = false;
+    return lyricSections;
   }
 
   /// Debug only!  a string form of the song chord section grid
@@ -3896,4 +3934,12 @@ class SongBase {
   //SplayTreeSet<Metadata> metadata = new SplayTreeSet();
   static final String defaultUser = 'Unknown';
   static final bool _debugging = false; //  true false
+}
+
+@immutable
+class LyricParseException {
+  LyricParseException(this.message, this.markedString);
+
+  final String message;
+  final MarkedString markedString;
 }

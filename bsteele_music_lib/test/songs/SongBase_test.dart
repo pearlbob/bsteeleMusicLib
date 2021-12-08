@@ -497,7 +497,7 @@ void main() {
     }
 
     //  test where the current is not necessarily the repeat location
-        {
+    {
       SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
       var size = 12;
       for (var currentIndex = 4; currentIndex < 13; currentIndex++) {
@@ -2554,23 +2554,78 @@ o: end here''');
   });
 
   test('test songBase validateChords', () {
-    Logger.level = Level.info;
-
     int beatsPerBar = 4;
-    // expect(SongBase.validateChords('', beatsPerBar), null);
-    // expect(SongBase.validateChords('i: A', beatsPerBar), null);
-    var markedString = SongBase.validateChords(
-        SongBase.entryToUppercase('i: d c g g, [ A B c/f# d/gb ] x4 v: [ C F ] x14 asus7 ajklm b C D'), beatsPerBar);
-    if (markedString == null) {
-      expect(markedString, isNotNull); //  fail
-    } else {
-      logger.i('m: \'$markedString\'');
+    if (true) {
+      expect(SongBase.validateChords('', beatsPerBar), null);
+      expect(SongBase.validateChords('i: A', beatsPerBar), null);
+      {
+        var markedString = SongBase.validateChords(
+            SongBase.entryToUppercase('i: d c g g, [ A B c/f# d/gb ] x4 v: [ C F ] x14 asus7 ajklm b C D'),
+            beatsPerBar);
+        if (markedString == null) {
+          expect(markedString, isNotNull); //  fail
+        } else {
+          logger.i('m: \'$markedString\'');
 
-      expect(markedString.toString(), 'jklm B C D');
-      expect(markedString.getMark(), 55);
-      expect(markedString.getNextWhiteSpaceIndex(), 59);
-      expect(
-          markedString.remainingStringLimited(markedString.getNextWhiteSpaceIndex() - markedString.getMark()), 'jklm');
+          expect(markedString.toString(), 'jklm B C D');
+          expect(markedString.getMark(), 55);
+          expect(markedString.getNextWhiteSpaceIndex(), 59);
+          expect(markedString.remainingStringLimited(markedString.getNextWhiteSpaceIndex() - markedString.getMark()),
+              'jklm');
+        }
+      }
+    }
+    {
+      var chordEntry = '''
+i:
+  d c g g
+  [ A B c/f# d/gb ] x4
+v:
+ [ C F ] x14
+ asus7 ajklm b
+ C D
+''';
+      var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
+      if (markedString == null) {
+        expect(markedString, isNotNull); //  fail
+      } else {
+        logger.i('m: \'$markedString\'');
+        assert(markedString.toString().startsWith('jklm '));
+        expect(markedString.getMark(), 60);
+        expect(markedString.getNextWhiteSpaceIndex(), 64);
+        var error = markedString.remainingStringLimited(markedString.getNextWhiteSpaceIndex() - markedString.getMark());
+        expect(error, 'jklm');
+      }
+    }
+  });
+
+  test('test songBase validateLyrics', () {
+    int beatsPerBar = 4;
+    {
+      //  empty lyrics
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'v: G G G G, C C G G, D C G D', 'v: foobar');
+      expect(a.validateLyrics(''), null);
+      expect(a.validateLyrics('no section here').runtimeType, LyricParseException);
+      expect(a.validateLyrics('no section here')?.message, 'Lyrics prior to section version');
+      expect(a.validateLyrics('no section here  v: foo').runtimeType, LyricParseException);
+      expect(a.validateLyrics('no section here  v: foo')?.message, 'Lyrics prior to section version');
+
+      var lyrics = '    v:\n foo\n';
+      expect(a.validateLyrics(lyrics), null); //  no error
+
+      lyrics = 'no\n  v:\n foo\n';
+      expect(a.validateLyrics(lyrics).runtimeType, LyricParseException);
+      expect(a.validateLyrics(lyrics)?.message, 'Lyrics prior to section version');
+      expect(a.validateLyrics(lyrics)?.markedString.toString(), 'no\n  v:\n foo\n');
+
+      expect(a.validateLyrics('herev: foo').runtimeType, LyricParseException);
+      expect(a.validateLyrics('herev: foo')?.message, 'Lyrics prior to section version');
+      expect(a.validateLyrics('herev: foo')?.markedString.toString(), 'herev: foo');
+
+      expect(a.validateLyrics('v: lkf'), null); // no error
+      expect(a.validateLyrics('i: lkf').runtimeType, LyricParseException);
+      expect(a.validateLyrics('i: lkf')?.message, 'Section version not found');
     }
   });
 }
