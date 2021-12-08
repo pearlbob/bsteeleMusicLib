@@ -727,6 +727,7 @@ class SongBase {
       return null; //  valid
     }
 
+    SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>();
     SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
     MarkedString markedString = MarkedString(chords);
     ChordSection chordSection;
@@ -737,19 +738,32 @@ class SongBase {
       }
 
       try {
+        markedString.mark();
         chordSection = ChordSection.parse(markedString, beatsPerBar, true);
-        if (chordSection.phrases.isEmpty) {
+        if (chordSection.isEmpty) {
           emptyChordSections.add(chordSection);
-        } else if (emptyChordSections.isNotEmpty) {
-          //  share the common measure sequence items
-          for (ChordSection wasEmptyChordSection in emptyChordSections) {
-            wasEmptyChordSection.setPhrases(chordSection.phrases);
+        } else {
+          if (emptyChordSections.isNotEmpty) {
+            //  share the common measure sequence items
+            for (ChordSection wasEmptyChordSection in emptyChordSections) {
+              wasEmptyChordSection.setPhrases(chordSection.phrases);
+            }
+            chordSections.addAll(emptyChordSections);
+            emptyChordSections.clear();
           }
-          emptyChordSections.clear();
+          chordSections.add(chordSection);
+          logger.i('chordSection: ${chordSection}');
         }
       } catch (e) {
-        return markedString; //  invalid
+        markedString.resetToMark();
+        return markedString; //  invalid entry
       }
+    }
+    if (emptyChordSections.isNotEmpty) {
+      return MarkedString(emptyChordSections.first.toMarkup());
+    }
+    for (var section in chordSections) {
+      logger.i('entry section: $section');
     }
     return null; //  valid
   }
@@ -760,14 +774,27 @@ class SongBase {
     if (lyrics.isEmpty) {
       return null;
     }
+    List<LyricSection> lyricSections;
     try {
-      List<LyricSection> lyricSections = _parseLyricSections(lyrics, strict: true);
+      lyricSections = _parseLyricSections(lyrics, strict: true);
       if (lyricSections.isEmpty) {
         throw LyricParseException('No lyric section given', MarkedString(lyrics.substring(0, min(lyrics.length, 20))));
       }
       logger.v('lyricSections: $lyricSections');
     } on LyricParseException catch (e) {
       return e;
+    }
+
+    //  look for unused sections
+    {
+      var sectionVersions = SplayTreeSet<SectionVersion>();
+      sectionVersions.addAll(_getChordSectionMap().keys);
+      for (var lyricSection in lyricSections) {
+        sectionVersions.remove(lyricSection.sectionVersion);
+      }
+      if (sectionVersions.isNotEmpty) {
+        return LyricParseException('Chord section unused:', MarkedString(sectionVersions.first.toString()));
+      }
     }
 
     return null;
@@ -793,6 +820,8 @@ class SongBase {
         try {
           chordSection = ChordSection.parse(markedString, timeSignature.beatsPerBar, false);
           if (chordSection.phrases.isEmpty) {
+            //  allow the parsing of sections with no measures
+            //  otherwise it will be considered identical to the following section
             emptyChordSections.add(chordSection);
           } else if (emptyChordSections.isNotEmpty) {
             //  share the common measure sequence items
@@ -844,7 +873,7 @@ class SongBase {
           chordSection = ChordSection.parse(markedString, timeSignature.beatsPerBar, true);
 
           //  look for multiple sections defined at once
-          if (chordSection.phrases.isEmpty) {
+          if (chordSection.isEmpty) {
             emptyChordSections.add(chordSection);
             continue;
           } else if (emptyChordSections.isNotEmpty) {
@@ -2575,7 +2604,7 @@ class SongBase {
         switch (c) {
           case '\n':
           case '\r':
-          //  insert verse if missing the section declaration
+        //  insert verse if missing the section declaration
             lyricSection ??= LyricSection(Section.getDefaultVersion(), lyricSections.length);
 
             //  add the lyrics

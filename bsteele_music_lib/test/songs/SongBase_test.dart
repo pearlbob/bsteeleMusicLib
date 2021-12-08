@@ -2555,24 +2555,52 @@ o: end here''');
 
   test('test songBase validateChords', () {
     int beatsPerBar = 4;
-    if (true) {
-      expect(SongBase.validateChords('', beatsPerBar), null);
-      expect(SongBase.validateChords('i: A', beatsPerBar), null);
-      {
-        var markedString = SongBase.validateChords(
-            SongBase.entryToUppercase('i: d c g g, [ A B c/f# d/gb ] x4 v: [ C F ] x14 asus7 ajklm b C D'),
-            beatsPerBar);
-        if (markedString == null) {
-          expect(markedString, isNotNull); //  fail
-        } else {
-          logger.i('m: \'$markedString\'');
 
-          expect(markedString.toString(), 'jklm B C D');
-          expect(markedString.getMark(), 55);
-          expect(markedString.getNextWhiteSpaceIndex(), 59);
-          expect(markedString.remainingStringLimited(markedString.getNextWhiteSpaceIndex() - markedString.getMark()),
-              'jklm');
-        }
+    {
+      //  don't allow empty chord sections
+      var chordEntry = '''
+i: A B C D , []
+''';
+      var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
+      expect(markedString, isNotNull);
+      expect(markedString.toString(), ']\n');
+      expect(markedString!.getMark(), 14);
+    }
+    {
+      //  don't allow empty chord sections
+      var chordEntry = '''
+i:
+''';
+      var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
+      expect(markedString, isNotNull);
+      expect(markedString.toString(), 'I: [] ');
+    }
+    {
+      //  don't allow empty chord phrase sections
+      var chordEntry = '''
+i: []
+''';
+      var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
+      expect(markedString, isNotNull);
+      expect(markedString.toString(), ']\n');
+      expect(markedString!.getMark(), 4);
+    }
+
+    expect(SongBase.validateChords('', beatsPerBar), null);
+    expect(SongBase.validateChords('i: A', beatsPerBar), null);
+    {
+      var markedString = SongBase.validateChords(
+          SongBase.entryToUppercase('i: d c g g, [ A B c/f# d/gb ] x4 v: [ C F ] x14 asus7 ajklm b C D'), beatsPerBar);
+      if (markedString == null) {
+        expect(markedString, isNotNull); //  fail
+      } else {
+        logger.i('m: \'$markedString\'');
+
+        expect(markedString.toString(), 'jklm B C D');
+        expect(markedString.getMark(), 55);
+        expect(markedString.getNextWhiteSpaceIndex(), 59);
+        expect(markedString.remainingStringLimited(markedString.getNextWhiteSpaceIndex() - markedString.getMark()),
+            'jklm');
       }
     }
     {
@@ -2611,21 +2639,137 @@ v:
       expect(a.validateLyrics('no section here  v: foo').runtimeType, LyricParseException);
       expect(a.validateLyrics('no section here  v: foo')?.message, 'Lyrics prior to section version');
 
+      //  non-empty lyrics
       var lyrics = '    v:\n foo\n';
       expect(a.validateLyrics(lyrics), null); //  no error
 
+      //  missing lead section
       lyrics = 'no\n  v:\n foo\n';
       expect(a.validateLyrics(lyrics).runtimeType, LyricParseException);
       expect(a.validateLyrics(lyrics)?.message, 'Lyrics prior to section version');
       expect(a.validateLyrics(lyrics)?.markedString.toString(), 'no\n  v:\n foo\n');
 
+      //  damaged section
       expect(a.validateLyrics('herev: foo').runtimeType, LyricParseException);
       expect(a.validateLyrics('herev: foo')?.message, 'Lyrics prior to section version');
       expect(a.validateLyrics('herev: foo')?.markedString.toString(), 'herev: foo');
 
+      //  missing chords
       expect(a.validateLyrics('v: lkf'), null); // no error
       expect(a.validateLyrics('i: lkf').runtimeType, LyricParseException);
       expect(a.validateLyrics('i: lkf')?.message, 'Section version not found');
+
+      //  multiple sections
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearl bob', 'i:v: G G G G, C C G G, D C G D', 'v: foobar');
+      lyrics = 'i: no\n  v:\n foo\n';
+      expect(a.validateLyrics('i:v: lkf'), null); // no error
+
+      //  multiple sections, empty last lyrics
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearl bob', 'i:v: G G G G, C C G G, D C G D', 'v: foobar');
+      lyrics = 'i: no\n  v:\n foo\ni:';
+      expect(a.validateLyrics('i:v: lkf'), null); // no error
+
+      //  unused chord section
+      lyrics = 'i: no\n bar bar';
+      expect(a.validateLyrics(lyrics).runtimeType, LyricParseException);
+      expect(a.validateLyrics(lyrics)?.message, 'Chord section unused:');
+      expect(a.validateLyrics(lyrics)?.markedString.toString(), 'V:');
+    }
+  });
+
+  test('test songBase toMarkup as entry', () {
+    int beatsPerBar = 4;
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'v: []', 'v: foobar');
+      expect(
+          a.toMarkup(asEntry: true),
+          'V: \n'
+          '  []\n'
+          '');
+    }
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'v: [] c: []', 'v: foobar');
+      expect(
+          a.toMarkup(asEntry: true),
+          'V: \n'
+          '  []\n'
+          'C: \n'
+          '  []\n'
+          '');
+    }
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'v: G G G G, C C G G, D C G D', 'v: foobar');
+      expect(
+          a.toMarkup(asEntry: true),
+          'V: \n'
+          '  G G G G\n'
+          '  C C G G\n'
+          '  D C G D\n'
+          '\n'
+          '');
+    }
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'i: v: G G G G, C C G G, D C G D', 'i: (instrumental) v: foobar');
+      expect(
+          a.toMarkup(asEntry: true),
+          'I: V: \n'
+          '  G G G G\n'
+          '  C C G G\n'
+          '  D C G D\n'
+          '\n'
+          '');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: [ A B C D ] x2 v: G G G G, [C C G G]x4 D C G D',
+          'i: (instrumental) v: foobar');
+      expect(
+          a.toMarkup(asEntry: true),
+          'I: \n'
+          ' [A B C D] x2\n'
+          '\n'
+          'V: \n'
+          '  G G G G\n'
+          ' [C C G G] x4\n'
+          '  D C G D\n'
+          '\n');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          'i: (instrumental) v: foobar');
+      expect(
+          a.toMarkup(asEntry: true),
+          'I: \n'
+          ' [A B C D] x2\n'
+          '\n'
+          'V: \n'
+          ' [G G G G\n'
+          '  C C G G\n'
+          '  D C G D] x4\n'
+          '\n');
     }
   });
 }

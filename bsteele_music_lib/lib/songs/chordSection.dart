@@ -190,12 +190,21 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       throw "can't figure out: " + markedString.toString(); //  all whitespace
     }
 
-//  don't assume every line has an eol
+    //  don't assume every line has an eol
     for (Measure m in lineMeasures) {
       measures.add(m);
     }
     if (measures.isNotEmpty) {
       phrases.add(Phrase(measures, phrases.length));
+    }
+
+    if (strict) {
+      //  don't allow empty phrases
+      for (var phrase in phrases) {
+        if (phrase.isEmpty) {
+          throw 'Empty phrases not allowed';
+        }
+      }
     }
 
     ChordSection ret = ChordSection(sectionVersion, phrases);

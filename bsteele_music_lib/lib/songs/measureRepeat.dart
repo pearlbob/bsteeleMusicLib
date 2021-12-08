@@ -322,7 +322,20 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toEntry() {
-    return '  [' + (measures.isEmpty ? '' : super.toEntry()) + '] x' + repeats.toString() + '\n ';
+    if (measures.isEmpty) {
+      return '  [] x$repeats\n';
+    }
+
+    StringBuffer sb = StringBuffer();
+    sb.write(' [');
+    for (Measure measure in measures) {
+      sb.write(measure.toEntry());
+      if (!identical(measure, measures.last)) {
+        sb.write(measure.endOfRow ? '  ' : ' ');
+      }
+    }
+    sb.writeln('] x$repeats');
+    return sb.toString();
   }
 
   @override

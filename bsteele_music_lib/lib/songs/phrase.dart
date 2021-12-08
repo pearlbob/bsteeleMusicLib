@@ -603,8 +603,11 @@ class Phrase extends MeasureNode {
     sb.write('  ');
     for (Measure measure in _measures) {
       sb.write(measure.toEntry());
-      sb.write(measure.endOfRow ? '  ' : ' ');
+      if (!identical(measure, measures.last)) {
+        sb.write(measure.endOfRow ? '  ' : ' ');
+      }
     }
+    sb.writeln('');
     return sb.toString();
   }
 

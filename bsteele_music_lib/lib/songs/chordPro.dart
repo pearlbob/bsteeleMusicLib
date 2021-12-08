@@ -54,8 +54,7 @@ class ChordPro {
 
     StringBuffer lyrics = StringBuffer();
 
-
-  //  map the identical sections together
+    //  map the identical sections together
     //  add a version number when required
     {
       Map<Section, int> sectionCounts = {};
@@ -105,7 +104,7 @@ class ChordPro {
       StringBuffer sb = StringBuffer();
       for (var cs in chordSections) {
         //  deal with empty sections
-        if (cs.phrases.isEmpty || cs.phrases.first.isEmpty) {
+        if (cs.isEmpty) {
           //  put in an blank measure just to get the lyics out
           sb.write('${cs.sectionVersion}\n\tX\n');
         } else {
@@ -337,7 +336,7 @@ class ChordPro {
                 Measure.parseString(match.group(1) ?? '', _song.timeSignature.beatsPerBar, endOfRow: false);
             lineMeasures.add(measure);
             logger.d('   measure: ${measure.toMarkup()} <${match.group(1)}>,<${match.group(2)}>');
-              lineLyrics.write('${match.group(2).toString().trim()} | ');
+            lineLyrics.write('${match.group(2).toString().trim()} | ');
           } catch (e) {
             //  not looking like a section or measures, punt it to the user as lyrics
             logger.i('   NOT measure: <${match.group(1)}>, <${match.group(2)}>');
@@ -347,7 +346,7 @@ class ChordPro {
         }
       }
 
-        lyricsLines.add(lineLyrics.toString().replaceAll(verticalBarEndRegExp, ''));
+      lyricsLines.add(lineLyrics.toString().replaceAll(verticalBarEndRegExp, ''));
       if (lineMeasures.isNotEmpty) {
         lineMeasures.last.endOfRow = true;
         measures.addAll(lineMeasures);
