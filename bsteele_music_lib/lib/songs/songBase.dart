@@ -727,7 +727,6 @@ class SongBase {
       return null; //  valid
     }
 
-    SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>();
     SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
     MarkedString markedString = MarkedString(chords);
     ChordSection chordSection;
@@ -748,11 +747,8 @@ class SongBase {
             for (ChordSection wasEmptyChordSection in emptyChordSections) {
               wasEmptyChordSection.setPhrases(chordSection.phrases);
             }
-            chordSections.addAll(emptyChordSections);
             emptyChordSections.clear();
           }
-          chordSections.add(chordSection);
-          logger.i('chordSection: ${chordSection}');
         }
       } catch (e) {
         markedString.resetToMark();
@@ -761,9 +757,6 @@ class SongBase {
     }
     if (emptyChordSections.isNotEmpty) {
       return MarkedString(emptyChordSections.first.toMarkup());
-    }
-    for (var section in chordSections) {
-      logger.i('entry section: $section');
     }
     return null; //  valid
   }
