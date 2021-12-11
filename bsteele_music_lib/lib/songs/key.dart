@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
+
 import 'chordDescriptor.dart';
 import 'musicConstants.dart';
 
@@ -152,7 +153,6 @@ class Key implements Comparable<Key> {
   static final double bassStaffTop = _staffSpacesFromA0(bassStaffTopPitch);
   static final bass8vbStaffTopPitch = Pitch.get(PitchEnum.A2);
   static final double bass8vbStaffTop = _staffSpacesFromA0(bass8vbStaffTopPitch);
-
 
   static double _staffSpacesFromA0(Pitch pitch) {
     return (pitch.scaleNumber +
@@ -499,8 +499,7 @@ class Key implements Comparable<Key> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is Key && runtimeType == other.runtimeType && _keyEnum == other._keyEnum;
+      identical(this, other) || other is Key && runtimeType == other.runtimeType && _keyEnum == other._keyEnum;
 
   @override
   int get hashCode => _keyEnum.hashCode;
@@ -508,6 +507,10 @@ class Key implements Comparable<Key> {
   /// Return true if this key is a sharp key.
   /// That is, true if the key accidental is sharp.
   bool get isSharp => _keyValue > 0;
+
+  String toJson() {
+    return '"key": ${halfStep}';
+  }
 
   /// Returns the name of this key in a formal format using UTF-8.
   /// That is flats and sharps are expressed in their musical font character

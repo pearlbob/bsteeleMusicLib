@@ -46,6 +46,7 @@ arguments:
 -f                  force file writes over existing files
 -h                  this help message
 -html               HTML song list
+-list               list all songs
 -longlyrics         select for songs  with long lyrics lines
 -longsections       select for songs  with long sections
 -ninjam             select for ninjam friendly songs
@@ -300,6 +301,12 @@ coerced to reflect the songlist's last modification for that song.
 </body>
 </html>
 ''');
+          }
+          break;
+
+        case '-list':
+          for (Song song in allSongs) {
+            print('${song.title} by ${song.title}, songId: ${song.songId}');
           }
           break;
 
