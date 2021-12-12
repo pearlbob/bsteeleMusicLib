@@ -139,9 +139,9 @@ class EditPoint {
   String toString() {
     return 'EditPoint{'
         ' loc: ${location.toString()}'
-        ', editType: ${Util.enumToString(measureEditType)}'
+        ', editType: ${Util.enumName(measureEditType)}'
         ', onEndOfRow: $onEndOfRow'
-        ', scale: ${Util.enumToString(songEditScale)}'
+        ', scale: ${Util.enumName(songEditScale)}'
         '${(measureNode == null ? '' : ', measureNode: $measureNode')}'
         '}';
   }

@@ -125,6 +125,9 @@ class AllSongPerformances {
   }
 
   void addSongPerformance(SongPerformance songPerformance) {
+    //  clear the pervious song performance.  needed to change auxiliary data such as key and bpm
+    _allSongPerformances.remove(songPerformance);
+
     _allSongPerformances.add(songPerformance);
     songPerformance.song = songMap[songPerformance._songIdAsString];
   }
@@ -156,6 +159,13 @@ class AllSongPerformances {
 
   void removeSinger(String singer) {
     var songPerformances = _allSongPerformances.where((e) => e._singer == singer).toList(growable: false);
+    _allSongPerformances.removeAll(songPerformances);
+  }
+
+  void removeSingerSong(String singer, String songIdAsString) {
+    var songPerformances = _allSongPerformances
+        .where((e) => e._singer == singer && e.songIdAsString == songIdAsString)
+        .toList(growable: false);
     _allSongPerformances.removeAll(songPerformances);
   }
 

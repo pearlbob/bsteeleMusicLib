@@ -31,7 +31,7 @@ void main() {
     var songs = [a, b];
     allSongPerformances.loadSongs(songs);
     for (var song in [a, b]) {
-      for (var key in Key.values) {
+      for (var key in Key.values.toList().reversed) {
         if (key == Key.get(KeyEnum.Fs)) {
           continue; //  skip the duplicate
         }
@@ -96,6 +96,22 @@ void main() {
             return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
           }).toString(),
           '(A by bob in A)');
+
+      allSongPerformances.removeSingerSong(
+        singer1,
+        'Song_B_by_bob',
+      );
+      expect(
+          allSongPerformances.bySinger(singer1).map((e) {
+            return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
+          }).toString(),
+          '(A by bob in G♭)');
+      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, Key.get(KeyEnum.G)));
+      expect(
+          allSongPerformances.bySinger(singer1).map((e) {
+            return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
+          }).toString(),
+          '(A by bob in G♭, B by bob in G)');
 
       expect(allSongPerformances.length, 3);
       allSongPerformances.removeSinger('bob');

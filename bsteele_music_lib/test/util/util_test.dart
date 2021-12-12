@@ -47,8 +47,8 @@ void main() {
   });
 
   test('test util enum name', () {
-    expect( Util.enumToString( KeyEnum.F.toString() ), 'F');
-    expect( Util.enumFromString( 'G', KeyEnum.values ), KeyEnum.G);
-    expect( Util.enumFromString( 'Gkk', KeyEnum.values ), null);
+    expect(Util.enumName(KeyEnum.F.toString()), 'F');
+    expect(Util.enumFromString('G', KeyEnum.values), KeyEnum.G);
+    expect(Util.enumFromString('Gkk', KeyEnum.values), null);
   });
 }

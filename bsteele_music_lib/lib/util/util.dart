@@ -57,11 +57,11 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
-  static String enumToString(Object o) => o.toString().split('.').last;
+  static String enumName(Object o) => o.toString().split('.').last;
 
   static T? enumFromString<T>(String key, List<T> values) {
     try {
-      return values.firstWhere((v) => key == enumToString(v!));
+      return values.firstWhere((v) => key == enumName(v!));
     } catch (e) {
       return null;
     }
