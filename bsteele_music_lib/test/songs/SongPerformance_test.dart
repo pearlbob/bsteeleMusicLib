@@ -73,11 +73,11 @@ void main() {
       logger.i('String toJsonStringFor($singer1): \'${allSongPerformances.toJsonStringFor(singer1)}\'');
       expect(
           allSongPerformances.toJsonStringFor(singer1),
-          '[{"songId":"Song_A_by_bob","singer":"bodhi","key":9,"bpm":100}'
-          ',{"songId":"Song_B_by_bob","singer":"bodhi","key":9,"bpm":120}]');
+          '[{"songId":"Song_A_by_bob","singer":"bodhi","key":9,"bpm":100},'
+          '\n{"songId":"Song_B_by_bob","singer":"bodhi","key":9,"bpm":120}]\n');
       logger.i('String toJsonStringFor($singer2): \'${allSongPerformances.toJsonStringFor(singer2)}\'');
       expect(allSongPerformances.toJsonStringFor(singer2),
-          '[{"songId":"Song_A_by_bob","singer":"vicki","key":0,"bpm":120}]');
+          '[{"songId":"Song_A_by_bob","singer":"vicki","key":0,"bpm":120}]\n');
 
       logger.i('$singer1: ${allSongPerformances.bySinger(singer1).map((e) {
         return '${e.song?.title} by ${e.song?.artist} in ${e.key}';

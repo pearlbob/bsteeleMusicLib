@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/util/util.dart';
 
 import 'key.dart';
 import 'musicConstants.dart';
@@ -181,11 +182,11 @@ class AllSongPerformances {
   }
 
   String toJsonString() {
-    return jsonEncode(this);
+    return Util.jsonEncodeNewLines(jsonEncode(this));
   }
 
   String toJsonStringFor(String singer) {
-    return jsonEncode(bySinger(singer));
+    return Util.jsonEncodeNewLines(jsonEncode(bySinger(singer)));
   }
 
   Map<String, dynamic> toJson() => {

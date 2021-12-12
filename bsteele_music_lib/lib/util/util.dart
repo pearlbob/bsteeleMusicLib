@@ -115,6 +115,12 @@ class Util {
     }).trimLeft();
   }
 
+  static String jsonEncodeNewLines(String s) {
+    return s.replaceAll(_jsonEncodeNewLineRegexp, '},\n{') + '\n';
+  }
+
+  static final RegExp _jsonEncodeNewLineRegexp = RegExp(r'\},\{');
+
   static final _singleCapRegExp = RegExp(r'([A-Z])');
   static final _underScoreRegExp = RegExp(r'_(\w)');
 }
