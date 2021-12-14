@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
+import 'package:intl/intl.dart';
 
 import 'key.dart';
 import 'musicConstants.dart';
@@ -64,24 +65,6 @@ class SongPerformance implements Comparable<SongPerformance> {
         'bpm': _bpm,
       };
 
-  @override
-  int get hashCode => _songIdAsString.hashCode ^ _singer.hashCode ^ _key.hashCode ^ _bpm.hashCode;
-
-  Song? song;
-
-  String get songIdAsString => _songIdAsString;
-  final String _songIdAsString;
-
-  String get singer => _singer;
-  final String _singer;
-
-  Key get key => _key;
-  final Key _key;
-
-  int get bpm => _bpm;
-  final int _bpm;
-
-  //fixme: Date date;
 
   @override
   int compareTo(SongPerformance other) {
@@ -104,6 +87,28 @@ class SongPerformance implements Comparable<SongPerformance> {
     }
     return 0;
   }
+
+  @override
+  int get hashCode => _songIdAsString.hashCode ^ _singer.hashCode ^ _key.hashCode ^ _bpm.hashCode;
+
+  Song? song;
+
+  String get songIdAsString => _songIdAsString;
+  final String _songIdAsString;
+
+  String get singer => _singer;
+  final String _singer;
+
+  Key get key => _key;
+  final Key _key;
+
+  int get bpm => _bpm;
+  final int _bpm;
+
+  String get dateString => DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastModifiedTime));
+
+  int get lastModifiedTime => _lastModifiedTime;
+  final int _lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
 }
 
 class AllSongPerformances {
@@ -192,6 +197,10 @@ class AllSongPerformances {
   Map<String, dynamic> toJson() => {
         'allSongPerformances': _allSongPerformances.toList(growable: false),
       };
+
+  void clear() {
+    _allSongPerformances.clear();
+  }
 
   int get length => _allSongPerformances.length;
 

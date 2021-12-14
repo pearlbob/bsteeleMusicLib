@@ -120,6 +120,23 @@ void main() {
       expect(allSongPerformances.length, 1);
       allSongPerformances.removeSinger(singer2);
       expect(allSongPerformances.length, 0);
+
+      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, Key.get(KeyEnum.G)));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_A_by_bob', singer1, Key.get(KeyEnum.F)));
+      expect(allSongPerformances.length, 2);
+      allSongPerformances.clear();
+      expect(allSongPerformances.length, 0);
     }
+  });
+
+  test('song performance dates', () {
+    var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+
+    var singer1 = 'bodhi';
+    SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, Key.get(KeyEnum.A));
+    logger.d('${songPerformance}');
+    logger.d('${songPerformance.dateString}');
+    expect(songPerformance.dateString, matches(r'^[0-1]\d/[0-3]\d/202\d$'));
   });
 }
