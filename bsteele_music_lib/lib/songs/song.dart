@@ -434,6 +434,9 @@ class Song extends SongBase implements Comparable<Song> {
   static final JsonDecoder jsonDecoder = JsonDecoder();
 
   static const String unknownUser = 'unknown';
+
+  bool get isTheEmptySong => identical(this, theEmptySong);
+  static final Song theEmptySong = createEmptySong();
 }
 
 /// A comparator that sorts by song title and then artist.

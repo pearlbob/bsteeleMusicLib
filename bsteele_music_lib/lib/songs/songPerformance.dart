@@ -219,5 +219,5 @@ class AllSongPerformances {
   Map<String, Song> songMap = {};
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(_compareBySongIdAndSinger);
 
-  static const String fileExtension = '.songPerformances';
+  static const String fileExtension = '.songperformances';
 }
