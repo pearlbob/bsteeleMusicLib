@@ -22,16 +22,25 @@ int _compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, this._singer, this._key, {int? bpm}) : _bpm = bpm ?? MusicConstants.defaultBpm;
+  SongPerformance(this._songIdAsString, this._singer, this._key, {int? bpm, int? lastSung})
+      : _bpm = bpm ?? MusicConstants.defaultBpm,
+        _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song song, this._singer, this._key, {int? bpm})
+  SongPerformance.fromSong(Song song, this._singer, this._key, {int? bpm, int? lastSung})
       : song = song,
         _songIdAsString = song.songId.toString(),
-        _bpm = bpm ?? song.beatsPerMinute;
+        _bpm = bpm ?? song.beatsPerMinute,
+        _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
+
+  SongPerformance update({Key? key}) {
+    //  produce a copy with a new last sung date
+    return SongPerformance(_songIdAsString, _singer, key ?? _key, bpm: _bpm, lastSung: null);
+  }
 
   @override
   String toString() {
-    return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', _key: $_key, _bpm: $_bpm}';
+    return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', _key: $_key'
+        ', _bpm: $_bpm, sung: ${lastSungDateString}}';
   }
 
   @override
@@ -52,19 +61,21 @@ class SongPerformance implements Comparable<SongPerformance> {
       : _songIdAsString = json['songId'],
         _singer = json['singer'],
         _key = Key.getKeyByHalfStep(json['key']),
-        _bpm = json['bpm'];
+        _bpm = json['bpm'],
+        _lastSung = json['lastSung'] ?? 0;
 
   String toJsonString() {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'songId': _songIdAsString,
         'singer': _singer,
         'key': _key.halfStep,
         'bpm': _bpm,
+        'lastSung': _lastSung,
       };
-
 
   @override
   int compareTo(SongPerformance other) {
@@ -105,10 +116,11 @@ class SongPerformance implements Comparable<SongPerformance> {
   int get bpm => _bpm;
   final int _bpm;
 
-  String get dateString => DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastModifiedTime));
+  String get lastSungDateString =>
+      _lastSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
-  int get lastModifiedTime => _lastModifiedTime;
-  final int _lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
+  int get lastSung => _lastSung;
+  int _lastSung = 0;
 }
 
 class AllSongPerformances {
@@ -176,11 +188,23 @@ class AllSongPerformances {
   }
 
   void fromJsonString(String jsonString) {
+    _allSongPerformances.clear();
     _singleton._fromJson(jsonDecode(jsonString));
   }
 
+  void addFromJsonString(String jsonString) {
+    var decoded = jsonDecode(jsonString);
+    if (decoded is List<dynamic>) {
+      //  assume the items are song performances
+      for (var item in decoded) {
+        _allSongPerformances.add(SongPerformance._fromJson(item));
+      }
+    } else {
+      throw 'addFromJsonString wrong json decode: ${decoded.runtimeType}';
+    }
+  }
+
   void _fromJson(Map<String, dynamic> json) {
-    _allSongPerformances.clear();
     for (var songPerformanceJson in json['allSongPerformances']) {
       _allSongPerformances.add(SongPerformance._fromJson(songPerformanceJson));
     }
