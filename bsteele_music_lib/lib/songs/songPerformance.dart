@@ -68,8 +68,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'songId': _songIdAsString,
         'singer': _singer,
         'key': _key.halfStep,
@@ -227,6 +226,10 @@ class AllSongPerformances {
   }
 
   int get length => _allSongPerformances.length;
+
+  bool get isEmpty => _allSongPerformances.isEmpty;
+
+  bool get isNotEmpty => _allSongPerformances.isNotEmpty;
 
   @override
   bool operator ==(Object other) {
