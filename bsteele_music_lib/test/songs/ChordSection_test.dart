@@ -611,4 +611,179 @@ void main() {
       expect(grid.rowLength(r), 6);
     }
   });
+
+  test('test ChordSection toMarkupInRows()', () {
+    ChordSection chordSection;
+
+    chordSection = ChordSection.parseString('I: A B C D, D C G G', beatsPerBar);
+
+    expect(chordSection.toMarkupInRows(1), 'I: A B C D, D C G G\n');
+    expect(
+        chordSection.toMarkupInRows(2),
+        'I:\n'
+        ' A B C D, D C G G\n');
+    expect(
+        chordSection.toMarkupInRows(3),
+        'I:\n'
+        ' A B C D\n'
+        ' D C G G\n');
+    expect(
+        chordSection.toMarkupInRows(4),
+        'I:\n'
+        ' A B C D\n\n'
+        ' D C G G\n');
+    expect(
+        chordSection.toMarkupInRows(5),
+        'I:\n'
+        ' A B C D\n\n'
+        ' D C G G\n\n');
+    expect(
+        chordSection.toMarkupInRows(6),
+        'I:\n'
+        ' A B C D\n\n\n'
+        ' D C G G\n\n');
+    expect(
+        chordSection.toMarkupInRows(7),
+        'I:\n'
+        ' A B C D\n\n\n'
+        ' D C G G\n\n\n');
+    expect(
+        chordSection.toMarkupInRows(8),
+        'I:\n'
+        ' A B C D\n\n\n\n'
+        ' D C G G\n\n\n');
+
+    chordSection = ChordSection.parseString(
+        'I:'
+        'A B,'
+        'A B C D '
+        '[A B C D, E F G G#, A# Bb ]x2',
+        beatsPerBar);
+
+    expect(
+        chordSection.toMarkupInRows(1),
+        'I: A B, A B C D [A B C D, E F G G#, A# Bb ] x2#1'
+        ' [A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(2),
+        'I:\n'
+        ' A B, A B C D [A B C D, E F G G#, A# Bb ] x2#1 [A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(3),
+        'I:\n'
+        ' A B\n'
+        ' A B C D [A B C D, E F G G#, A# Bb ] x2#1 [A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(4),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D, E F G G#, A# Bb ] x2#1 [A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(5),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#, A# Bb ] x2#1 [A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(6),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1 [A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(7),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D, E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(8),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D\n'
+        ' E F G G#, A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(9),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(10),
+        'I:\n'
+        ' A B\n\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(11),
+        'I:\n'
+        ' A B\n\n'
+        ' A B C D\n\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(12),
+        'I:\n'
+        ' A B\n\n'
+        ' A B C D\n\n'
+        '[A B C D\n\n'
+        ' E F G G#\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+
+    expect(
+        chordSection.toMarkupInRows(13),
+        'I:\n'
+        ' A B\n\n'
+        ' A B C D\n\n'
+        '[A B C D\n\n'
+        ' E F G G#\n\n'
+        ' A# Bb ] x2#1\n'
+        '[A B C D\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+
+    expect(
+        chordSection.toMarkupInRows(14),
+        'I:\n'
+        ' A B\n\n'
+        ' A B C D\n\n'
+        '[A B C D\n\n'
+        ' E F G G#\n\n'
+        ' A# Bb ] x2#1\n\n'
+        '[A B C D\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+    expect(
+        chordSection.toMarkupInRows(15),
+        'I:\n'
+        ' A B\n\n'
+        ' A B C D\n\n'
+        '[A B C D\n\n'
+        ' E F G G#\n\n'
+        ' A# Bb ] x2#1\n\n'
+        '[A B C D\n\n'
+        ' E F G G#\n A# Bb ] x2#2\n');
+  });
 }

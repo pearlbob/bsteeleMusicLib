@@ -57,7 +57,7 @@ abstract class MeasureNode {
   MeasureNode transposeToKey(Key key);
 
   /// Represent the measure node to the user in a string form and from storage encoding.
-  String toMarkup();
+  String toMarkup({bool expanded = false});
 
   /// Represent the measure node to the user in a display string for presentation
   String toMarkupWithoutEnd();

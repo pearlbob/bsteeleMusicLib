@@ -31,7 +31,7 @@ class Lyric extends MeasureNode {
   }
 
   @override
-  String toMarkup() {
+  String toMarkup({bool expanded = false}) {
     return line;
   }
 

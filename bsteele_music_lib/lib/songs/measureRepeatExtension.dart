@@ -41,7 +41,7 @@ class MeasureRepeatExtension extends MeasureComment {
   }
 
   @override
-  String toMarkup() {
+  String toMarkup({bool expanded = false}) {
     return '';
   }
 

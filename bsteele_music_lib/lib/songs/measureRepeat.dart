@@ -311,7 +311,14 @@ class MeasureRepeat extends Phrase {
   // }
 
   @override
-  String toMarkup() {
+  String toMarkup({bool expanded = false}) {
+    if ( expanded ){
+      var sb = StringBuffer();
+      for ( var r = 1; r <= repeats; r++ ){
+        sb.write( '[${(measures.isEmpty ? '' : super.toMarkup())}] x$repeats#$r ');
+      }
+      return sb.toString();
+    }
     return '[' + (measures.isEmpty ? '' : super.toMarkup()) + '] x' + repeats.toString() + ' ';
   }
 

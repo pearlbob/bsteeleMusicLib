@@ -65,7 +65,7 @@ class MeasureComment extends Measure {
   }
 
   @override
-  String toMarkup() {
+  String toMarkup({bool expanded = false}) {
     return toString();
   }
 

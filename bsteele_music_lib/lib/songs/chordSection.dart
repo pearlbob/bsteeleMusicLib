@@ -489,22 +489,138 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return ChordSection(_sectionVersion, newPhrases);
   }
 
+  static final _rowRegexp = RegExp(r'^(.*?)([:,[])(.*)$');
+  static final _rowCountRegexp = RegExp(r'([:,[])');
+
+  String toMarkupInRows(int rows) {
+    String markup = toMarkup(expanded: true);
+    var rowCount = _rowCountRegexp.allMatches(markup).length;
+    assert(rowCount > 0); //  expecting at least the : from the chord section version
+    var rowsPerNewLine = (rows - 1) ~/ rowCount;
+    var extraNewLines = (rows - 1) % rowCount;
+    var sb = StringBuffer();
+
+    for (int r = 1; r < rows; r++) {
+      var m = _rowRegexp.firstMatch(markup);
+      if (m == null) {
+        break;
+      }
+      sb.write(m.group(1)?.trimRight());
+      var mark = m.group(2);
+      switch (mark) {
+        case ':':
+          sb.write(':\n');
+          break;
+        case ',':
+          for (var i = 0; i < rowsPerNewLine; i++) {
+            sb.write('\n');
+          }
+          if (extraNewLines-- > 0) {
+            sb.write('\n');
+          }
+          break;
+        case '[':
+          for (var i = 0; i < rowsPerNewLine; i++) {
+            sb.write('\n');
+          }
+          if (extraNewLines-- > 0) {
+            sb.write('\n');
+          }
+          sb.write('[');
+          break;
+        default:
+          sb.write(mark);
+          for (var i = 0; i < rowsPerNewLine; i++) {
+            sb.write('\n');
+          }
+          if (extraNewLines-- > 0) {
+            sb.write('\n');
+          }
+          break;
+      }
+      markup = m.group(3) ?? '';
+    }
+    sb.write(markup.trimRight());
+    for (var i = 0; i < rowsPerNewLine; i++) {
+      sb.write('\n');
+    }
+    if ( rows <= rowCount ){
+      sb.write('\n');
+    }
+
+    return sb.toString();
+    // List<String> markupRows = [];
+    //
+    // var grid = toGrid(expanded: true);
+    // int rowCount = grid.getRowCount();
+    //
+    // //  find column count
+    // int maxColumn = 0;
+    // for (var r = 0; r < rowCount; r++) {
+    //   maxColumn = max(maxColumn, grid.getRow(r)?.length ?? 0);
+    // }
+    //
+    // //  find column widths
+    // var colWidths = List<int>.filled(maxColumn, 0);
+    // for (var r = 0; r < rowCount; r++) {
+    //   var row = grid.getRow(r);
+    //   int colCount = row?.length ?? 0;
+    //   for (var c = 0; c < colCount; c++) {
+    //     var measureNode = grid.get(r, c);
+    //     if (measureNode == null) {
+    //       continue;
+    //     }
+    //     var markup = measureNode is ChordSection ? measureNode.sectionVersion.toString() : measureNode.toString();
+    //
+    //     colWidths[c] = max(colWidths[c], markup.length);
+    //   }
+    // }
+    //
+    // var s = '';
+    // for (var r = 0; r < rowCount; r++) {
+    //   var row = grid.getRow(r);
+    //   if (row == null) {
+    //     continue;
+    //   }
+    //   int colCount = row.length;
+    //   for (var c = 0; c < colCount; c++) {
+    //     var measureNode = grid.get(r, c);
+    //     if (measureNode == null) {
+    //       s += ' '.padRight(colWidths[c]+1);
+    //       continue;
+    //     }
+    //     var markup = measureNode is ChordSection ? measureNode.sectionVersion.toString() : ' ${measureNode.toString()}';
+    //     markup = markup.replaceAll(',', ' ');
+    //     s += markup.padRight(colWidths[c]+1);
+    //   }
+    //   markupRows.add(s.trimRight());
+    //   s = '';
+    // }
+    // if (s.isNotEmpty) {
+    //   markupRows.add(s);
+    // }
+    // for (var item in markupRows) {
+    //   logger.i('  "$item"');
+    // }
+    // return markupRows;
+  }
+
   @override
-  String toMarkup() {
+  String toMarkup({bool expanded = false}) {
     StringBuffer sb = StringBuffer();
     sb.write(sectionVersion.toString());
     sb.write(' ');
-    sb.write(phrasesToMarkup());
+    sb.write(phrasesToMarkup(expanded: expanded));
     return sb.toString();
   }
 
-  String phrasesToMarkup() {
+  String phrasesToMarkup({bool expanded = false}) {
     if (isEmpty) {
       return '[] ';
     }
     StringBuffer sb = StringBuffer();
     for (Phrase phrase in _phrases) {
-      sb.write(phrase.toMarkup());
+      sb.write(phrase.toMarkup(expanded: expanded));
     }
     return sb.toString();
   }

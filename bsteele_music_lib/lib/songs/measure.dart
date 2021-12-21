@@ -230,7 +230,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  String toMarkup() {
+  String toMarkup({bool expanded = false}) {
     return toMarkupWithEnd(',');
   }
 
