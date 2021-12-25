@@ -489,130 +489,37 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return ChordSection(_sectionVersion, newPhrases);
   }
 
-  static final _rowRegexp = RegExp(r'^(.*?)([,[])(.*)$');
-  static final _rowColonRegexp = RegExp(r'^(.*?)(:)(.*)$');
-  static final _rowCountRegexp = RegExp(r'([,[])');
-  static final _repeatRegexp = RegExp(r' x\d+#\d+'); //  fixme: bad style, will be a victim of an innocent change
-
-  String toMarkupInRows_old(int lines) // fixme: this is way too complex and fragile
+  String toMarkupInRows(int lines) // fixme: worry about this is being complex and fragile
   {
-    String markup = toMarkup(expanded: true);
+    _LineCounts lineCounts = _LineCounts(lines, rowCount(expanded: true));
+    logger.d('toMarkupInRows($lines):');
 
-    //  deal with corner cases with low line count
-    if (lines <= 1) {
-      return markup.trimRight() + '\n';
-    }
-    var m = _rowColonRegexp.firstMatch(markup);
-    if (m == null) {
-      return markup;
-    }
-    if (lines == 2) {
-      return '${m.group(1)?.trimRight()}:\n${m.group(3)?.replaceFirst(RegExp(r'^ \['), '[').trimRight()}\n';
-    }
-    assert(lines > 2);
+    var sb = StringBuffer(sectionVersion.toString());
+    sb.write(lineCounts.newLine(''));
 
-    lines--; //  for the section version :
-    var sb = StringBuffer('${m.group(1)?.trimRight()}:\n');
-    markup = m.group(3)?.trimRight() ?? '';
-
-    bool endsWithRepeat = false;
-    {
-      var matches = _repeatRegexp.allMatches(markup);
-      if (matches.isNotEmpty) {
-        endsWithRepeat = matches.last.end == markup.length;
-      }
-    }
-    var rowCount = _rowCountRegexp.allMatches(markup).length + (endsWithRepeat ? 0 : 1);
-    var linesPerRow = rowCount >= 2 ? lines ~/ rowCount : 0;
-    var extraNewLines = rowCount >= 2 && lines > rowCount ? lines % rowCount : 0;
-    var newLineCount = 0;
-
-    for (int line = 0; line < lines; line++) {
-      var m = _rowRegexp.firstMatch(markup);
-      if (m == null) {
-        break;
-      }
-      var preMark = m.group(1);
-      bool wasRepeat = _repeatRegexp.hasMatch(preMark ?? '');
-      sb.write(preMark?.trimRight());
-      var mark = m.group(2);
-      switch (mark) {
-        case ',':
-          {
-            var lastNewLineCount = newLineCount;
-            for (var i = 0; i < linesPerRow; i++) {
-              sb.write('\n');
-              newLineCount++;
-            }
-            if (extraNewLines-- > 0) {
-              sb.write('\n');
-              newLineCount++;
-            }
-            //  assure at least one new line
-            if (lastNewLineCount == newLineCount) {
-              if (newLineCount < lines - 1) {
-                sb.write('\n');
-                newLineCount++;
-              } else {
-                sb.write(',');
-              }
-            }
-          }
-          markup = m.group(3) ?? '';
-          break;
-
-        case '[':
-          if (wasRepeat) {
-            if (newLineCount >= lines - 1) {
+    for (var phrase in phrases) {
+      var reps = (phrase is MeasureRepeat ? phrase.repeats : 1);
+      for (var rep = 0; rep < reps; rep++) {
+        var whiteSpace = phrase.markupStart();
+        for (var m in phrase.measures) {
+          sb.write(whiteSpace);
+          whiteSpace = ' ';
+          sb.write(m.toMarkupWithoutEnd());
+          if (identical(m, phrase.measures.last)) {
+            var me = phrase.markupEnd(rep: rep + 1);
+            sb.write(me);
+            var nl = lineCounts.newLine(me.isEmpty && reps ==  1 && !identical(phrase, phrases.last) ? ' ':'');
+            sb.write(nl);
+            if (reps > 1 && lineCounts.isDone && rep < reps - 1 && nl.isEmpty) {
               sb.write(' ');
             }
-            var lastNewLineCount = newLineCount;
-            for (var i = 0; i < linesPerRow; i++) {
-              sb.write('\n');
-              newLineCount++;
-            }
-            if (extraNewLines-- > 0) {
-              sb.write('\n');
-              newLineCount++;
-            }
-            //  assure at least one new line
-            if (newLineCount == lastNewLineCount && newLineCount < lines - 1) {
-              sb.write('\n');
-              newLineCount++;
-            }
-          } else if (newLineCount < lines - 1) {
-            sb.write('\n');
-            newLineCount++;
+          } else if (m.endOfRow) {
+            sb.write(lineCounts.newLine(','));
           }
-          sb.write('[');
-          markup = m.group(3) ?? '';
-          break;
-
-        default:
-          assert(false);
-          break;
+        }
       }
     }
-
-    sb.write(markup.trimRight());
-
-    //  finish up the last row
-    {
-      var lastNewLineCount = newLineCount;
-      for (var i = 0; i < linesPerRow; i++) {
-        sb.write('\n');
-        newLineCount++;
-      }
-      if (extraNewLines-- > 0) {
-        sb.write('\n');
-        newLineCount++;
-      }
-      //  assure at least one new line
-      if (newLineCount == lastNewLineCount) {
-        sb.write('\n');
-        newLineCount++;
-      }
-    }
+    sb.writeln('');
 
     return sb.toString();
   }
@@ -935,127 +842,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   static final RegExp _commaRegexp = RegExp('^\\s*,');
   static final RegExp _commentRegExp = RegExp('^(\\S+)\\s+');
 
-  String toMarkupInRows(int lines) // fixme: worry about this is being complex and fragile
-  {
-    _LineCounts lineCounts = _LineCounts(lines, rowCount(expanded: true));
-    logger.d('toMarkupInRows($lines):');
-
-    var sb = StringBuffer(sectionVersion.toString());
-    sb.write(lineCounts.newLine(''));
-
-    for (var phrase in phrases) {
-      var reps = (phrase is MeasureRepeat ? phrase.repeats : 1);
-      for (var rep = 0; rep < reps; rep++) {
-        var whiteSpace = phrase.markupStart();
-        for (var m in phrase.measures) {
-          sb.write(whiteSpace);
-          whiteSpace = ' ';
-          sb.write(m.toMarkupWithoutEnd());
-          if (identical(m, phrase.measures.last)) {
-            var me = phrase.markupEnd(rep: rep + 1);
-            sb.write(me);
-            var nl = lineCounts.newLine(me.isEmpty && reps ==  1 && !identical(phrase, phrases.last) ? ' ':'');
-            sb.write(nl);
-            if (reps > 1 && lineCounts.isDone && rep < reps - 1 && nl.isEmpty) {
-              sb.write(' ');
-            }
-          } else if (m.endOfRow) {
-            sb.write(lineCounts.newLine(','));
-          }
-        }
-      }
-    }
-    sb.writeln('');
-
-    return sb.toString();
-  }
-
-  String toMarkupInRows_broken_hybrid(int lines) // fixme: this is way too complex and fragile
-  {
-    logger.i('toMarkupInRows($lines):');
-    String markup = toMarkup(expanded: true);
-
-    //  deal with corner cases with low line count
-    if (lines <= 1) {
-      return markup.trimRight() + '\n';
-    }
-    var m = _rowColonRegexp.firstMatch(markup);
-    if (m == null) {
-      return markup;
-    }
-    if (lines == 2) {
-      return '${m.group(1)?.trimRight()}:\n${m.group(3)?.replaceFirst(RegExp(r'^ \['), '[').trimRight()}\n';
-      // return markup.replaceFirst(':', ':\n').trimRight() + '\n';
-    }
-    assert(lines > 2);
-
-    _LineCounts lineCounts = _LineCounts(lines, rowCount(expanded: true));
-    var sb = StringBuffer('${m.group(1)?.trimRight()}:');
-    sb.write(lineCounts.newLine(' '));
-    markup = m.group(3)?.trimRight() ?? '';
-
-    for (int line = 0; line < lines - 1; line++) {
-      if (lineCounts.isDone) {
-        break;
-      }
-      var m = _rowRegexp.firstMatch(markup);
-      if (m == null) {
-        break;
-      }
-      var preMark = m.group(1);
-      sb.write(preMark?.trimRight());
-      var mark = m.group(2);
-      switch (mark) {
-        case ',':
-          sb.write(lineCounts.newLine(','));
-          markup = m.group(3) ?? '';
-          break;
-
-        case '[':
-          if (_repeatRegexp.hasMatch(preMark ?? '')) {
-            sb.write(lineCounts.newLine(''));
-            sb.write('[');
-            markup = m.group(3) ?? '';
-          } else {
-            sb.write(lineCounts.newLine(''));
-
-            sb.write('[');
-
-            //  find the other stuff on this line
-            markup = m.group(3) ?? '';
-            m = _rowRegexp.firstMatch(markup);
-            if (m == null) {
-              //  last in the section
-              break;
-            }
-            sb.write(m.group(1)?.trimRight());
-            if (lineCounts.isDone) {
-              //  reconstruct the input
-              markup = (m.group(2) ?? '') + (m.group(3) ?? '');
-            } else {
-              sb.write(lineCounts.newLine(''));
-
-              //  reconstruct the input
-              markup = (m.group(3) ?? '');
-            }
-          }
-          break;
-
-        default:
-          assert(false);
-          break;
-      }
-    }
-
-    sb.write(markup.trimRight());
-
-    //  finish up the last row
-    sb.write(lineCounts.newLine(''));
-
-    sb.writeln(''); // finish with a new line
-
-    return sb.toString();
-  }
 }
 
 class _LineCounts {
