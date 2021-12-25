@@ -579,6 +579,14 @@ class Phrase extends MeasureNode {
     return sb.toString();
   }
 
+  String markupStart() {
+    return ' ';
+  }
+
+  String markupEnd({int? rep}) {
+    return '';
+  }
+
   @override
   String toMarkupWithoutEnd() {
     if (_measures.isEmpty) {

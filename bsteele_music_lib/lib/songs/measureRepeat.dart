@@ -42,7 +42,7 @@ class MeasureRepeat extends Phrase {
 //  look for a set of measures and comments
     bool barFound = false;
     for (int i = 0; i < 1e3; i++) //  safety
-        {
+    {
       markedString.stripLeadingSpaces();
       logger.v('repeat parsing: ' + markedString.remainingStringLimited(10));
       if (markedString.isEmpty) {
@@ -312,19 +312,29 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toMarkup({bool expanded = false}) {
-    if ( expanded ){
+    if (expanded) {
       var sb = StringBuffer();
-      for ( var r = 1; r <= repeats; r++ ){
-        sb.write( '[${(measures.isEmpty ? '' : super.toMarkup())}] x$repeats#$r ');
+      for (var r = 1; r <= repeats; r++) {
+        sb.write('[${(measures.isEmpty ? '' : super.toMarkup())}] x$repeats#$r ');
       }
       return sb.toString();
     }
-    return '[' + (measures.isEmpty ? '' : super.toMarkup()) + '] x' + repeats.toString() + ' ';
+    return '[' + (measures.isEmpty ? '' : super.toMarkup()) + markupEnd() + ' ';
   }
 
   @override
   String toMarkupWithoutEnd() {
-    return '[' + (measures.isEmpty ? '' : super.toMarkupWithoutEnd()) + '] x' + repeats.toString() + ' ';
+    return '[' + (measures.isEmpty ? '' : super.toMarkupWithoutEnd()) + markupEnd() + ' ';
+  }
+
+  @override
+  String markupStart() {
+    return '[';
+  }
+
+  @override
+  String markupEnd({int? rep}) {
+    return '] x' + repeats.toString() + (rep==null?'': '#$rep');
   }
 
   @override

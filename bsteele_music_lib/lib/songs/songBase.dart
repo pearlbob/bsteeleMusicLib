@@ -1436,6 +1436,16 @@ class SongBase {
     return sb.toString();
   }
 
+  String chordMarkupForLyrics() {
+    var sb = StringBuffer();
+    for (var lyricSection in lyricSections) {
+      var chordSection = findChordSectionByLyricSection(lyricSection);
+      assert(chordSection != null);
+      sb.write(chordSection?.toMarkupInRows(lyricSection.lyricsLines.length + 1));
+    }
+    return sb.toString();
+  }
+
   String toMarkup({bool asEntry = false}) {
     //  lazy shortcut
     if (!asEntry && _chordsAsMarkup != null) {
@@ -2597,7 +2607,7 @@ class SongBase {
         switch (c) {
           case '\n':
           case '\r':
-        //  insert verse if missing the section declaration
+            //  insert verse if missing the section declaration
             lyricSection ??= LyricSection(Section.getDefaultVersion(), lyricSections.length);
 
             //  add the lyrics
@@ -3915,6 +3925,18 @@ class SongBase {
   List<LyricSection> get lyricSections {
     _parseLyrics();
     return _lyricSections;
+  }
+
+  String get lyricSectionsAsEntryString {
+    _parseLyrics();
+    var sb = StringBuffer();
+    for (var lyricSection in _lyricSections) {
+      sb.writeln(lyricSection.sectionVersion.toString());
+      for (var line in lyricSection.lyricsLines) {
+        sb.writeln(line);
+      }
+    }
+    return sb.toString();
   }
 
   List<LyricSection> _lyricSections = [];

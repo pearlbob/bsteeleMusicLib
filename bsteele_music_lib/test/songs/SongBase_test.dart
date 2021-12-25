@@ -2772,4 +2772,196 @@ v:
           '\n');
     }
   });
+
+  test('test songBase chordMarkupForLyrics()', () {
+    int beatsPerBar = 4;
+    {
+      //  fixme: force a new line at lyrics entry?
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I:\n A B C D\n'
+              'V:\n'
+              ' G G G G, C C G G\n'
+              'O: C C G G\n');
+    }
+    {
+      //  fixme: force a new line at lyrics entry?
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i:\n(instrumental)\n\nv: line 1\n\no:\n\n');
+      logger.i(a.lyricSectionsAsEntryString);
+
+      expect(
+          a.chordMarkupForLyrics(),
+          'I:\n'
+              ' A B C D\n'
+              'V:\n'
+              ' G G G G, C C G G\n'
+              'O: C C G G\n');
+    }
+    {
+      for (var lines = 1; lines < 20; lines++) {
+        var lyrics;
+        {
+          var sb = StringBuffer('i: (instrumental)\n v: ');
+          for (var i = 1; i <= lines; i++) {
+            sb.write('line $i\n');
+          }
+          lyrics = sb.toString();
+        }
+        var a = Song.createSong(
+            'ive go the blanks',
+            'bob',
+            'bob',
+            music_key.Key.get(music_key.KeyEnum.C),
+            106,
+            beatsPerBar,
+            4,
+            'pearl bob',
+            'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x2',
+            //  no newline at verse lyrics should not matter
+            lyrics);
+        logger.i('lines $lines: "${a.chordMarkupForLyrics()}"');
+        expect(a.chordMarkupForLyrics().split('\n').length, lines + 3 + 1);
+      }
+    }
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i:\nv: line 1\no:');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I: A B C D\n'
+          'V:\n'
+          ' G G G G, C C G G\n'
+          'O: C C G G\n');
+    }
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i:\nv:\nline 1\no:');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I: A B C D\n'
+          'V:\n'
+          ' G G G G, C C G G\n'
+          'O: C C G G\n');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          'i: (instrumental)\n v: foobar');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I:\n[A B C D] x2#1 [A B C D] x2#2\n'
+          'V:\n[G G G G, C C G G, D C G D] x4#1 [G G G G, C C G G, D C G D] x4#2'
+          ' [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+         'i: (instrumental)\n '
+              'v:\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I:\n'
+          '[A B C D] x2#1 [A B C D] x2#2\n'
+          'V:\n'
+          '[G G G G\n'
+          ' C C G G\n'
+          ' D C G D] x4#1\n'
+          '[G G G G\n'
+          ' C C G G\n'
+          ' D C G D] x4#2 [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          //  no newline at verse lyrics should not matter
+          'i: (instrumental)\n v: line 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I:\n'
+          '[A B C D] x2#1 [A B C D] x2#2\n'
+          'V:\n'
+          '[G G G G\n'
+          ' C C G G\n'
+          ' D C G D] x4#1\n'
+          '[G G G G\n'
+          ' C C G G\n'
+          ' D C G D] x4#2 [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G',
+          'i: (instrumental)\nyeah\n v: line 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I:\n'
+          ' A B C D\n'
+          '\n'
+          'V:\n'
+          ' G G G G\n'
+          '\n'
+          '\n'
+          ' C C G G\n'
+          '\n'
+          '\n');
+    }
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  V: [Am Am/G Am/F# FE] x4',
+          'i:\nv:\nWaiting for the break of day\n'
+              'Searching for something to say\n'
+              'Flashing lights against the sky\n'
+              'Giving up I close my eyes\n');
+      expect(
+          a.chordMarkupForLyrics(),
+          'I: A B C D\n'
+          'V:\n'
+          '[Am Am/G Am/F# FE] x4#1\n'
+          '[Am Am/G Am/F# FE] x4#2\n'
+          '[Am Am/G Am/F# FE] x4#3\n'
+          '[Am Am/G Am/F# FE] x4#4\n');
+    }
+  });
 }
