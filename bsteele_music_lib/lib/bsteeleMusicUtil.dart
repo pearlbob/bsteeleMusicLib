@@ -379,13 +379,15 @@ coerced to reflect the songlist's last modification for that song.
         case '-ninjam':
           {
             Map<Song, int> ninjams = {};
+            Map<Song, ChordSection> ninjamSections = {};
+
             for (Song song in allSongs) {
-              ChordSection? lastChordSection;
+              ChordSection? firstChordSection;
               bool allSignificantChordSectionsMatch = true;
 
               var chordSections = song.getChordSections();
               if (chordSections.length == 1) {
-                lastChordSection = chordSections.first;
+                firstChordSection = chordSections.first;
               }
 
               for (ChordSection chordSection in chordSections) {
@@ -394,12 +396,13 @@ coerced to reflect the songlist's last modification for that song.
                   case SectionEnum.outro:
                   case SectionEnum.tag:
                   case SectionEnum.coda:
+                  case SectionEnum.bridge:
                     break;
                   default:
-                    if (lastChordSection == null) {
-                      lastChordSection = chordSection;
+                    if (firstChordSection == null) {
+                      firstChordSection = chordSection;
                     } else {
-                      if (!listsEqual(lastChordSection.phrases, chordSection.phrases)) {
+                      if (!listsEqual(firstChordSection.phrases, chordSection.phrases)) {
                         allSignificantChordSectionsMatch = false;
                         break;
                       }
@@ -410,18 +413,22 @@ coerced to reflect the songlist's last modification for that song.
                   break;
                 }
               }
-              if (lastChordSection != null && allSignificantChordSectionsMatch) {
-                int bars = lastChordSection.getTotalMoments();
-                if (lastChordSection.phrases.length == 1 && lastChordSection.phrases[0].isRepeat()) {
-                  bars = lastChordSection.phrases[0].measures.length;
+              if (firstChordSection != null && allSignificantChordSectionsMatch) {
+                int bars = firstChordSection.getTotalMoments();
+                if (firstChordSection.phrases.length == 1 && firstChordSection.phrases[0].isRepeat()) {
+                  bars = firstChordSection.phrases[0].measures.length;
                 }
                 ninjams[song] = song.timeSignature.beatsPerBar * bars;
+                ninjamSections[song] = firstChordSection;
               }
             }
 
             SplayTreeSet<int> sortedValues = SplayTreeSet();
             sortedValues.addAll(ninjams.values);
             for (int i in sortedValues) {
+              if (i > 48) {
+                break;
+              }
               SplayTreeSet<Song> sortedSongs = SplayTreeSet();
               for (Song song in ninjams.keys) {
                 if (ninjams[song] == i) {
@@ -431,7 +438,7 @@ coerced to reflect the songlist's last modification for that song.
               for (Song song in sortedSongs) {
                 print('"${song.title}" by "${song.artist}"'
                     '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                    ':  /bpi ${i}');
+                    ':  /bpi ${i}  /bpm ${song.beatsPerMinute}  ${ninjamSections[song]?.toMarkup()}');
               }
             }
           }
@@ -623,9 +630,9 @@ coerced to reflect the songlist's last modification for that song.
           i++;
           String url = args[i];
           logger.d("url: '$url'");
-          var authority = url.replaceAll('http://', '');
+          var authority = url.replaceAll(r'http://', '');
           var path = authority.replaceAll(RegExp(r'^[.\w]*/', caseSensitive: false), '');
-          authority = url.replaceAll(RegExp(r'\/.*'), '');
+          authority = authority.replaceAll(RegExp(r'/.*'), '');
           logger.d('authority: <$authority>, path: <$path>');
           List<Song> addSongs = Song.songListFromJson(utf8
                   .decode(await http.readBytes(Uri.http(authority, path)))
