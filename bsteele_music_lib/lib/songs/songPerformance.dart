@@ -157,6 +157,15 @@ class AllSongPerformances {
     return ret;
   }
 
+  List<SongPerformance> bySong(Song song) {
+    List<SongPerformance> ret = [];
+    var songIdString = song.songId.toString();
+    ret.addAll(_allSongPerformances.where((songPerformance) {
+      return songPerformance.songIdAsString == songIdString;
+    }));
+    return ret;
+  }
+
   SplayTreeSet<String> setOfSingers() {
     SplayTreeSet<String> set = SplayTreeSet();
     set.addAll(_allSongPerformances.map((e) => e._singer));

@@ -260,6 +260,23 @@ coerced to reflect the songlist's last modification for that song.
           _cjCsvRead(inputFile.readAsStringSync());
           break;
 
+        case '-exp':
+          for (Song song in allSongs) {
+            var first = true;
+            var lines = song.rawLyrics.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+              var line = lines[i];
+              if (line.contains('|')) {
+                if ( first == true) {
+                  first = false;
+                  print('${song.title} by ${song.title}, songId: ${song.songId}');
+                }
+                print('   $i: $line');
+              }
+            }
+          }
+          break;
+
         case '-f':
           _force = true;
           break;

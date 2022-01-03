@@ -489,16 +489,17 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return ChordSection(_sectionVersion, newPhrases);
   }
 
-  String toMarkupInRows(int lines) // fixme: worry about this is being complex and fragile
+  String toMarkupInRows(int lines, {expanded = true}) // fixme: worry about this is being complex and fragile
   {
-    _LineCounts lineCounts = _LineCounts(lines, rowCount(expanded: true));
+    _LineCounts lineCounts = _LineCounts(lines, rowCount(expanded: expanded));
     logger.d('toMarkupInRows($lines):');
 
     var sb = StringBuffer(sectionVersion.toString());
     sb.write(lineCounts.newLine(''));
 
     for (var phrase in phrases) {
-      var reps = (phrase is MeasureRepeat ? phrase.repeats : 1);
+      var repeatReps = phrase is MeasureRepeat ? phrase.repeats : 1;
+      var reps = (expanded && repeatReps > 0 ? repeatReps : 1);
       for (var rep = 0; rep < reps; rep++) {
         var whiteSpace = phrase.markupStart();
         for (var m in phrase.measures) {
@@ -506,9 +507,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
           whiteSpace = ' ';
           sb.write(m.toMarkupWithoutEnd());
           if (identical(m, phrase.measures.last)) {
-            var me = phrase.markupEnd(rep: rep + 1);
+            var me = phrase.markupEnd(rep: reps == 1 ? null : rep + 1);
             sb.write(me);
-            var nl = lineCounts.newLine(me.isEmpty && reps ==  1 && !identical(phrase, phrases.last) ? ' ':'');
+            var nl = lineCounts.newLine(me.isEmpty && reps == 1 && !identical(phrase, phrases.last) ? ' ' : '');
             sb.write(nl);
             if (reps > 1 && lineCounts.isDone && rep < reps - 1 && nl.isEmpty) {
               sb.write(' ');
@@ -517,6 +518,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
             sb.write(lineCounts.newLine(','));
           }
         }
+      }
+      for (var rep = reps; rep < repeatReps; rep++) {
+        sb.write(lineCounts.newLine(''));
       }
     }
     sb.writeln('');
@@ -841,7 +845,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   static final RegExp _commaRegexp = RegExp('^\\s*,');
   static final RegExp _commentRegExp = RegExp('^(\\S+)\\s+');
-
 }
 
 class _LineCounts {
