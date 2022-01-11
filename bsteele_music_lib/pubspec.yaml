@@ -15,6 +15,7 @@ dependencies:
   string_similarity:
   meta:
   english_words:
+  string_scanner:   # for english_words
   flutter_lints:
   dartdoc:
 

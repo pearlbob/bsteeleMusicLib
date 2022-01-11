@@ -1,16 +1,6 @@
-import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/songs/chordSection.dart';
-import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/measure.dart';
-import 'package:bsteeleMusicLib/songs/measureNode.dart';
-import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
 import 'package:bsteeleMusicLib/songs/ninjam.dart';
-import 'package:bsteeleMusicLib/songs/phrase.dart';
-import 'package:bsteeleMusicLib/songs/section.dart';
-import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -40,8 +30,7 @@ void main() {
     }
     {
       var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D',
-          'v: bob, bob, bob berand');
+          'v: G C G G, C C G G, D C G D', 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, true);
@@ -51,8 +40,7 @@ void main() {
     }
     {
       var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D c: G G G G',
-          'v: bob, bob, bob berand');
+          'v: G C G G, C C G G, D C G D c: G G G G', 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, false);
@@ -62,8 +50,7 @@ void main() {
     }
     {
       var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D c: G C G G, C C G G, D C G D',
-          'v: bob, bob, bob berand');
+          'v: G C G G, C C G G, D C G D c: G C G G, C C G G, D C G D', 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, true);

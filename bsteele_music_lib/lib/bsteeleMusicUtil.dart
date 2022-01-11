@@ -619,6 +619,7 @@ coerced to reflect the songlist's last modification for that song.
                 for (var word in line.split(_spaceRegexp)) {
                   if (word.isNotEmpty) {
                     syllableCount += syllables(word);
+                    logger.i('            $lineNumber: $syllableCount: $line: <$word>');
                   }
                 }
                 logger.i('       $lineNumber: $syllableCount: $line');

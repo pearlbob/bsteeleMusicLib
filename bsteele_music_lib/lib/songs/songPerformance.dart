@@ -234,6 +234,10 @@ class AllSongPerformances {
     _allSongPerformances.clear();
   }
 
+  List<SongPerformance> toList(){
+    return _allSongPerformances.toList();
+  }
+
   int get length => _allSongPerformances.length;
 
   bool get isEmpty => _allSongPerformances.isEmpty;
@@ -255,5 +259,5 @@ class AllSongPerformances {
   Map<String, Song> songMap = {};
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(_compareBySongIdAndSinger);
 
-  static const String fileExtension = '.songperformances';
+  static const String fileExtension = '.songperformances';  //  intentionally all lower case
 }
