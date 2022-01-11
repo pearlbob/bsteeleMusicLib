@@ -4,11 +4,18 @@ import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:quiver/collection.dart';
 
 import 'chordSection.dart';
+import 'key.dart';
 
 class NinJam {
-  NinJam.empty() : bpm = 0;
+  NinJam.empty()
+      : bpm = 0,
+        key = Key.getDefault(),
+  keyOffset = 0;
 
-  NinJam(Song song) : bpm = song.beatsPerMinute {
+  NinJam(Song song, {Key? key, int? keyOffset})
+      : bpm = song.beatsPerMinute,
+        key = key ?? song.key,
+        keyOffset = keyOffset ?? (song.key.halfStep - (key ?? song.key).halfStep) {
     ChordSection? ninJamChordSection;
     bool allSignificantChordSectionsMatch = true;
 
@@ -58,7 +65,7 @@ class NinJam {
   String toMarkup() {
     var sb = StringBuffer();
     for (var phrase in phrases) {
-      sb.write(phrase.toMarkup());
+      sb.write(phrase.transpose(key, keyOffset ));
     }
     return sb.toString();
   }
@@ -71,6 +78,9 @@ class NinJam {
   int _bpi = 0;
 
   final int bpm;
+
+  final Key key;
+  final int keyOffset;
 
   List<Phrase> get phrases => _phrases;
 

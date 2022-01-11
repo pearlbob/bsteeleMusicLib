@@ -161,7 +161,12 @@ class Phrase extends MeasureNode {
 
   @override
   String transpose(Key key, int halfSteps) {
-    return 'Phrase'; //  error
+    StringBuffer sb = StringBuffer();
+    for (Measure measure in _measures) {
+      sb.write(measure.transpose(key, halfSteps));
+      sb.write(measure.endOfRow ? ', ':' ');
+    }
+    return sb.toString();
   }
 
   @override
