@@ -6,11 +6,13 @@ import 'package:quiver/collection.dart';
 import 'chordSection.dart';
 import 'key.dart';
 
+const int _maxCycle = 64;
+
 class NinJam {
   NinJam.empty()
       : bpm = 0,
         key = Key.getDefault(),
-  keyOffset = 0;
+        keyOffset = 0;
 
   NinJam(Song song, {Key? key, int? keyOffset})
       : bpm = song.beatsPerMinute,
@@ -36,7 +38,17 @@ class NinJam {
           if (ninJamChordSection == null) {
             ninJamChordSection = chordSection;
           } else {
-            if (!listsEqual(ninJamChordSection.phrases, chordSection.phrases)) {
+            if (ninJamChordSection.phrases.length == chordSection.phrases.length) {
+              //  fixme: complications associated with repeats are not dealt with properly here
+              //  repetition repeats are ignored!
+              for (int phraseIndex = 0; phraseIndex < ninJamChordSection.phrases.length; phraseIndex++) {
+                if (!listsEqual(
+                    ninJamChordSection.phrases[phraseIndex].measures, chordSection.phrases[phraseIndex].measures)) {
+                  allSignificantChordSectionsMatch = false;
+                  break;
+                }
+              }
+            } else {
               allSignificantChordSectionsMatch = false;
               break;
             }
@@ -56,7 +68,7 @@ class NinJam {
         _phrases = ninJamChordSection.phrases;
       }
       int beatsPerInterval = song.timeSignature.beatsPerBar * bars;
-      if (beatsPerInterval <= 48) {
+      if (beatsPerInterval <= _maxCycle) {
         _bpi = beatsPerInterval;
       }
     }
@@ -65,7 +77,7 @@ class NinJam {
   String toMarkup() {
     var sb = StringBuffer();
     for (var phrase in phrases) {
-      sb.write(phrase.transpose(key, keyOffset ));
+      sb.write(phrase.transpose(key, keyOffset));
     }
     return sb.toString();
   }
