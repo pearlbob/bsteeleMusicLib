@@ -21,6 +21,8 @@ class SongId implements Comparable<SongId> {
         .replaceAllMapped(notWordOrSpaceRegExp, (Match m) => '')
         .replaceAllMapped(dupUnderscoreOrSpaceRegExp, (Match m) => '_');
   }
+  
+  String toUnderScorelessString() => _underScorelessId ??= _songId.replaceAll('_', ' ');
 
   @override
   String toString() {
@@ -39,6 +41,7 @@ class SongId implements Comparable<SongId> {
 
   String get songId => _songId;
   final String _songId;
+  String? _underScorelessId;
 
   static final RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
   static final RegExp dupUnderscoreOrSpaceRegExp = RegExp('[ _]+');

@@ -3728,11 +3728,7 @@ class SongBase {
     if (artist != o.artist) {
       return false;
     }
-    if (coverArtist.isNotEmpty) {
-      if (coverArtist != o.coverArtist) {
-        return false;
-      }
-    } else if (o.coverArtist.isNotEmpty) {
+    if (coverArtist != o.coverArtist) {
       return false;
     }
     if (copyright != o.copyright) {
@@ -3798,6 +3794,7 @@ class SongBase {
 //  primary values
 
   String get title => _title;
+  String get titleWithCover => _title + (coverArtist.isNotEmpty?', cover by $coverArtist':'');
 
   set title(String s) {
     s = _theToTheEnd(s.trim());

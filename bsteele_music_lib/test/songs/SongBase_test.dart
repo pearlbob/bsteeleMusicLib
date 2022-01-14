@@ -3008,6 +3008,7 @@ v:
       expect(a.toJson(),b.toJson());
       expect(a.compareBySongId(b),0);
       expect(a.songBaseSameContent(b),true);
+      expect(a.songBaseSameContent(b.copySong()),true);
 
       a.coverArtist = 'Bob Marley';
       expect(a.toString(),'ive go the blanks by bob, cover by Bob Marley');
@@ -3042,6 +3043,13 @@ v:
               '}\n'
               ''
       );
+      expect(a.songBaseSameContent(a.copySong()),true);
+      b = Song.songListFromJson(a.toJson()).first;
+      expect(a.toString(),b.toString());
+      expect(a.toJson(),b.toJson());
+      expect(a.compareBySongId(b),0);
+      expect(a.songBaseSameContent(b),true);
+      expect(a.songBaseSameContent(b.copySong()),true);
     }
 
   });
