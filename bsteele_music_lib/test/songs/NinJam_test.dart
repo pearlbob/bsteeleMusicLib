@@ -10,6 +10,16 @@ void main() {
   test('test NinJam', () {
     {
       var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
+          'v: G C G G x2 G A C D c: G C G G x2 G A C D', 'v: bob, bob, bob berand');
+
+      var ninJam = NinJam(a, keyOffset:  0 );
+      expect(ninJam.isNinJamReady, true);
+      expect(ninJam.bpi, 48);
+      expect(ninJam.bpm, 106);
+      expect(ninJam.toMarkup(), 'G C G G, G C G G, G A C D ');
+    }
+    {
+      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
           'v: G C G G x2 c: G C G G x4', 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a, keyOffset:  0 );

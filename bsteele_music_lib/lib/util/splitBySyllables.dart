@@ -11,9 +11,9 @@ import '../appLogger.dart';
 
 final RegExp _allCaps = RegExp(r'^[A-Z]+$');
 
-final RegExp _alpha = RegExp(r"\w");
+final RegExp _alpha = RegExp(r'\w');
 
-final RegExp _vowel = RegExp(r"[aeiouy]", caseSensitive: false);
+final RegExp _vowel = RegExp(r'[aeiouy]', caseSensitive: false);
 
 List<String> splitBySyllables(String words) {
   List<String> syllables = [];
@@ -43,7 +43,7 @@ List<String> splitWordBySyllables(String word) {
   assert(
       RegExp(r'^\w+$').hasMatch(word),
       "Word '$word' contains non-alphabetic characters. "
-      "Have you trimmed the word of whitespace?");
+      'Have you trimmed the word of whitespace?');
 
   if (word.length <= 3 && _allCaps.hasMatch(word)) {
     // USA, PC, TV, ...

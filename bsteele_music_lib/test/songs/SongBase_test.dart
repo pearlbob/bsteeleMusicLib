@@ -2964,4 +2964,85 @@ v:
           '[Am Am/G Am/F# FE] x4#4\n');
     }
   });
+
+  final RegExp _lastModifiedDateRegexp = RegExp(r'"lastModifiedDate": \d+,\n');
+  test('test songBase to/from JSON', () {
+    int beatsPerBar = 4;
+    {
+      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
+          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+
+      expect(
+          a.toJson().replaceAll(_lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
+          '{\n'
+              '"title": "ive go the blanks",\n'
+              '"artist": "bob",\n'
+              '"user": "pearl bob",\n'
+              'lastModifiedDate was here\n'
+              '"copyright": "bob",\n'
+              '"key": "C",\n'
+              '"defaultBpm": 106,\n'
+              '"timeSignature": "4/4",\n'
+              '"chords": \n'
+              '    [\n'
+              '\t"I:",\n'
+              '\t"A B C D",\n'
+              '\t"V:",\n'
+              '\t"G G G G",\n'
+              '\t"C C G G",\n'
+              '\t"O:",\n'
+              '\t"C C G G"\n'
+              '    ],\n'
+              '"lyrics": \n'
+              '    [\n'
+              '\t"i: (instrumental)",\n'
+              '\t"v: line 1",\n'
+              '\t"o:"\n'
+              '    ]\n'
+              '}\n'
+              ''
+         );
+      expect(a.toString(),'ive go the blanks by bob');
+      Song b = Song.songListFromJson(a.toJson()).first;
+      expect(a.toString(),b.toString());
+      expect(a.toJson(),b.toJson());
+      expect(a.compareBySongId(b),0);
+      expect(a.songBaseSameContent(b),true);
+
+      a.coverArtist = 'Bob Marley';
+      expect(a.toString(),'ive go the blanks by bob, cover by Bob Marley');
+      expect(
+          a.toJson().replaceAll(_lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
+          '{\n'
+              '"title": "ive go the blanks",\n'
+              '"artist": "bob",\n'
+              '"coverArtist": "Bob Marley",\n'
+              '"user": "pearl bob",\n'
+              'lastModifiedDate was here\n'
+              '"copyright": "bob",\n'
+              '"key": "C",\n'
+              '"defaultBpm": 106,\n'
+              '"timeSignature": "4/4",\n'
+              '"chords": \n'
+              '    [\n'
+              '\t"I:",\n'
+              '\t"A B C D",\n'
+              '\t"V:",\n'
+              '\t"G G G G",\n'
+              '\t"C C G G",\n'
+              '\t"O:",\n'
+              '\t"C C G G"\n'
+              '    ],\n'
+              '"lyrics": \n'
+              '    [\n'
+              '\t"i: (instrumental)",\n'
+              '\t"v: line 1",\n'
+              '\t"o:"\n'
+              '    ]\n'
+              '}\n'
+              ''
+      );
+    }
+
+  });
 }

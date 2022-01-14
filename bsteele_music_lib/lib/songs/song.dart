@@ -44,6 +44,7 @@ class Song extends SongBase implements Comparable<Song> {
     song.setUser(user);
     song.setChords(chords);
     song.rawLyrics = lyrics;
+    song.resetLastModifiedDateToNow();
 
     return song;
   }
@@ -192,6 +193,9 @@ class Song extends SongBase implements Comparable<Song> {
         case 'artist':
           song.artist = jsonSong[name];
           break;
+        case 'coverArtist':
+          song.coverArtist = jsonSong[name];
+          break;
         case 'copyright':
           song.copyright = jsonSong[name];
           break;
@@ -284,6 +288,11 @@ class Song extends SongBase implements Comparable<Song> {
     sb.write('\"artist\": ');
     sb.write(jsonEncode(getArtist()));
     sb.write(',\n');
+    if (coverArtist.isNotEmpty) {
+      sb.write('\"coverArtist\": ');
+      sb.write(jsonEncode(coverArtist));
+      sb.write(',\n');
+    }
     sb.write('\"user\": ');
     sb.write(jsonEncode(getUser()));
     sb.write(',\n');
@@ -413,6 +422,10 @@ class Song extends SongBase implements Comparable<Song> {
       return ret;
     }
     ret = getArtist().compareTo(o.getArtist());
+    if (ret != 0) {
+      return ret;
+    }
+    ret = coverArtist.compareTo(o.coverArtist);
     if (ret != 0) {
       return ret;
     }

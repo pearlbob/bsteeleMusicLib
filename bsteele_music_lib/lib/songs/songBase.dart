@@ -3431,9 +3431,10 @@ class SongBase {
   }
 
   void setChords(String chords) {
-    _chords = chords;
-    _chordSectionMap = HashMap(); //  force a parse of the new chords
     _clearCachedValues();
+    _chords = chords;
+    _chordSectionMap = HashMap();
+    _getChordSectionMap(); //  force a parse of the new chords
   }
 
   void setTotalBeats(int totalBeats) {
@@ -3682,7 +3683,12 @@ class SongBase {
 
   @override
   String toString() {
-    return title + (fileVersionNumber > 0 ? ':(' + fileVersionNumber.toString() + ')' : '') + ' by ' + artist;
+    return title +
+        (fileVersionNumber > 0 ? ':(' + fileVersionNumber.toString() + ')' : '') +
+        ' by ' +
+        artist +
+        (coverArtist.isNotEmpty ? ', cover by $coverArtist' : '');
+    ;
   }
 
   static bool containsSongTitleAndArtist(Iterable<SongBase> iterable, SongBase song) {
@@ -3748,6 +3754,8 @@ class SongBase {
     if (_rawLyrics != (o._rawLyrics)) {
       return false;
     }
+
+    //  notice that a modification date is not sufficient to declare a change in content.
 
     return true;
   }
@@ -3882,7 +3890,7 @@ class SongBase {
   }
 
   void resetLastModifiedDateToNow() {
-    lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
+    _lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
   }
 
   int get lastModifiedTime => _lastModifiedTime;

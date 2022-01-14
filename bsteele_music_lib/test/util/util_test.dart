@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:test/test.dart';
@@ -50,5 +51,62 @@ void main() {
     expect(Util.enumName(KeyEnum.F.toString()), 'F');
     expect(Util.enumFromString('G', KeyEnum.values), KeyEnum.G);
     expect(Util.enumFromString('Gkk', KeyEnum.values), null);
+  });
+
+  test('test util readableJson()', () {
+    expect(
+        Util.readableJson('{\n'
+            '"title": "ive go the blanks",\n'
+            '"artist": "bob",\n'
+            '"coverArtist": "Bob Marley",\n'
+            '"user": "pearl bob",\n'
+            'lastModifiedDate was here\n'
+            '"copyright": "bob",\n'
+            '"key": "C",\n'
+            '"defaultBpm": 106,\n'
+            '"timeSignature": "4/4",\n'
+            '"chords": \n'
+            '    [\n'
+            '\t"I:",\n'
+            '\t"A B C D",\n'
+            '\t"V:",\n'
+            '\t"G G G G",\n'
+            '\t"C C G G",\n'
+            '\t"O:",\n'
+            '\t"C C G G"\n'
+            '    ],\n'
+            '"lyrics": \n'
+            '    [\n'
+            '\t"i: (instrumental)",\n'
+            '\t"v: line 1",\n'
+            '\t"o:"\n'
+            '    ]\n'
+            '}\n'
+            ''),
+        '\n'
+        'title: ive go the blanks\n'
+        'artist: bob\n'
+        'coverArtist: Bob Marley\n'
+        'user: pearl bob\n'
+        'lastModifiedDate was here\n'
+        'copyright: bob\n'
+        'key: C\n'
+        'defaultBpm: 106\n'
+        'timeSignature: 4/4\n'
+        'chords:\n'
+        '\tI:\n'
+        '\tA B C D\n'
+        '\tV:\n'
+        '\tG G G G\n'
+        '\tC C G G\n'
+        '\tO:\n'
+        '\tC C G G\n'
+        '    \n'
+        'lyrics:\n'
+        '\ti: (instrumental)\n'
+        '\tv: line 1\n'
+        '\to:\n'
+        '    \n'
+        '\n');
   });
 }

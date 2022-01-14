@@ -5,6 +5,7 @@ import 'package:quiver/collection.dart';
 
 import 'chordSection.dart';
 import 'key.dart';
+import 'measure.dart';
 
 const int _maxCycle = 64;
 
@@ -59,13 +60,28 @@ class NinJam {
         break;
       }
     }
+
     if (ninJamChordSection != null && allSignificantChordSectionsMatch) {
       int bars = ninJamChordSection.getTotalMoments();
+      var phrases = ninJamChordSection.phrases;
+
+      //  cheap minimization of the ninJam cycle
       if (ninJamChordSection.phrases.length == 1 && ninJamChordSection.phrases[0].isRepeat()) {
         bars = ninJamChordSection.phrases[0].measures.length;
-        _phrases = [Phrase(ninJamChordSection.phrases[0].measures, 0)];
-      } else {
-        _phrases = ninJamChordSection.phrases;
+        phrases = [Phrase(ninJamChordSection.phrases[0].measures, 0)];
+      }
+
+      for (var phrase in phrases) {
+        for (var repeat = 0; repeat < phrase.repeats; repeat++) {
+          for (var measure in phrase.measures) {
+            var m = measure.deepCopy();
+            //  put end of row on measures that are now the end of the row of measures, even if the were not previously
+            if (!measure.endOfRow && identical(measure, phrase.measures.last) && !identical(phrase, phrases.last)) {
+              m.endOfRow = true;
+            }
+            _measures.add(m);
+          }
+        }
       }
       int beatsPerInterval = song.timeSignature.beatsPerBar * bars;
       if (beatsPerInterval <= _maxCycle) {
@@ -76,8 +92,9 @@ class NinJam {
 
   String toMarkup() {
     var sb = StringBuffer();
-    for (var phrase in phrases) {
-      sb.write(phrase.transpose(key, keyOffset));
+    for (var measure in _measures) {
+      sb.write(measure.transpose(key, keyOffset));
+      sb.write(measure.endOfRow ? ', ' : ' ');
     }
     return sb.toString();
   }
@@ -94,8 +111,5 @@ class NinJam {
   final Key key;
   final int keyOffset;
 
-  List<Phrase> get phrases => _phrases;
-
-  //  we're expecting that the measures will remain stable over the life of the ninjam on the song
-  List<Phrase> _phrases = [];
+  final List<Measure> _measures = [];
 }

@@ -544,34 +544,34 @@ class Key implements Comparable<Key> {
   //                                   1  2  3  4  5  6  7
   //                                   0  1  2  3  4  5  6
   static const List<int> _majorScale = [0, 2, 4, 5, 7, 9, 11];
-  static const List<int> _majorScaleHalfstepsToScale = [
-    0, // 0
-    0, // 1
-    2 - 1, // 2
-    2 - 1, // 3
-    3 - 1, // 4
-    4 - 1, // 5
-    4 - 1, // 6
-    5 - 1, // 7
-    5 - 1, // 8
-    6 - 1, // 9
-    6 - 1, // 10
-    7 - 1, // 11
-  ];
+  // static const List<int> _majorScaleHalfstepsToScale = [
+  //   0, // 0
+  //   0, // 1
+  //   2 - 1, // 2
+  //   2 - 1, // 3
+  //   3 - 1, // 4
+  //   4 - 1, // 5
+  //   4 - 1, // 6
+  //   5 - 1, // 7
+  //   5 - 1, // 8
+  //   6 - 1, // 9
+  //   6 - 1, // 10
+  //   7 - 1, // 11
+  // ];
 
   //                                   1  2  3  4  5  6  7
   //                                   0  1  2  3  4  5  6
   static const List<int> _minorScale = [0, 2, 3, 5, 7, 8, 10];
 
-  static final List<ChordDescriptor> _diatonic7ChordModifiers = [
-    ChordDescriptor.major, //  0 + 1 = 1
-    ChordDescriptor.minor, //  1 + 1 = 2
-    ChordDescriptor.minor, //  2 + 1 = 3
-    ChordDescriptor.major, //  3 + 1 = 4
-    ChordDescriptor.dominant7, //  4 + 1 = 5
-    ChordDescriptor.minor, //  5 + 1 = 6
-    ChordDescriptor.minor7b5, //  6 + 1 = 7
-  ];
+  // static final List<ChordDescriptor> _diatonic7ChordModifiers = [
+  //   ChordDescriptor.major, //  0 + 1 = 1
+  //   ChordDescriptor.minor, //  1 + 1 = 2
+  //   ChordDescriptor.minor, //  2 + 1 = 3
+  //   ChordDescriptor.major, //  3 + 1 = 4
+  //   ChordDescriptor.dominant7, //  4 + 1 = 5
+  //   ChordDescriptor.minor, //  5 + 1 = 6
+  //   ChordDescriptor.minor7b5, //  6 + 1 = 7
+  // ];
   static const List<KeyEnum> _keyEnumsByHalfStep = <KeyEnum>[
     KeyEnum.A,
     KeyEnum.Bb,

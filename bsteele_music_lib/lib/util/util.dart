@@ -57,6 +57,11 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
+  static String readableJson( final String json ){
+    return json.replaceAll(_jsonJunkRegexp, '').replaceAll(',\n', '\n');
+  }
+  static final RegExp _jsonJunkRegexp = RegExp(r'(",|\s*\[|\s+\n|["{}[\]])');
+
   static String enumName(Object o) => o.toString().split('.').last;
 
   static T? enumFromString<T>(String key, List<T> values) {
