@@ -130,6 +130,39 @@ class Util {
   static final _underScoreRegExp = RegExp(r'_(\w)');
 }
 
+class RollingAverage {
+  RollingAverage({this.windowSize = 3}) {
+    assert(windowSize > 0);
+  }
+
+  double average(double value) {
+    if (list.length < windowSize) {
+      //  fill the initial values
+      list.add(value);
+      sum += value;
+      index = 0;
+    } else {
+      //  roll the values over the old ones
+      sum -= list[index];
+      list[index] = value;
+      sum += value;
+      index++;
+      if (index >= windowSize) {
+        index = 0;
+      }
+    }
+    assert((sum - list.reduce((value, element) => value += element)).abs() < 1e-6);
+
+    //  average
+    return sum / list.length;
+  }
+
+  final int windowSize;
+  int index = 0;
+  double sum = 0;
+  final List<double> list = [];
+}
+
 /// A String with a marked location to be used in parsing.
 /// The current location is remembered.
 /// Characters can be consumed by asking for the next character.
