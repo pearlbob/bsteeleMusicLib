@@ -3306,7 +3306,7 @@ class SongBase {
     if (songMoment == null) {
       return 0;
     }
-    return songMoment.getBeatNumber() * beatsPerMinute / 60.0;
+    return songMoment.getBeatNumber() * 60.0 / beatsPerMinute;
   }
 
   static int? getBeatNumberAtTime(int bpm, double songTime) {

@@ -20,6 +20,7 @@ import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
 import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
+import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 String chordSectionToMultiLineString(SongBase song) {
@@ -2777,28 +2778,46 @@ v:
     int beatsPerBar = 4;
     {
       //  fixme: force a new line at lyrics entry?
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:');
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:');
       expect(
           a.chordMarkupForLyrics(),
           'I:\n A B C D\n'
-              'V:\n'
-              ' G G G G, C C G G\n'
-              'O: C C G G\n');
+          'V:\n'
+          ' G G G G, C C G G\n'
+          'O: C C G G\n');
     }
     {
       //  fixme: force a new line at lyrics entry?
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i:\n(instrumental)\n\nv: line 1\n\no:\n\n');
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i:\n(instrumental)\n\nv: line 1\n\no:\n\n');
       logger.i(a.lyricSectionsAsEntryString);
 
       expect(
           a.chordMarkupForLyrics(),
           'I:\n'
-              ' A B C D\n'
-              'V:\n'
-              ' G G G G, C C G G\n'
-              'O: C C G G\n');
+          ' A B C D\n'
+          'V:\n'
+          ' G G G G, C C G G\n'
+          'O: C C G G\n');
     }
     {
       for (var lines = 1; lines < 20; lines++) {
@@ -2875,7 +2894,7 @@ v:
           4,
           'pearl bob',
           'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
-         'i: (instrumental)\n '
+          'i: (instrumental)\n '
               'v:\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
       expect(
           a.chordMarkupForLyrics(),
@@ -2969,88 +2988,130 @@ v:
   test('test songBase to/from JSON', () {
     int beatsPerBar = 4;
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
 
       expect(
           a.toJson().replaceAll(_lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
           '{\n'
-              '"title": "ive go the blanks",\n'
-              '"artist": "bob",\n'
-              '"user": "pearl bob",\n'
-              'lastModifiedDate was here\n'
-              '"copyright": "bob",\n'
-              '"key": "C",\n'
-              '"defaultBpm": 106,\n'
-              '"timeSignature": "4/4",\n'
-              '"chords": \n'
-              '    [\n'
-              '\t"I:",\n'
-              '\t"A B C D",\n'
-              '\t"V:",\n'
-              '\t"G G G G",\n'
-              '\t"C C G G",\n'
-              '\t"O:",\n'
-              '\t"C C G G"\n'
-              '    ],\n'
-              '"lyrics": \n'
-              '    [\n'
-              '\t"i: (instrumental)",\n'
-              '\t"v: line 1",\n'
-              '\t"o:"\n'
-              '    ]\n'
-              '}\n'
-              ''
-         );
-      expect(a.toString(),'ive go the blanks by bob');
+          '"title": "ive go the blanks",\n'
+          '"artist": "bob",\n'
+          '"user": "pearl bob",\n'
+          'lastModifiedDate was here\n'
+          '"copyright": "bob",\n'
+          '"key": "C",\n'
+          '"defaultBpm": 106,\n'
+          '"timeSignature": "4/4",\n'
+          '"chords": \n'
+          '    [\n'
+          '\t"I:",\n'
+          '\t"A B C D",\n'
+          '\t"V:",\n'
+          '\t"G G G G",\n'
+          '\t"C C G G",\n'
+          '\t"O:",\n'
+          '\t"C C G G"\n'
+          '    ],\n'
+          '"lyrics": \n'
+          '    [\n'
+          '\t"i: (instrumental)",\n'
+          '\t"v: line 1",\n'
+          '\t"o:"\n'
+          '    ]\n'
+          '}\n'
+          '');
+      expect(a.toString(), 'ive go the blanks by bob');
       Song b = Song.songListFromJson(a.toJson()).first;
-      expect(a.toString(),b.toString());
-      expect(a.toJson(),b.toJson());
-      expect(a.compareBySongId(b),0);
-      expect(a.songBaseSameContent(b),true);
-      expect(a.songBaseSameContent(b.copySong()),true);
+      expect(a.toString(), b.toString());
+      expect(a.toJson(), b.toJson());
+      expect(a.compareBySongId(b), 0);
+      expect(a.songBaseSameContent(b), true);
+      expect(a.songBaseSameContent(b.copySong()), true);
 
       a.coverArtist = 'Bob Marley';
-      expect(a.toString(),'ive go the blanks by bob, cover by Bob Marley');
+      expect(a.toString(), 'ive go the blanks by bob, cover by Bob Marley');
       expect(
           a.toJson().replaceAll(_lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
           '{\n'
-              '"title": "ive go the blanks",\n'
-              '"artist": "bob",\n'
-              '"coverArtist": "Bob Marley",\n'
-              '"user": "pearl bob",\n'
-              'lastModifiedDate was here\n'
-              '"copyright": "bob",\n'
-              '"key": "C",\n'
-              '"defaultBpm": 106,\n'
-              '"timeSignature": "4/4",\n'
-              '"chords": \n'
-              '    [\n'
-              '\t"I:",\n'
-              '\t"A B C D",\n'
-              '\t"V:",\n'
-              '\t"G G G G",\n'
-              '\t"C C G G",\n'
-              '\t"O:",\n'
-              '\t"C C G G"\n'
-              '    ],\n'
-              '"lyrics": \n'
-              '    [\n'
-              '\t"i: (instrumental)",\n'
-              '\t"v: line 1",\n'
-              '\t"o:"\n'
-              '    ]\n'
-              '}\n'
-              ''
-      );
-      expect(a.songBaseSameContent(a.copySong()),true);
+          '"title": "ive go the blanks",\n'
+          '"artist": "bob",\n'
+          '"coverArtist": "Bob Marley",\n'
+          '"user": "pearl bob",\n'
+          'lastModifiedDate was here\n'
+          '"copyright": "bob",\n'
+          '"key": "C",\n'
+          '"defaultBpm": 106,\n'
+          '"timeSignature": "4/4",\n'
+          '"chords": \n'
+          '    [\n'
+          '\t"I:",\n'
+          '\t"A B C D",\n'
+          '\t"V:",\n'
+          '\t"G G G G",\n'
+          '\t"C C G G",\n'
+          '\t"O:",\n'
+          '\t"C C G G"\n'
+          '    ],\n'
+          '"lyrics": \n'
+          '    [\n'
+          '\t"i: (instrumental)",\n'
+          '\t"v: line 1",\n'
+          '\t"o:"\n'
+          '    ]\n'
+          '}\n'
+          '');
+      expect(a.songBaseSameContent(a.copySong()), true);
       b = Song.songListFromJson(a.toJson()).first;
-      expect(a.toString(),b.toString());
-      expect(a.toJson(),b.toJson());
-      expect(a.compareBySongId(b),0);
-      expect(a.songBaseSameContent(b),true);
-      expect(a.songBaseSameContent(b.copySong()),true);
+      expect(a.toString(), b.toString());
+      expect(a.toJson(), b.toJson());
+      expect(a.compareBySongId(b), 0);
+      expect(a.songBaseSameContent(b), true);
+      expect(a.songBaseSameContent(b.copySong()), true);
     }
+  });
 
+  test('test songBase getSongMomentNumberAtSongTime', () {
+    int beatsPerBar = 4;
+    int bpm = 106;
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var totalBeats = a.getTotalBeats();
+      var beatDuration = 60.0 / bpm;
+      expect(totalBeats, 64); //  sanity only
+
+      expect(a.duration, greaterThan((totalBeats * beatDuration).floor()));
+      expect(a.duration, lessThan((totalBeats * beatDuration).ceil()));
+
+      expect(a.getSongMomentNumberAtSongTime(2 * beatDuration), 0);
+      expect(a.getSongMomentNumberAtSongTime(3 * beatDuration), 0);
+      expect(a.getSongMomentNumberAtSongTime(4 * beatDuration), 1);
+
+      var limit = beatsPerBar * (36 + 3);
+      for (var beat = -2 * beatsPerBar; beat < limit; beat++) {
+        var d = beatDuration * beat;
+        expect(a.getSongMomentNumberAtSongTime(d),
+            (beat < totalBeats) ? (d / (beatsPerBar * beatDuration)).floor() : null);
+      }
+    }
   });
 }
