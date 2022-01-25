@@ -131,7 +131,7 @@ class AllSongPerformances {
 
   AllSongPerformances._internal();
 
-  void loadSongs(List<Song> songs) {
+  void loadSongs(Iterable<Song> songs) {
     for (var song in songs) {
       songMap[song.songId.toString()] = song;
     }
@@ -234,10 +234,6 @@ class AllSongPerformances {
     _allSongPerformances.clear();
   }
 
-  List<SongPerformance> toList(){
-    return _allSongPerformances.toList();
-  }
-
   int get length => _allSongPerformances.length;
 
   bool get isEmpty => _allSongPerformances.isEmpty;
@@ -257,7 +253,9 @@ class AllSongPerformances {
   int get hashCode => _allSongPerformances.hashCode;
 
   Map<String, Song> songMap = {};
+
+  Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(_compareBySongIdAndSinger);
 
-  static const String fileExtension = '.songperformances';  //  intentionally all lower case
+  static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }
