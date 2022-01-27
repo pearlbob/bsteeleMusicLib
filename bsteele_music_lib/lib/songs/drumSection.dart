@@ -1,26 +1,15 @@
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
-import 'legacyDrumMeasure.dart';
+import 'drumMeasure.dart';
 
 /// Definition of drum section for one or more measures
 /// to be used either as the song's default drums or
 /// the special drums for a given section.
 
-@deprecated
-class LegacyDrumSection implements Comparable<LegacyDrumSection> {
-  /// Get the section's drum measures
-  List<LegacyDrumMeasure>? getDrumMeasures() {
-    return drumMeasures;
-  }
-
-  ///Set the section's drum measures in bulk
-  void setDrumMeasures(List<LegacyDrumMeasure> drumMeasures) {
-    this.drumMeasures = drumMeasures;
-  }
-
+class DrumSection implements Comparable<DrumSection> {
   @override
-  int compareTo(LegacyDrumSection o) {
+  int compareTo(DrumSection o) {
     if (!listsEqual(drumMeasures, o.drumMeasures)) {
       //  compare the lists
       if (drumMeasures == null) {
@@ -47,9 +36,7 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection> {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType &&
-        other is LegacyDrumSection &&
-        listsEqual(drumMeasures, other.drumMeasures);
+    return runtimeType == other.runtimeType && other is DrumSection && listsEqual(drumMeasures, other.drumMeasures);
   }
 
   @override
@@ -60,5 +47,5 @@ class LegacyDrumSection implements Comparable<LegacyDrumSection> {
     return hashObjects(drumMeasures ?? []);
   }
 
-  List<LegacyDrumMeasure>? drumMeasures;
+  List<DrumMeasure>? drumMeasures;
 }

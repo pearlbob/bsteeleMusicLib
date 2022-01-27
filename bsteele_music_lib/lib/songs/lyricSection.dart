@@ -4,7 +4,7 @@ import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
 import '../appLogger.dart';
-import 'legacyDrumSection.dart';
+import 'drumSection.dart';
 import 'lyric.dart';
 import 'sectionVersion.dart';
 
@@ -63,12 +63,12 @@ class LyricSection implements Comparable<LyricSection> {
   /// and then repeated as required for the _sectionVersion's duration.
   /// When done, the drums will default back to the song's default drum _sectionVersion.
 
-  LegacyDrumSection getDrumSection() {
+  DrumSection getDrumSection() {
     return drumSection;
   }
 
   ///Set the song's default drum _sectionVersion
-  void setDrumSection(LegacyDrumSection drumSection) {
+  void setDrumSection(DrumSection drumSection) {
     this.drumSection = drumSection;
   }
 
@@ -156,7 +156,7 @@ class LyricSection implements Comparable<LyricSection> {
 
   int get index => _index;
   final int _index;
-  LegacyDrumSection drumSection = LegacyDrumSection();
+  DrumSection drumSection = DrumSection();
 
   List<String> get lyricsLines => _lyricsLines;
   final List<String> _lyricsLines = [];

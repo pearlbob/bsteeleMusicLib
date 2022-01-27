@@ -2590,6 +2590,7 @@ class SongBase {
           state = 1; //  collect leading white space on first line
           continue;
         } on String catch (e) {
+          e.length; //  used only to avoid a dart analysis complaint
           logger.v('not section: ${markedString.remainingStringLimited(25)}');
           //  ignore, this is typical of lyrics lines
         } catch (e) {
@@ -3688,7 +3689,6 @@ class SongBase {
         ' by ' +
         artist +
         (coverArtist.isNotEmpty ? ', cover by $coverArtist' : '');
-    ;
   }
 
   static bool containsSongTitleAndArtist(Iterable<SongBase> iterable, SongBase song) {

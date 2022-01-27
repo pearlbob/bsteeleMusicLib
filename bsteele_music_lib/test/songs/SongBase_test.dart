@@ -20,7 +20,6 @@ import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
 import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
-import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 
 String chordSectionToMultiLineString(SongBase song) {
