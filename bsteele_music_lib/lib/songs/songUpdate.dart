@@ -3,6 +3,7 @@
  */
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
@@ -262,7 +263,8 @@ class SongUpdate {
         }
       }
       songUpdate.setMomentNumber(songUpdate.momentNumber);
-      songUpdate.songMoment = songUpdate.song.songMoments[songUpdate.momentNumber];
+      songUpdate.songMoment =
+          songUpdate.song.songMoments[min(max(0, songUpdate.momentNumber), songUpdate.song.getSongMomentsSize())];
 
       return songUpdate;
     }
