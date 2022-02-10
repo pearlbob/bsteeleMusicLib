@@ -32,9 +32,9 @@ class SongPerformance implements Comparable<SongPerformance> {
         _bpm = bpm ?? song.beatsPerMinute,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance update({Key? key}) {
+  SongPerformance update({Key? key, int? bpm}) {
     //  produce a copy with a new last sung date
-    return SongPerformance(_songIdAsString, _singer, key ?? _key, bpm: _bpm, lastSung: null);
+    return SongPerformance(_songIdAsString, _singer, key ?? _key, bpm: bpm ?? _bpm, lastSung: null);
   }
 
   @override
