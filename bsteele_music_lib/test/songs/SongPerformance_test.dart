@@ -9,28 +9,10 @@ void main() {
   Logger.level = Level.debug;
 
   test('song performance', () {
-    var a = Song.createSong(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'pearlbob',
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here');
-    var b = Song.createSong(
-        'B',
-        'bob',
-        'bsteele.com',
-        Key.get(KeyEnum.G),
-        120,
-        4,
-        4,
-        'pearlbob',
-        'i: B B B B V: [ A B C D ]x2 ',
-        'i:\nv: bob, bob, bob berand\nV: sing verse here');
+    var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+    var b = Song.createSong('B', 'bob', 'bsteele.com', Key.get(KeyEnum.G), 120, 4, 4, 'pearlbob',
+        'i: B B B B V: [ A B C D ]x2 ', 'i:\nv: bob, bob, bob berand\nV: sing verse here');
 
     var singer1 = 'bodhi';
     for (var song in [a, b]) {
@@ -45,15 +27,12 @@ void main() {
         expect(songPerformanceFromJson, songPerformance);
       }
     }
-    var allSongPerformances = AllSongPerformances()
-      ..clear();
+    var allSongPerformances = AllSongPerformances()..clear();
     var songs = [a, b];
     const int lastSung = 1639852279322;
     allSongPerformances.loadSongs(songs);
     for (var song in [a, b]) {
-      for (var key in Key.values
-          .toList()
-          .reversed) {
+      for (var key in Key.values.toList().reversed) {
         if (key == Key.get(KeyEnum.Fs)) {
           continue; //  skip the duplicate
         }
@@ -67,19 +46,15 @@ void main() {
       }
     }
     {
-      expect(allSongPerformances
-          .bySinger(singer1)
-          .length, 2);
+      expect(allSongPerformances.bySinger(singer1).length, 2);
       var singer2 = 'vicki';
-      expect(allSongPerformances
-          .bySinger(singer2)
-          .length, 0);
+      expect(allSongPerformances.bySinger(singer2).length, 0);
       SongPerformance songPerformance =
-      SongPerformance.fromSong(a, singer2, Key.get(KeyEnum.A), bpm: 120, lastSung: lastSung);
+          SongPerformance.fromSong(a, singer2, Key.get(KeyEnum.A), bpm: 120, lastSung: lastSung);
       expect(
           songPerformance.toString(),
           'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
-              ' _singer: \'vicki\', _key: A, _bpm: 120, sung: 12/18/2021}');
+          ' _singer: \'vicki\', _key: A, _bpm: 120, sung: 12/18/2021}');
       expect(songPerformance.songIdAsString, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
       expect(songPerformance.key, Key.get(KeyEnum.A));
@@ -87,9 +62,7 @@ void main() {
       expect(songPerformance.lastSung, lastSung);
       logger.d('songPerformance: $songPerformance');
       allSongPerformances.addSongPerformance(songPerformance);
-      expect(allSongPerformances
-          .bySinger(singer2)
-          .length, 1);
+      expect(allSongPerformances.bySinger(singer2).length, 1);
 
       expect(allSongPerformances.setOfSingers().toList(), [singer1, singer2]);
 
@@ -102,7 +75,7 @@ void main() {
       expect(
           allSongPerformances.bySinger(singer1).toString(),
           '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', _key: G♭, _bpm: 100, sung: 12/18/2021}'
-              ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', _key: G♭, _bpm: 120, sung: 12/18/2021}]');
+          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', _key: G♭, _bpm: 120, sung: 12/18/2021}]');
       expect(allSongPerformances.bySinger(singer2).toString(),
           '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', _key: A, _bpm: 120, sung: 12/18/2021}]');
 
@@ -110,7 +83,7 @@ void main() {
       expect(
           allSongPerformances.toJsonStringFor(singer1),
           '[{"songId":"Song_A_by_bob","singer":"bodhi","key":9,"bpm":100,"lastSung":1639852279322},'
-              '\n{"songId":"Song_B_by_bob","singer":"bodhi","key":9,"bpm":120,"lastSung":1639852279322}]\n');
+          '\n{"songId":"Song_B_by_bob","singer":"bodhi","key":9,"bpm":120,"lastSung":1639852279322}]\n');
       logger.i('String toJsonStringFor($singer2): \'${allSongPerformances.toJsonStringFor(singer2)}\'');
       expect(allSongPerformances.toJsonStringFor(singer2),
           '[{"songId":"Song_A_by_bob","singer":"vicki","key":0,"bpm":120,"lastSung":1639852279322}]\n');
@@ -166,17 +139,8 @@ void main() {
   });
 
   test('song performance dates', () async {
-    var a = Song.createSong(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'pearlbob',
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+    var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
 
     var singer1 = 'bodhi';
     SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, Key.get(KeyEnum.A));
@@ -195,8 +159,7 @@ void main() {
         '{"songId":"Song_A_by_bob","singer":"bodhi","key":0,"bpm":100,"lastSung":1548296878134}');
     expect(songPerformance.lastSungDateString, '1/23/2019');
 
-    var allSongPerformances = AllSongPerformances()
-      ..clear();
+    var allSongPerformances = AllSongPerformances()..clear();
     expect(allSongPerformances.length, 0);
     allSongPerformances.addSongPerformance(songPerformance);
     expect(allSongPerformances.length, 1);
@@ -209,14 +172,14 @@ void main() {
     expect(allSongPerformances.length, 1);
 
     allSongPerformances.loadSongs([a]);
-    expect(allSongPerformances.bySong(a).toString(),
+    expect(
+        allSongPerformances.bySong(a).toString(),
         '[SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
-            ' _singer: \'bodhi\', _key: A, _bpm: 100, sung: 1/23/2019}]');
+        ' _singer: \'bodhi\', _key: A, _bpm: 100, sung: 1/23/2019}]');
   });
 
   test('song all performances', () async {
-    var allSongPerformances = AllSongPerformances()
-      ..clear();
+    var allSongPerformances = AllSongPerformances()..clear();
     expect(allSongPerformances.length, 0);
     allSongPerformances.addFromJsonString(
         '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":106,"lastSung":1639854884818},
@@ -226,9 +189,7 @@ void main() {
 {"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"Jill","key":0,"bpm":106,"lastSung":0}]
     ''');
     expect(allSongPerformances.length, 5);
-    expect(allSongPerformances
-        .bySinger('Jill')
-        .length, 4);
+    expect(allSongPerformances.bySinger('Jill').length, 4);
   });
 
   test('song performance updates', () async {
@@ -240,7 +201,32 @@ void main() {
 {"songId":"Song_Back_in_the_USSR_by_Beatles_The","singer":"Bob","key":7,"bpm":106,"lastSung":0},
 {"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"Jill","key":0,"bpm":106,"lastSung":0}]
     ''');
-    expect(allSongPerformances.length, 5);
+
+    {
+      var performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
+          ',"singer":"Jill","key":3,"bpm":120,"lastSung":1639854884818}');
+      allSongPerformances.updateSongPerformance(performance);
+      for (var p in allSongPerformances.bySinger('Jill')) {
+        if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
+          expect(p.lastSung, 1639854884818);
+          expect(p.bpm, 120);
+        }
+      }
+    }
+
+    {
+      var performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
+          ',"singer":"Jill","key":3,"bpm":110,"lastSung":1539854884818}');    //  older performance
+      allSongPerformances.updateSongPerformance(performance);
+      for (var p in allSongPerformances.bySinger('Jill')) {
+        if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
+          //  not updated since update was older
+          expect(p.lastSung, 1639854884818);
+          expect(p.bpm, 120);
+        }
+      }
+    }
+
 //     expect(allSongPerformances
 //         .bySinger('Jill')
 //         .length, 4);
