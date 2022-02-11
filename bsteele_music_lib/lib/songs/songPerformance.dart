@@ -228,8 +228,27 @@ class AllSongPerformances {
     }
   }
 
+  static const String allSongPerformancesName = 'allSongPerformances';
+
+  void updateFromJsonString(String jsonString) {
+    var decoded = jsonDecode(jsonString);
+    if (decoded is Map<String, dynamic>) {
+      //  assume the items are song performances
+      for (var item in decoded[allSongPerformancesName]) {
+        updateSongPerformance(SongPerformance._fromJson(item));
+      }
+    } else if (decoded is List<dynamic>) {
+      //  assume the items are song performances
+      for (var item in decoded) {
+        updateSongPerformance(SongPerformance._fromJson(item));
+      }
+    } else {
+      throw 'updateFromJsonString wrong json decode: ${decoded.runtimeType}';
+    }
+  }
+
   void _fromJson(Map<String, dynamic> json) {
-    for (var songPerformanceJson in json['allSongPerformances']) {
+    for (var songPerformanceJson in json[allSongPerformancesName]) {
       _allSongPerformances.add(SongPerformance._fromJson(songPerformanceJson));
     }
   }
@@ -243,7 +262,7 @@ class AllSongPerformances {
   }
 
   Map<String, dynamic> toJson() => {
-        'allSongPerformances': _allSongPerformances.toList(growable: false),
+        allSongPerformancesName: _allSongPerformances.toList(growable: false),
       };
 
   void clear() {
