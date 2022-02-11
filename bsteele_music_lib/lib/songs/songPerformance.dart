@@ -142,11 +142,27 @@ class AllSongPerformances {
   }
 
   void addSongPerformance(SongPerformance songPerformance) {
-    //  clear the pervious song performance.  needed to change auxiliary data such as key and bpm
+    //  clear the previous song performance.  needed to change auxiliary data such as key and bpm
     _allSongPerformances.remove(songPerformance);
 
     _allSongPerformances.add(songPerformance);
     songPerformance.song = songMap[songPerformance._songIdAsString];
+  }
+
+  void updateSongPerformance(SongPerformance songPerformance) {
+    SongPerformance? original = _allSongPerformances.lookup(songPerformance);
+    if (original == null) {
+      _allSongPerformances.add(songPerformance);
+      songPerformance.song = songMap[songPerformance._songIdAsString];
+      return;
+    }
+
+    if (songPerformance.lastSung <= original.lastSung) {
+      //  use the original since it's newer
+      return;
+    }
+
+    addSongPerformance(songPerformance);
   }
 
   List<SongPerformance> bySinger(String singer) {

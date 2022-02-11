@@ -230,4 +230,19 @@ void main() {
         .bySinger('Jill')
         .length, 4);
   });
+
+  test('song performance updates', () async {
+    var allSongPerformances = AllSongPerformances();
+    allSongPerformances.addFromJsonString(
+        '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":106,"lastSung":1439854884818},
+{"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Angie_by_Rolling_Stones_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Back_in_the_USSR_by_Beatles_The","singer":"Bob","key":7,"bpm":106,"lastSung":0},
+{"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"Jill","key":0,"bpm":106,"lastSung":0}]
+    ''');
+    expect(allSongPerformances.length, 5);
+//     expect(allSongPerformances
+//         .bySinger('Jill')
+//         .length, 4);
+  });
 }
