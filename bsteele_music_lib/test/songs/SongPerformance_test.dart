@@ -193,7 +193,8 @@ void main() {
   });
 
   test('song performance updates', () async {
-    var allSongPerformances = AllSongPerformances();
+    var allSongPerformances = AllSongPerformances()..clear();
+
     allSongPerformances.addFromJsonString(
         '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":106,"lastSung":1439854884818},
 {"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},

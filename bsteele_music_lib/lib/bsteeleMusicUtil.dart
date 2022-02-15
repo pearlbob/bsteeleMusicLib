@@ -262,8 +262,8 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-exp':
           for (Song song in allSongs) {
-            if ( song.lastModifiedTime == 0 ){
-              print( song.toString());
+            if (song.lastModifiedTime == 0) {
+              print(song.toString());
             }
           }
           // for (Song song in allSongs) {
@@ -662,6 +662,14 @@ coerced to reflect the songlist's last modification for that song.
                   .replaceAll('": null,', '": "",')) //  cheap repair
               ;
           allSongs.addAll(addSongs);
+
+          {
+            var count = 0;
+            for (var song in allSongs) {
+              count += song.isLyricsParseRequired ? 1 : 0;
+            }
+            logger.i('isLyricsParseRequired: $count');
+          }
           break;
 
         case '-x':

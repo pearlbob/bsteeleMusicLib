@@ -3434,8 +3434,7 @@ class SongBase {
   void setChords(String chords) {
     _clearCachedValues();
     _chords = chords;
-    _chordSectionMap = HashMap();
-    _getChordSectionMap(); //  force a parse of the new chords
+    _chordSectionMap = HashMap(); //  clear chord sections, will be parsed when required
   }
 
   void setTotalBeats(int totalBeats) {
@@ -3794,7 +3793,8 @@ class SongBase {
 //  primary values
 
   String get title => _title;
-  String get titleWithCover => _title + (coverArtist.isNotEmpty?', cover by $coverArtist':'');
+
+  String get titleWithCover => _title + (coverArtist.isNotEmpty ? ', cover by $coverArtist' : '');
 
   set title(String s) {
     s = _theToTheEnd(s.trim());
@@ -3922,6 +3922,7 @@ class SongBase {
     return _duration!;
   }
 
+  bool get isLyricsParseRequired => _isLyricsParseRequired;
   bool _isLyricsParseRequired = true;
 
   double? _duration; //  units of seconds
