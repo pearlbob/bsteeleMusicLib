@@ -79,6 +79,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   @override
   int compareTo(SongPerformance other) {
     if (identical(this, other)) return 0;
+
     int ret = _songIdAsString.compareTo(other._songIdAsString);
     if (ret != 0) {
       return ret;
@@ -95,6 +96,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     if (ret != 0) {
       return ret;
     }
+    //  notice that lastSung is not included!  this is intentional
     return 0;
   }
 
@@ -149,20 +151,22 @@ class AllSongPerformances {
     songPerformance.song = songMap[songPerformance._songIdAsString];
   }
 
-  void updateSongPerformance(SongPerformance songPerformance) {
+  bool updateSongPerformance(SongPerformance songPerformance) {
     SongPerformance? original = _allSongPerformances.lookup(songPerformance);
     if (original == null) {
       _allSongPerformances.add(songPerformance);
       songPerformance.song = songMap[songPerformance._songIdAsString];
-      return;
+      return true;
     }
 
+    //  don't both to compare performances, always use the most recent
     if (songPerformance.lastSung <= original.lastSung) {
-      //  use the original since it's newer
-      return;
+      //  use the original since it's the same or newer
+      return false;
     }
 
     addSongPerformance(songPerformance);
+    return true;
   }
 
   List<SongPerformance> bySinger(String singer) {
@@ -230,21 +234,27 @@ class AllSongPerformances {
 
   static const String allSongPerformancesName = 'allSongPerformances';
 
-  void updateFromJsonString(String jsonString) {
+  int updateFromJsonString(String jsonString) {
+    int count = 0;
     var decoded = jsonDecode(jsonString);
     if (decoded is Map<String, dynamic>) {
       //  assume the items are song performances
       for (var item in decoded[allSongPerformancesName]) {
-        updateSongPerformance(SongPerformance._fromJson(item));
+        if (updateSongPerformance(SongPerformance._fromJson(item))) {
+          count++;
+        }
       }
     } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
       for (var item in decoded) {
-        updateSongPerformance(SongPerformance._fromJson(item));
+        if (updateSongPerformance(SongPerformance._fromJson(item))) {
+          count++;
+        }
       }
     } else {
       throw 'updateFromJsonString wrong json decode: ${decoded.runtimeType}';
     }
+    return count;
   }
 
   void _fromJson(Map<String, dynamic> json) {

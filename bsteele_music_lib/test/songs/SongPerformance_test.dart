@@ -204,21 +204,23 @@ void main() {
     ''');
 
     {
+      //  update to a newer performance
       var performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
           ',"singer":"Jill","key":3,"bpm":120,"lastSung":1639854884818}');
-      allSongPerformances.updateSongPerformance(performance);
+      expect(allSongPerformances.updateSongPerformance(performance), true);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
       for (var p in allSongPerformances.bySinger('Jill')) {
         if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
         }
       }
-    }
+      expect(allSongPerformances.updateSongPerformance(performance), false);
 
-    {
-      var performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
-          ',"singer":"Jill","key":3,"bpm":110,"lastSung":1539854884818}');    //  older performance
-      allSongPerformances.updateSongPerformance(performance);
+      //  don't update to an older performance
+      performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
+          ',"singer":"Jill","key":3,"bpm":110,"lastSung":1539854884818}'); //  older performance
+      expect(allSongPerformances.updateSongPerformance(performance), false);
       for (var p in allSongPerformances.bySinger('Jill')) {
         if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           //  not updated since update was older
@@ -226,6 +228,33 @@ void main() {
           expect(p.bpm, 120);
         }
       }
+    }
+
+    {
+      var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+      var singer1 = 'bodhi';
+      var performance = SongPerformance.fromSong(a, singer1, Key.get(KeyEnum.A));
+      expect(allSongPerformances.updateSongPerformance(performance), true);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      await Future.delayed(const Duration(milliseconds: 2));
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      performance = SongPerformance.fromSong(a, singer1, Key.get(KeyEnum.A));
+      expect(allSongPerformances.updateSongPerformance(performance), true);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      await Future.delayed(const Duration(milliseconds: 2));
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      performance = SongPerformance.fromSong(a, singer1, Key.get(KeyEnum.B));
+      expect(allSongPerformances.updateSongPerformance(performance), true);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      await Future.delayed(const Duration(milliseconds: 2));
+      performance = SongPerformance.fromSong(a, singer1, Key.get(KeyEnum.B));
+      expect(allSongPerformances.updateSongPerformance(performance), true);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      await Future.delayed(const Duration(milliseconds: 2));
+      expect(allSongPerformances.updateSongPerformance(performance), false);
+      expect(allSongPerformances.updateSongPerformance(performance), false);
     }
   });
 }
