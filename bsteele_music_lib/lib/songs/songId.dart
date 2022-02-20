@@ -6,14 +6,14 @@ class SongId implements Comparable<SongId> {
   SongId(this._songId);
 
   SongId.computeSongId(String? title, String? artist, String? coverArtist)
-      : _songId = 'Song_' +
+      : _songId = _prefix +
             _toSongId(title) +
             '_by_' +
             _toSongId(artist) +
             (coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_' + _toSongId(coverArtist));
 
   static String _toSongId(String? s) {
-    if ( s == null ) {
+    if (s == null) {
       return 'unknown';
     }
     return s
@@ -21,8 +21,9 @@ class SongId implements Comparable<SongId> {
         .replaceAllMapped(notWordOrSpaceRegExp, (Match m) => '')
         .replaceAllMapped(dupUnderscoreOrSpaceRegExp, (Match m) => '_');
   }
-  
-  String toUnderScorelessString() => _underScorelessId ??= _songId.replaceAll('_', ' ');
+
+  String toUnderScorelessString() =>
+      _underScorelessId ??= _songId.replaceFirst(_prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
 
   @override
   String toString() {
@@ -38,6 +39,8 @@ class SongId implements Comparable<SongId> {
   int compareTo(SongId o) {
     return songId.compareTo(o.songId);
   }
+
+  static const _prefix = 'Song_';
 
   String get songId => _songId;
   final String _songId;
