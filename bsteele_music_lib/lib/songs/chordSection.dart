@@ -750,6 +750,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
         }
       }
     }
+    return null;
   }
 
   Phrase? lastPhrase() {

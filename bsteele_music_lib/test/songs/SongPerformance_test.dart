@@ -257,4 +257,19 @@ void main() {
       expect(allSongPerformances.updateSongPerformance(performance), false);
     }
   });
+
+  test('song performances name trimming', () async {
+    var allSongPerformances = AllSongPerformances()..clear();
+    expect(allSongPerformances.length, 0);
+    allSongPerformances.addFromJsonString(
+        '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill Z. ","key":3,"bpm":106,"lastSung":1639854884818},
+{"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":" Jill Z.","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Angie_by_Rolling_Stones_The","singer":"Jill  Z.","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Back_in_the_USSR_by_Beatles_The","singer":"Bob","key":7,"bpm":106,"lastSung":0},
+{"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":" Jill      Z.  ","key":0,"bpm":106,"lastSung":0}]
+    ''');
+    //  notice that the last one has a tab in the middle of Jill's name
+    expect(allSongPerformances.length, 5);
+    expect(allSongPerformances.bySinger('Jill Z.').length, 4);
+  });
 }

@@ -1,7 +1,5 @@
-import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/songBase.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

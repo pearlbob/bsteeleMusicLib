@@ -22,12 +22,14 @@ int _compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, this._singer, this._key, {int? bpm, int? lastSung})
-      : _bpm = bpm ?? MusicConstants.defaultBpm,
+  SongPerformance(this._songIdAsString, final String singer, this._key, {int? bpm, int? lastSung})
+      : _singer = _cleanSinger(singer),
+        _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song song, this._singer, this._key, {int? bpm, int? lastSung})
-      : song = song,
+  SongPerformance.fromSong(Song song, final String singer, this._key, {int? bpm, int? lastSung})
+      : _singer = _cleanSinger(singer),
+        song = song,
         _songIdAsString = song.songId.toString(),
         _bpm = bpm ?? song.beatsPerMinute,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
@@ -59,7 +61,7 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   SongPerformance._fromJson(Map<String, dynamic> json)
       : _songIdAsString = json['songId'],
-        _singer = json['singer'],
+        _singer = _cleanSinger(json['singer']),
         _key = Key.getKeyByHalfStep(json['key']),
         _bpm = json['bpm'],
         _lastSung = json['lastSung'] ?? 0;
@@ -107,6 +109,12 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   String get songIdAsString => _songIdAsString;
   final String _songIdAsString;
+
+  static final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
+
+  static String _cleanSinger(final String value) {
+    return value.trim().replaceAll(_multipleWhiteCharactersRegexp, ' ');
+  }
 
   String get singer => _singer;
   final String _singer;
