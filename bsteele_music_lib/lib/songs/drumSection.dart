@@ -47,5 +47,5 @@ class DrumSection implements Comparable<DrumSection> {
     return hashObjects(drumMeasures ?? []);
   }
 
-  List<DrumMeasure>? drumMeasures;
+  List<DrumParts>? drumMeasures;
 }
