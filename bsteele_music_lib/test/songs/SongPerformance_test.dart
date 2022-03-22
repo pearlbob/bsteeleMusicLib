@@ -195,21 +195,26 @@ void main() {
   test('song performance updates', () async {
     var allSongPerformances = AllSongPerformances()..clear();
 
+    var singer = 'Jill';
     allSongPerformances.addFromJsonString(
-        '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":106,"lastSung":1439854884818},
-{"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
-{"songId":"Song_Angie_by_Rolling_Stones_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+        '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"$singer","key":3,"bpm":106,"lastSung":1439854884818},
+{"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":"$singer","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Angie_by_Rolling_Stones_The","singer":"$singer","key":6,"bpm":106,"lastSung":0},
 {"songId":"Song_Back_in_the_USSR_by_Beatles_The","singer":"Bob","key":7,"bpm":106,"lastSung":0},
-{"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"Jill","key":0,"bpm":106,"lastSung":0}]
+{"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"$singer","key":0,"bpm":106,"lastSung":0}]
     ''');
+    expect(allSongPerformances.allSongPerformances.length, 5);
+    expect(allSongPerformances.allSongPerformanceHistory.length, 5);
 
     {
       //  update to a newer performance
       var performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
-          ',"singer":"Jill","key":3,"bpm":120,"lastSung":1639854884818}');
+          ',"singer":"$singer","key":3,"bpm":120,"lastSung":1639854884818}');
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
-      for (var p in allSongPerformances.bySinger('Jill')) {
+      expect(allSongPerformances.allSongPerformances.length, 5);
+      expect(allSongPerformances.allSongPerformanceHistory.length, 6);
+      for (var p in allSongPerformances.bySinger(singer)) {
         if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
@@ -219,14 +224,37 @@ void main() {
 
       //  don't update to an older performance
       performance = SongPerformance.fromJsonString('{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers"'
-          ',"singer":"Jill","key":3,"bpm":110,"lastSung":1539854884818}'); //  older performance
+          ',"singer":"$singer","key":3,"bpm":110,"lastSung":1539854884818}'); //  older performance
       expect(allSongPerformances.updateSongPerformance(performance), false);
-      for (var p in allSongPerformances.bySinger('Jill')) {
+      for (var p in allSongPerformances.bySinger(singer)) {
         if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           //  not updated since update was older
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
         }
+      }
+      expect(allSongPerformances.allSongPerformances.length, 5);
+      expect(allSongPerformances.allSongPerformanceHistory.length, 7);
+      {
+        int singerCount = 0;
+        for (var perf in allSongPerformances.allSongPerformanceHistory) {
+          if (perf.singer == singer) singerCount++;
+          logger.i(perf.toString());
+        }
+        expect(singerCount, 4 + 2 /*repeats*/);
+        expect(allSongPerformances.toJsonString(),
+            '''{"allSongPerformances":[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":120,"lastSung":1639854884818},
+{"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Angie_by_Rolling_Stones_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Back_in_the_USSR_by_Beatles_The","singer":"Bob","key":7,"bpm":106,"lastSung":0},
+{"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"Jill","key":0,"bpm":106,"lastSung":0}],"allSongPerformanceHistory":[{"songId":"Song_All_You_Need_is_Love_by_Beatles_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Angie_by_Rolling_Stones_The","singer":"Jill","key":6,"bpm":106,"lastSung":0},
+{"songId":"Song_Back_in_the_USSR_by_Beatles_The","singer":"Bob","key":7,"bpm":106,"lastSung":0},
+{"songId":"Song_Dont_Let_Me_Down_by_Beatles_The","singer":"Jill","key":0,"bpm":106,"lastSung":0},
+{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":106,"lastSung":1439854884818},
+{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":110,"lastSung":1539854884818},
+{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill","key":3,"bpm":120,"lastSung":1639854884818}]}
+''');
       }
     }
 

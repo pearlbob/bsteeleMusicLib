@@ -3113,4 +3113,144 @@ v:
       }
     }
   });
+
+  test('test songBase getYear', () {
+    int beatsPerBar = 4;
+    int bpm = 106;
+    for (var year in [1796, 1900, 2069, 2022]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'copyright $year bob hot music',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, year);
+    }
+
+    for (var year in [179, 0, 20609, 2]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'copyright $year bob hot music',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, 0);
+    }
+
+    for (var year in [1796, 1900, 2069, 2022]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'copyright $year',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, year);
+    }
+
+    for (var year in [179, 0, 20609, 2]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'copyright $year',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, 0);
+    }
+
+    for (var year in [1796, 1900, 2069, 2022]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          '$year bob music',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, year);
+    }
+
+    for (var year in [179, 0, 20609, 2]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          '$year bob music',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, 0);
+    }
+
+    for (var year in [1796, 1900, 2069, 2022]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          '$year',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, year);
+    }
+
+    for (var year in [179, 0, 20609, 2]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          '$year',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, 0);
+    }
+  });
 }

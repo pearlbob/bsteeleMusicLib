@@ -1,4 +1,4 @@
 
 # bsteeleMusicLib
 
-Dart backend for the bsteele Music App
+Dart backend for the bsteele Music App flutter version.

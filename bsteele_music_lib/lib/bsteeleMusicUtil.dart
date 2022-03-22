@@ -13,6 +13,7 @@ import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
+import 'package:bsteeleMusicLib/songs/songPerformance.dart';
 import 'package:english_words/english_words.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -51,6 +52,8 @@ arguments:
 -longsections       select for songs  with long sections
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
+-perfupdate {file}  update the song performances with a file
+-perfwrite {file}   update the song performances to a file
 -stat               statistics
 -url {url}          read the given url into the utility's allSongs list
 -v                  verbose output utility's allSongs list
@@ -94,19 +97,19 @@ coerced to reflect the songlist's last modification for that song.
     }
 
     //  process the requests
-    for (var i = 0; i < args.length; i++) {
-      var arg = args[i];
+    for (var argCount = 0; argCount < args.length; argCount++) {
+      var arg = args[argCount];
       switch (arg) {
         case '-a':
           //  insist there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             _help();
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            Directory inputDirectory = Directory(args[i]);
+            Directory inputDirectory = Directory(args[argCount]);
 
             if (inputDirectory.statSync().type == FileSystemEntityType.directory) {
               if (!(await inputDirectory.exists())) {
@@ -118,7 +121,7 @@ coerced to reflect the songlist's last modification for that song.
               continue;
             }
           }
-          File inputFile = File(args[i]);
+          File inputFile = File(args[argCount]);
           logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
 
           if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
@@ -138,14 +141,14 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-cjread': // {file}
           //  insist there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             _help();
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            Directory inputDirectory = Directory(args[i]);
+            Directory inputDirectory = Directory(args[argCount]);
 
             if (inputDirectory.statSync().type == FileSystemEntityType.directory) {
               if (!(await inputDirectory.exists())) {
@@ -157,7 +160,7 @@ coerced to reflect the songlist's last modification for that song.
               continue;
             }
           }
-          File inputFile = File(args[i]);
+          File inputFile = File(args[argCount]);
           logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
 
           if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
@@ -169,13 +172,13 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-cjwrite': // {file)     format the song metada data
           //  assert there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            File outputFile = File(args[i]);
+            File outputFile = File(args[argCount]);
 
             if (await outputFile.exists() && !_force) {
               logger.e('"${outputFile.path}" already exists for -w without -f');
@@ -186,13 +189,13 @@ coerced to reflect the songlist's last modification for that song.
           break;
         case '-cjwritesongs': // {file)
           //  assert there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            File outputFile = File(args[i]);
+            File outputFile = File(args[argCount]);
 
             if (await outputFile.exists() && !_force) {
               logger.e('"${outputFile.path}" already exists for -w without -f');
@@ -214,13 +217,13 @@ coerced to reflect the songlist's last modification for that song.
           break;
         case '-cjcsvwrite': // {file}  format the song data as a CSV version of the CJ ranking metadata
           //  assert there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            File outputFile = File(args[i]);
+            File outputFile = File(args[argCount]);
 
             if (await outputFile.exists() && !_force) {
               logger.e('"${outputFile.path}" already exists for -w without -f');
@@ -231,14 +234,14 @@ coerced to reflect the songlist's last modification for that song.
           break;
         case '-cjcsvread': // {file}
           //  insist there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             _help();
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            Directory inputDirectory = Directory(args[i]);
+            Directory inputDirectory = Directory(args[argCount]);
 
             if (inputDirectory.statSync().type == FileSystemEntityType.directory) {
               if (!(await inputDirectory.exists())) {
@@ -250,7 +253,7 @@ coerced to reflect the songlist's last modification for that song.
               continue;
             }
           }
-          File inputFile = File(args[i]);
+          File inputFile = File(args[argCount]);
           logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
 
           if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
@@ -468,9 +471,9 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-o':
           //  assert there is another arg
-          if (i < args.length - 1) {
-            i++;
-            _outputDirectory = Directory(args[i]);
+          if (argCount < args.length - 1) {
+            argCount++;
+            _outputDirectory = Directory(args[argCount]);
             if (_verbose) {
               logger.d('output path: ${_outputDirectory.toString()}');
             }
@@ -494,6 +497,47 @@ coerced to reflect the songlist's last modification for that song.
             logger.e('missing output path for -o');
             _help();
             exit(-1);
+          }
+          break;
+
+        case '-perfupdate':
+          //  assert there is another arg
+          if (argCount < args.length - 1) {
+            argCount++;
+            var file = File(args[argCount]);
+
+            if (await file.exists()) {
+              logger.i('\'${file.path}\' exists.');
+              AllSongPerformances allSongPerformances = AllSongPerformances();
+              logger.i('allSongPerformances: ${allSongPerformances.length}');
+              allSongPerformances.updateFromJsonString(file.readAsStringSync());
+              logger.i('allSongPerformances: ${allSongPerformances.length}');
+            } else {
+              logger.e('\'${file.path}\' does not exist.');
+            }
+          } else {
+            logger.e('missing input path for -perf');
+            _help();
+            exit(-1);
+          }
+          break;
+
+        case '-perfwrite': // {file)     format the song metada data
+          //  assert there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing directory path for -perfwrite');
+            exit(-1);
+          }
+          argCount++;
+          {
+            File outputFile = File(args[argCount]);
+
+            if (await outputFile.exists() && !_force) {
+              logger.e('"${outputFile.path}" already exists for -w without -f');
+              exit(-1);
+            }
+            AllSongPerformances allSongPerformances = AllSongPerformances();
+            await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
           }
           break;
 
@@ -590,13 +634,13 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-w':
           //  assert there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             exit(-1);
           }
-          i++;
+          argCount++;
           {
-            File outputFile = File(args[i]);
+            File outputFile = File(args[argCount]);
 
             if (await outputFile.exists() && !_force) {
               logger.e('"${outputFile.path}" already exists for -w without -f');
@@ -645,13 +689,13 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-url':
           //  assert there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing file path for -url');
             _help();
             exit(-1);
           }
-          i++;
-          String url = args[i];
+          argCount++;
+          String url = args[argCount];
           logger.d("url: '$url'");
           var authority = url.replaceAll(r'http://', '');
           var path = authority.replaceAll(RegExp(r'^[.\w]*/', caseSensitive: false), '');
@@ -674,14 +718,14 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-x':
           //  insist there is another arg
-          if (i >= args.length - 1) {
+          if (argCount >= args.length - 1) {
             logger.e('missing file path for -x');
             _help();
             exit(-1);
           }
 
-          i++;
-          _file = File(args[i]);
+          argCount++;
+          _file = File(args[argCount]);
           if (_file != null) {
             if (_verbose) print('input file path: ${_file.toString()}');
             if (!(await _file!.exists())) {

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:intl/intl.dart';
+import 'package:quiver/core.dart';
 
 import 'key.dart';
 import 'musicConstants.dart';
@@ -19,6 +20,15 @@ int _compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
     return ret;
   }
   return 0;
+}
+
+int _compareByLastSungSongIdAndSinger(SongPerformance first, SongPerformance other) {
+  if (identical(first, other)) return 0;
+  int ret = first.lastSung.compareTo(other.lastSung);
+  if (ret != 0) {
+    return ret;
+  }
+  return _compareBySongIdAndSinger(first, other);
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
@@ -141,12 +151,17 @@ class AllSongPerformances {
 
   AllSongPerformances._internal();
 
+  /// Populate song performance references with current songs
   void loadSongs(Iterable<Song> songs) {
     for (var song in songs) {
       songMap[song.songId.toString()] = song;
     }
 
     for (var songPerformance in _allSongPerformances) {
+      songPerformance.song = songMap[songPerformance._songIdAsString];
+    }
+
+    for (var songPerformance in _allSongPerformanceHistory) {
       songPerformance.song = songMap[songPerformance._songIdAsString];
     }
   }
@@ -156,14 +171,17 @@ class AllSongPerformances {
     _allSongPerformances.remove(songPerformance);
 
     _allSongPerformances.add(songPerformance);
+    _allSongPerformanceHistory.add(songPerformance);
     songPerformance.song = songMap[songPerformance._songIdAsString];
   }
 
   bool updateSongPerformance(SongPerformance songPerformance) {
+    songPerformance.song = songMap[songPerformance._songIdAsString];
+    _allSongPerformanceHistory.add(songPerformance);
+
     SongPerformance? original = _allSongPerformances.lookup(songPerformance);
     if (original == null) {
       _allSongPerformances.add(songPerformance);
-      songPerformance.song = songMap[songPerformance._songIdAsString];
       return true;
     }
 
@@ -233,7 +251,9 @@ class AllSongPerformances {
     if (decoded is List<dynamic>) {
       //  assume the items are song performances
       for (var item in decoded) {
-        _allSongPerformances.add(SongPerformance._fromJson(item));
+        var performance = SongPerformance._fromJson(item);
+        _allSongPerformances.add(performance);
+        _allSongPerformanceHistory.add(performance);
       }
     } else {
       throw 'addFromJsonString wrong json decode: ${decoded.runtimeType}';
@@ -241,16 +261,20 @@ class AllSongPerformances {
   }
 
   static const String allSongPerformancesName = 'allSongPerformances';
+  static const String allSongPerformanceHistoryName = 'allSongPerformanceHistory';
 
   int updateFromJsonString(String jsonString) {
     int count = 0;
     var decoded = jsonDecode(jsonString);
     if (decoded is Map<String, dynamic>) {
       //  assume the items are song performances
-      for (var item in decoded[allSongPerformancesName]) {
+      for (var item in decoded[allSongPerformancesName] ?? []) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
         }
+      }
+      for (var item in decoded[allSongPerformanceHistoryName] ?? []) {
+        _allSongPerformanceHistory.add(SongPerformance._fromJson(item));
       }
     } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
@@ -267,7 +291,12 @@ class AllSongPerformances {
 
   void _fromJson(Map<String, dynamic> json) {
     for (var songPerformanceJson in json[allSongPerformancesName]) {
-      _allSongPerformances.add(SongPerformance._fromJson(songPerformanceJson));
+      var performance = SongPerformance._fromJson(songPerformanceJson);
+      _allSongPerformances.add(performance);
+      _allSongPerformanceHistory.add(performance);
+    }
+    for (var songPerformanceJson in json[allSongPerformanceHistoryName]) {
+      _allSongPerformanceHistory.add(SongPerformance._fromJson(songPerformanceJson));
     }
   }
 
@@ -279,12 +308,15 @@ class AllSongPerformances {
     return Util.jsonEncodeNewLines(jsonEncode(bySinger(singer)));
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         allSongPerformancesName: _allSongPerformances.toList(growable: false),
+        allSongPerformanceHistoryName: _allSongPerformanceHistory.toList(growable: false),
       };
 
   void clear() {
     _allSongPerformances.clear();
+    _allSongPerformanceHistory.clear();
   }
 
   int get length => _allSongPerformances.length;
@@ -299,16 +331,22 @@ class AllSongPerformances {
         other is AllSongPerformances &&
             runtimeType == other.runtimeType &&
             _allSongPerformances.difference(other._allSongPerformances).isEmpty &&
-            other._allSongPerformances.difference(_allSongPerformances).isEmpty;
+            other._allSongPerformances.difference(_allSongPerformances).isEmpty &&
+            _allSongPerformanceHistory.difference(other._allSongPerformanceHistory).isEmpty &&
+            other._allSongPerformanceHistory.difference(_allSongPerformanceHistory).isEmpty;
   }
 
   @override
-  int get hashCode => _allSongPerformances.hashCode;
+  int get hashCode => hash2(_allSongPerformances, _allSongPerformanceHistory);
 
   Map<String, Song> songMap = {};
 
   Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(_compareBySongIdAndSinger);
+
+  Iterable<SongPerformance> get allSongPerformanceHistory => _allSongPerformanceHistory;
+  final SplayTreeSet<SongPerformance> _allSongPerformanceHistory =
+      SplayTreeSet<SongPerformance>(_compareByLastSungSongIdAndSinger);
 
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }

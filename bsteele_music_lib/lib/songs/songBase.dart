@@ -3431,6 +3431,18 @@ class SongBase {
     return _complexity;
   }
 
+  ///Compute a relative complexity index for the song
+  int getCopyrightYear() {
+    if (_copyrightYear == null) {
+      //  find the year
+      RegExpMatch? m = _yearRegexp.firstMatch(_copyright);
+      _copyrightYear = int.parse(m?.group(1) ?? '0');
+    }
+    return _copyrightYear ?? 0;
+  }
+
+  static final RegExp _yearRegexp = RegExp(r'(?:\D|^)(\d{4})(?:\D|$)');
+
   void setChords(String chords) {
     _clearCachedValues();
     _chords = chords;
@@ -3966,6 +3978,7 @@ class SongBase {
 
   int _complexity = 0;
   String? _chordsAsMarkup;
+  int? _copyrightYear;
 
   String? get message => _message;
 
