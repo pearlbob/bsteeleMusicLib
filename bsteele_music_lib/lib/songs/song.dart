@@ -34,11 +34,10 @@ class Song extends SongBase implements Comparable<Song> {
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
   static Song createSong(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
-      int unitsPerMeasure, String user, String chords, String lyrics, { String coverArtist = ''}) {
+      int unitsPerMeasure, String user, String chords, String lyrics,
+      {String coverArtist = ''}) {
     Song song = Song();
-    song.title = title;
-    song.artist = artist;
-    song.coverArtist = coverArtist;
+    song.setSongId(title, artist, coverArtist);
     song.copyright = copyright;
     song.key = key;
     song.setBeatsPerMinute(bpm);
@@ -55,7 +54,8 @@ class Song extends SongBase implements Comparable<Song> {
   Song copySong() {
     //  note: assure all arguments are immutable, or at least unique to the copy
     Song ret = Song.createSong(getTitle(), getArtist(), getCopyright(), getKey(), beatsPerMinute, getBeatsPerBar(),
-        getUnitsPerMeasure(), getUser(), toMarkup(), rawLyrics, coverArtist: coverArtist);
+        getUnitsPerMeasure(), getUser(), toMarkup(), rawLyrics,
+        coverArtist: coverArtist);
     ret.setFileName(getFileName());
     ret.lastModifiedTime = lastModifiedTime;
     ret.setTotalBeats(getTotalBeats());
