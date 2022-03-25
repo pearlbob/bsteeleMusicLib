@@ -3148,7 +3148,7 @@ v:
           'i: (instrumental)\nv: line 1\no:\n');
 
       var songYear = a.getCopyrightYear();
-      expect(songYear, 0);
+      expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [1796, 1900, 2069, 2022]) {
@@ -3182,7 +3182,7 @@ v:
           'i: (instrumental)\nv: line 1\no:\n');
 
       var songYear = a.getCopyrightYear();
-      expect(songYear, 0);
+      expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [1796, 1900, 2069, 2022]) {
@@ -3216,7 +3216,7 @@ v:
           'i: (instrumental)\nv: line 1\no:\n');
 
       var songYear = a.getCopyrightYear();
-      expect(songYear, 0);
+      expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [1796, 1900, 2069, 2022]) {
@@ -3250,7 +3250,7 @@ v:
           'i: (instrumental)\nv: line 1\no:\n');
 
       var songYear = a.getCopyrightYear();
-      expect(songYear, 0);
+      expect(songYear, SongBase.defaultYear);
     }
   });
 }

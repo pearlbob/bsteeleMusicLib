@@ -3445,6 +3445,7 @@ class SongBase {
     return getCopyrightYear() == _defaultYear ? '' : _copyrightYear.toString();
   }
 
+  static int get defaultYear => _defaultYear;
   static const int _defaultYear = 3000;
   static final RegExp _yearRegexp = RegExp(r'(?:\D|^)(\d{4})(?:\D|$)');
 
