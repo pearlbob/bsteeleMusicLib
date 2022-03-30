@@ -14,6 +14,7 @@ import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:bsteeleMusicLib/songs/songPerformance.dart';
+import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:english_words/english_words.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -21,6 +22,9 @@ import 'package:quiver/collection.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 import 'appLogger.dart';
+
+const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
+const String _allSongPerformancesGithubFileLocation = 'github/allSongs.songlyrics/allSongPerformances.songperformances';
 
 void main(List<String> args) {
   Logger.level = Level.info;
@@ -39,6 +43,7 @@ bsteeleMusicUtil:
 //  a utility for the bsteele Music App
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
+-allSongPerformances sync with CJ performances
 -cjwrite {file)     format the song metada data
 -cjwritesongs {file)     write song list of cj songs
 -cjread {file)      add song metada data
@@ -497,6 +502,72 @@ coerced to reflect the songlist's last modification for that song.
             logger.e('missing output path for -o');
             _help();
             exit(-1);
+          }
+          break;
+
+        case '-allSongPerformances':
+          {
+            AllSongPerformances allSongPerformances = AllSongPerformances();
+            var dir = Directory(Util.homePath() + '/' + _allSongPerformancesDirectoryLocation);
+            SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
+            for (var file in dir.listSync()) {
+              if (file is File) {
+                files.add(file);
+              }
+            }
+            for (var file in files) {
+              var name = file.path.split('/').last;
+              var m = _allSongPerformancesRegExp.firstMatch(name);
+              if (m != null) {
+                print(name);
+                allSongPerformances.updateFromJsonString(file.readAsStringSync());
+              }
+            }
+
+            //  add the github version
+            allSongPerformances.updateFromJsonString(
+                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+
+            //  workaround for early bad singer entries
+            {
+              //  most recent performances
+              final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
+              SplayTreeSet<SongPerformance> performanceDelete =
+                  SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+              for (var songPerformance in allSongPerformances.allSongPerformances) {
+                if (!songPerformance.singer.contains(' ') ||
+                    songPerformance.lastSung < lastSungLimit ||
+                    songPerformance.singer.contains('Vikki')) {
+                  performanceDelete.add(songPerformance);
+                }
+              }
+              for (var performance in performanceDelete) {
+                logger.d('delete: $performance');
+                allSongPerformances.removeSingerSong(performance.singer, performance.songIdAsString);
+                assert(!allSongPerformances.allSongPerformances.contains(performance));
+              }
+
+              //  history
+              performanceDelete.clear();
+              for (var songPerformance in allSongPerformances.allSongPerformanceHistory) {
+                if (!songPerformance.singer.contains(' ') ||
+                    songPerformance.lastSung < lastSungLimit ||
+                    songPerformance.singer.contains('Vikki')) {
+                  performanceDelete.add(songPerformance);
+                }
+              }
+              for (var performance in performanceDelete) {
+                logger.d('delete history: $performance');
+                allSongPerformances.removeSingerSongHistory(performance);
+                assert(!allSongPerformances.allSongPerformanceHistory.contains(performance));
+              }
+            }
+
+            File outputFile = File('allSongPerformances.songperformances');
+            try {
+              outputFile.deleteSync();
+            } catch (e) {}
+            await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
           }
           break;
 
@@ -1106,5 +1177,6 @@ coerced to reflect the songlist's last modification for that song.
   static RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
 }
 
+final RegExp _allSongPerformancesRegExp = RegExp(r'^allSongPerformances_(\d{8}_\d{6}).songperformances$');
 final RegExp _csvLineSplit = RegExp(r'[\,\r]');
 final RegExp _spaceRegexp = RegExp(r'[^\w]');

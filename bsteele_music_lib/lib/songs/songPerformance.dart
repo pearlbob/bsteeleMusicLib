@@ -9,28 +9,6 @@ import 'package:quiver/core.dart';
 import 'key.dart';
 import 'musicConstants.dart';
 
-int _compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
-  if (identical(first, other)) return 0;
-  int ret = first._songIdAsString.compareTo(other._songIdAsString);
-  if (ret != 0) {
-    return ret;
-  }
-  ret = first._singer.compareTo(other._singer);
-  if (ret != 0) {
-    return ret;
-  }
-  return 0;
-}
-
-int _compareByLastSungSongIdAndSinger(SongPerformance first, SongPerformance other) {
-  if (identical(first, other)) return 0;
-  int ret = first.lastSung.compareTo(other.lastSung);
-  if (ret != 0) {
-    return ret;
-  }
-  return _compareBySongIdAndSinger(first, other);
-}
-
 class SongPerformance implements Comparable<SongPerformance> {
   SongPerformance(this._songIdAsString, final String singer, this._key, {int? bpm, int? lastSung})
       : _singer = _cleanSinger(singer),
@@ -49,10 +27,38 @@ class SongPerformance implements Comparable<SongPerformance> {
     return SongPerformance(_songIdAsString, _singer, key ?? _key, bpm: bpm ?? _bpm, lastSung: null);
   }
 
+  static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
+    if (identical(first, other)) {
+      return 0;
+    }
+    int ret = first._songIdAsString.compareTo(other._songIdAsString);
+    if (ret != 0) {
+      return ret;
+    }
+    ret = first._singer.compareTo(other._singer);
+    if (ret != 0) {
+      return ret;
+    }
+    return 0;
+  }
+
+  static int compareByLastSungSongIdAndSinger(SongPerformance first, SongPerformance other) {
+    if (identical(first, other)) {
+      return 0;
+    }
+    int ret = first.lastSung.compareTo(other.lastSung);
+    if (ret != 0) {
+      return ret;
+    }
+    return compareBySongIdAndSinger(first, other);
+  }
+
   @override
   String toString() {
     return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', _key: $_key'
-        ', _bpm: $_bpm, sung: ${lastSungDateString}}';
+        ', _bpm: $_bpm, sung: ${lastSungDateString}'
+        //' = $_lastSung'
+        '}';
   }
 
   @override
@@ -90,7 +96,9 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   @override
   int compareTo(SongPerformance other) {
-    if (identical(this, other)) return 0;
+    if (identical(this, other)) {
+      return 0;
+    }
 
     int ret = _songIdAsString.compareTo(other._songIdAsString);
     if (ret != 0) {
@@ -185,7 +193,7 @@ class AllSongPerformances {
       return true;
     }
 
-    //  don't both to compare performances, always use the most recent
+    //  don't bother to compare performances, always use the most recent
     if (songPerformance.lastSung <= original.lastSung) {
       //  use the original since it's the same or newer
       return false;
@@ -239,6 +247,10 @@ class AllSongPerformances {
         .where((e) => e._singer == singer && e.songIdAsString == songIdAsString)
         .toList(growable: false);
     _allSongPerformances.removeAll(songPerformances);
+  }
+
+  void removeSingerSongHistory(SongPerformance songPerformance) {
+    _allSongPerformanceHistory.remove(songPerformance);
   }
 
   void fromJsonString(String jsonString) {
@@ -308,8 +320,7 @@ class AllSongPerformances {
     return Util.jsonEncodeNewLines(jsonEncode(bySinger(singer)));
   }
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         allSongPerformancesName: _allSongPerformances.toList(growable: false),
         allSongPerformanceHistoryName: _allSongPerformanceHistory.toList(growable: false),
       };
@@ -342,11 +353,12 @@ class AllSongPerformances {
   Map<String, Song> songMap = {};
 
   Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
-  final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(_compareBySongIdAndSinger);
+  final SplayTreeSet<SongPerformance> _allSongPerformances =
+      SplayTreeSet<SongPerformance>(SongPerformance.compareBySongIdAndSinger);
 
   Iterable<SongPerformance> get allSongPerformanceHistory => _allSongPerformanceHistory;
   final SplayTreeSet<SongPerformance> _allSongPerformanceHistory =
-      SplayTreeSet<SongPerformance>(_compareByLastSungSongIdAndSinger);
+      SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
 
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }
