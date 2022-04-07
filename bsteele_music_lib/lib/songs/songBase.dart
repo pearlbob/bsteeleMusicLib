@@ -2553,9 +2553,14 @@ class SongBase {
     while (markedString.isNotEmpty) {
       String c = markedString.charAt(0);
 
+      if (c == '\r') {
+        markedString.consume(1);
+        continue;
+      }
+
       //  absorb leading white space, but allow for blank lines
       if (state == 0) {
-        if (!(c == ' ' || c == '\t' || c == '\r')) {
+        if (!(c == ' ' || c == '\t')) {
           state = 1;
         }
       }

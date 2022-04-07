@@ -174,6 +174,7 @@ class AllSongPerformances {
     }
   }
 
+  /// add a song performance to the song history and add it if it was sung more recently than the current entry
   void addSongPerformance(SongPerformance songPerformance) {
     //  clear the previous song performance.  needed to change auxiliary data such as key and bpm
     _allSongPerformances.remove(songPerformance);

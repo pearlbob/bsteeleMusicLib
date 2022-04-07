@@ -507,6 +507,7 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-allSongPerformances':
           {
+            //  read the local directory's list of song performance files
             AllSongPerformances allSongPerformances = AllSongPerformances();
             var dir = Directory(Util.homePath() + '/' + _allSongPerformancesDirectoryLocation);
             SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
@@ -515,6 +516,7 @@ coerced to reflect the songlist's last modification for that song.
                 files.add(file);
               }
             }
+            //  update from the all local files
             for (var file in files) {
               var name = file.path.split('/').last;
               var m = _allSongPerformancesRegExp.firstMatch(name);
@@ -530,7 +532,7 @@ coerced to reflect the songlist's last modification for that song.
 
             //  workaround for early bad singer entries
             {
-              //  most recent performances
+              //  most recent performances, less than a year
               final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
               SplayTreeSet<SongPerformance> performanceDelete =
                   SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);

@@ -3253,4 +3253,27 @@ v:
       expect(songYear, SongBase.defaultYear);
     }
   });
+
+  test('test songBase read dos files', () {
+    int beatsPerBar = 4;
+    int bpm = 106;
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
+      for (var lyricSection in a.lyricSections) {
+        for (var line in lyricSection.lyricsLines) {
+          expect(line.trim().isNotEmpty, isTrue);
+        }
+      }
+    }
+  });
 }
