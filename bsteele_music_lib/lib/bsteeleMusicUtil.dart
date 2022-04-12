@@ -509,6 +509,19 @@ coerced to reflect the songlist's last modification for that song.
           {
             //  read the local directory's list of song performance files
             AllSongPerformances allSongPerformances = AllSongPerformances();
+
+            //  add the github version
+            allSongPerformances.updateFromJsonString(
+                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+
+            logger.i('allSongPerformances.length: ${allSongPerformances.length}');
+            logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
+            logger.i('last sung: ${allSongPerformances.allSongPerformanceHistory.last.lastSungDateString}');
+            var lastSungDateTime = allSongPerformances.allSongPerformanceHistory.last.lastSungDateTime;
+            // truncate date time to day
+            lastSungDateTime = DateTime(lastSungDateTime.year, lastSungDateTime.month, lastSungDateTime.day);
+            logger.i('lastSungDateTime: $lastSungDateTime');
+
             var dir = Directory(Util.homePath() + '/' + _allSongPerformancesDirectoryLocation);
             SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
             for (var file in dir.listSync()) {
@@ -521,14 +534,19 @@ coerced to reflect the songlist's last modification for that song.
               var name = file.path.split('/').last;
               var m = _allSongPerformancesRegExp.firstMatch(name);
               if (m != null) {
-                print(name);
-                allSongPerformances.updateFromJsonString(file.readAsStringSync());
+                logger.i(name);
+                var date = Util.yyyyMMdd_HHmmssStringToDate(name);
+                if (date.compareTo(lastSungDateTime) >= 0) {
+                  logger.i('');
+                  logger.i('process: date: $date');
+                  allSongPerformances.updateFromJsonString(file.readAsStringSync());
+                  logger.i('allSongPerformances.length: ${allSongPerformances.length}');
+                  logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
+                } else {
+                  logger.i('ignore:  date: $date');
+                }
               }
             }
-
-            //  add the github version
-            allSongPerformances.updateFromJsonString(
-                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
 
             //  workaround for early bad singer entries
             {
@@ -564,6 +582,9 @@ coerced to reflect the songlist's last modification for that song.
                 assert(!allSongPerformances.allSongPerformanceHistory.contains(performance));
               }
             }
+
+            logger.i('allSongPerformances.length: ${allSongPerformances.length}');
+            logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
 
             File outputFile = File('allSongPerformances.songperformances');
             try {

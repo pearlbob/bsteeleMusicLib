@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:test/test.dart';
@@ -107,5 +108,44 @@ void main() {
         '\to:\n'
         '    \n'
         '\n');
+  });
+
+  test('test util DateTime', () async {
+    var nowAsString = Util.utcNow();
+    logger.i(nowAsString);
+    expect(nowAsString.compareTo('20220409_233603'), 1);
+    expect(nowAsString.compareTo('20520409_232804'), -1);
+
+    await Future.delayed(Duration(seconds: 1));
+
+    var laterAsString = Util.utcNow();
+    logger.i(laterAsString);
+    expect(laterAsString.compareTo(nowAsString), 1);
+
+    {
+      DateTime dateTime = DateTime.now().toUtc();
+      DateTime dateTime2 = Util.yyyyMMdd_HHmmssStringToDate(Util.utcFormat(dateTime));
+      expect(dateTime.year, dateTime2.year);
+      expect(dateTime.month, dateTime2.month);
+      expect(dateTime.day, dateTime2.day);
+      expect(dateTime.hour, dateTime2.hour);
+      expect(dateTime.minute, dateTime2.minute);
+      expect(dateTime.second, dateTime2.second);
+      //  milliseconds and microseconds will differ due to truncation
+    }
+
+    expect(Util.yyyyMMdd_HHmmssStringToDate('allSongPerformances_20220406_215907.songperformances'),
+        DateTime(2022, 4, 6, 21, 59, 7));
+
+    //  bad date:
+    expect(
+        Util.yyyyMMdd_HHmmssStringToDate('allSongPerformances_k0220406_215907.songperformances'), Util.firstDateTime);
+    expect(Util.yyyyMMdd_HHmmssStringToDate('allSongPerformances_k0220406_215907.songperformances', isUtc: true),
+        Util.firstUtcDateTime);
+
+    int milliseconds = 1646518349000;
+    String s = '20220305_141229';
+    expect(Util.utcFormat(DateTime.fromMillisecondsSinceEpoch(milliseconds)), s);
+    expect(Util.yyyyMMdd_HHmmssStringToDate(s), DateTime.fromMillisecondsSinceEpoch(milliseconds));
   });
 }

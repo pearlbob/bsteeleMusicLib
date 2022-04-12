@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 
 final DateFormat _dateFormat = DateFormat('yyyyMMdd_HHmmss');
+final RegExp _dateRegExp = RegExp(r'(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})');
 
 class Util {
   static String homePath() {
@@ -57,9 +58,10 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
-  static String readableJson( final String json ){
+  static String readableJson(final String json) {
     return json.replaceAll(_jsonJunkRegexp, '').replaceAll(',\n', '\n');
   }
+
   static final RegExp _jsonJunkRegexp = RegExp(r'(",|\s*\[|\s+\n|["{}[\]])');
 
   static String enumName(Object o) => o.toString().split('.').last;
@@ -105,7 +107,39 @@ class Util {
   }
 
   static String utcNow() {
-    return _dateFormat.format(DateTime.now().toUtc());
+    return utcFormat(DateTime.now().toUtc());
+  }
+
+  //  first unix time in local timezone
+  static final DateTime firstDateTime = DateTime.fromMillisecondsSinceEpoch(0, isUtc: false);
+
+  //  first unix time in utc
+  static final DateTime firstUtcDateTime = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
+
+  static String utcFormat(DateTime dateTime) {
+    return _dateFormat.format(dateTime);
+  }
+
+  static DateTime yyyyMMdd_HHmmssStringToDate(String s, {bool? isUtc = false}) {
+    var m = _dateRegExp.firstMatch(s);
+    if (isUtc ?? false) {
+      return DateTime.utc(
+        int.parse(m?.group(1) ?? firstUtcDateTime.year.toString()), //  year
+        int.parse(m?.group(2) ?? firstUtcDateTime.month.toString()), //  month
+        int.parse(m?.group(3) ?? firstUtcDateTime.day.toString()), //  day
+        int.parse(m?.group(4) ?? firstUtcDateTime.hour.toString()), //  hour
+        int.parse(m?.group(5) ?? firstUtcDateTime.minute.toString()), //  minute
+        int.parse(m?.group(6) ?? firstUtcDateTime.second.toString()), //  second
+      );
+    }
+    return DateTime(
+      int.parse(m?.group(1) ?? firstDateTime.year.toString()), //  year
+      int.parse(m?.group(2) ?? firstDateTime.month.toString()), //  month
+      int.parse(m?.group(3) ?? firstDateTime.day.toString()), //  day
+      int.parse(m?.group(4) ?? firstDateTime.hour.toString()), //  hour
+      int.parse(m?.group(5) ?? firstDateTime.minute.toString()), //  minute
+      int.parse(m?.group(6) ?? firstDateTime.second.toString()), //  second
+    );
   }
 
   static String camelCaseToLowercaseSpace(String s) {
