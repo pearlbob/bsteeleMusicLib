@@ -538,12 +538,17 @@ coerced to reflect the songlist's last modification for that song.
                 var date = Util.yyyyMMdd_HHmmssStringToDate(name);
                 if (date.compareTo(lastSungDateTime) >= 0) {
                   logger.i('');
-                  logger.i('process: date: $date');
+                  if (_verbose) {
+                    print('process: file: $name');
+                  }
                   allSongPerformances.updateFromJsonString(file.readAsStringSync());
                   logger.i('allSongPerformances.length: ${allSongPerformances.length}');
                   logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
                 } else {
-                  logger.i('ignore:  date: $date');
+                  if (_verbose) {
+                    print('ignore:  file: $name');
+                  }
+                  logger.d('ignore:  file: $name');
                 }
               }
             }
@@ -557,7 +562,8 @@ coerced to reflect the songlist's last modification for that song.
               for (var songPerformance in allSongPerformances.allSongPerformances) {
                 if (!songPerformance.singer.contains(' ') ||
                     songPerformance.lastSung < lastSungLimit ||
-                    songPerformance.singer.contains('Vikki')) {
+                    songPerformance.singer.contains('Vikki') ||
+                    songPerformance.singer.contains('Alicia C.')) {
                   performanceDelete.add(songPerformance);
                 }
               }
@@ -572,7 +578,8 @@ coerced to reflect the songlist's last modification for that song.
               for (var songPerformance in allSongPerformances.allSongPerformanceHistory) {
                 if (!songPerformance.singer.contains(' ') ||
                     songPerformance.lastSung < lastSungLimit ||
-                    songPerformance.singer.contains('Vikki')) {
+                    songPerformance.singer.contains('Vikki') ||
+                    songPerformance.singer.contains('Alicia C.')) {
                   performanceDelete.add(songPerformance);
                 }
               }
@@ -589,7 +596,10 @@ coerced to reflect the songlist's last modification for that song.
             File outputFile = File('allSongPerformances.songperformances');
             try {
               outputFile.deleteSync();
-            } catch (e) {}
+            } catch (e) {
+              logger.i(e.toString());
+              assert(false);
+            }
             await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
           }
           break;
@@ -774,11 +784,13 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-v':
           _verbose = true;
+          Logger.level = Level.debug;
           break;
 
         case '-V':
           _verbose = true;
           _veryVerbose = true;
+          Logger.level = Level.info;
           break;
 
         case '-url':

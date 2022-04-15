@@ -3,4 +3,5 @@
 
 set dir=~/github/bsteeleMusicLib
 
-dart2native $dir/lib/bsteeleMusicUtil.dart -o ~/bin/bsteeleMusicUtil
+cd ~/github/bsteeleMusicLib
+dart compile exe -o ~/installs/bsteele/bin/bsteeleMusicUtil bsteele_music_lib/lib/bsteeleMusicUtil.dart
