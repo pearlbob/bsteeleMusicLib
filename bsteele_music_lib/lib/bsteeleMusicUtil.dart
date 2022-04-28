@@ -24,7 +24,9 @@ import 'package:string_similarity/string_similarity.dart';
 import 'appLogger.dart';
 
 const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
-const String _allSongPerformancesGithubFileLocation = 'github/allSongs.songlyrics/allSongPerformances.songperformances';
+const String _allSongDirectory = 'github/allSongs.songlyrics';
+const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
+const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 
 void main(List<String> args) {
   Logger.level = Level.info;
@@ -59,6 +61,7 @@ arguments:
 -o {output dir}     select the output directory, must be specified prior to -x
 -perfupdate {file}  update the song performances with a file
 -perfwrite {file}   update the song performances to a file
+-popSongs           list the most popular songs
 -stat               statistics
 -url {url}          read the given url into the utility's allSongs list
 -v                  verbose output utility's allSongs list
@@ -642,6 +645,52 @@ coerced to reflect the songlist's last modification for that song.
             }
             AllSongPerformances allSongPerformances = AllSongPerformances();
             await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
+          }
+          break;
+
+        case '-popSongs': //     list the most popular songs
+          {
+            //  read the local directory's list of song performance files
+            AllSongPerformances allSongPerformances = AllSongPerformances();
+
+            //  add the github version
+            allSongPerformances.updateFromJsonString(
+                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+
+            allSongPerformances
+                .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
+
+            Map<Song, int> songCounts = {};
+            for (var performance in allSongPerformances.allSongPerformanceHistory) {
+              var song = performance.song;
+              if (song != null) {
+                var count = songCounts[song];
+                songCounts[song] = (count == null ? 1 : count + 1);
+              }
+            }
+
+            var sortMapByValue = Map.fromEntries(songCounts.entries.toList()
+              ..sort((e1, e2) {
+                int ret = -e1.value.compareTo(e2.value);
+                if (ret != 0) {
+                  return ret;
+                }
+                return e1.key.compareTo(e2.key);
+              }));
+
+            int count = 0;
+            int? timesSung;
+            for (var entry in sortMapByValue.entries) {
+              count++;
+              if (count >= 10) {
+                if (timesSung == null) {
+                  timesSung = entry.value;
+                } else if (timesSung > entry.value) {
+                  break;
+                }
+              }
+              logger.i('${entry.key}: ${entry.value}');
+            }
           }
           break;
 
