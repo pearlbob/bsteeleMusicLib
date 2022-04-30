@@ -601,7 +601,7 @@ coerced to reflect the songlist's last modification for that song.
               outputFile.deleteSync();
             } catch (e) {
               logger.i(e.toString());
-              assert(false);
+              //assert(false);
             }
             await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
           }

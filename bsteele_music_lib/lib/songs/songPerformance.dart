@@ -10,13 +10,23 @@ import 'key.dart';
 import 'musicConstants.dart';
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, final String singer, this._key, {int? bpm, int? lastSung})
+  SongPerformance(this._songIdAsString, final String singer, this._key,
+      {final String? requester, int? bpm, int? lastSung})
       : _singer = _cleanSinger(singer),
+        _requester = _cleanSinger(requester),
         _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song song, final String singer, this._key, {int? bpm, int? lastSung})
+  SongPerformance.request(this._songIdAsString, final String requester, this._key)
+      : _singer = '',
+        _requester = _cleanSinger(requester),
+        _bpm = MusicConstants.defaultBpm,
+        _lastSung = DateTime.now().millisecondsSinceEpoch;
+
+  SongPerformance.fromSong(Song song, final String singer, this._key,
+      {final String? requester, int? bpm, int? lastSung})
       : _singer = _cleanSinger(singer),
+        _requester = _cleanSinger(requester),
         song = song,
         _songIdAsString = song.songId.toString(),
         _bpm = bpm ?? song.beatsPerMinute,
@@ -27,11 +37,30 @@ class SongPerformance implements Comparable<SongPerformance> {
     return SongPerformance(_songIdAsString, _singer, key ?? _key, bpm: bpm ?? _bpm, lastSung: null);
   }
 
-  static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
+  static int _compareBySongId(SongPerformance first, SongPerformance other) {
     if (identical(first, other)) {
       return 0;
     }
     int ret = first._songIdAsString.compareTo(other._songIdAsString);
+    if (ret != 0) {
+      return ret;
+    }
+    return 0;
+  }
+
+  static int compareBySongIdAndRequester(SongPerformance first, SongPerformance other) {
+    if (first._requester == null) {
+      return other._requester == null ? _compareBySongId(first, other) : -1; //  null requesters first
+    }
+    int ret = first._requester!.compareTo(other._requester ?? '');
+    if (ret != 0) {
+      return ret;
+    }
+    return _compareBySongId(first, other);
+  }
+
+  static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
+    int ret = _compareBySongId(first, other);
     if (ret != 0) {
       return ret;
     }
@@ -77,6 +106,7 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   SongPerformance._fromJson(Map<String, dynamic> json)
       : _songIdAsString = json['songId'],
+        _requester = json['requester'],
         _singer = _cleanSinger(json['singer']),
         _key = Key.getKeyByHalfStep(json['key']),
         _bpm = json['bpm'],
@@ -86,9 +116,11 @@ class SongPerformance implements Comparable<SongPerformance> {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'songId': _songIdAsString,
         'singer': _singer,
+        'requester': _requester,
         'key': _key.halfStep,
         'bpm': _bpm,
         'lastSung': _lastSung,
@@ -130,12 +162,18 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   static final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
-  static String _cleanSinger(final String value) {
+  static String _cleanSinger(final String? value) {
+    if (value == null) {
+      return '';
+    }
     return value.trim().replaceAll(_multipleWhiteCharactersRegexp, ' ');
   }
 
   String get singer => _singer;
   final String _singer;
+
+  String? get requester => _requester;
+  final String? _requester;
 
   Key get key => _key;
   final Key _key;
@@ -277,6 +315,7 @@ class AllSongPerformances {
 
   static const String allSongPerformancesName = 'allSongPerformances';
   static const String allSongPerformanceHistoryName = 'allSongPerformanceHistory';
+  static const String allSongPerformanceRequestsName = 'allSongPerformanceRequests';
 
   int updateFromJsonString(String jsonString) {
     int count = 0;
@@ -290,6 +329,9 @@ class AllSongPerformances {
       }
       for (var item in decoded[allSongPerformanceHistoryName] ?? []) {
         _allSongPerformanceHistory.add(SongPerformance._fromJson(item));
+      }
+      for (var item in decoded[allSongPerformanceRequests] ?? []) {
+        _allSongPerformanceRequests.add(SongPerformance._fromJson(item));
       }
     } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
@@ -315,7 +357,12 @@ class AllSongPerformances {
     }
   }
 
-  String toJsonString() {
+  String toJsonString({bool prettyPrint = false}) {
+    if (prettyPrint) {
+      const JsonEncoder encoder = JsonEncoder.withIndent(' ');
+      return Util.jsonEncodeNewLines(encoder.convert(this));
+    }
+
     return Util.jsonEncodeNewLines(jsonEncode(this));
   }
 
@@ -326,11 +373,13 @@ class AllSongPerformances {
   Map<String, dynamic> toJson() => {
         allSongPerformancesName: _allSongPerformances.toList(growable: false),
         allSongPerformanceHistoryName: _allSongPerformanceHistory.toList(growable: false),
+        allSongPerformanceRequestsName: _allSongPerformanceRequests.toList(growable: false),
       };
 
   void clear() {
     _allSongPerformances.clear();
     _allSongPerformanceHistory.clear();
+    _allSongPerformanceRequests.clear();
   }
 
   int get length => _allSongPerformances.length;
@@ -362,6 +411,10 @@ class AllSongPerformances {
   Iterable<SongPerformance> get allSongPerformanceHistory => _allSongPerformanceHistory;
   final SplayTreeSet<SongPerformance> _allSongPerformanceHistory =
       SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+
+  Iterable<SongPerformance> get allSongPerformanceRequests => _allSongPerformanceRequests;
+  final SplayTreeSet<SongPerformance> _allSongPerformanceRequests =
+      SplayTreeSet<SongPerformance>(SongPerformance.compareBySongIdAndRequester);
 
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }
