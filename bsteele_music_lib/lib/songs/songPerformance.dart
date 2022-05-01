@@ -320,6 +320,12 @@ class AllSongPerformances {
     return set;
   }
 
+  SplayTreeSet<String> setOfRequesters() {
+    SplayTreeSet<String> set = SplayTreeSet();
+    set.addAll(_allSongPerformanceRequests.map((e) => e._requester));
+    return set;
+  }
+
   bool isSongInSingersList(String singer, Song? song) {
     if (song == null) {
       return false;
