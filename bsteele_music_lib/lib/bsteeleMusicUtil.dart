@@ -64,6 +64,7 @@ arguments:
 -popSongs           list the most popular songs
 -stat               statistics
 -url {url}          read the given url into the utility's allSongs list
+-user               list contributing users
 -v                  verbose output utility's allSongs list
 -V                  very verbose output
 -w {file}           write the utility's allSongs list to the given file
@@ -862,12 +863,25 @@ coerced to reflect the songlist's last modification for that song.
               ;
           allSongs.addAll(addSongs);
 
+          // {
+          //   var count = 0;
+          //   for (var song in allSongs) {
+          //     count += song.isLyricsParseRequired ? 1 : 0;
+          //   }
+          //   logger.i('isLyricsParseRequired: $count');
+          // }
+          break;
+
+        case '-users':
           {
-            var count = 0;
-            for (var song in allSongs) {
-              count += song.isLyricsParseRequired ? 1 : 0;
+            Map<String, int> userMap = {};
+            for (Song song in allSongs) {
+              var count = userMap[song.user];
+              userMap[song.user] = count == null ? 1 : count + 1;
             }
-            logger.i('isLyricsParseRequired: $count');
+            for (var user in SplayTreeSet<String>()..addAll(userMap.keys)) {
+              logger.i('$user: ${userMap[user]}');
+            }
           }
           break;
 

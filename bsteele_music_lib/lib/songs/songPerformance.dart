@@ -19,21 +19,29 @@ String _cleanPerformer(final String? value) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, final String singer, this._key, {int? bpm, int? lastSung})
+  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung})
       : _singer = _cleanPerformer(singer),
+        _key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song song, final String singer, this._key, {int? bpm, int? lastSung})
+  SongPerformance.fromSong(final Song song, final String singer, {Key? key, int? bpm, int? lastSung})
       : _singer = _cleanPerformer(singer),
         song = song,
         _songIdAsString = song.songId.toString(),
+        _key = key ?? song.key,
         _bpm = bpm ?? song.beatsPerMinute,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
   SongPerformance update({Key? key, int? bpm}) {
     //  produce a copy with a new last sung date
-    return SongPerformance(_songIdAsString, _singer, key ?? _key, bpm: bpm ?? _bpm, lastSung: null);
+    return SongPerformance(_songIdAsString, _singer, key: key ?? _key, bpm: bpm ?? _bpm, lastSung: null);
+  }
+
+  SongPerformance copy() {
+    var ret = SongPerformance(_songIdAsString, singer, key: _key, bpm: bpm, lastSung: lastSung);
+    ret.song = song;
+    return ret;
   }
 
   static int _compareBySongId(SongPerformance first, SongPerformance other) {
@@ -103,8 +111,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'songId': _songIdAsString,
         'singer': _singer,
         'key': _key.halfStep,
@@ -297,7 +304,19 @@ class AllSongPerformances {
     return true;
   }
 
-  List<SongPerformance> bySinger(String singer) {
+  SongPerformance? find({required final String singer, required final Song song}) {
+    return findBySingerSongId(songIdAsString: song.songId.toString(), singer: singer);
+  }
+
+  SongPerformance? findBySingerSongId({required final String songIdAsString, required final String singer}) {
+    try {
+      return _allSongPerformances.firstWhere((e) => e.singer == singer && e._songIdAsString == songIdAsString);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  List<SongPerformance> bySinger(final String singer) {
     List<SongPerformance> ret = [];
     ret.addAll(_allSongPerformances.where((songPerformance) {
       return songPerformance._singer == singer;
