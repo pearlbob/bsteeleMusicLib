@@ -725,6 +725,31 @@ void main() {
       logger.i('$key ${key.toMarkup()}');
     }
   });
+
+  test('test getCircleOfFifthsAssociatedKey()', () {
+    Map<KeyEnum, String> map = {
+      KeyEnum.Gb: 'Eb',
+      KeyEnum.Db: 'Bb',
+      KeyEnum.Ab: 'F',
+      KeyEnum.Eb: 'C',
+      KeyEnum.Bb: 'G',
+      KeyEnum.F: 'D',
+      KeyEnum.C: 'A',
+      KeyEnum.Bb: 'G',
+      KeyEnum.Bb: 'G',
+      KeyEnum.G: 'E',
+      KeyEnum.D: 'B',
+      KeyEnum.A: 'F#',
+      KeyEnum.E: 'C#',
+      KeyEnum.B: 'G#',
+      KeyEnum.Fs: 'D#',
+    };
+    for (var keyEnum in map.keys) {
+      var key = Key.get(keyEnum);
+      logger.i('$key => minor: ${key.getKeyMinorScaleNote()}');
+      expect(Key.get(keyEnum).getKeyMinorScaleNote().toMarkup(), map[keyEnum]);
+    }
+  });
 }
 
 /*

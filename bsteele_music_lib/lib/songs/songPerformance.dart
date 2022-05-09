@@ -471,6 +471,10 @@ class AllSongPerformances {
     _allSongPerformanceRequests.clear();
   }
 
+  void clearAllSongPerformanceRequests() {
+    _allSongPerformanceRequests.clear();
+  }
+
   int get length => _allSongPerformances.length;
 
   bool get isEmpty => _allSongPerformances.isEmpty;

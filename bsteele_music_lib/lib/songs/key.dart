@@ -25,7 +25,7 @@ class Key implements Comparable<Key> {
   static Map<KeyEnum, Key> _keyMap = {};
   static List<Key> _keysByHalfStep = [];
   static final List<dynamic> _initialization = [
-    //  KeyEnum, keyValue, key halfsteps from A
+    //  KeyEnum, keyValue, key halfSteps from A
     [KeyEnum.Gb, -6, 9],
     [KeyEnum.Db, -5, 4],
     [KeyEnum.Ab, -4, 11],
@@ -543,6 +543,7 @@ class Key implements Comparable<Key> {
   //                                   1  2  3  4  5  6  7
   //                                   0  1  2  3  4  5  6
   static const List<int> _majorScale = [0, 2, 4, 5, 7, 9, 11];
+
   // static const List<int> _majorScaleHalfstepsToScale = [
   //   0, // 0
   //   0, // 1

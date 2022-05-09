@@ -175,6 +175,14 @@ class ScaleNote implements Comparable<ScaleNote> {
     return get(_flats[step % MusicConstants.halfStepsPerOctave]);
   }
 
+  ScaleNote asSharp({bool value = true}) {
+    return get(value ? _sharps[_halfStep] : _flats[_halfStep]);
+  }
+
+  ScaleNote asFlat({bool value = true}) {
+    return value ? get(_flats[_halfStep]) : get(_sharps[_halfStep]);
+  }
+
   static ScaleNote? parseString(String s) {
     return parse(MarkedString(s));
   }

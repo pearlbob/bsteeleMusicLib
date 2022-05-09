@@ -24,6 +24,7 @@ import 'package:string_similarity/string_similarity.dart';
 import 'appLogger.dart';
 
 const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
+const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
@@ -513,10 +514,16 @@ coerced to reflect the songlist's last modification for that song.
           {
             //  read the local directory's list of song performance files
             AllSongPerformances allSongPerformances = AllSongPerformances();
+            allSongPerformances.clear();
+            assert(allSongPerformances.allSongPerformanceHistory.isEmpty);
+            assert(allSongPerformances.allSongPerformances.isEmpty);
+            assert(allSongPerformances.allSongPerformanceRequests.isEmpty);
 
             //  add the github version
             allSongPerformances.updateFromJsonString(
                 File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+            allSongPerformances
+                .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
 
             logger.i('allSongPerformances.length: ${allSongPerformances.length}');
             logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
@@ -545,6 +552,10 @@ coerced to reflect the songlist's last modification for that song.
                   if (_verbose) {
                     print('process: file: $name');
                   }
+
+                  //  clear all the requests so only the most current set is used
+                  allSongPerformances.clearAllSongPerformanceRequests();
+
                   allSongPerformances.updateFromJsonString(file.readAsStringSync());
                   logger.i('allSongPerformances.length: ${allSongPerformances.length}');
                   logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
@@ -597,7 +608,9 @@ coerced to reflect the songlist's last modification for that song.
             logger.i('allSongPerformances.length: ${allSongPerformances.length}');
             logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
 
-            File outputFile = File('allSongPerformances.songperformances');
+            // File outputFile = File('allSongPerformances_proc_${Util.utcNow()}.songperformances');
+            // //  don't expect a duplicate!
+            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
             try {
               outputFile.deleteSync();
             } catch (e) {
@@ -605,6 +618,9 @@ coerced to reflect the songlist's last modification for that song.
               //assert(false);
             }
             await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
+            if (_verbose) {
+              print('allSongPerformances location: ${outputFile.path}');
+            }
           }
           break;
 
@@ -744,6 +760,7 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-stat':
           print('songs: ${allSongs.length}');
+          print('updates: $_updateCount');
           {
             var covers = 0;
             for (var song in allSongs) {
@@ -1138,8 +1155,7 @@ coerced to reflect the songlist's last modification for that song.
           exit(-1);
       }
     }
-    print('songs: ${allSongs.length}');
-    print('updates: $_updateCount');
+
     exit(0);
   }
 
