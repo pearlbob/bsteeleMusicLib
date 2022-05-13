@@ -735,8 +735,6 @@ void main() {
       KeyEnum.Bb: 'G',
       KeyEnum.F: 'D',
       KeyEnum.C: 'A',
-      KeyEnum.Bb: 'G',
-      KeyEnum.Bb: 'G',
       KeyEnum.G: 'E',
       KeyEnum.D: 'B',
       KeyEnum.A: 'F#',

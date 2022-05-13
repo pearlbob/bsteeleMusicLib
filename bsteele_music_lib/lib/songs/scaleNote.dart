@@ -408,3 +408,76 @@ class ScaleNote implements Comparable<ScaleNote> {
   static late final HashMap<ScaleNoteEnum, ScaleNote> _hashmap = HashMap.identity();
   static late final Map<String, ScaleNote> _parseMap = {};
 }
+
+/// ScaleNoteIntervals
+abstract class _ScaleNoteInterval {
+  const _ScaleNoteInterval(this.name, this.numerator, this.denominator);
+
+  double get ratio => numerator.toDouble() / denominator;
+
+  final String name;
+  final int numerator;
+  final int denominator;
+}
+
+class FiveLimitScaleNoteInterval extends _ScaleNoteInterval {
+  const FiveLimitScaleNoteInterval._(name, numerator, denominator) : super(name, numerator, denominator);
+
+  static const intervals = [
+    FiveLimitScaleNoteInterval._('P1', 1, 1), // C
+    FiveLimitScaleNoteInterval._('m2', 16, 15), //  Db
+    FiveLimitScaleNoteInterval._('M2', 10, 9), // D
+    FiveLimitScaleNoteInterval._('m3', 6, 5), //  Eb
+    FiveLimitScaleNoteInterval._('M3', 5, 4), // E
+    FiveLimitScaleNoteInterval._('P4', 4, 3), //  F
+    FiveLimitScaleNoteInterval._('d5', 64, 45), //  Gb
+    FiveLimitScaleNoteInterval._('P5', 3, 2), //  G
+    FiveLimitScaleNoteInterval._('m6', 8, 5), //  Ab
+    FiveLimitScaleNoteInterval._('M6', 5, 3), //  A
+    FiveLimitScaleNoteInterval._('m7', 9, 5), //  Bb
+    FiveLimitScaleNoteInterval._('M7', 15, 8), //  B
+  ];
+}
+
+class DPythagoreanScaleNoteInterval extends _ScaleNoteInterval {
+  const DPythagoreanScaleNoteInterval._(name, numerator, denominator) : super(name, numerator, denominator);
+
+  static const intervals = [
+    DPythagoreanScaleNoteInterval._('P1', 1, 1),
+    DPythagoreanScaleNoteInterval._('m2', 256, 243),
+    DPythagoreanScaleNoteInterval._('M2', 9, 8),
+    DPythagoreanScaleNoteInterval._('m3', 32, 27),
+    DPythagoreanScaleNoteInterval._('M3', 81, 64),
+    DPythagoreanScaleNoteInterval._('P4', 4, 3),
+    DPythagoreanScaleNoteInterval._('d5', 1024, 729),
+    DPythagoreanScaleNoteInterval._('P5', 3, 2),
+    DPythagoreanScaleNoteInterval._('m6', 128, 81),
+    DPythagoreanScaleNoteInterval._('M6', 27, 16),
+    DPythagoreanScaleNoteInterval._('m7', 16, 9),
+    DPythagoreanScaleNoteInterval._('M7', 243, 128),
+  ];
+}
+
+class EqualTemperamentScaleNoteInterval extends _ScaleNoteInterval {
+  const EqualTemperamentScaleNoteInterval._(name, this._ratio) : super(name, 1, 1);
+
+  @override
+  double get ratio => _ratio;
+
+  static final intervals = [
+    EqualTemperamentScaleNoteInterval._('P1', MusicConstants.halfStepsToRatio(0)),
+    EqualTemperamentScaleNoteInterval._('m2', MusicConstants.halfStepsToRatio(1)),
+    EqualTemperamentScaleNoteInterval._('M2', MusicConstants.halfStepsToRatio(2)),
+    EqualTemperamentScaleNoteInterval._('m3', MusicConstants.halfStepsToRatio(3)),
+    EqualTemperamentScaleNoteInterval._('M3', MusicConstants.halfStepsToRatio(4)),
+    EqualTemperamentScaleNoteInterval._('P4', MusicConstants.halfStepsToRatio(5)),
+    EqualTemperamentScaleNoteInterval._('d5', MusicConstants.halfStepsToRatio(6)),
+    EqualTemperamentScaleNoteInterval._('P5', MusicConstants.halfStepsToRatio(7)),
+    EqualTemperamentScaleNoteInterval._('m6', MusicConstants.halfStepsToRatio(8)),
+    EqualTemperamentScaleNoteInterval._('M6', MusicConstants.halfStepsToRatio(9)),
+    EqualTemperamentScaleNoteInterval._('m7', MusicConstants.halfStepsToRatio(10)),
+    EqualTemperamentScaleNoteInterval._('M7', MusicConstants.halfStepsToRatio(11)),
+  ];
+
+  final double _ratio;
+}

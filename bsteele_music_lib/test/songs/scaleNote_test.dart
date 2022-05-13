@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/musicConstants.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
@@ -78,5 +80,48 @@ void main() {
         expect(sharpTrue.isSharp, isTrue);
       }
     }
+  });
+
+  test('test intervals', () {
+    Logger.level = Level.info;
+    logger.i('\nD Pythagorean Scale Note Intervals:');
+    for (var interval in DPythagoreanScaleNoteInterval.intervals) {
+      logger.i('${interval.name}:'
+          ' ${interval.numerator.toString().padLeft(4)}'
+          '/${interval.denominator.toString().padRight(4)}'
+          ' = ${interval.ratio.toStringAsFixed(12).padLeft(12 + 1 + 1)}');
+    }
+    logger.i('\nFive Limit Scale Note Intervals:');
+    for (var interval in FiveLimitScaleNoteInterval.intervals) {
+      logger.i('${interval.name}:'
+          ' ${interval.numerator.toString().padLeft(4)}'
+          '/${interval.denominator.toString().padRight(4)}'
+          ' = ${interval.ratio.toStringAsFixed(12).padLeft(12 + 1 + 1)}');
+    }
+    logger.i('\nEqual Temperament Scale Note Interval:');
+    for (var interval in EqualTemperamentScaleNoteInterval.intervals) {
+      logger.i('${interval.name}:'
+          ' ${interval.numerator.toString().padLeft(4)}'
+          '/${interval.denominator.toString().padRight(4)}'
+          ' = ${interval.ratio.toStringAsFixed(12).padLeft(12 + 1 + 1)}');
+    }
+
+    //  testing:
+    double maxError = 0;
+    double tolerance = 0.01821;
+    for (var i = 0; i < EqualTemperamentScaleNoteInterval.intervals.length; i++) {
+      var e = EqualTemperamentScaleNoteInterval.intervals[i];
+      var d = DPythagoreanScaleNoteInterval.intervals[i];
+      var f = FiveLimitScaleNoteInterval.intervals[i];
+      logger.d('$i: e: ${e.ratio},  d: ${d.ratio} (${(d.ratio - e.ratio).abs()})'
+          ',  f: ${f.ratio}  (${(f.ratio - e.ratio).abs()})');
+      var error = (d.ratio - e.ratio).abs();
+      maxError = max(maxError, error);
+      expect(error < tolerance, true);
+      error = (f.ratio - e.ratio).abs();
+      maxError = max(maxError, error);
+      expect(error < tolerance, true);
+    }
+    logger.i('maxError: $maxError');
   });
 }

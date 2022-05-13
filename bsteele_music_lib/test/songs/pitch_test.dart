@@ -1,4 +1,5 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/songs/musicConstants.dart';
 import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
@@ -103,7 +104,7 @@ void main() {
     expect(flats, 51);
   });
 
-  test('testfromFrequency', () {
+  test('test from Frequency', () {
     expect(Pitch.findFlatFromFrequency(1), Pitch.get(PitchEnum.A0));
     expect(Pitch.findSharpFromFrequency(1), Pitch.get(PitchEnum.A0));
     expect(Pitch.findFlatFromFrequency(41), Pitch.get(PitchEnum.E1));
@@ -117,7 +118,7 @@ void main() {
     expect(Pitch.findFlatFromFrequency(7030), Pitch.get(PitchEnum.C8));
   });
 
-  test('testNextPitch', () {
+  test('test NextPitch', () {
     Pitch p = Pitch.get(PitchEnum.E2);
 
     expect(p.nextHigherPitch(), Pitch.get(PitchEnum.F2));
@@ -185,7 +186,30 @@ void main() {
       }
     }
   });
+
+  test('test scale ratios', () {
+    var basePitch = Pitch.get(PitchEnum.C4);
+    for (int i = 0; i <= MusicConstants.halfStepsPerOctave; i++) {
+      var pitch = Pitch.sharps[basePitch.number + i];
+      logger.i('$i ${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+          ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
+          ' ${pitch.frequency / basePitch.frequency}'
+          '');
+    }
+    // for (var pitch in Pitch.sharps) {
+    //   logger.i('${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+    //       ' ${pitch.frequency.toStringAsFixed(12).padLeft(12+1+4)}');
+    // }
+  });
+
+  test('test all pitches', () {
+    for (var pitch in Pitch.sharps) {
+      logger.i('${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+          ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}');
+    }
+  });
 }
+
 /*
 A0   0 27.5
 As0  1 29.13523509488062

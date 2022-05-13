@@ -7,8 +7,8 @@ enum MajorDiatonic { I, ii, iii, IV, V, VI, vii }
 enum MinorDiatonic { i, ii, III, iv, v, VI, VII }
 
 class MusicConstants {
-  static const  int maxMeasuresPerChordRow = 8;
-  static const  int nominalMeasuresPerChordRow = 4;
+  static const int maxMeasuresPerChordRow = 8;
+  static const int nominalMeasuresPerChordRow = 4;
 
   static const String flatChar = '\u266D';
   static const String naturalChar = '\u266E';
@@ -22,7 +22,6 @@ class MusicConstants {
   static const String greekCapitalDeltaHtml = '&#916;';
   static const String whiteBulletHtml = '&#25e6;';
   static const String diminishedCircleHtml = whiteBulletHtml;
-
 
   static const String fClef = '\uD834\uDD22';
   static const String bassClef = fClef;
@@ -40,8 +39,8 @@ class MusicConstants {
   static const int maxBpm = 400;
   static const int defaultBpm = 106;
 
-  static double halfStepsToRatio( int halfSteps ){
-    return pow(2, (halfSteps / 12)) as double;
+  static double halfStepsToRatio(final int halfSteps) {
+    return pow(2, (halfSteps / 12)).toDouble();
   }
 
   //  has to be ahead of it's use since it's static
@@ -57,8 +56,7 @@ class MusicConstants {
 
   ///    Return the major diatonic chord descriptor for the given degree.
   static ChordDescriptor getMajorDiatonicChordModifier(int degree) {
-    return _majorDiatonicChordModifiers[
-        degree % _majorDiatonicChordModifiers.length];
+    return _majorDiatonicChordModifiers[degree % _majorDiatonicChordModifiers.length];
   }
 
   //  has to be ahead of it's use since it's static
@@ -74,15 +72,8 @@ class MusicConstants {
 
   ///  Return the major diatonic chord descriptor for the given degree.
   static ChordDescriptor getMinorDiatonicChordModifier(int degree) {
-    return _minorDiatonicChordModifiers[
-        degree % _minorDiatonicChordModifiers.length];
+    return _minorDiatonicChordModifiers[degree % _minorDiatonicChordModifiers.length];
   }
 }
 
-enum Clef {
-  treble,
-  bass,
-  bass8vb
-}
-
-
+enum Clef { treble, bass, bass8vb }
