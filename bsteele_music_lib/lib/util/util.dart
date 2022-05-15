@@ -64,11 +64,9 @@ class Util {
 
   static final RegExp _jsonJunkRegexp = RegExp(r'(",|\s*\[|\s+\n|["{}[\]])');
 
-  static String enumName(Object o) => o.toString().split('.').last;
-
-  static T? enumFromString<T>(String key, List<T> values) {
+  static T? enumFromString<T extends Enum>(String key, List<T> values) {
     try {
-      return values.firstWhere((v) => key == enumName(v!));
+      return values.firstWhere((v) => key == v.name);
     } catch (e) {
       return null;
     }

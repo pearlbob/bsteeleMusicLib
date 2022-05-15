@@ -113,7 +113,7 @@ class DrumPart implements Comparable<DrumPart> {
         }
       }
     }
-    return 'DrumPart{${Util.enumName(_drumType)}, beats: $beats, selection: ${sb.toString()} }  ';
+    return 'DrumPart{${_drumType.name}, beats: $beats, selection: ${sb.toString()} }  ';
   }
 
   @override

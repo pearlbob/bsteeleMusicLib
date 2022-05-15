@@ -344,6 +344,33 @@ class Key implements Comparable<Key> {
     return getKeyScaleNoteByHalfStep(_majorScale[note]);
   }
 
+  int? getMajorScaleNumberByHalfStep(int halfStep) {
+    halfStep = halfStep % MusicConstants.halfStepsPerOctave;
+    for (var i = 0; i < _majorScale.length; i++) {
+      if (_majorScale[i] == halfStep) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  /// Return the minor scale note by it's note number.
+  /// Counts from zero.
+  ScaleNote getMinorScaleByNote(int note) {
+    note = note % MusicConstants.notesPerScale;
+    return getKeyScaleNoteByHalfStep(_minorScale[note]);
+  }
+
+  int? getMinorScaleNumberByHalfStep(int halfStep) {
+    halfStep = halfStep % MusicConstants.halfStepsPerOctave;
+    for (var i = 0; i < _minorScale.length; i++) {
+      if (_minorScale[i] == halfStep) {
+        return i;
+      }
+    }
+    return null;
+  }
+
   /// get the key's scale note for the given note
   ScaleNote getKeyScaleNoteFor(ScaleNote note) {
     return getMajorScaleByNote(note.scaleNumber - getKeyScaleNote().scaleNumber);
@@ -429,13 +456,6 @@ class Key implements Comparable<Key> {
         }
     }
     //  should never get here
-  }
-
-  /// Return the minor scale note by it's note number.
-  /// Counts from zero.
-  ScaleNote getMinorScaleByNote(int note) {
-    note = note % MusicConstants.notesPerScale;
-    return getKeyScaleNoteByHalfStep(_minorScale[note]);
   }
 
   /// Counts from zero.

@@ -3,7 +3,6 @@ import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/sectionVersion.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 
-import '../util/util.dart';
 import 'chord.dart';
 import 'chordAnticipationOrDelay.dart';
 import 'chordSection.dart';
@@ -139,9 +138,9 @@ class EditPoint {
   String toString() {
     return 'EditPoint{'
         ' loc: ${location.toString()}'
-        ', editType: ${Util.enumName(measureEditType)}'
+        ', editType: ${measureEditType.name}'
         ', onEndOfRow: $onEndOfRow'
-        ', scale: ${Util.enumName(songEditScale)}'
+        ', scale: ${songEditScale.name}'
         '${(measureNode == null ? '' : ', measureNode: $measureNode')}'
         '}';
   }

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
@@ -55,16 +57,16 @@ void main() {
       Key key = Key.getKeyByValue(i);
       expect(i, key.getKeyValue());
       logger.v((i >= 0 ? ' ' : '') +
-              i.toString() +
-              ' ' +
-              key.name
-              //+ " toString: "
-              +
-              ' (' +
-              key.toString() +
-              ')\t'
-          //+ " html: " + key.toHtml()
-          );
+          i.toString() +
+          ' ' +
+          key.name
+          //+ " toString: "
+          +
+          ' (' +
+          key.toString() +
+          ')\t'
+        //+ " html: " + key.toHtml()
+      );
 
       logger.i('\tscale: ');
       for (int j = 0; j < 7; j++) {
@@ -746,6 +748,58 @@ void main() {
       var key = Key.get(keyEnum);
       logger.i('$key => minor: ${key.getKeyMinorScaleNote()}');
       expect(Key.get(keyEnum).getKeyMinorScaleNote().toMarkup(), map[keyEnum]);
+    }
+  });
+
+  test('test getMajorScaleNumberByHalfStep()', () {
+    for (var keyEnum in KeyEnum.values) {
+      var key = Key.get(keyEnum);
+      SplayTreeSet<int> majorScaleNoteHalfSteps = SplayTreeSet();
+      for (var note = 0; note < MusicConstants.notesPerScale; note++) {
+        var halfStepFromKey =
+            (key.getMajorScaleByNote(note).halfStep - key.halfStep) % MusicConstants.halfStepsPerOctave;
+        logger.d('$note: ${key.getMajorScaleByNote(note)}'
+            '  $halfStepFromKey');
+        majorScaleNoteHalfSteps.add(halfStepFromKey);
+      }
+
+      logger.i('major key $key:');
+      for (var halfSteps = 0; halfSteps < MusicConstants.halfStepsPerOctave; halfSteps++) {
+        logger.d(
+            '$halfSteps: ${key.getKeyScaleNoteByHalfStep(halfSteps)} ${key.getMajorScaleNumberByHalfStep(halfSteps)}');
+        logger.d('  majorScaleNoteHalfSteps: ${majorScaleNoteHalfSteps.contains(halfSteps).toString()} ');
+
+        if (majorScaleNoteHalfSteps.contains(halfSteps)) {
+          expect(key.getMajorScaleNumberByHalfStep(halfSteps), isNotNull);
+        } else {
+          expect(key.getMajorScaleNumberByHalfStep(halfSteps), isNull);
+        }
+      }
+    }
+
+    for (var keyEnum in KeyEnum.values) {
+      var key = Key.get(keyEnum);
+      SplayTreeSet<int> minorScaleNoteHalfSteps = SplayTreeSet();
+      for (var note = 0; note < MusicConstants.notesPerScale; note++) {
+        var halfStepFromKey =
+            (key.getMinorScaleByNote(note).halfStep - key.halfStep) % MusicConstants.halfStepsPerOctave;
+        logger.d('$note: ${key.getMinorScaleByNote(note)}'
+            '  $halfStepFromKey');
+        minorScaleNoteHalfSteps.add(halfStepFromKey);
+      }
+
+      logger.i('minor key $key:');
+      for (var halfSteps = 0; halfSteps < MusicConstants.halfStepsPerOctave; halfSteps++) {
+        logger.d(
+            '$halfSteps: ${key.getKeyScaleNoteByHalfStep(halfSteps)} ${key.getMinorScaleNumberByHalfStep(halfSteps)}');
+        logger.d('  minorScaleNoteHalfSteps: ${minorScaleNoteHalfSteps.contains(halfSteps).toString()} ');
+
+        if (minorScaleNoteHalfSteps.contains(halfSteps)) {
+          expect(key.getMinorScaleNumberByHalfStep(halfSteps), isNotNull);
+        } else {
+          expect(key.getMinorScaleNumberByHalfStep(halfSteps), isNull);
+        }
+      }
     }
   });
 }
