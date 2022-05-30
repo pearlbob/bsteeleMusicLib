@@ -578,7 +578,8 @@ coerced to reflect the songlist's last modification for that song.
                 if (!songPerformance.singer.contains(' ') ||
                     songPerformance.lastSung < lastSungLimit ||
                     songPerformance.singer.contains('Vikki') ||
-                    songPerformance.singer.contains('Alicia C.')) {
+                    songPerformance.singer.contains('Alicia C.') ||
+                    songPerformance.singer.contains('Bob S.')) {
                   performanceDelete.add(songPerformance);
                 }
               }
@@ -594,7 +595,8 @@ coerced to reflect the songlist's last modification for that song.
                 if (!songPerformance.singer.contains(' ') ||
                     songPerformance.lastSung < lastSungLimit ||
                     songPerformance.singer.contains('Vikki') ||
-                    songPerformance.singer.contains('Alicia C.')) {
+                    songPerformance.singer.contains('Alicia C.') ||
+                    songPerformance.singer.contains('Bob S.')) {
                   performanceDelete.add(songPerformance);
                 }
               }
