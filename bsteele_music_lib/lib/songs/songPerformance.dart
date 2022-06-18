@@ -103,7 +103,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   SongPerformance._fromJson(Map<String, dynamic> json)
       : _songIdAsString = json['songId'],
         _singer = _cleanPerformer(json['singer']),
-        _key = Key.getKeyByHalfStep(json['key']),
+        _key = json['key'] is int ? Key.getKeyByHalfStep(json['key']) : Key.fromMarkup(json['key']),
         _bpm = json['bpm'],
         _lastSung = json['lastSung'] ?? 0;
 
@@ -111,10 +111,11 @@ class SongPerformance implements Comparable<SongPerformance> {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'songId': _songIdAsString,
         'singer': _singer,
-        'key': _key.halfStep,
+        'key': _key.halfStep, //_key.toMarkup(),
         'bpm': _bpm,
         'lastSung': _lastSung,
       };

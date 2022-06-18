@@ -47,9 +47,9 @@ bsteeleMusicUtil:
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
 -allSongPerformances sync with CJ performances
--cjwrite {file)     format the song metada data
+-cjwrite {file)     format the song metadata
 -cjwritesongs {file)     write song list of cj songs
--cjread {file)      add song metada data
+-cjread {file)      add song metadata
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
 -f                  force file writes over existing files
@@ -180,7 +180,7 @@ coerced to reflect the songlist's last modification for that song.
           SongMetadata.fromJson(inputFile.readAsStringSync());
           break;
 
-        case '-cjwrite': // {file)     format the song metada data
+        case '-cjwrite': // {file)     format the song metadata
           //  assert there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
@@ -648,7 +648,7 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
-        case '-perfwrite': // {file)     format the song metada data
+        case '-perfwrite': // {file)     format the song meta data
           //  assert there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing directory path for -perfwrite');
@@ -892,6 +892,19 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-users':
+          {
+            final Map<String, String> userCorrections = {
+              'pillyweed': 'shari',
+              'Cassandra': 'shari',
+            };
+            for (Song song in allSongs) {
+              var newUser = userCorrections[song.user];
+              if (newUser != null) {
+                logger.i('${song.titleWithCover} from ${song.user} to ${newUser}');
+                song.user = newUser;
+              }
+            }
+          }
           {
             Map<String, int> userMap = {};
             for (Song song in allSongs) {
@@ -1180,7 +1193,7 @@ coerced to reflect the songlist's last modification for that song.
     if (!inputFile.path.endsWith('.songlyrics')) return;
     if (_verbose) logger.i('$inputFile');
 
-    //  fix for bad songlyric files
+    //  fix for bad song lyric files
     String s = inputFile.readAsStringSync();
     s = s.replaceAll('": null,', '": "",');
 
@@ -1294,5 +1307,5 @@ coerced to reflect the songlist's last modification for that song.
 }
 
 final RegExp _allSongPerformancesRegExp = RegExp(r'^allSongPerformances_(\d{8}_\d{6}).songperformances$');
-final RegExp _csvLineSplit = RegExp(r'[\,\r]');
-final RegExp _spaceRegexp = RegExp(r'[^\w]');
+final RegExp _csvLineSplit = RegExp(r'[,\r]');
+final RegExp _spaceRegexp = RegExp(r'\W');

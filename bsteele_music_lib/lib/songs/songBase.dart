@@ -3852,7 +3852,7 @@ class SongBase {
 
   set user(String s) {
     if (_user != s) {
-      _user = s;
+      _user = s; //  fixme: this is currently meaningless
     }
   }
 

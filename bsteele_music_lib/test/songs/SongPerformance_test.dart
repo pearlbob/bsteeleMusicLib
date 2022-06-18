@@ -4,6 +4,7 @@ import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songPerformance.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
+import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 
 void main() {
   Logger.level = Level.debug;
@@ -82,11 +83,11 @@ void main() {
       logger.i('String toJsonStringFor($singer1): \'${allSongPerformances.toJsonStringFor(singer1)}\'');
       expect(
           allSongPerformances.toJsonStringFor(singer1),
-          '[{"songId":"Song_A_by_bob","singer":"bodhi","key":9,"bpm":100,"lastSung":1639852279322},'
-          '\n{"songId":"Song_B_by_bob","singer":"bodhi","key":9,"bpm":120,"lastSung":1639852279322}]\n');
+          '[{"songId":"Song_A_by_bob","singer":"bodhi","key":"Gb","bpm":100,"lastSung":1639852279322},'
+          '\n{"songId":"Song_B_by_bob","singer":"bodhi","key":"Gb","bpm":120,"lastSung":1639852279322}]\n');
       logger.i('String toJsonStringFor($singer2): \'${allSongPerformances.toJsonStringFor(singer2)}\'');
       expect(allSongPerformances.toJsonStringFor(singer2),
-          '[{"songId":"Song_A_by_bob","singer":"vicki","key":0,"bpm":120,"lastSung":1639852279322}]\n');
+          '[{"songId":"Song_A_by_bob","singer":"vicki","key":"A","bpm":120,"lastSung":1639852279322}]\n');
 
       logger.i('$singer1: ${allSongPerformances.bySinger(singer1).map((e) {
         return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
@@ -264,98 +265,99 @@ void main() {
         }
         expect(singerCount, 4 + 2 /*repeats*/);
         logger.i(allSongPerformances.toJsonString());
-        expect(allSongPerformances.toJsonString(prettyPrint: true), '''{
- "allSongPerformances": [
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill",
-   "key": 3,
-   "bpm": 120,
-   "lastSung": 1639854884818
-  },
-  {
-   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",
-   "singer": "Jill",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Angie_by_Rolling_Stones_The",
-   "singer": "Jill",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Back_in_the_USSR_by_Beatles_The",
-   "singer": "Bob",
-   "key": 7,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",
-   "singer": "Jill",
-   "key": 0,
-   "bpm": 106,
-   "lastSung": 0
-  }
- ],
- "allSongPerformanceHistory": [
-  {
-   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",
-   "singer": "Jill",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Angie_by_Rolling_Stones_The",
-   "singer": "Jill",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Back_in_the_USSR_by_Beatles_The",
-   "singer": "Bob",
-   "key": 7,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",
-   "singer": "Jill",
-   "key": 0,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill",
-   "key": 3,
-   "bpm": 106,
-   "lastSung": 1439854884818
-  },
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill",
-   "key": 3,
-   "bpm": 110,
-   "lastSung": 1539854884818
-  },
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill",
-   "key": 3,
-   "bpm": 120,
-   "lastSung": 1639854884818
-  }
- ],
- "allSongPerformanceRequests": []
-}
-''');
+        expect(
+            allSongPerformances.toJsonString(prettyPrint: true),
+            '{\n'
+            ' "allSongPerformances": [\n'
+            '  {\n'
+            '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "C",\n'
+            '   "bpm": 120,\n'
+            '   "lastSung": 1639854884818\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "Eb",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_Angie_by_Rolling_Stones_The",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "Eb",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_Back_in_the_USSR_by_Beatles_The",\n'
+            '   "singer": "Bob",\n'
+            '   "key": "E",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "A",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  }\n'
+            ' ],\n'
+            ' "allSongPerformanceHistory": [\n'
+            '  {\n'
+            '   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "Eb",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_Angie_by_Rolling_Stones_The",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "Eb",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_Back_in_the_USSR_by_Beatles_The",\n'
+            '   "singer": "Bob",\n'
+            '   "key": "E",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "A",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 0\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "C",\n'
+            '   "bpm": 106,\n'
+            '   "lastSung": 1439854884818\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "C",\n'
+            '   "bpm": 110,\n'
+            '   "lastSung": 1539854884818\n'
+            '  },\n'
+            '  {\n'
+            '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+            '   "singer": "Jill",\n'
+            '   "key": "C",\n'
+            '   "bpm": 120,\n'
+            '   "lastSung": 1639854884818\n'
+            '  }\n'
+            ' ],\n'
+            ' "allSongPerformanceRequests": []\n'
+            '}\n');
       }
     }
 
@@ -420,84 +422,85 @@ void main() {
     expect(allSongPerformances.length, 5);
     expect(allSongPerformances.bySinger('Jill Z.').length, 4);
     logger.i(allSongPerformances.toJsonString());
-    expect(allSongPerformances.toJsonString(prettyPrint: true), '''{
- "allSongPerformances": [
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill Z.",
-   "key": 3,
-   "bpm": 106,
-   "lastSung": 1639854884818
-  },
-  {
-   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Angie_by_Rolling_Stones_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Back_in_the_USSR_by_Beatles_The",
-   "singer": "Bob",
-   "key": 7,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 0,
-   "bpm": 106,
-   "lastSung": 0
-  }
- ],
- "allSongPerformanceHistory": [
-  {
-   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Angie_by_Rolling_Stones_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Back_in_the_USSR_by_Beatles_The",
-   "singer": "Bob",
-   "key": 7,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 0,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill Z.",
-   "key": 3,
-   "bpm": 106,
-   "lastSung": 1639854884818
-  }
- ],
- "allSongPerformanceRequests": []
-}
-''');
+    expect(
+        allSongPerformances.toJsonString(prettyPrint: true),
+        '{\n'
+        ' "allSongPerformances": [\n'
+        '  {\n'
+        '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "C",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 1639854884818\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Angie_by_Rolling_Stones_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Back_in_the_USSR_by_Beatles_The",\n'
+        '   "singer": "Bob",\n'
+        '   "key": "E",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "A",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  }\n'
+        ' ],\n'
+        ' "allSongPerformanceHistory": [\n'
+        '  {\n'
+        '   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Angie_by_Rolling_Stones_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Back_in_the_USSR_by_Beatles_The",\n'
+        '   "singer": "Bob",\n'
+        '   "key": "E",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "A",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "C",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 1639854884818\n'
+        '  }\n'
+        ' ],\n'
+        ' "allSongPerformanceRequests": []\n'
+        '}\n');
   });
 
   test('song performance requests', () async {
@@ -520,88 +523,121 @@ void main() {
 
     logger.d(allSongPerformances.toJsonString(prettyPrint: true));
     expect(allSongPerformances.bySinger('Jill Z.').length, 4);
-    expect(allSongPerformances.toJsonString(prettyPrint: true), '''{
- "allSongPerformances": [
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill Z.",
-   "key": 3,
-   "bpm": 106,
-   "lastSung": 1639854884818
-  },
-  {
-   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Angie_by_Rolling_Stones_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Back_in_the_USSR_by_Beatles_The",
-   "singer": "Bob",
-   "key": 7,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 0,
-   "bpm": 106,
-   "lastSung": 0
-  }
- ],
- "allSongPerformanceHistory": [
-  {
-   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Angie_by_Rolling_Stones_The",
-   "singer": "Jill Z.",
-   "key": 6,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Back_in_the_USSR_by_Beatles_The",
-   "singer": "Bob",
-   "key": 7,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",
-   "singer": "Jill Z.",
-   "key": 0,
-   "bpm": 106,
-   "lastSung": 0
-  },
-  {
-   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",
-   "singer": "Jill Z.",
-   "key": 3,
-   "bpm": 106,
-   "lastSung": 1639854884818
-  }
- ],
- "allSongPerformanceRequests": [
-  {
-   "songId": "Song_All_Along_the_Watchtower_cover_by_Jimi_Hendrix_by_Bob_Dylan",
-   "requester": "Bob S."
-  }
- ]
-}
-''');
+    expect(
+        allSongPerformances.toJsonString(prettyPrint: true),
+        '{\n'
+        ' "allSongPerformances": [\n'
+        '  {\n'
+        '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "C",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 1639854884818\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Angie_by_Rolling_Stones_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Back_in_the_USSR_by_Beatles_The",\n'
+        '   "singer": "Bob",\n'
+        '   "key": "E",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "A",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  }\n'
+        ' ],\n'
+        ' "allSongPerformanceHistory": [\n'
+        '  {\n'
+        '   "songId": "Song_All_You_Need_is_Love_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Angie_by_Rolling_Stones_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "Eb",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Back_in_the_USSR_by_Beatles_The",\n'
+        '   "singer": "Bob",\n'
+        '   "key": "E",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_Dont_Let_Me_Down_by_Beatles_The",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "A",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 0\n'
+        '  },\n'
+        '  {\n'
+        '   "songId": "Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers",\n'
+        '   "singer": "Jill Z.",\n'
+        '   "key": "C",\n'
+        '   "bpm": 106,\n'
+        '   "lastSung": 1639854884818\n'
+        '  }\n'
+        ' ],\n'
+        ' "allSongPerformanceRequests": [\n'
+        '  {\n'
+        '   "songId": "Song_All_Along_the_Watchtower_cover_by_Jimi_Hendrix_by_Bob_Dylan",\n'
+        '   "requester": "Bob S."\n'
+        '  }\n'
+        ' ]\n'
+        '}\n');
+  });
+
+  test('song performance keys after a key base change', () async {
+    int beatsPerBar = 4;
+    int bpm = 106;
+    var singer = 'Bob S.';
+    var lastSung = DateTime.now().millisecondsSinceEpoch;
+
+    for (var keySung in Key.values) {
+      logger.i('keySung: ${keySung.toString()}');
+
+      for (var key in Key.values) {
+        var allSongPerformances = AllSongPerformances()..clear();
+        var a = Song.createSong('ive go the blanks', 'bob', '2022', key, bpm, beatsPerBar, 4, 'pearl bob',
+            'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+        var songIdAsString = a.songId.toString();
+        allSongPerformances
+            .addSongPerformance(SongPerformance(songIdAsString, singer, key: keySung, bpm: bpm, lastSung: lastSung));
+        allSongPerformances.loadSongs([a]);
+        expect(allSongPerformances.length, 1);
+
+        //  encode/decode to/from json
+        logger.v(allSongPerformances.toJsonString(prettyPrint: true));
+        allSongPerformances.fromJsonString(allSongPerformances.toJsonString());
+        allSongPerformances.loadSongs([a]);
+
+        var performance = allSongPerformances.findBySingerSongId(songIdAsString: songIdAsString, singer: singer);
+        expect(performance, isNotNull);
+        logger.i('  song key: ${a.key.toString()}, sung in: ${performance!.key.toString()}');
+        expect(performance.key, keySung);
+      }
+    }
   });
 }

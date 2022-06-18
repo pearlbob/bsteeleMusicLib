@@ -528,7 +528,7 @@ class Key implements Comparable<Key> {
   bool get isSharp => _keyValue > 0;
 
   String toJson() {
-    return '"key": ${halfStep}';
+    return '"key":      ${halfStep}';
   }
 
   /// Returns the name of this key in a formal format using UTF-8.
@@ -542,6 +542,18 @@ class Key implements Comparable<Key> {
   /// Express the key name as markup.
   String toMarkup() {
     return _keyScaleNote.toMarkup();
+  }
+
+  static Key fromMarkup(String s) {
+    var sn = ScaleNote.parseString(s);
+    if (sn == null) {
+      return Key.get(KeyEnum.C);
+    }
+    try {
+      return _getKeys().values.where((k) => k._keyScaleNote == sn).first;
+    } catch (e) {
+      return Key.get(KeyEnum.C);
+    }
   }
 
   /// Express the key name as a sharp note string.
