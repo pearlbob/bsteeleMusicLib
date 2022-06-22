@@ -44,6 +44,13 @@ class SongId implements Comparable<SongId> {
     return songId.compareTo(o.songId);
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is SongId && runtimeType == other.runtimeType && _songId == other._songId;
+
+  @override
+  int get hashCode => _songId.hashCode;
+
   static const _prefix = 'Song_';
 
   String get songId => _songId;

@@ -3436,7 +3436,7 @@ class SongBase {
     return _complexity;
   }
 
-  ///Compute a relative complexity index for the song
+  /// Copyright year
   int getCopyrightYear() {
     if (_copyrightYear == null) {
       //  find the year
