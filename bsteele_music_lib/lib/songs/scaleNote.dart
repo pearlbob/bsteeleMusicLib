@@ -43,6 +43,36 @@ enum Accidental {
 /// Does not include pitch, only a scale note.
 /// Silence is a scale note.
 class ScaleNote implements Comparable<ScaleNote> {
+  static final ScaleNote Ab = get(ScaleNoteEnum.Ab);
+  static final ScaleNote A = get(ScaleNoteEnum.A);
+  static final ScaleNote As = get(ScaleNoteEnum.As);
+
+  static final ScaleNote Bb = get(ScaleNoteEnum.Bb);
+  static final ScaleNote B = get(ScaleNoteEnum.B);
+  static final ScaleNote Bs = get(ScaleNoteEnum.Bs);
+
+  static final ScaleNote Cb = get(ScaleNoteEnum.Cb);
+  static final ScaleNote C = get(ScaleNoteEnum.C);
+  static final ScaleNote Cs = get(ScaleNoteEnum.Cs);
+
+  static final ScaleNote Db = get(ScaleNoteEnum.Db);
+  static final ScaleNote D = get(ScaleNoteEnum.D);
+  static final ScaleNote Ds = get(ScaleNoteEnum.Ds);
+
+  static final ScaleNote Eb = get(ScaleNoteEnum.Eb);
+  static final ScaleNote E = get(ScaleNoteEnum.E);
+  static final ScaleNote Es = get(ScaleNoteEnum.Es);
+
+  static final ScaleNote Fb = get(ScaleNoteEnum.Fb);
+  static final ScaleNote F = get(ScaleNoteEnum.F);
+  static final ScaleNote Fs = get(ScaleNoteEnum.Fs);
+
+  static final ScaleNote Gb = get(ScaleNoteEnum.Gb);
+  static final ScaleNote G = get(ScaleNoteEnum.G);
+  static final ScaleNote Gs = get(ScaleNoteEnum.Gs);
+
+  static final ScaleNote X = get(ScaleNoteEnum.X);
+
   ScaleNote._(ScaleNoteEnum scaleNoteE) {
     _enum = scaleNoteE;
     switch (scaleNoteE) {
@@ -110,7 +140,7 @@ class ScaleNote implements Comparable<ScaleNote> {
       case ScaleNoteEnum.E:
       case ScaleNoteEnum.F:
       case ScaleNoteEnum.G:
-        //mod += MusicConstants.naturalChar;  //  natural sign on scale is overkill!
+      //mod += MusicConstants.naturalChar;  //  natural sign on scale is overkill!
         _isNatural = true;
         _accidental = Accidental.natural;
         break;

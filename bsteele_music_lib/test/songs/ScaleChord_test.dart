@@ -43,7 +43,9 @@ void main() {
         '    <table border=\"1\" >\n');
 
     for (ScaleNote sn in ScaleNote.values) {
-      if (sn == ScaleNote.get(ScaleNoteEnum.X)) continue;
+      if (sn == ScaleNote.X) {
+        continue;
+      }
       String s = sn.toString();
       ScaleChord? sc;
 

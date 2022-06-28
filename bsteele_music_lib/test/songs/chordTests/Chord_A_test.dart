@@ -7,11 +7,11 @@ import '../Chord_test.dart';
 void main() {
   Logger.level = Level.warning;
 
-  KeyEnum keyEnum = KeyEnum.A;
+  Key key = Key.A;
 
   group('testChordTranspose', () {
-    test('testChordTranspose $keyEnum', () {
-      testChordTranspose(Key.get(keyEnum));
+    test('testChordTranspose $key', () {
+      testChordTranspose(key);
     });
   });
 }

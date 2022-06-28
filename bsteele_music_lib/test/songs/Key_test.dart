@@ -19,10 +19,10 @@ void _scaleChordAdd(ScaleChord? scaleChord) {
 }
 
 class _Help {
-  static String majorScale(KeyEnum keyEnum) {
+  static String majorScale(Key key) {
     StringBuffer sb = StringBuffer();
     for (int j = 0; j < 7; j++) {
-      ScaleNote sn = Key.get(keyEnum).getMajorScaleByNote(j);
+      ScaleNote sn = key.getMajorScaleByNote(j);
       String s = sn.toMarkup();
       sb.write(s);
       if (s.toString().length < 2) sb.write(' ');
@@ -31,10 +31,10 @@ class _Help {
     return sb.toString().trim();
   }
 
-  static String diatonicByDegree(KeyEnum keyEnum) {
+  static String diatonicByDegree(Key key) {
     StringBuffer sb = StringBuffer();
     for (int j = 0; j < 7; j++) {
-      ScaleChord sc = Key.get(keyEnum).getMajorDiatonicByDegree(j);
+      ScaleChord sc = key.getMajorDiatonicByDegree(j);
       String s = sc.toMarkup();
       sb.write(s);
       int i = s.length;
@@ -55,117 +55,117 @@ void main() {
     {
       //  let's start with a sane key
       var key = Key.C;
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.get(ScaleNoteEnum.Ab));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.get(ScaleNoteEnum.E));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.Ab);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.Gb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.E);
 
       //  E F Gb G Ab A
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -2), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -1), ScaleNote.get(ScaleNoteEnum.Ab));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.get(ScaleNoteEnum.Bb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.get(ScaleNoteEnum.B));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.get(ScaleNoteEnum.C));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.get(ScaleNoteEnum.Db));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.Gb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -2), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -1), ScaleNote.Ab);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.Bb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.B);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.C);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.Db);
 
-      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.get(ScaleNoteEnum.E));
+      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Gb);
+      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
+      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.E);
     }
     {
       //  let's start with another sane key, even if it's flat
       var key = Key.F;
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.get(ScaleNoteEnum.Ab));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.get(ScaleNoteEnum.E));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.Ab);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.Gb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.E);
 
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -2), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -1), ScaleNote.get(ScaleNoteEnum.Ab));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.get(ScaleNoteEnum.Bb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.get(ScaleNoteEnum.B));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.get(ScaleNoteEnum.C));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.get(ScaleNoteEnum.Db));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.Gb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -2), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -1), ScaleNote.Ab);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.Bb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.B);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.C);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.Db);
 
-      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.get(ScaleNoteEnum.E));
+      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Gb);
+      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
+      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.E);
     }
     {
       //  let's start with another sane key, even if it's sharp
       var key = Key.G;
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.get(ScaleNoteEnum.Gs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.get(ScaleNoteEnum.Fs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.get(ScaleNoteEnum.E));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.Gs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.Fs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.E);
 
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.get(ScaleNoteEnum.Fs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -2), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -1), ScaleNote.get(ScaleNoteEnum.Gs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.get(ScaleNoteEnum.As));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.get(ScaleNoteEnum.B));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.get(ScaleNoteEnum.C));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.get(ScaleNoteEnum.Cs));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.Fs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -2), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -1), ScaleNote.Gs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.As);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.B);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.C);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.Cs);
 
-      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.get(ScaleNoteEnum.Fs));
-      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.get(ScaleNoteEnum.E));
-      expect(key.getScaleNoteByHalfStep(-6), ScaleNote.get(ScaleNoteEnum.Ds));
+      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Fs);
+      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
+      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.E);
+      expect(key.getScaleNoteByHalfStep(-6), ScaleNote.Ds);
     }
     {
       var key = Key.Fs;
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.get(ScaleNoteEnum.Gs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.get(ScaleNoteEnum.Fs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.get(ScaleNoteEnum.Es));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.get(ScaleNoteEnum.E));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.get(ScaleNoteEnum.Fs));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.get(ScaleNoteEnum.Es));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.get(ScaleNoteEnum.As));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.get(ScaleNoteEnum.B));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.get(ScaleNoteEnum.C));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.get(ScaleNoteEnum.Cs));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.Gs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.Fs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.Es);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.E);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.Fs);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.Es);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.As);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.B);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.C);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.Cs);
 
-      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.get(ScaleNoteEnum.Fs));
-      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.get(ScaleNoteEnum.Es));
-      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.get(ScaleNoteEnum.E));
+      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Fs);
+      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.Es);
+      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.E);
     }
     {
       var key = Key.Gb;
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.get(ScaleNoteEnum.Ab));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.get(ScaleNoteEnum.G));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.get(ScaleNoteEnum.E));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.get(ScaleNoteEnum.A));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.get(ScaleNoteEnum.Bb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.get(ScaleNoteEnum.Cb));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.get(ScaleNoteEnum.C));
-      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.get(ScaleNoteEnum.Db));
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 3), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 2), ScaleNote.Ab);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 1), ScaleNote.G);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), 0), ScaleNote.Gb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -1), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.Fs), -2), ScaleNote.E);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -3), ScaleNote.Gb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), -4), ScaleNote.F);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 0), ScaleNote.A);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 1), ScaleNote.Bb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 2), ScaleNote.Cb);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 3), ScaleNote.C);
+      expect(key.transpose(ScaleNote.get(ScaleNoteEnum.A), 4), ScaleNote.Db);
 
-      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.get(ScaleNoteEnum.Gb));
-      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.get(ScaleNoteEnum.F));
-      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.get(ScaleNoteEnum.E));
-      expect(key.getScaleNoteByHalfStep(-6), ScaleNote.get(ScaleNoteEnum.Eb));
+      expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Gb);
+      expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
+      expect(key.getScaleNoteByHalfStep(-5), ScaleNote.E);
+      expect(key.getScaleNoteByHalfStep(-6), ScaleNote.Eb);
     }
 
     //  the table of values
@@ -216,33 +216,33 @@ void main() {
       }
     }
 
-    expect(_Help.majorScale(KeyEnum.Gb), 'Gb Ab Bb Cb Db Eb F');
+    expect(_Help.majorScale(Key.Gb), 'Gb Ab Bb Cb Db Eb F');
     //  fixme: actual should be first on expect!
-    expect(_Help.majorScale(KeyEnum.Db), 'Db Eb F  Gb Ab Bb C');
-    expect(_Help.majorScale(KeyEnum.Ab), 'Ab Bb C  Db Eb F  G');
-    expect(_Help.majorScale(KeyEnum.Eb), 'Eb F  G  Ab Bb C  D');
-    expect(_Help.majorScale(KeyEnum.Bb), 'Bb C  D  Eb F  G  A');
-    expect(_Help.majorScale(KeyEnum.F), 'F  G  A  Bb C  D  E');
-    expect(_Help.majorScale(KeyEnum.C), 'C  D  E  F  G  A  B');
-    expect(_Help.majorScale(KeyEnum.G), 'G  A  B  C  D  E  F#');
-    expect(_Help.majorScale(KeyEnum.D), 'D  E  F# G  A  B  C#');
-    expect(_Help.majorScale(KeyEnum.E), 'E  F# G# A  B  C# D#');
-    expect(_Help.majorScale(KeyEnum.B), 'B  C# D# E  F# G# A#');
-    expect(_Help.majorScale(KeyEnum.Fs), 'F# G# A# B  C# D# E#');
+    expect(_Help.majorScale(Key.Db), 'Db Eb F  Gb Ab Bb C');
+    expect(_Help.majorScale(Key.Ab), 'Ab Bb C  Db Eb F  G');
+    expect(_Help.majorScale(Key.Eb), 'Eb F  G  Ab Bb C  D');
+    expect(_Help.majorScale(Key.Bb), 'Bb C  D  Eb F  G  A');
+    expect(_Help.majorScale(Key.F), 'F  G  A  Bb C  D  E');
+    expect(_Help.majorScale(Key.C), 'C  D  E  F  G  A  B');
+    expect(_Help.majorScale(Key.G), 'G  A  B  C  D  E  F#');
+    expect(_Help.majorScale(Key.D), 'D  E  F# G  A  B  C#');
+    expect(_Help.majorScale(Key.E), 'E  F# G# A  B  C# D#');
+    expect(_Help.majorScale(Key.B), 'B  C# D# E  F# G# A#');
+    expect(_Help.majorScale(Key.Fs), 'F# G# A# B  C# D# E#');
 
-    expect(_Help.diatonicByDegree(KeyEnum.Gb), 'Gb   Abm  Bbm  Cb   Db7  Ebm  Fm7b5');
-    expect('Db   Ebm  Fm   Gb   Ab7  Bbm  Cm7b5', _Help.diatonicByDegree(KeyEnum.Db));
-    expect('Ab   Bbm  Cm   Db   Eb7  Fm   Gm7b5', _Help.diatonicByDegree(KeyEnum.Ab));
-    expect('Eb   Fm   Gm   Ab   Bb7  Cm   Dm7b5', _Help.diatonicByDegree(KeyEnum.Eb));
-    expect('Bb   Cm   Dm   Eb   F7   Gm   Am7b5', _Help.diatonicByDegree(KeyEnum.Bb));
-    expect('F    Gm   Am   Bb   C7   Dm   Em7b5', _Help.diatonicByDegree(KeyEnum.F));
-    expect('C    Dm   Em   F    G7   Am   Bm7b5', _Help.diatonicByDegree(KeyEnum.C));
-    expect('G    Am   Bm   C    D7   Em   F#m7b5', _Help.diatonicByDegree(KeyEnum.G));
-    expect('D    Em   F#m  G    A7   Bm   C#m7b5', _Help.diatonicByDegree(KeyEnum.D));
-    expect('A    Bm   C#m  D    E7   F#m  G#m7b5', _Help.diatonicByDegree(KeyEnum.A));
-    expect('E    F#m  G#m  A    B7   C#m  D#m7b5', _Help.diatonicByDegree(KeyEnum.E));
-    expect('B    C#m  D#m  E    F#7  G#m  A#m7b5', _Help.diatonicByDegree(KeyEnum.B));
-    expect('F#   G#m  A#m  B    C#7  D#m  E#m7b5', _Help.diatonicByDegree(KeyEnum.Fs));
+    expect(_Help.diatonicByDegree(Key.Gb), 'Gb   Abm  Bbm  Cb   Db7  Ebm  Fm7b5');
+    expect('Db   Ebm  Fm   Gb   Ab7  Bbm  Cm7b5', _Help.diatonicByDegree(Key.Db));
+    expect('Ab   Bbm  Cm   Db   Eb7  Fm   Gm7b5', _Help.diatonicByDegree(Key.Ab));
+    expect('Eb   Fm   Gm   Ab   Bb7  Cm   Dm7b5', _Help.diatonicByDegree(Key.Eb));
+    expect('Bb   Cm   Dm   Eb   F7   Gm   Am7b5', _Help.diatonicByDegree(Key.Bb));
+    expect('F    Gm   Am   Bb   C7   Dm   Em7b5', _Help.diatonicByDegree(Key.F));
+    expect('C    Dm   Em   F    G7   Am   Bm7b5', _Help.diatonicByDegree(Key.C));
+    expect('G    Am   Bm   C    D7   Em   F#m7b5', _Help.diatonicByDegree(Key.G));
+    expect('D    Em   F#m  G    A7   Bm   C#m7b5', _Help.diatonicByDegree(Key.D));
+    expect('A    Bm   C#m  D    E7   F#m  G#m7b5', _Help.diatonicByDegree(Key.A));
+    expect('E    F#m  G#m  A    B7   C#m  D#m7b5', _Help.diatonicByDegree(Key.E));
+    expect('B    C#m  D#m  E    F#7  G#m  A#m7b5', _Help.diatonicByDegree(Key.B));
+    expect('F#   G#m  A#m  B    C#7  D#m  E#m7b5', _Help.diatonicByDegree(Key.Fs));
 
 //        -6 Gb toString: G♭ html: G&#9837;
 //        G♭ A♭ B♭ C♭ D♭ E♭ F
@@ -535,14 +535,14 @@ void main() {
   });
 
   test('testKeyParse testing', () {
-    expect(Key.parseString('B♭')?.keyEnum, KeyEnum.Bb);
-    expect(Key.parseString('Bb')?.keyEnum, KeyEnum.Bb);
-    expect(Key.parseString('F#')?.keyEnum, KeyEnum.Fs);
-    expect(Key.parseString('F♯')?.keyEnum, KeyEnum.Fs);
-    expect(Key.parseString('Fs')?.keyEnum, KeyEnum.Fs);
-    expect(Key.parseString('F')?.keyEnum, KeyEnum.F);
-    expect(Key.parseString('E♭')?.keyEnum, KeyEnum.Eb);
-    expect(Key.parseString('Eb')?.keyEnum, KeyEnum.Eb);
+    expect(Key.parseString('B♭'), Key.Bb);
+    expect(Key.parseString('Bb'), Key.Bb);
+    expect(Key.parseString('F#'), Key.Fs);
+    expect(Key.parseString('F♯'), Key.Fs);
+    expect(Key.parseString('Fs'), Key.Fs);
+    expect(Key.parseString('F'), Key.F);
+    expect(Key.parseString('E♭'), Key.Eb);
+    expect(Key.parseString('Eb'), Key.Eb);
   });
 
   test('test byHalfStep()', () {
@@ -556,19 +556,19 @@ void main() {
       }
     }
 
-    expect(Key.getKeyByHalfStep(0).keyEnum, KeyEnum.A);
-    expect(Key.getKeyByHalfStep(1).keyEnum, KeyEnum.Bb);
-    expect(Key.getKeyByHalfStep(2).keyEnum, KeyEnum.B);
-    expect(Key.getKeyByHalfStep(3).keyEnum, KeyEnum.C);
-    expect(Key.getKeyByHalfStep(4).keyEnum, KeyEnum.Db);
-    expect(Key.getKeyByHalfStep(5).keyEnum, KeyEnum.D);
-    expect(Key.getKeyByHalfStep(6).keyEnum, KeyEnum.Eb);
-    expect(Key.getKeyByHalfStep(7).keyEnum, KeyEnum.E);
-    expect(Key.getKeyByHalfStep(8).keyEnum, KeyEnum.F);
-    expect(Key.getKeyByHalfStep(9).keyEnum, KeyEnum.Gb);
-    expect(Key.getKeyByHalfStep(10).keyEnum, KeyEnum.G);
-    expect(Key.getKeyByHalfStep(11).keyEnum, KeyEnum.Ab);
-    expect(Key.getKeyByHalfStep(12).keyEnum, KeyEnum.A);
+    expect(Key.getKeyByHalfStep(0), Key.A);
+    expect(Key.getKeyByHalfStep(1), Key.Bb);
+    expect(Key.getKeyByHalfStep(2), Key.B);
+    expect(Key.getKeyByHalfStep(3), Key.C);
+    expect(Key.getKeyByHalfStep(4), Key.Db);
+    expect(Key.getKeyByHalfStep(5), Key.D);
+    expect(Key.getKeyByHalfStep(6), Key.Eb);
+    expect(Key.getKeyByHalfStep(7), Key.E);
+    expect(Key.getKeyByHalfStep(8), Key.F);
+    expect(Key.getKeyByHalfStep(9), Key.Gb);
+    expect(Key.getKeyByHalfStep(10), Key.G);
+    expect(Key.getKeyByHalfStep(11), Key.Ab);
+    expect(Key.getKeyByHalfStep(12), Key.A);
   });
 
   test('test getKeyByHalfStep()', () {
@@ -608,9 +608,9 @@ void main() {
     int i = MusicConstants.halfStepsPerOctave ~/ 2;
     Key tk = test[i];
     expect(tk, isNotNull);
-    expect(tk.keyEnum, KeyEnum.Bb);
-    expect(test[0].keyEnum, KeyEnum.E);
-    expect(test[12].keyEnum, KeyEnum.E);
+    expect(tk, Key.Bb);
+    expect(test[0], Key.E);
+    expect(test[12], Key.E);
   });
 
   test('test clef stuff', () {
@@ -850,7 +850,7 @@ void main() {
   test('test key.inKey()', () {
     {
       Key key = Key.Gb;
-      logger.i('B in Gb: ${key.inKey(ScaleNote.get(ScaleNoteEnum.B))}');
+      logger.i('B in Gb: ${key.inKey(ScaleNote.B)}');
       logger.i('B tran in Gb: ${key.transpose(ScaleNote.get(ScaleNoteEnum.B), 0)}');
     }
 

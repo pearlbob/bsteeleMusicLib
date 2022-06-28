@@ -34,7 +34,7 @@ class ScaleChord implements Comparable<ScaleChord> {
       return null;
     }
 
-    if (retScaleNote == ScaleNote.get(ScaleNoteEnum.X)) {
+    if (retScaleNote == ScaleNote.X) {
       return ScaleChord(retScaleNote, ChordDescriptor.major); //  by convention only
     }
 

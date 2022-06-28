@@ -277,7 +277,7 @@ class Key implements Comparable<Key> {
         return key;
       }
     }
-    return get(KeyEnum.C); //  not found, so use the default, expected to be C
+    return Key.C; //  not found, so use the default, expected to be C
   }
 
   static Key getKeyByHalfStep(int halfStep) {
@@ -419,12 +419,12 @@ class Key implements Comparable<Key> {
     //  deal with exceptions
     switch (keyEnum) {
       case KeyEnum.Gb:
-        if (scaleNote == ScaleNote.get(ScaleNoteEnum.B)) {
+        if (scaleNote == ScaleNote.B) {
           return null;
         }
         break;
       case KeyEnum.Fs:
-        if (scaleNote == ScaleNote.get(ScaleNoteEnum.F)) {
+        if (scaleNote == ScaleNote.F) {
           return null;
         }
         break;
@@ -450,12 +450,12 @@ class Key implements Comparable<Key> {
     //  deal with exceptions
     switch (keyEnum) {
       case KeyEnum.Gb:
-        if (scaleNote == ScaleNote.get(ScaleNoteEnum.B)) {
+        if (scaleNote == ScaleNote.B) {
           return 'C';
         }
         break;
       case KeyEnum.Fs:
-        if (scaleNote == ScaleNote.get(ScaleNoteEnum.F)) {
+        if (scaleNote == ScaleNote.F) {
           return 'E';
         }
         break;
@@ -499,9 +499,9 @@ class Key implements Comparable<Key> {
   ScaleNote getScaleNoteByHalfStep(int halfSteps) {
     ScaleNote ret = _getScaleNoteByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
-    if (_keyValue == 6 && ret == ScaleNote.get(ScaleNoteEnum.F)) {
+    if (_keyValue == 6 && ret == ScaleNote.F) {
       return ScaleNote.get(ScaleNoteEnum.Es);
-    } else if (_keyValue == -6 && ret == ScaleNote.get(ScaleNoteEnum.B)) {
+    } else if (_keyValue == -6 && ret == ScaleNote.B) {
       return ScaleNote.get(ScaleNoteEnum.Cb);
     }
     return ret;
@@ -515,7 +515,7 @@ class Key implements Comparable<Key> {
 
   /// Default key is C.
   static Key getDefault() {
-    return get(KeyEnum.C);
+    return Key.C;
   }
 
   /// Returns a string representing the number of sharps or flats associated with this key

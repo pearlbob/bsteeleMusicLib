@@ -177,7 +177,7 @@ void main() {
     //
     //   Measure measure = phrase.measures[1];
     //   expect(phrase.measures.length, 4);
-    //   expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.B));
+    //   expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.B;
     // }
     {
       a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8, 'I:v: A B C D',
@@ -189,7 +189,7 @@ void main() {
 
       Measure measure = phrase.measures[1];
       expect(phrase.measures.length, 4);
-      expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.B));
+      expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.B);
     }
 
     for (int i = 50; i < 401; i++) {
@@ -611,11 +611,11 @@ void main() {
                 break;
               case 1:
                 measure = node as Measure;
-                expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.A));
+                expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.A);
                 break;
               case 4:
                 measure = node as Measure;
-                expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.D));
+                expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.D);
                 break;
             }
             break;
@@ -627,8 +627,8 @@ void main() {
                 break;
               case 1:
               case 2:
-                measure = node as Measure;
-                expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.get(ScaleNoteEnum.D));
+              measure = node as Measure;
+                expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.D);
                 break;
               case 3:
                 measure = node as Measure;
