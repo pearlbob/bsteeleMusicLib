@@ -4,7 +4,6 @@ import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songPerformance.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
-import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 
 void main() {
   Logger.level = Level.debug;
@@ -12,13 +11,13 @@ void main() {
   test('song performance', () {
     var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
         'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
-    var b = Song.createSong('B', 'bob', 'bsteele.com', Key.get(KeyEnum.G), 120, 4, 4, 'pearlbob',
-        'i: B B B B V: [ A B C D ]x2 ', 'i:\nv: bob, bob, bob berand\nV: sing verse here');
+    var b = Song.createSong('B', 'bob', 'bsteele.com', Key.G, 120, 4, 4, 'pearlbob', 'i: B B B B V: [ A B C D ]x2 ',
+        'i:\nv: bob, bob, bob berand\nV: sing verse here');
 
     var singer1 = 'bodhi';
     for (var song in [a, b]) {
       for (var key in Key.values) {
-        if (key == Key.get(KeyEnum.Fs)) {
+        if (key == Key.Fs) {
           continue; //  skip the duplicate
         }
         SongPerformance songPerformance = SongPerformance(song.songId.toString(), singer1, key: key);
@@ -34,7 +33,7 @@ void main() {
     allSongPerformances.loadSongs(songs);
     for (var song in [a, b]) {
       for (var key in Key.values.toList().reversed) {
-        if (key == Key.get(KeyEnum.Fs)) {
+        if (key == Key.Fs) {
           continue; //  skip the duplicate
         }
         SongPerformance songPerformance = SongPerformance.fromSong(song, singer1, key: key, lastSung: lastSung);
@@ -50,15 +49,14 @@ void main() {
       expect(allSongPerformances.bySinger(singer1).length, 2);
       var singer2 = 'vicki';
       expect(allSongPerformances.bySinger(singer2).length, 0);
-      SongPerformance songPerformance =
-          SongPerformance.fromSong(a, singer2, key: Key.get(KeyEnum.A), bpm: 120, lastSung: lastSung);
+      SongPerformance songPerformance = SongPerformance.fromSong(a, singer2, key: Key.A, bpm: 120, lastSung: lastSung);
       expect(
           songPerformance.toString(),
           'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
           ' _singer: \'vicki\', _key: A, _bpm: 120, sung: 12/18/2021}');
       expect(songPerformance.songIdAsString, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
-      expect(songPerformance.key, Key.get(KeyEnum.A));
+      expect(songPerformance.key, Key.A);
       expect(songPerformance.bpm, 120);
       expect(songPerformance.lastSung, lastSung);
       logger.d('songPerformance: $songPerformance');
@@ -116,7 +114,7 @@ void main() {
             return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
           }).toString(),
           '(A by bob in G♭)');
-      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: Key.get(KeyEnum.G)));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: Key.G));
       expect(
           allSongPerformances.bySinger(singer1).map((e) {
             return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
@@ -131,8 +129,8 @@ void main() {
       allSongPerformances.removeSinger(singer2);
       expect(allSongPerformances.length, 0);
 
-      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: Key.get(KeyEnum.G)));
-      allSongPerformances.addSongPerformance(SongPerformance('Song_A_by_bob', singer1, key: Key.get(KeyEnum.F)));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: Key.G));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_A_by_bob', singer1, key: Key.F));
       expect(allSongPerformances.length, 2);
       allSongPerformances.clear();
       expect(allSongPerformances.length, 0);
@@ -144,11 +142,11 @@ void main() {
         'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
 
     var singer1 = 'bodhi';
-    SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.get(KeyEnum.A));
+    SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.A);
     logger.d('${songPerformance}');
     expect(songPerformance.lastSungDateString, matches(r'^\d{1,2}/\d{1,2}/202\d$'));
 
-    var next = SongPerformance.fromSong(a, singer1, key: Key.get(KeyEnum.A));
+    var next = SongPerformance.fromSong(a, singer1, key: Key.A);
     await Future.delayed(const Duration(milliseconds: 2));
     expect(next.lastSung > songPerformance.lastSung, true);
 
@@ -365,21 +363,21 @@ void main() {
       var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
           'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
       var singer1 = 'bodhi';
-      var performance = SongPerformance.fromSong(a, singer1, key: Key.get(KeyEnum.A));
+      var performance = SongPerformance.fromSong(a, singer1, key: Key.A);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       await Future.delayed(const Duration(milliseconds: 2));
       expect(allSongPerformances.updateSongPerformance(performance), false);
-      performance = SongPerformance.fromSong(a, singer1, key: Key.get(KeyEnum.A));
+      performance = SongPerformance.fromSong(a, singer1, key: Key.A);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       await Future.delayed(const Duration(milliseconds: 2));
       expect(allSongPerformances.updateSongPerformance(performance), false);
-      performance = SongPerformance.fromSong(a, singer1, key: Key.get(KeyEnum.B));
+      performance = SongPerformance.fromSong(a, singer1, key: Key.B);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       await Future.delayed(const Duration(milliseconds: 2));
-      performance = SongPerformance.fromSong(a, singer1, key: Key.get(KeyEnum.B));
+      performance = SongPerformance.fromSong(a, singer1, key: Key.B);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       expect(allSongPerformances.updateSongPerformance(performance), false);

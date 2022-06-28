@@ -12,7 +12,7 @@ void main() {
 
   test('test songmoment.lyrics', () {
     //  Create the song
-    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton', 'BMG', Key.get(KeyEnum.D), 110, 4, 4, '''I:
+    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton', 'BMG', Key.D, 110, 4, 4, '''I:
 D FG D D x2
 V:
 D FG D D x2
@@ -181,7 +181,7 @@ We gonna let it all hang down
 
   test('test After Midnight', () {
     //  Create the song
-    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton', 'BMG', Key.get(KeyEnum.D), 110, 4, 4, '''I:
+    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton', 'BMG', Key.D, 110, 4, 4, '''I:
 D FG D D x2
 V:
 D FG D D x2
@@ -382,7 +382,7 @@ We gonna let it all hang down
   test('test Allison Road', () {
     //  Create the song
     SongBase a =
-        SongBase.createSongBase('Allison Road', 'Gin Blossoms, The', '1994 A&M', Key.get(KeyEnum.C), 120, 4, 4, '''I1:
+    SongBase.createSongBase('Allison Road', 'Gin Blossoms, The', '1994 A&M', Key.C, 120, 4, 4, '''I1:
 AE DA AE DA
 AE DA G G
 I2:

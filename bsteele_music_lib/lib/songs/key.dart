@@ -18,6 +18,20 @@ class Key implements Comparable<Key> {
       : _name = _keyEnumToString(_keyEnum),
         _keyScaleNote = ScaleNote.valueOf(_keyEnumToString(_keyEnum))!;
 
+  static final Gb = get(KeyEnum.Gb);
+  static final Db = get(KeyEnum.Db);
+  static final Ab = get(KeyEnum.Ab);
+  static final Eb = get(KeyEnum.Eb);
+  static final Bb = get(KeyEnum.Bb);
+  static final F = get(KeyEnum.F);
+  static final C = get(KeyEnum.C);
+  static final G = get(KeyEnum.G);
+  static final D = get(KeyEnum.D);
+  static final A = get(KeyEnum.A);
+  static final E = get(KeyEnum.E);
+  static final B = get(KeyEnum.B);
+  static final Fs = get(KeyEnum.Fs);
+
   static String _keyEnumToString(KeyEnum ke) {
     return ke.toString().split('.').last;
   }
@@ -54,7 +68,12 @@ class Key implements Comparable<Key> {
   }
 
   static Key byHalfStep({int offset = 0}) {
-    return keysByHalfStep()[offset % _halfStepsPerOctave];
+    var off = offset % _halfStepsPerOctave;
+    if (offset > 0 && off == MusicConstants.halfStepsFromAtoC + _halfStepsPerOctave / 2) {
+      //  the F# vs Gb split
+      return Key.Fs;
+    }
+    return keysByHalfStep()[off];
   }
 
   static List<Key> keysByHalfStepFrom(Key key) {
@@ -181,24 +200,36 @@ class Key implements Comparable<Key> {
 
   /// Return the next key that is one half step higher.
   Key nextKeyByHalfStep() {
-    return _getKeys()[_keyEnumsByHalfStep[(_halfStep + 1) % _keyEnumsByHalfStep.length]]!;
+    return _getKeyByHalfStep(_halfStep + 1);
   }
 
   Key nextKeyByHalfSteps(int step) {
-    return _getKeys()[_keyEnumsByHalfStep[(_halfStep + step) % _keyEnumsByHalfStep.length]]!;
+    if (step == 0) {
+      return this; //  don't fool with the key if we don't have to
+    }
+    return _getKeyByHalfStep(_halfStep + step);
   }
 
   Key nextKeyByFifth() {
-    return _getKeys()[_keyEnumsByHalfStep[(_halfStep + MusicConstants.notesPerScale) % _keyEnumsByHalfStep.length]]!;
+    return _getKeyByHalfStep(_halfStep + MusicConstants.notesPerScale);
   }
 
   /// Return the next key that is one half step lower.
   Key previousKeyByHalfStep() {
-    return _getKeys()[_keyEnumsByHalfStep[(_halfStep - 1) % _keyEnumsByHalfStep.length]]!;
+    return _getKeyByHalfStep(_halfStep - 1);
   }
 
   Key previousKeyByFifth() {
-    return _getKeys()[_keyEnumsByHalfStep[(_halfStep - MusicConstants.notesPerScale) % _keyEnumsByHalfStep.length]]!;
+    return _getKeyByHalfStep(_halfStep - MusicConstants.notesPerScale);
+  }
+
+  Key _getKeyByHalfStep(int step) {
+    step = step % _flatKeyEnumsByHalfStep.length;
+    if (isSharp && step == MusicConstants.halfStepsFromAtoC + _halfStepsPerOctave / 2) {
+      //  the F# vs Gb split
+      return Key.Fs;
+    }
+    return _getKeys()[_flatKeyEnumsByHalfStep[step]]!;
   }
 
   ScaleNote inKey(ScaleNote scaleNote) {
@@ -547,12 +578,12 @@ class Key implements Comparable<Key> {
   static Key fromMarkup(String s) {
     var sn = ScaleNote.parseString(s);
     if (sn == null) {
-      return Key.get(KeyEnum.C);
+      return Key.C;
     }
     try {
       return _getKeys().values.where((k) => k._keyScaleNote == sn).first;
     } catch (e) {
-      return Key.get(KeyEnum.C);
+      return Key.C;
     }
   }
 
@@ -604,7 +635,7 @@ class Key implements Comparable<Key> {
   //   ChordDescriptor.minor, //  5 + 1 = 6
   //   ChordDescriptor.minor7b5, //  6 + 1 = 7
   // ];
-  static const List<KeyEnum> _keyEnumsByHalfStep = <KeyEnum>[
+  static const List<KeyEnum> _flatKeyEnumsByHalfStep = <KeyEnum>[
     KeyEnum.A,
     KeyEnum.Bb,
     KeyEnum.B,
@@ -614,7 +645,7 @@ class Key implements Comparable<Key> {
     KeyEnum.Eb,
     KeyEnum.E,
     KeyEnum.F,
-    KeyEnum.Gb,
+    KeyEnum.Gb, //  the problem child, is it F#?
     KeyEnum.G,
     KeyEnum.Ab
   ];

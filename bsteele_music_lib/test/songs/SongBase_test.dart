@@ -2018,7 +2018,7 @@ o: end here''');
     a = SongBase.from(title: 'bob song');
     expect(a.title, 'bob song');
     a = SongBase.from(title: 'the bob song');
-    expect(a.title, 'bob song, the ');
+    expect(a.title, 'bob song, the');
     expect(a.artist, 'unknown');
     expect(a.coverArtist, isEmpty);
 
@@ -2027,23 +2027,23 @@ o: end here''');
     expect(a.artist, 'bob');
     a = SongBase.from(title: 'bob song', artist: 'the bob');
     expect(a.title, 'bob song');
-    expect(a.artist, 'bob, the ');
+    expect(a.artist, 'bob, the');
     expect(a.coverArtist, isEmpty);
 
     {
       var coverArtist = 'not really bob';
       a = SongBase.from(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
       expect(a.title, 'bob song');
-      expect(a.artist, 'bob, the ');
+      expect(a.artist, 'bob, the');
       expect(a.coverArtist, isNotEmpty);
       expect(a.coverArtist, coverArtist);
 
       coverArtist = 'the not real bob';
       a = SongBase.from(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
       expect(a.title, 'bob song');
-      expect(a.artist, 'bob, the ');
+      expect(a.artist, 'bob, the');
       expect(a.coverArtist, isNotEmpty);
-      expect(a.coverArtist, 'not real bob, the ');
+      expect(a.coverArtist, 'not real bob, the');
     }
 
     a = SongBase.from(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar);

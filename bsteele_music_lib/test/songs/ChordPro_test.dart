@@ -111,18 +111,18 @@ void main() {
     Song song = chordPro.parse(_andILoveHer);
     logger.i(song.toJson());
     expect(song.title, 'And I Love Her');
-    expect(song.artist, 'Beatles, The ');
+    expect(song.artist, 'Beatles, The');
     expect(song.copyright, '');
     expect(song.timeSignature, TimeSignature.defaultTimeSignature);
     expect(song.songMoments.length, 105);
     expect(
         song.rawLyrics,
         'I:\n'
-            '\n'
-            'V:\n'
-            'I give her | all my love | That\'s all I | do\n'
-            'And if you | saw my love | You\'d love her, | too I | love her |\n'
-            '\n'
+        '\n'
+        'V:\n'
+        'I give her | all my love | That\'s all I | do\n'
+        'And if you | saw my love | You\'d love her, | too I | love her |\n'
+        '\n'
             'V:\n'
             'She gives me | everything | And tender | ly\n'
             'The kiss my | lover brings | She brings to | me And I | love her |\n'

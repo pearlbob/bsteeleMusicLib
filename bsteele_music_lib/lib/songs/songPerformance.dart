@@ -115,7 +115,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       {
         'songId': _songIdAsString,
         'singer': _singer,
-        'key': _key.halfStep, //_key.toMarkup(),
+        'key': _key.toMarkup(),
         'bpm': _bpm,
         'lastSung': _lastSung,
       };

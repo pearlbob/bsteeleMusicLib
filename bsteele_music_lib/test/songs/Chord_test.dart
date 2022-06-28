@@ -157,7 +157,7 @@ void main() {
 
     test('testSimpleChordTranspose testing', () {
       int count = 0;
-      for (Key key in <Key>[Key.get(KeyEnum.C), Key.get(KeyEnum.G)]) {
+      for (Key key in <Key>[Key.C, Key.G]) {
         for (ScaleNote sn in ScaleNote.values) {
           for (int halfSteps = 0; halfSteps < 12; halfSteps++) {
             ScaleNote snHalfSteps = sn.transpose(key, halfSteps);

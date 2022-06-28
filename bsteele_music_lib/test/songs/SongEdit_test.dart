@@ -1351,8 +1351,8 @@ void main() {
     int beatsPerBar = 4;
 
     //  assure that the song can end on an empty section
-    _a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', Key.get(KeyEnum.C), 106, beatsPerBar, 4,
-        'V: C F C C,F F C C,  G F C G', 'v:');
+    _a = SongBase.createSongBase(
+        '12 Bar Blues', 'All', 'Unknown', Key.C, 106, beatsPerBar, 4, 'V: C F C C,F F C C,  G F C G', 'v:');
     logger.d('a.lastModifiedTime: ${_a.lastModifiedTime}');
     int t0 = _a.lastModifiedTime;
     expect(now <= _a.lastModifiedTime, isTrue);

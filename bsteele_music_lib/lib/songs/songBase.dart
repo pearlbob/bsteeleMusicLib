@@ -52,7 +52,7 @@ class SongBase {
     artist = '';
     coverArtist = '';
     copyright = '';
-    key = Key.get(KeyEnum.C);
+    key = Key.C;
     timeSignature = TimeSignature.defaultTimeSignature;
     rawLyrics = '';
     setChords('');
@@ -2911,7 +2911,7 @@ class SongBase {
       throw 'no copyright given!';
     }
 
-    key ??= Key.get(KeyEnum.C); //  punt on an error
+    key ??= Key.C; //  punt on an error
 
     if (bpmEntry == null || bpmEntry.isEmpty) {
       throw 'no BPM given!';
@@ -3145,10 +3145,10 @@ class SongBase {
     }
 
     //  move the leading "The " to the end
-    RegExp theRegExp = RegExp('^ *(the +)(.*)', caseSensitive: false);
     RegExpMatch? m = theRegExp.firstMatch(s);
     if (m != null) {
       s = m.group(2)! + ', ' + m.group(1)!;
+      s = s.trim();
     }
     return s;
   }
@@ -3888,7 +3888,7 @@ class SongBase {
     }
   }
 
-  Key _key = Key.get(KeyEnum.C); //  default
+  Key _key = Key.C; //  default
 
   int get beatsPerMinute => _beatsPerMinute;
 
@@ -4011,6 +4011,7 @@ class SongBase {
   HashMap<int, SongMoment> _beatsToMoment = HashMap();
 
   static final RegExp _spaceRegexp = RegExp(r'[ \t]');
+  static final RegExp theRegExp = RegExp('^ *(the +)(.*)', caseSensitive: false);
 
   //SplayTreeSet<Metadata> metadata = new SplayTreeSet();
   static final String defaultUser = 'Unknown';

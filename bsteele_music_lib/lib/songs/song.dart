@@ -29,7 +29,7 @@ enum SongComparatorType {
 class Song extends SongBase implements Comparable<Song> {
   /// Create a minimal song to be used internally as a place holder.
   static Song createEmptySong() {
-    return createSong('', '', '', Key.get(KeyEnum.C), 100, 4, 4, '', '', '');
+    return createSong('', '', '', Key.C, 100, 4, 4, '', '', '');
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.

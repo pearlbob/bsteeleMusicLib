@@ -39,15 +39,15 @@ void main() {
     expect(Scale.minor.intervals[6], 2);
     expect(Scale.minor.halfSteps[7], 12);
 
-    expect(Scale.major.inKey(Key.get(KeyEnum.C)).toString(), '[C, D, E, F, G, A, B, C]');
-    expect(Scale.ionian.inKey(Key.get(KeyEnum.C)).toString(), '[C, D, E, F, G, A, B, C]');
-    expect(Scale.dorian.inKey(Key.get(KeyEnum.D)).toString(), '[D, E, F, G, A, B, C, D]');
-    expect(Scale.phrygian.inKey(Key.get(KeyEnum.E)).toString(), '[E, F, G, A, B, C, D, E]');
-    expect(Scale.lydian.inKey(Key.get(KeyEnum.F)).toString(), '[F, G, A, B, C, D, E, F]');
-    expect(Scale.mixolydian.inKey(Key.get(KeyEnum.G)).toString(), '[G, A, B, C, D, E, F, G]');
-    expect(Scale.aeolian.inKey(Key.get(KeyEnum.A)).toString(), '[A, B, C, D, E, F, G, A]');
-    expect(Scale.minor.inKey(Key.get(KeyEnum.A)).toString(), '[A, B, C, D, E, F, G, A]');
-    expect(Scale.locrian.inKey(Key.get(KeyEnum.B)).toString(), '[B, C, D, E, F, G, A, B]');
+    expect(Scale.major.inKey(Key.C).toString(), '[C, D, E, F, G, A, B, C]');
+    expect(Scale.ionian.inKey(Key.C).toString(), '[C, D, E, F, G, A, B, C]');
+    expect(Scale.dorian.inKey(Key.D).toString(), '[D, E, F, G, A, B, C, D]');
+    expect(Scale.phrygian.inKey(Key.E).toString(), '[E, F, G, A, B, C, D, E]');
+    expect(Scale.lydian.inKey(Key.F).toString(), '[F, G, A, B, C, D, E, F]');
+    expect(Scale.mixolydian.inKey(Key.G).toString(), '[G, A, B, C, D, E, F, G]');
+    expect(Scale.aeolian.inKey(Key.A).toString(), '[A, B, C, D, E, F, G, A]');
+    expect(Scale.minor.inKey(Key.A).toString(), '[A, B, C, D, E, F, G, A]');
+    expect(Scale.locrian.inKey(Key.B).toString(), '[B, C, D, E, F, G, A, B]');
     /*
      Mode	Also known as	Starting note relative
      to major scale	Interval sequence	Example
@@ -60,8 +60,8 @@ void main() {
      Locrian		VII	S,T,T,S,T,T,T	B,C,D,E,F,G,A,B
      */
 
-    expect(Scale.majorPentatonic.inKey(Key.get(KeyEnum.C)).toString(), '[C, D, E, G, A, C]');
-    expect(Scale.minorPentatonic.inKey(Key.get(KeyEnum.A)).toString(), '[A, C, D, E, G, A]');
-    expect(Scale.minorPentatonic.inKey(Key.get(KeyEnum.C)).toString(), '[C, E♭, F, G, B♭, C]');
+    expect(Scale.majorPentatonic.inKey(Key.C).toString(), '[C, D, E, G, A, C]');
+    expect(Scale.minorPentatonic.inKey(Key.A).toString(), '[A, C, D, E, G, A]');
+    expect(Scale.minorPentatonic.inKey(Key.C).toString(), '[C, E♭, F, G, B♭, C]');
   });
 }
