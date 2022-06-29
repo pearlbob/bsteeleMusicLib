@@ -648,23 +648,29 @@ void main() {
     var allSongPerformances = AllSongPerformances()..clear();
     var a = Song.createSong('ive got the blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
         'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
-    var songIdAsString = a.songId.toString();
 
-    var performance1 = SongPerformance(songIdAsString, singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+    var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
     allSongPerformances.addSongPerformance(performance1);
     allSongPerformances.loadSongs([a]);
 
-    a = Song.createSong('Ive Got The Blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
+    var b = Song.createSong('Ive Got The Blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
         'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
 
-    var performance2 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung + 30000);
+    var performance2 = SongPerformance(b.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung + 30000);
     allSongPerformances.addSongPerformance(performance2);
+    expect(allSongPerformances.allSongPerformances.length, 2);
     expect(allSongPerformances.allSongPerformanceHistory.length, 2);
     for (var h in allSongPerformances.allSongPerformanceHistory) {
       logger.i('${h}');
     }
     logger.i('performance1 ${performance1.songIdAsString} vs performance2 ${performance2.songIdAsString}');
     logger.i('performance1.compareTo(performance2): ${performance1.compareTo(performance2)}');
-    expect(performance1.compareTo(performance2), 0);
+    expect(performance1.compareTo(performance2), isNonZero);
+
+    expect(allSongPerformances.allSongPerformances.length, 2);
+    expect(allSongPerformances.allSongPerformanceHistory.length, 2);
+    allSongPerformances.removeSingerSong(singer, a.songId.toString());
+    expect(allSongPerformances.allSongPerformances.length, 1);
+    expect(allSongPerformances.allSongPerformanceHistory.length, 2);
   });
 }

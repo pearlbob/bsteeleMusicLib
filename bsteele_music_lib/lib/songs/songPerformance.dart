@@ -50,7 +50,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     if (identical(first, other)) {
       return 0;
     }
-    return first._lowerCaseSongIdAsString.compareTo(other._lowerCaseSongIdAsString);
+    return first._songIdAsString.compareTo(other._songIdAsString);
   }
 
   static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
@@ -124,7 +124,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       return 0;
     }
 
-    int ret = _lowerCaseSongIdAsString.compareTo(other._lowerCaseSongIdAsString);
+    int ret = _songIdAsString.compareTo(other._songIdAsString); //  exact
     if (ret != 0) {
       return ret;
     }
