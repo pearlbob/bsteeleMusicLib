@@ -20,13 +20,15 @@ String _cleanPerformer(final String? value) {
 
 class SongPerformance implements Comparable<SongPerformance> {
   SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung})
-      : _singer = _cleanPerformer(singer),
+      : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
+        _singer = _cleanPerformer(singer),
         _key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
   SongPerformance.fromSong(final Song song, final String singer, {Key? key, int? bpm, int? lastSung})
-      : _singer = _cleanPerformer(singer),
+      : _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
+        _singer = _cleanPerformer(singer),
         song = song,
         _songIdAsString = song.songId.toString(),
         _key = key ?? song.key,
@@ -48,11 +50,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     if (identical(first, other)) {
       return 0;
     }
-    int ret = first._songIdAsString.compareTo(other._songIdAsString);
-    if (ret != 0) {
-      return ret;
-    }
-    return 0;
+    return first._lowerCaseSongIdAsString.compareTo(other._lowerCaseSongIdAsString);
   }
 
   static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
@@ -102,6 +100,7 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   SongPerformance._fromJson(Map<String, dynamic> json)
       : _songIdAsString = json['songId'],
+        _lowerCaseSongIdAsString = json['songId'].toString().toLowerCase(),
         _singer = _cleanPerformer(json['singer']),
         _key = json['key'] is int ? Key.getKeyByHalfStep(json['key']) : Key.fromMarkup(json['key']),
         _bpm = json['bpm'],
@@ -111,8 +110,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     return jsonEncode(this);
   }
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'songId': _songIdAsString,
         'singer': _singer,
         'key': _key.toMarkup(),
@@ -126,7 +124,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       return 0;
     }
 
-    int ret = _songIdAsString.compareTo(other._songIdAsString);
+    int ret = _lowerCaseSongIdAsString.compareTo(other._lowerCaseSongIdAsString);
     if (ret != 0) {
       return ret;
     }
@@ -154,6 +152,9 @@ class SongPerformance implements Comparable<SongPerformance> {
   String get songIdAsString => _songIdAsString;
   final String _songIdAsString;
 
+  String get lowerCaseSongIdAsString => _lowerCaseSongIdAsString;
+  final String _lowerCaseSongIdAsString;
+
   String get singer => _singer;
   final String _singer;
 
@@ -173,7 +174,9 @@ class SongPerformance implements Comparable<SongPerformance> {
 }
 
 class SongRequest implements Comparable<SongRequest> {
-  SongRequest(this._songIdAsString, String requester) : _requester = _cleanPerformer(requester);
+  SongRequest(this._songIdAsString, String requester)
+      : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
+        _requester = _cleanPerformer(requester);
 
   @override
   String toString() {
@@ -195,6 +198,7 @@ class SongRequest implements Comparable<SongRequest> {
 
   SongRequest._fromJson(Map<String, dynamic> json)
       : _songIdAsString = json['songId'],
+        _lowerCaseSongIdAsString = json['songId'].toString().toLowerCase(),
         _requester = json['requester'];
 
   String toJsonString() {
@@ -234,6 +238,9 @@ class SongRequest implements Comparable<SongRequest> {
   String get songIdAsString => _songIdAsString;
   final String _songIdAsString;
 
+  String get lowerCaseSongIdAsString => _lowerCaseSongIdAsString;
+  final String _lowerCaseSongIdAsString;
+
   String get requester => _requester;
   final String _requester;
 }
@@ -250,19 +257,19 @@ class AllSongPerformances {
   /// Populate song performance references with current songs
   void loadSongs(Iterable<Song> songs) {
     for (var song in songs) {
-      songMap[song.songId.toString()] = song;
+      songMap[song.songId.toString().toLowerCase()] = song;
     }
 
     for (var songPerformance in _allSongPerformances) {
-      songPerformance.song = songMap[songPerformance._songIdAsString];
+      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString];
     }
 
     for (var songPerformance in _allSongPerformanceHistory) {
-      songPerformance.song = songMap[songPerformance._songIdAsString];
+      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString];
     }
 
     for (var songRequest in _allSongPerformanceRequests) {
-      songRequest.song = songMap[songRequest._songIdAsString];
+      songRequest.song = songMap[songRequest._lowerCaseSongIdAsString];
     }
   }
 
@@ -273,11 +280,11 @@ class AllSongPerformances {
 
     _allSongPerformances.add(songPerformance);
     _allSongPerformanceHistory.add(songPerformance);
-    songPerformance.song = songMap[songPerformance._songIdAsString];
+    songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString];
   }
 
   void addSongRequest(SongRequest songRequest) {
-    songRequest.song = songMap[songRequest._songIdAsString];
+    songRequest.song = songMap[songRequest._lowerCaseSongIdAsString];
     _allSongPerformanceRequests.add(songRequest);
   }
 
@@ -286,7 +293,7 @@ class AllSongPerformances {
   }
 
   bool updateSongPerformance(SongPerformance songPerformance) {
-    songPerformance.song = songMap[songPerformance._songIdAsString];
+    songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString];
     _allSongPerformanceHistory.add(songPerformance);
 
     SongPerformance? original = _allSongPerformances.lookup(songPerformance);
@@ -311,7 +318,9 @@ class AllSongPerformances {
 
   SongPerformance? findBySingerSongId({required final String songIdAsString, required final String singer}) {
     try {
-      return _allSongPerformances.firstWhere((e) => e.singer == singer && e._songIdAsString == songIdAsString);
+      var lowerSongIdAsString = songIdAsString.toLowerCase();
+      return _allSongPerformances
+          .firstWhere((e) => e.singer == singer && e._lowerCaseSongIdAsString == lowerSongIdAsString);
     } catch (e) {
       return null;
     }
@@ -327,9 +336,9 @@ class AllSongPerformances {
 
   List<SongPerformance> bySong(Song song) {
     List<SongPerformance> ret = [];
-    var songIdString = song.songId.toString();
+    var lowerSongIdAsString = song.songId.toString().toLowerCase();
     ret.addAll(_allSongPerformances.where((songPerformance) {
-      return songPerformance.songIdAsString == songIdString;
+      return songPerformance.songIdAsString.toLowerCase() == lowerSongIdAsString;
     }));
     return ret;
   }
@@ -357,8 +366,9 @@ class AllSongPerformances {
     if (song == null) {
       return false;
     }
+    var requestedSongIdString = song.songId.toString().toLowerCase();
     return _allSongPerformanceRequests
-        .any((e) => e._requester == requester && e._songIdAsString == song.songId.toString());
+        .any((e) => e._requester == requester && e._lowerCaseSongIdAsString == requestedSongIdString);
   }
 
   bool isSongIdInSingersList(String singer, String songIdString) {

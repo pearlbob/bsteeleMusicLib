@@ -676,8 +676,21 @@ coerced to reflect the songlist's last modification for that song.
             allSongPerformances.updateFromJsonString(
                 File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
 
+            //  load local songs
             allSongPerformances
                 .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
+
+            {
+              var missingSongs = SplayTreeSet<String>();
+              for (var performance in allSongPerformances.allSongPerformanceHistory) {
+                if (performance.song == null) {
+                  missingSongs.add(performance.songIdAsString);
+                }
+              }
+              for (var s in missingSongs) {
+                logger.i('missing song: $s');
+              }
+            }
 
             Map<Song, int> songCounts = {};
             for (var performance in allSongPerformances.allSongPerformanceHistory) {
@@ -894,8 +907,9 @@ coerced to reflect the songlist's last modification for that song.
         case '-users':
           {
             final Map<String, String> userCorrections = {
-              'pillyweed': 'shari',
-              'Cassandra': 'shari',
+              'pillyweed': 'Shari',
+              'shari': 'Shari',
+              'Cassandra': 'Shari',
             };
             for (Song song in allSongs) {
               var newUser = userCorrections[song.user];
@@ -1270,31 +1284,31 @@ coerced to reflect the songlist's last modification for that song.
     logger.d(SongMetadata.toJson());
   }
 
-  // void _csv() {
-  //   StringBuffer sb = StringBuffer();
-  //   sb.write('Title, Artist, Cover Artist'
-  //       ',User'
-  //       // ',Modified'
-  //       ',Copyright'
-  //       ',Key'
-  //       ',BPM'
-  //       ',Time'
-  //       '\n');
-  //   for (Song song in allSongs) {
-  //     sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
-  //         ',"${song.user}"'
-  //         //  ',"${song.lastModifiedTime??''}"'
-  //         ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
-  //         ',"${song.key}"'
-  //         ',"${song.defaultBpm}"'
-  //         ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
-  //         '\n');
-  //   }
-  //
-  //   //print(sb.toString());
-  //   File writeTo = File(Util.homePath() + '/allSongs.csv');
-  //   writeTo.writeAsStringSync(sb.toString(), flush: true);
-  // }
+// void _csv() {
+//   StringBuffer sb = StringBuffer();
+//   sb.write('Title, Artist, Cover Artist'
+//       ',User'
+//       // ',Modified'
+//       ',Copyright'
+//       ',Key'
+//       ',BPM'
+//       ',Time'
+//       '\n');
+//   for (Song song in allSongs) {
+//     sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
+//         ',"${song.user}"'
+//         //  ',"${song.lastModifiedTime??''}"'
+//         ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
+//         ',"${song.key}"'
+//         ',"${song.defaultBpm}"'
+//         ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
+//         '\n');
+//   }
+//
+//   //print(sb.toString());
+//   File writeTo = File(Util.homePath() + '/allSongs.csv');
+//   writeTo.writeAsStringSync(sb.toString(), flush: true);
+// }
 
   Directory _outputDirectory = Directory.current;
   SplayTreeSet<Song> allSongs = SplayTreeSet();

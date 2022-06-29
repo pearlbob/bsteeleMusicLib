@@ -26,6 +26,10 @@ class SongId implements Comparable<SongId> {
   String toUnderScorelessString() =>
       _underScorelessId ??= _songId.replaceFirst(_prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
 
+  static String asReadableString(String songIdAsString) {
+    return songIdAsString.replaceFirst(_prefix, '').replaceAll('_', ' ').replaceAll(' The', ', The');
+  }
+
   @override
   String toString() {
     return _songId;

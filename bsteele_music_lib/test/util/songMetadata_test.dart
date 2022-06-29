@@ -358,7 +358,7 @@ void main() {
         metadata: [NameValue('genre', 'rock'), NameValue('cj', 'best')]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
         metadata: [NameValue('genre', 'rock'), NameValue('cj', 'ok')]));
-    SongMetadata.set(SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
+    SongMetadata.set(SongIdMetadata(SongId.computeSongId('Boxer, The', 'Simon & Garfunkel', null).songId,
         metadata: [NameValue('cj', 'best')]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
         metadata: [NameValue('christmas', '')]));
@@ -376,7 +376,7 @@ void main() {
     matches = SongMetadata.match(_cjRankingBest);
     expect(matches, isNotNull);
     expect(matches.length, 2);
-    expect(matches.first.id, 'Song_Boxer_The_by_Boxer_The');
+    expect(matches.first.id, 'Song_Boxer_The_by_Simon_Garfunkel');
 
     matches = SongMetadata.match(_rockMatch, from: SongMetadata.match(_christmasMatch));
     expect(matches, isNotNull);
@@ -387,6 +387,10 @@ void main() {
     expect(matches, isNotNull);
     expect(matches.length, 1);
     expect(matches.first.id, 'Song_Hey_Joe_by_Jimi_Hendrix');
+
+    for (var metadata in SongMetadata.idMetadata) {
+      logger.i('${SongId.asReadableString(metadata.id)}');
+    }
   });
 }
 
