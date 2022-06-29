@@ -685,6 +685,10 @@ coerced to reflect the songlist's last modification for that song.
               for (var performance in allSongPerformances.allSongPerformanceHistory) {
                 if (performance.song == null) {
                   missingSongs.add(performance.songIdAsString);
+                  var lowerId = performance.songIdAsString.toLowerCase();
+                  BestMatch bestMatch =
+                      StringSimilarity.findBestMatch(lowerId, allSongPerformances.songMap.keys.toList(growable: false));
+                  logger.i('$lowerId:  ${bestMatch.bestMatch.target}: ${bestMatch.bestMatch.rating}');
                 }
               }
               for (var s in missingSongs) {
