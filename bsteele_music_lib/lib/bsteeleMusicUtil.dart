@@ -710,18 +710,20 @@ coerced to reflect the songlist's last modification for that song.
                 return e1.key.compareTo(e2.key);
               }));
 
-            int count = 0;
-            int? timesSung;
-            for (var entry in sortMapByValue.entries) {
-              count++;
-              if (count >= 10) {
-                if (timesSung == null) {
-                  timesSung = entry.value;
-                } else if (timesSung > entry.value) {
-                  break;
+            {
+              int count = 0;
+              int? timesSung;
+              for (var entry in sortMapByValue.entries) {
+                count++;
+                if (count >= 40) {
+                  if (timesSung == null) {
+                    timesSung = entry.value;
+                  } else if (timesSung > entry.value) {
+                    break;
+                  }
                 }
+                logger.i('$count: ${entry.key}: ${entry.value}');
               }
-              logger.i('${entry.key}: ${entry.value}');
             }
           }
           break;

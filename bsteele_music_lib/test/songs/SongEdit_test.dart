@@ -1540,260 +1540,260 @@ void main() {
   });
 
   test('test edit from edit screen log', () {
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'I:0:2', 'Am/F#', SongBase.entryToUppercase('Cm '));
-    // ts.resultChords('I: V: [Am Am/G Cm FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:2', 'Cm');
-    //
-    // //  from 20211105_184124
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0:3', 'FE', SongBase.entryToUppercase('C '));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE C ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:4', 'C');
-    // //  from 20211105_184126
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE, C ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0:4', 'C', SongBase.entryToUppercase('Cm '));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:5', 'Cm');
-    // //  from 20211105_184128
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0:5', 'Cm', SongBase.entryToUppercase('C7 '));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm C7 ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:6', 'C7');
-    // //  from 20211105_184143
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm C7 ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0:6', 'C7', SongBase.entryToUppercase('D '));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm C7 D ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:7', 'D');
-    // //  from 20211105_184242
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm C7 D ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'C:0:0', 'F', SongBase.entryToUppercase('A '));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE, C Cm C7 D ] x4  I2: [Am Am/G Am/F# FE ] x2  C: A F F C C G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:0', 'A');
-    //
-    // //  from 20211105_235654
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'I:0:0', 'Am', SongBase.entryToUppercase('CCm '));
-    // ts.resultChords(
-    //     'I: V: [CCm Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:0', 'CCm');
-    //
-    // //  from 20211105_235808
-    // ts.startingChords(
-    //     'I: V: [CCm Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'I:0:3', 'FE', SongBase.entryToUppercase('Absus7/G '));
-    // ts.resultChords(
-    //     'I: V: [CCm Am/G Am/F# Absus7/G ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:3', 'Absus7/G');
-    //
-    // //  from 20211105_235921
-    // ts.startingChords(
-    //     'I: V: [CCm Am/G, Am/F# Absus7/G ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0:3', 'Absus7/G', SongBase.entryToUppercase('Cm '));
-    // ts.resultChords(
-    //     'I: V: [CCm Am/G, Am/F# Absus7/G Cm ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:4', 'Cm');
-    // //  from 20211106_000018
-    // ts.startingChords(
-    //     'I: V: [CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'I:0:0', 'CCm', SongBase.entryToUppercase('A '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:0', 'A');
-    // //  from 20211106_000044
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I2:0:3', 'FE', SongBase.entryToUppercase('C7 '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE C7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I2:0:4', 'C7');
-    // //  from 20211106_000047
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I2:0:4', 'C7', SongBase.entryToUppercase('C '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I2:0:5', 'C');
-    // //  from 20211106_000056
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I2:0:5', 'C', SongBase.entryToUppercase('Gm7 '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C Gm7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I2:0:6', 'Gm7');
-    // //  from 20211106_000107
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C Gm7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I2:0:6', 'Gm7', SongBase.entryToUppercase('A5 '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C Gm7 A5 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I2:0:7', 'A5');
-    // //  from 20211106_000148
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'C:0:1', 'F', SongBase.entryToUppercase('Cm '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: F Cm C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:1', 'Cm');
-    // //  from 20211106_000156
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: F Cm C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'C:0:0', 'F', SongBase.entryToUppercase('C7 '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:0', 'C7');
-    // //  from 20211106_000219
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'C:0:7', 'F', SongBase.entryToUppercase('Gb '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:7', 'Gb');
-    // //  from 20211106_000231
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'C:0:7', 'Gb', SongBase.entryToUppercase('X '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb X  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:8', 'X');
-    // //  from 20211106_000231
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'C:0:8', 'X', SongBase.entryToUppercase('X '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:9', 'X');
-    // //  from 20211106_000244
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'C:0:9', 'X', SongBase.entryToUppercase('B '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:10', 'B');
-    // //  from 20211106_000248
-    // ts.startingChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'C:0:10', 'B', SongBase.entryToUppercase('C '));
-    // ts.resultChords(
-    //     'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B C  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:11', 'C');
-    //
-    // //  append a phrase after a repeat
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7'));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4 C7  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:1:0', 'C7');
-    //
-    // //  append a phrase after a repeat
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7 A b c'));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4 C7 A B C  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:1:3', 'C');
-    //
-    // //  append a phrase after a section that ends in a repeat
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7'));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4 C7  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:1:0', 'C7');
-    //
-    // //  append a phrase after a section that ends in a repeat
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7 A b c9'));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4 C7 A B C9  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:1:3', 'C9');
-    //
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'I:0:1', 'Am/G', SongBase.entryToUppercase('C '));
-    // ts.resultChords('I: V: [Am C Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:0:1', 'C');
-    //
-    // //  from 20211108_055955
-    // ts.startingChords(
-    //     'I: V: C [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'I:1:0', 'Am', SongBase.entryToUppercase('F '));
-    // ts.resultChords(
-    //     'I: V: C [F Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'I:1:0', 'F');
-    //
-    // //  from 20211118_182608
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.replace, 'O:0:3', 'Bb,', SongBase.entryToUppercase('Bb,'));
-    // ts.resultChords('I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'O:0:3', 'Bb,');
-    //
-    // //  insert measure at start of repeat at start of section
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'V:0:0', 'Am', SongBase.entryToUppercase('D'));
-    // ts.resultChords(
-    //     'I: V: [D Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'V:0:0', 'D');
-    //
-    // //  insert measure before repeat at start of section
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'V:', 'V: [Am Am/G Am/F# FE ] x4', SongBase.entryToUppercase('D'));
-    // ts.resultChords(
-    //     'I: V: D [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'V:0:0', 'D');
-    //
-    // //  insert measure before repeat at start of section
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'V:0', '[Am Am/G Am/F# FE ] x4', SongBase.entryToUppercase('D'));
-    // ts.resultChords(
-    //     'I: V: D [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'V:0:0', 'D');
-    //
-    // //  insert measure before phrase at start of section
-    // ts.startingChords('I: V: Am Am/G Am/F# FE I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'V:0', 'Am Am/G Am/F# FE ', SongBase.entryToUppercase('D'));
-    // ts.resultChords('I: V: D Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'V:0:0', 'D');
-    //
-    // //  insert measure before phrase at start of section
-    // ts.startingChords('I: V: Am Am/G Am/F# FE I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.insert, 'V:0', 'Am Am/G Am/F# FE ', SongBase.entryToUppercase('D'));
-    // ts.resultChords('I: V: D Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'V:0:0', 'D');
-    //
-    // //  add new row
-    // ts.myA.setChordSectionLocationMeasureEndOfRow(ts.myA.currentChordSectionLocation, true);
-    // expect(
-    //     ts.myA.toMarkup().trim(),
-    //     TestSong.deMusic(
-    //             'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ')!
-    //         .trim());
-    //
-    // //  from 20211123_004759
-    // ts.startingChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.edit(MeasureEditType.append, 'C:0:0', 'F', SongBase.entryToUppercase('X '));
-    // ts.resultChords(
-    //     'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F X F C C, G G F F  O: Dm C B Bb, A  ');
-    // ts.post(MeasureEditType.append, 'C:0:1', 'X');
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'I:0:2', 'Am/F#', SongBase.entryToUppercase('Cm '));
+    ts.resultChords('I: V: [Am Am/G Cm FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:2', 'Cm');
+
+    //  from 20211105_184124
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0:3', 'FE', SongBase.entryToUppercase('C '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE C ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:4', 'C');
+    //  from 20211105_184126
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE, C ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0:4', 'C', SongBase.entryToUppercase('Cm '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:5', 'Cm');
+    //  from 20211105_184128
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0:5', 'Cm', SongBase.entryToUppercase('C7 '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm C7 ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:6', 'C7');
+    //  from 20211105_184143
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm C7 ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0:6', 'C7', SongBase.entryToUppercase('D '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm C7 D ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:7', 'D');
+    //  from 20211105_184242
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm C7 D ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'C:0:0', 'F', SongBase.entryToUppercase('A '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE, C Cm C7 D ] x4  I2: [Am Am/G Am/F# FE ] x2  C: A F F C C G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:0', 'A');
+
+    //  from 20211105_235654
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'I:0:0', 'Am', SongBase.entryToUppercase('CCm '));
+    ts.resultChords(
+        'I: V: [CCm Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:0', 'CCm');
+
+    //  from 20211105_235808
+    ts.startingChords(
+        'I: V: [CCm Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'I:0:3', 'FE', SongBase.entryToUppercase('Absus7/G '));
+    ts.resultChords(
+        'I: V: [CCm Am/G Am/F# Absus7/G ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:3', 'Absus7/G');
+
+    //  from 20211105_235921
+    ts.startingChords(
+        'I: V: [CCm Am/G, Am/F# Absus7/G ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0:3', 'Absus7/G', SongBase.entryToUppercase('Cm '));
+    ts.resultChords(
+        'I: V: [CCm Am/G, Am/F# Absus7/G Cm ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:4', 'Cm');
+    //  from 20211106_000018
+    ts.startingChords(
+        'I: V: [CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'I:0:0', 'CCm', SongBase.entryToUppercase('A '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:0', 'A');
+    //  from 20211106_000044
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I2:0:3', 'FE', SongBase.entryToUppercase('C7 '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE C7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I2:0:4', 'C7');
+    //  from 20211106_000047
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I2:0:4', 'C7', SongBase.entryToUppercase('C '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I2:0:5', 'C');
+    //  from 20211106_000056
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I2:0:5', 'C', SongBase.entryToUppercase('Gm7 '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C Gm7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I2:0:6', 'Gm7');
+    //  from 20211106_000107
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C Gm7 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I2:0:6', 'Gm7', SongBase.entryToUppercase('A5 '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/G Am/F# FE, C7 C Gm7 A5 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I2:0:7', 'A5');
+    //  from 20211106_000148
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'C:0:1', 'F', SongBase.entryToUppercase('Cm '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: F Cm C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:1', 'Cm');
+    //  from 20211106_000156
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: F Cm C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'C:0:0', 'F', SongBase.entryToUppercase('C7 '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:0', 'C7');
+    //  from 20211106_000219
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'C:0:7', 'F', SongBase.entryToUppercase('Gb '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:7', 'Gb');
+    //  from 20211106_000231
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'C:0:7', 'Gb', SongBase.entryToUppercase('X '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb X  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:8', 'X');
+    //  from 20211106_000231
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'C:0:8', 'X', SongBase.entryToUppercase('X '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:9', 'X');
+    //  from 20211106_000244
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'C:0:9', 'X', SongBase.entryToUppercase('B '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:10', 'B');
+    //  from 20211106_000248
+    ts.startingChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'C:0:10', 'B', SongBase.entryToUppercase('C '));
+    ts.resultChords(
+        'I: V: [A CCm Am/G, Am/F# Absus7/G Cm ] x2  I2: [Am Am/F# FE, C7 C Gm7 A5 ] x2  C: C7 F Cm C, G G F Gb, X X B C  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:11', 'C');
+
+    //  append a phrase after a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'C7');
+
+    //  append a phrase after a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7 A b c'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7 A B C  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:3', 'C');
+
+    //  append a phrase after a section that ends in a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'C7');
+
+    //  append a phrase after a section that ends in a repeat
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'I:', 'I: [Am Am/G Am/F# FE ] x4 ', SongBase.entryToUppercase('C7 A b c9'));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4 C7 A B C9  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:3', 'C9');
+
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'I:0:1', 'Am/G', SongBase.entryToUppercase('C '));
+    ts.resultChords('I: V: [Am C Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:0:1', 'C');
+
+    //  from 20211108_055955
+    ts.startingChords(
+        'I: V: C [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'I:1:0', 'Am', SongBase.entryToUppercase('F '));
+    ts.resultChords(
+        'I: V: C [F Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'I:1:0', 'F');
+
+    //  from 20211118_182608
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.replace, 'O:0:3', 'Bb,', SongBase.entryToUppercase('Bb,'));
+    ts.resultChords('I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'O:0:3', 'Bb,');
+
+    //  insert measure at start of repeat at start of section
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0:0', 'Am', SongBase.entryToUppercase('D'));
+    ts.resultChords(
+        'I: V: [D Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before repeat at start of section
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:', 'V: [Am Am/G Am/F# FE ] x4', SongBase.entryToUppercase('D'));
+    ts.resultChords(
+        'I: V: D [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before repeat at start of section
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0', '[Am Am/G Am/F# FE ] x4', SongBase.entryToUppercase('D'));
+    ts.resultChords(
+        'I: V: D [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before phrase at start of section
+    ts.startingChords('I: V: Am Am/G Am/F# FE I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0', 'Am Am/G Am/F# FE ', SongBase.entryToUppercase('D'));
+    ts.resultChords('I: V: D Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  insert measure before phrase at start of section
+    ts.startingChords('I: V: Am Am/G Am/F# FE I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.insert, 'V:0', 'Am Am/G Am/F# FE ', SongBase.entryToUppercase('D'));
+    ts.resultChords('I: V: D Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'V:0:0', 'D');
+
+    //  add new row
+    ts.myA.setChordSectionLocationMeasureEndOfRow(ts.myA.currentChordSectionLocation, true);
+    expect(
+        ts.myA.toMarkup().trim(),
+        TestSong.deMusic(
+                'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ')!
+            .trim());
+
+    //  from 20211123_004759
+    ts.startingChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.edit(MeasureEditType.append, 'C:0:0', 'F', SongBase.entryToUppercase('X '));
+    ts.resultChords(
+        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F X F C C, G G F F  O: Dm C B Bb, A  ');
+    ts.post(MeasureEditType.append, 'C:0:1', 'X');
 
     //  from 20211123_155557
     ts.startingChords(
