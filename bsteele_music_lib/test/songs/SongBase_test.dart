@@ -627,7 +627,7 @@ void main() {
                 break;
               case 1:
               case 2:
-              measure = node as Measure;
+                measure = node as Measure;
                 expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.D);
                 break;
               case 3:
@@ -3274,6 +3274,68 @@ v:
           expect(line.trim().isNotEmpty, isTrue);
         }
       }
+    }
+  });
+
+  test('test ChordSectionGridData toString()', () {
+    int beatsPerBar = 4;
+    int bpm = 106;
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
+
+      var grid = a.chordSectionGrid;
+      // for (int r = 0; r < grid.getRowCount(); r++) {
+      //   var row = grid.getRow(r);
+      //   for (int c = 0; c < row!.length; c++) {
+      //     var data = grid.get(r, c);
+      //     logger.i('expect(grid.get($r,$c)?.toMarkup(), \'${data?.toMarkup() ?? 'isNull'}\');');  //  almost
+      //   }
+      // }
+
+      expect(grid.get(0, 0)?.toMarkup(), 'I:');
+      expect(grid.get(0, 1)?.toMarkup(), 'A');
+      expect(grid.get(0, 2)?.toMarkup(), 'B');
+      expect(grid.get(0, 3)?.toMarkup(), 'C');
+      expect(grid.get(0, 4)?.toMarkup(), 'D');
+      expect(grid.get(0, 5)?.toMarkup(), ']');
+      expect(grid.get(0, 6)?.toMarkup(), 'x4');
+      expect(grid.get(1, 0)?.toMarkup(), 'V:');
+      expect(grid.get(1, 1)?.toMarkup(), 'G');
+      expect(grid.get(1, 2)?.toMarkup(), 'G');
+      expect(grid.get(1, 3)?.toMarkup(), 'G');
+      expect(grid.get(1, 4)?.toMarkup(), 'G,');
+      expect(grid.get(2, 0)?.toMarkup(), isNull);
+      expect(grid.get(2, 1)?.toMarkup(), 'C');
+      expect(grid.get(2, 2)?.toMarkup(), 'C');
+      expect(grid.get(2, 3)?.toMarkup(), 'G');
+      expect(grid.get(2, 4)?.toMarkup(), 'G');
+      expect(grid.get(3, 0)?.toMarkup(), 'O:');
+      expect(grid.get(3, 1)?.toMarkup(), 'C');
+      expect(grid.get(3, 2)?.toMarkup(), 'C');
+      expect(grid.get(3, 3)?.toMarkup(), 'G');
+      expect(grid.get(3, 4)?.toMarkup(), 'G,');
+      expect(grid.get(3, 5)?.toMarkup(), '⎤');
+      expect(grid.get(4, 0)?.toMarkup(), isNull);
+      expect(grid.get(4, 1)?.toMarkup(), 'E');
+      expect(grid.get(4, 2)?.toMarkup(), 'F');
+      expect(grid.get(4, 3)?.toMarkup(), 'G');
+      expect(grid.get(4, 4)?.toMarkup(), 'E');
+      expect(grid.get(4, 5)?.toMarkup(), '⎦');
+      expect(grid.get(4, 6)?.toMarkup(), 'x3');
+      expect(grid.get(5, 0)?.toMarkup(), isNull);
+      expect(grid.get(5, 1)?.toMarkup(), 'A');
+      expect(grid.get(5, 2)?.toMarkup(), 'B');
+      expect(grid.get(5, 3)?.toMarkup(), 'C');
     }
   });
 }

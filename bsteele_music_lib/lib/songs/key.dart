@@ -513,6 +513,25 @@ class Key implements Comparable<Key> {
     return ret;
   }
 
+  /// Return the scale note offset by the given half steps in the accidental required by this key.
+  ScaleNoteEnum3 getScaleNoteEnum3ByHalfStep(int halfSteps) {
+    ScaleNoteEnum3 ret = _getScaleNoteEnum3ByHalfStepNoAdjustment(halfSteps);
+    //  deal with exceptions at +-6
+    if (_keyValue == 6 && ret == ScaleNoteEnum3.F) {
+      return ScaleNoteEnum3.Es;
+    } else if (_keyValue == -6 && ret == ScaleNoteEnum3.B) {
+      return ScaleNoteEnum3.Cb;
+    }
+    return ret;
+  }
+
+  ScaleNoteEnum3 _getScaleNoteEnum3ByHalfStepNoAdjustment(int halfSteps) {
+    halfSteps = halfSteps % _halfStepsPerOctave;
+    ScaleNoteEnum3 ret =
+        isSharp ? ScaleNoteEnum3.getSharpByHalfStep(halfSteps) : ScaleNoteEnum3.getFlatByHalfStep(halfSteps);
+    return ret;
+  }
+
   /// Default key is C.
   static Key getDefault() {
     return Key.C;

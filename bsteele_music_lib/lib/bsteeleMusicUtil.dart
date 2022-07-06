@@ -52,6 +52,7 @@ arguments:
 -cjread {file)      add song metadata
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
+-expand {file}      expand a songlyrics list file to the output directory
 -f                  force file writes over existing files
 -h                  this help message
 -html               HTML song list
@@ -70,7 +71,7 @@ arguments:
 -V                  very verbose output
 -w {file}           write the utility's allSongs list to the given file
 -words              show word statistics
--x {file}           expand a songlyrics list file to the output directory
+-x                  experimental
 -xmas               filter for christmas songs
 -meta               print a metadata entries
 
@@ -111,7 +112,7 @@ coerced to reflect the songlist's last modification for that song.
       var arg = args[argCount];
       switch (arg) {
         case '-a':
-          //  insist there is another arg
+        //  insist there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             _help();
@@ -293,6 +294,98 @@ coerced to reflect the songlist's last modification for that song.
           //     }
           //   }
           // }
+          break;
+
+        case '-expand':
+          //  insist there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing file path for -x');
+            _help();
+            exit(-1);
+          }
+
+          argCount++;
+          _file = File(args[argCount]);
+          if (_file != null) {
+            if (_verbose) print('input file path: ${_file.toString()}');
+            if (!(await _file!.exists())) {
+              logger.d('input file path: ${_file.toString()}'
+                      ' is missing' +
+                  (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
+
+              exit(-1);
+            }
+
+            if (_verbose) {
+              logger.d('input file: ${_file.toString()}, file size: ${await _file!.length()}');
+            }
+
+            List<Song>? songs;
+            if (_file!.path.endsWith('.zip')) {
+              // Read the Zip file from disk.
+              final bytes = await _file!.readAsBytes();
+
+              // Decode the Zip file
+              final archive = ZipDecoder().decodeBytes(bytes);
+
+              // Extract the contents of the Zip archive
+              for (final file in archive) {
+                if (file.isFile) {
+                  final data = file.content as List<int>;
+                  songs = Song.songListFromJson(utf8.decode(data));
+                }
+              }
+            } else {
+              songs = Song.songListFromJson(_file!.readAsStringSync());
+            }
+
+            if (songs == null || songs.isEmpty) {
+              logger.e('didn\'t find songs in ${_file.toString()}');
+              exit(-1);
+            }
+
+            for (Song song in songs) {
+              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime);
+
+              //  used to spread the songs thinner than the maximum 1000 files
+              //  per directory limit in github.com
+              Directory songDir;
+              {
+                String s = song.getTitle().replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
+                songDir = Directory(_outputDirectory.path + '/' + s);
+              }
+              songDir.createSync();
+
+              File writeTo = File(songDir.path + '/' + song.songId.toString() + '.songlyrics');
+              if (_verbose) logger.d('\t' + writeTo.path);
+              String fileAsJson = song.toJsonAsFile();
+              if (writeTo.existsSync()) {
+                String fileAsRead = writeTo.readAsStringSync();
+                if (fileAsJson != fileAsRead) {
+                  writeTo.writeAsStringSync(fileAsJson, flush: true);
+                  if (_verbose) {
+                    logger.i(
+                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                  }
+                } else {
+                  if (_veryVerbose) {
+                    logger.i(
+                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                    logger.i('\tidentical');
+                  }
+                }
+              } else {
+                if (_verbose) {
+                  logger.i(
+                      '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                }
+                writeTo.writeAsStringSync(fileAsJson, flush: true);
+              }
+
+              //  force the modification date
+              await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
+            }
+          }
           break;
 
         case '-f':
@@ -480,7 +573,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-o':
-          //  assert there is another arg
+        //  assert there is another arg
           if (argCount < args.length - 1) {
             argCount++;
             _outputDirectory = Directory(args[argCount]);
@@ -569,7 +662,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             //  workaround for early bad singer entries
-            {
+                {
               //  most recent performances, less than a year
               final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
               SplayTreeSet<SongPerformance> performanceDelete =
@@ -627,7 +720,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-perfupdate':
-          //  assert there is another arg
+        //  assert there is another arg
           if (argCount < args.length - 1) {
             argCount++;
             var file = File(args[argCount]);
@@ -825,7 +918,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-w':
-          //  assert there is another arg
+        //  assert there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             exit(-1);
@@ -882,7 +975,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-url':
-          //  assert there is another arg
+        //  assert there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing file path for -url');
             _help();
@@ -914,6 +1007,7 @@ coerced to reflect the songlist's last modification for that song.
           {
             final Map<String, String> userCorrections = {
               'pillyweed': 'Shari',
+              'Pillyweed': 'Shari',
               'shari': 'Shari',
               'Cassandra': 'Shari',
             };
@@ -931,102 +1025,27 @@ coerced to reflect the songlist's last modification for that song.
               var count = userMap[song.user];
               userMap[song.user] = count == null ? 1 : count + 1;
             }
-            for (var user in SplayTreeSet<String>()..addAll(userMap.keys)) {
+            for (var user in SplayTreeSet<String>((key1, key2) {
+              return -(userMap[key1] ?? 0).compareTo(userMap[key2] ?? 0);
+            })
+              ..addAll(userMap.keys)) {
               logger.i('$user: ${userMap[user]}');
             }
           }
           break;
 
         case '-x':
-          //  insist there is another arg
-          if (argCount >= args.length - 1) {
-            logger.e('missing file path for -x');
-            _help();
-            exit(-1);
+          var song = allSongs.firstWhere((song) => song.title.contains('25'));
+          logger.i('${song.title}, ${song.artist}');
+          {
+            var sb = StringBuffer('Sections: ');
+            for (var section in song.lyricSections) {
+              sb.write('${section.sectionVersion.toString().replaceFirst(':', '')}, ');
+            }
+            logger.i(sb.toString());
           }
 
-          argCount++;
-          _file = File(args[argCount]);
-          if (_file != null) {
-            if (_verbose) print('input file path: ${_file.toString()}');
-            if (!(await _file!.exists())) {
-              logger.d('input file path: ${_file.toString()}'
-                      ' is missing' +
-                  (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
-
-              exit(-1);
-            }
-
-            if (_verbose) {
-              logger.d('input file: ${_file.toString()}, file size: ${await _file!.length()}');
-            }
-
-            List<Song>? songs;
-            if (_file!.path.endsWith('.zip')) {
-              // Read the Zip file from disk.
-              final bytes = await _file!.readAsBytes();
-
-              // Decode the Zip file
-              final archive = ZipDecoder().decodeBytes(bytes);
-
-              // Extract the contents of the Zip archive
-              for (final file in archive) {
-                if (file.isFile) {
-                  final data = file.content as List<int>;
-                  songs = Song.songListFromJson(utf8.decode(data));
-                }
-              }
-            } else {
-              songs = Song.songListFromJson(_file!.readAsStringSync());
-            }
-
-            if (songs == null || songs.isEmpty) {
-              logger.e('didn\'t find songs in ${_file.toString()}');
-              exit(-1);
-            }
-
-            for (Song song in songs) {
-              DateTime fileTime = DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime);
-
-              //  used to spread the songs thinner than the maximum 1000 files
-              //  per directory limit in github.com
-              Directory songDir;
-              {
-                String s = song.getTitle().replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
-                songDir = Directory(_outputDirectory.path + '/' + s);
-              }
-              songDir.createSync();
-
-              File writeTo = File(songDir.path + '/' + song.songId.toString() + '.songlyrics');
-              if (_verbose) logger.d('\t' + writeTo.path);
-              String fileAsJson = song.toJsonAsFile();
-              if (writeTo.existsSync()) {
-                String fileAsRead = writeTo.readAsStringSync();
-                if (fileAsJson != fileAsRead) {
-                  writeTo.writeAsStringSync(fileAsJson, flush: true);
-                  if (_verbose) {
-                    logger.i(
-                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
-                  }
-                } else {
-                  if (_veryVerbose) {
-                    logger.i(
-                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
-                    logger.i('\tidentical');
-                  }
-                }
-              } else {
-                if (_verbose) {
-                  logger.i(
-                      '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
-                }
-                writeTo.writeAsStringSync(fileAsJson, flush: true);
-              }
-
-              //  force the modification date
-              await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
-            }
-          }
+          logger.i(song.chordsToJsonTransportString());
           break;
 
         case '-xmas':

@@ -361,6 +361,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   ChordSectionLocationMarker _marker = ChordSectionLocationMarker.none;
   String? id;
 
+  int get repeats => _repeats ?? 0;
   int? _repeats;
 
   static final ChordSectionLocation defaultInstance = ChordSectionLocation(SectionVersion.defaultInstance);

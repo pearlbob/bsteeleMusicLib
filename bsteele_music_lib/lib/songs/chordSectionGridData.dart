@@ -1,6 +1,7 @@
 import 'chordSection.dart';
 import 'chordSectionLocation.dart';
 import 'measure.dart';
+import 'measureRepeatExtension.dart';
 import 'phrase.dart';
 import 'sectionVersion.dart';
 
@@ -43,6 +44,22 @@ class ChordSectionGridData {
   bool get isMarker => chordSectionLocation.isMarker;
 
   SectionVersion get sectionVersion => chordSection.sectionVersion;
+
+  String toMarkup() {
+    if (isSection) {
+      return chordSectionLocation.sectionVersion.toString();
+    }
+    if (isMeasure) {
+      return measure!.toMarkup();
+    }
+    if (isMarker) {
+      return MeasureRepeatExtension.get(chordSectionLocation.marker).toString();
+    }
+    if (isRepeat) {
+      return 'x${chordSectionLocation.repeats}';
+    }
+    return 'fixme';
+  }
 
   @override
   String toString() {

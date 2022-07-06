@@ -140,12 +140,13 @@ class ScaleNote implements Comparable<ScaleNote> {
       case ScaleNoteEnum.E:
       case ScaleNoteEnum.F:
       case ScaleNoteEnum.G:
-      //mod += MusicConstants.naturalChar;  //  natural sign on scale is overkill!
+        //mod += MusicConstants.naturalChar;  //  natural sign on scale is overkill!
         _isNatural = true;
         _accidental = Accidental.natural;
         break;
       case ScaleNoteEnum.X:
         _isSilent = true;
+        _accidental = Accidental.natural; //  shouldn't be used, set just it's non-null
         break;
       case ScaleNoteEnum.As:
       case ScaleNoteEnum.Bs:
@@ -437,6 +438,181 @@ class ScaleNote implements Comparable<ScaleNote> {
 
   static late final HashMap<ScaleNoteEnum, ScaleNote> _hashmap = HashMap.identity();
   static late final Map<String, ScaleNote> _parseMap = {};
+}
+
+enum ScaleNoteEnum3 implements Comparable<ScaleNoteEnum3> {
+  Ab(11, 'Ab', 'A♭', false, true, scaleNumber: 0, isSilent: false),
+  A(0, 'A', 'A', false, false, scaleNumber: 0, isSilent: false),
+  As(1, 'A#', 'A♯', true, false, scaleNumber: 0, isSilent: false),
+  Bb(1, 'Bb', 'B♭', false, true, scaleNumber: 1, isSilent: false),
+  B(2, 'B', 'B', false, false, scaleNumber: 1, isSilent: false),
+  Bs(3, 'B#', 'B♯', true, false, scaleNumber: 1, isSilent: false), //   for completeness of piano expression
+  Cb(2, 'Cb', 'C♭', false, true, scaleNumber: 2, isSilent: false), //  used for Gb (-6) key
+  C(3, 'C', 'C', false, false, scaleNumber: 2, isSilent: false),
+  Cs(4, 'C#', 'C♯', true, false, scaleNumber: 2, isSilent: false),
+  Db(4, 'Db', 'D♭', false, true, scaleNumber: 3, isSilent: false),
+  D(5, 'D', 'D', false, false, scaleNumber: 3, isSilent: false),
+  Ds(6, 'D#', 'D♯', true, false, scaleNumber: 3, isSilent: false),
+  Eb(6, 'Eb', 'E♭', false, true, scaleNumber: 4, isSilent: false),
+  E(7, 'E', 'E', false, false, scaleNumber: 4, isSilent: false),
+  Es(8, 'E#', 'E♯', true, false, scaleNumber: 4, isSilent: false), //  used for Fs (+6) key
+  Fb(7, 'Fb', 'F♭', false, true, scaleNumber: 5, isSilent: false), //   for completeness of piano expression
+  F(8, 'F', 'F', false, false, scaleNumber: 5, isSilent: false),
+  Fs(9, 'F#', 'F♯', true, false, scaleNumber: 5, isSilent: false),
+  Gb(9, 'Gb', 'G♭', false, true, scaleNumber: 6, isSilent: false),
+  G(10, 'G', 'G', false, false, scaleNumber: 6, isSilent: false),
+  Gs(11, 'G#', 'G♯', true, false, scaleNumber: 6, isSilent: false),
+  X(0, 'X', 'X', false, false, scaleNumber: -1, isSilent: true); //  No scale note!  Used to avoid testing for null
+
+  /// Return the alias for this note.
+  /// If the note is sharp, return its matching flat equivalent.
+  /// If the note is flat, return its matching sharp equivalent.
+  ScaleNoteEnum3 get alias => (isSharp ? asFlat() : (isFlat ? asSharp() : this));
+
+  @override
+  String toString() {
+    return _scaleNoteString;
+  }
+
+  String toMarkup() {
+    return _markup;
+  }
+
+  /// A utility to map the sharp scale notes to their half step offset.
+  /// Should use the scale notes from the key under normal situations.
+  ///
+  /// @param step the number of half steps from A
+  /// @return the sharp scale note
+  static ScaleNoteEnum3 getSharpByHalfStep(int step) {
+    return _sharps[step % MusicConstants.halfStepsPerOctave];
+  }
+
+  /// A utility to map the flat scale notes to their half step offset.
+  /// Should use the scale notes from the key under normal situations.
+  ///
+  /// @param step the number of half steps from A
+  /// @return the sharp scale note
+  static ScaleNoteEnum3 getFlatByHalfStep(int step) {
+    return _flats[step % MusicConstants.halfStepsPerOctave];
+  }
+
+  ScaleNoteEnum3 asSharp({bool value = true}) {
+    return value ? _sharps[_halfStep] : _flats[_halfStep];
+  }
+
+  ScaleNoteEnum3 asFlat({bool value = true}) {
+    return value ? _flats[_halfStep] : _sharps[_halfStep];
+  }
+
+  //  all sharps
+  static final _sharps = [
+    ScaleNoteEnum3.A,
+    ScaleNoteEnum3.As,
+    ScaleNoteEnum3.B,
+    ScaleNoteEnum3.C,
+    ScaleNoteEnum3.Cs,
+    ScaleNoteEnum3.D,
+    ScaleNoteEnum3.Ds,
+    ScaleNoteEnum3.E,
+    ScaleNoteEnum3.F,
+    ScaleNoteEnum3.Fs,
+    ScaleNoteEnum3.G,
+    ScaleNoteEnum3.Gs
+  ];
+
+  //  all flats
+  static final _flats = [
+    ScaleNoteEnum3.A,
+    ScaleNoteEnum3.Bb,
+    ScaleNoteEnum3.B,
+    ScaleNoteEnum3.C,
+    ScaleNoteEnum3.Db,
+    ScaleNoteEnum3.D,
+    ScaleNoteEnum3.Eb,
+    ScaleNoteEnum3.E,
+    ScaleNoteEnum3.F,
+    ScaleNoteEnum3.Gb,
+    ScaleNoteEnum3.G,
+    ScaleNoteEnum3.Ab
+  ];
+
+  static ScaleNoteEnum3? parseString(String s) {
+    return parse(MarkedString(s));
+  }
+
+  /// Return the ScaleNote represented by the given string.
+  //  Is case sensitive.
+  static ScaleNoteEnum3? parse(MarkedString markedString) {
+    if (markedString.isEmpty) {
+      throw ArgumentError('no data to parse');
+    }
+
+    int c = markedString.firstUnit();
+    if (c < 'A'.codeUnitAt(0) || c > 'G'.codeUnitAt(0)) {
+      if (c == 'X'.codeUnitAt(0)) {
+        markedString.pop();
+        return ScaleNoteEnum3.X;
+      }
+      throw ArgumentError('scale note must start with A to G');
+    }
+
+    StringBuffer stringBuffer = StringBuffer();
+    stringBuffer.write(markedString.pop());
+
+    //  look for modifier
+    if (markedString.isNotEmpty) {
+      switch (markedString.first()) {
+        case 'b':
+        case MusicConstants.flatChar:
+          stringBuffer.write('b');
+          markedString.pop();
+          break;
+
+        case '#':
+        case MusicConstants.sharpChar:
+          stringBuffer.write('s');
+          markedString.pop();
+          break;
+      }
+    }
+
+    var parsedName = stringBuffer.toString();
+    return ScaleNoteEnum3.values.firstWhere((v) => v.name == parsedName);
+  }
+
+  /// Transpose this key to the given key with the given steps offset.
+  ScaleNoteEnum3 transpose(Key key, int steps) {
+    if (this == ScaleNoteEnum3.X) {
+      return ScaleNoteEnum3.X;
+    }
+    return key.getScaleNoteEnum3ByHalfStep(halfStep + steps);
+  }
+
+  /// Return the scale note class instance of the given string.
+  static ScaleNoteEnum3? valueOf(String name) {
+    return parseString(name); //  fixme: efficiency
+  }
+
+  @override
+  int compareTo(ScaleNoteEnum3 other) {
+    return index - other.index;
+  }
+
+  const ScaleNoteEnum3(this._halfStep, this._markup, this._scaleNoteString, this.isSharp, this.isFlat,
+      {this.scaleNumber = -1, this.isSilent = false})
+      : isNatural = !isSharp && !isFlat && !isSilent,
+        accidental = (isSharp ? Accidental.sharp : (isFlat ? Accidental.flat : Accidental.natural));
+
+  int get halfStep => _halfStep;
+  final int _halfStep;
+  final String _markup;
+  final String _scaleNoteString;
+  final bool isSilent;
+  final bool isSharp;
+  final bool isFlat;
+  final bool isNatural;
+  final Accidental accidental;
+  final int scaleNumber;
 }
 
 /// ScaleNoteIntervals

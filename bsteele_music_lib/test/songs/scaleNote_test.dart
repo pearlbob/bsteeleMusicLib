@@ -124,4 +124,45 @@ void main() {
     }
     logger.i('maxError: $maxError');
   });
+
+  /// temporary proof of software transition
+  test('test enum extensions', () {
+    Logger.level = Level.info;
+
+    //  test old ScaleNote against ScaleNoteEnum3
+    for (var sn in ScaleNote.values) {
+      logger.i('${sn.getEnum().name}(${sn.halfStep}, \'${sn.toMarkup()}\', \'$sn\','
+          ' ${sn.isSharp}, ${sn.isFlat},'
+          ' alias: ${sn.alias.getEnum().name}, '
+          ' scaleNumber: ${sn.scaleNumber},'
+          ' isSilent: ${sn.isSilent} ),'
+          //
+          );
+      var sn3 = ScaleNoteEnum3.parseString(sn.toMarkup());
+      expect(sn3, isNotNull);
+      sn3 = sn3!;
+      expect(sn3.toMarkup(), sn.toMarkup());
+      expect(sn3.isFlat, sn.isFlat);
+      expect(sn3.isSharp, sn.isSharp);
+      expect(sn3.isNatural, sn.isNatural);
+      expect(sn3.isSilent, sn.isSilent);
+      expect(sn3.accidental, sn.accidental);
+      expect(sn3.halfStep, sn.halfStep);
+      expect(sn3.asFlat().toMarkup(), sn.asFlat().toMarkup());
+      expect(sn3.asSharp().toMarkup(), sn.asSharp().toMarkup());
+      if (sn3 != ScaleNoteEnum3.Bs &&
+          sn3 != ScaleNoteEnum3.Cb &&
+          sn3 != ScaleNoteEnum3.Es &&
+          sn3 != ScaleNoteEnum3.Fb) {
+        expect(sn3.alias.toMarkup(), sn.alias.toMarkup());
+      }
+
+      for (var snOther in ScaleNote.values) {
+        var sn3Other = ScaleNoteEnum3.parseString(snOther.toMarkup());
+        expect(sn3.compareTo(sn3Other!), sn.compareTo(snOther));
+      }
+
+      expect(ScaleNoteEnum3.valueOf(sn.toMarkup())!.toMarkup(), ScaleNote.valueOf(sn.getEnum().name)!.toMarkup());
+    }
+  });
 }
