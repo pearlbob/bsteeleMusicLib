@@ -4,6 +4,7 @@ import 'measure.dart';
 import 'measureRepeatExtension.dart';
 import 'phrase.dart';
 import 'sectionVersion.dart';
+import 'key.dart' as music_key;
 
 class ChordSectionGridData {
   ChordSectionGridData(this.chordSectionLocation, this.chordSection, this.phrase, this.measure) {
@@ -45,12 +46,12 @@ class ChordSectionGridData {
 
   SectionVersion get sectionVersion => chordSection.sectionVersion;
 
-  String toMarkup() {
+  String transpose(final music_key.Key key, final int halfSteps) {
     if (isSection) {
       return chordSectionLocation.sectionVersion.toString();
     }
     if (isMeasure) {
-      return measure!.toMarkup();
+      return measure!.transpose(key, halfSteps);
     }
     if (isMarker) {
       return MeasureRepeatExtension.get(chordSectionLocation.marker).toString();
