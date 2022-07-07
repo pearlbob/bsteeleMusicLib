@@ -188,17 +188,17 @@ void main() {
       measures = phrases[0].measures;
       expect(measures, isNotNull);
       expect(8, measures.length);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.B), measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.C), measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.D), measures, 3, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 4, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Bb), measures, 4, 1);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.B, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 4, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Bb, measures, 4, 1);
       checkMeasureNodesSlashScaleNoteByMeasure(null, measures, 4, 0);
-      checkMeasureNodesSlashScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Gs), measures, 4, 1);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 5, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Eb), measures, 6, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.C), measures, 7, 0);
+      checkMeasureNodesSlashScaleNoteByMeasure(ScaleNote.Gs, measures, 4, 1);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 5, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Eb, measures, 6, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 7, 0);
     }
     {
       ChordSection chordSection = ChordSection.parseString(
@@ -213,14 +213,14 @@ void main() {
       expect(1, phrases.length);
       measures = phrases[0].measures;
       expect(8, measures.length);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 3, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 4, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 5, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 6, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.G), measures, 7, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 4, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 5, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 6, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.G, measures, 7, 0);
     }
     {
       ChordSection chordSection = ChordSection.parseString(
@@ -235,14 +235,14 @@ void main() {
       measures = phrases[0].measures;
       expect(measures, isNotNull);
       expect(8, measures.length);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 3, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 4, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 5, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.Ab), measures, 6, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.X), measures, 7, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 4, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 5, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 6, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.X, measures, 7, 0);
 
       Measure measure = measures[3];
       expect(1, measure.chords.length);
@@ -258,10 +258,10 @@ void main() {
       measures = phrases[0].measures;
       expect(4, measures.length);
 
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.B), measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.C), measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.D), measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.B, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 3, 0);
 
       phrase = chordSection.phrases[1]; //    the repeat
       expect(16, phrase.getTotalMoments());
@@ -270,11 +270,11 @@ void main() {
 
       expect(4, measures.length);
       expect(2, measures[0].chords.length);
-      expect(ScaleNote.get(ScaleNoteEnum.Ab), measures[0].chords[0].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.Bb), measures[0].chords[1].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.A), measures[1].chords[0].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.Eb), measures[2].chords[0].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.C), measures[3].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.Ab, measures[0].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.Bb, measures[0].chords[1].scaleChord.scaleNote);
+      expect(ScaleNote.A, measures[1].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.Eb, measures[2].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.C, measures[3].chords[0].scaleChord.scaleNote);
       expect(4 + 4 * 4, chordSection.getTotalMoments());
     }
     {
@@ -294,10 +294,10 @@ void main() {
       expect(4 * 4, phrase.getTotalMoments());
       measures = phrases[0].measures;
       expect(4, measures.length);
-      expect(ScaleNote.get(ScaleNoteEnum.A), measures[0].chords[0].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.B), measures[1].chords[0].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.E), measures[2].chords[0].scaleChord.scaleNote);
-      expect(ScaleNote.get(ScaleNoteEnum.D), measures[3].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.A, measures[0].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.B, measures[1].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.E, measures[2].chords[0].scaleChord.scaleNote);
+      expect(ScaleNote.D, measures[3].chords[0].scaleChord.scaleNote);
     }
     {
       MarkedString markedString = MarkedString('\nT:D\n');
@@ -322,10 +322,10 @@ void main() {
       measures = phrase.measures;
       expect(4, measures.length);
 
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.D), measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.C), measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.A), measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.get(ScaleNoteEnum.D), measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 3, 0);
     }
     {
       ChordSection chordSection = ChordSection.parseString('I:       A B C D\n\n', 4);

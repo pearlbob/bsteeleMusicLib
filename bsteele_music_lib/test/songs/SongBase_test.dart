@@ -632,11 +632,11 @@ void main() {
                 break;
               case 3:
                 measure = node as Measure;
-                expect(ScaleNote.get(ScaleNoteEnum.G), measure.chords[0].scaleChord.scaleNote);
+                expect(ScaleNote.G, measure.chords[0].scaleChord.scaleNote);
                 break;
               case 4:
                 measure = node as Measure;
-                expect(ScaleNote.get(ScaleNoteEnum.E), measure.chords[0].scaleChord.scaleNote);
+                expect(ScaleNote.E, measure.chords[0].scaleChord.scaleNote);
                 break;
             }
             break;
@@ -648,11 +648,11 @@ void main() {
                 break;
               case 1:
                 measure = node as Measure;
-                expect(ScaleNote.get(ScaleNoteEnum.A), measure.chords[0].scaleChord.scaleNote);
+                expect(ScaleNote.A, measure.chords[0].scaleChord.scaleNote);
                 break;
               case 4:
                 measure = node as Measure;
-                expect(ScaleNote.get(ScaleNoteEnum.D), measure.chords[0].scaleChord.scaleNote);
+                expect(ScaleNote.D, measure.chords[0].scaleChord.scaleNote);
                 break;
             }
             break;

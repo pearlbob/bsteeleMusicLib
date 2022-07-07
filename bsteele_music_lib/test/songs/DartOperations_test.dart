@@ -13,10 +13,10 @@ void main() {
   Logger.level = Level.info;
 
   test('Dart list equals', () {
-    for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
-      ScaleNote n1 = ScaleNote.get(e1);
-      for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
-        ScaleNote n2 = ScaleNote.get(e2);
+    for (final e1 in ScaleNote.values) {
+      final n1 = e1;
+      for (final e2 in ScaleNote.values) {
+        var n2 = e2;
         if (e1 == e2) {
           expect(n1, n2);
           expect(n1 == n2, isTrue);
@@ -26,11 +26,11 @@ void main() {
       }
     }
 
-    for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
-      ScaleNote sn1 = ScaleNote.get(e1);
+    for (final e1 in ScaleNote.values) {
+      var sn1 = e1;
       ScaleChord sc1 = ScaleChord(sn1, ChordDescriptor.major);
-      for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
-        ScaleNote sn2 = ScaleNote.get(e2);
+      for (final e2 in ScaleNote.values) {
+        var sn2 = e2;
         ScaleChord sc2 = ScaleChord(sn2, ChordDescriptor.major);
         if (e1 == e2) {
           expect(sc1, sc2);
@@ -44,20 +44,17 @@ void main() {
     int beats = 4;
     int beatsPerBar = 4;
     ScaleNote? slashScaleNote;
-    ChordAnticipationOrDelay anticipationOrDelay =
-        ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
+    ChordAnticipationOrDelay anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
     bool implicitBeats = false;
 
-    for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
-      ScaleNote sn1 = ScaleNote.get(e1);
+    for (final e1 in ScaleNote.values) {
+      var sn1 = e1;
       ScaleChord sc1 = ScaleChord(sn1, ChordDescriptor.major);
-      Chord chord1 = Chord(sc1, beats, beatsPerBar, slashScaleNote,
-          anticipationOrDelay, implicitBeats);
-      for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
-        ScaleNote sn2 = ScaleNote.get(e2);
+      Chord chord1 = Chord(sc1, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
+      for (final e2 in ScaleNote.values) {
+        var sn2 = e2;
         ScaleChord sc2 = ScaleChord(sn2, ChordDescriptor.major);
-        Chord chord2 = Chord(sc2, beats, beatsPerBar, slashScaleNote,
-            anticipationOrDelay, implicitBeats);
+        Chord chord2 = Chord(sc2, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
         if (e1 == e2) {
           expect(chord1, chord2);
           expect(chord1 == chord2, isTrue);
@@ -70,18 +67,16 @@ void main() {
     }
 
     int beatCount = beatsPerBar;
-    for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
-      ScaleNote sn1 = ScaleNote.get(e1);
+    for (final e1 in ScaleNote.values) {
+      var sn1 = e1;
       ScaleChord sc1 = ScaleChord(sn1, ChordDescriptor.major);
-      Chord chord1 = Chord(sc1, beats, beatsPerBar, slashScaleNote,
-          anticipationOrDelay, implicitBeats);
-      Measure m1 = Measure(beatCount, List<Chord>.filled(1,chord1));
-      for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
-        ScaleNote sn2 = ScaleNote.get(e2);
+      Chord chord1 = Chord(sc1, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
+      Measure m1 = Measure(beatCount, List<Chord>.filled(1, chord1));
+      for (final e2 in ScaleNote.values) {
+        var sn2 = e2;
         ScaleChord sc2 = ScaleChord(sn2, ChordDescriptor.major);
-        Chord chord2 = Chord(sc2, beats, beatsPerBar, slashScaleNote,
-            anticipationOrDelay, implicitBeats);
-        Measure m2 = Measure(beatCount, List<Chord>.filled(1,chord2));
+        Chord chord2 = Chord(sc2, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
+        Measure m2 = Measure(beatCount, List<Chord>.filled(1, chord2));
         if (e1 == e2) {
           expect(m1, m2);
           expect(m1 == m2, isTrue);
@@ -93,20 +88,18 @@ void main() {
       }
     }
 
-    for (ScaleNoteEnum e1 in ScaleNoteEnum.values) {
-      ScaleNote sn1 = ScaleNote.get(e1);
+    for (final e1 in ScaleNote.values) {
+      var sn1 = e1;
       ScaleChord sc1 = ScaleChord(sn1, ChordDescriptor.major);
-      Chord chord1 = Chord(sc1, beats, beatsPerBar, slashScaleNote,
-          anticipationOrDelay, implicitBeats);
-      Measure m1 = Measure(beatCount, List<Chord>.filled(1,chord1));
-      Phrase ph1 = Phrase(List<Measure>.filled(1, m1),  0);
-      for (ScaleNoteEnum e2 in ScaleNoteEnum.values) {
-        ScaleNote sn2 = ScaleNote.get(e2);
+      Chord chord1 = Chord(sc1, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
+      Measure m1 = Measure(beatCount, List<Chord>.filled(1, chord1));
+      Phrase ph1 = Phrase(List<Measure>.filled(1, m1), 0);
+      for (final e2 in ScaleNote.values) {
+        var sn2 = e2;
         ScaleChord sc2 = ScaleChord(sn2, ChordDescriptor.major);
-        Chord chord2 = Chord(sc2, beats, beatsPerBar, slashScaleNote,
-            anticipationOrDelay, implicitBeats);
-        Measure m2 = Measure(beatCount, List<Chord>.filled(1,chord2));
-        Phrase ph2 = Phrase(List<Measure>.filled(1, m2),  0);
+        Chord chord2 = Chord(sc2, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
+        Measure m2 = Measure(beatCount, List<Chord>.filled(1, chord2));
+        Phrase ph2 = Phrase(List<Measure>.filled(1, m2), 0);
         if (e1 == e2) {
           expect(ph1, ph2);
           expect(ph1 == ph2, isTrue);

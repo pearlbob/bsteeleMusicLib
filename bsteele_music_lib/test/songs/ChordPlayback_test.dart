@@ -56,7 +56,7 @@ void main() {
     if (Logger.level.index <= Level.info.index) {
       int beatsPerBar = 4;
 
-      for (ScaleNote scaleNote in ScaleNote.values) {
+      for (final scaleNote in ScaleNote.values) {
         if (scaleNote.isSilent) {
           continue;
         }
@@ -64,8 +64,7 @@ void main() {
         int beats = beatsPerBar; //  default only
 
         for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
-          ScaleChord scaleChord =
-              ScaleChord(pitch.getScaleNote(), chordDescriptor);
+          ScaleChord scaleChord = ScaleChord(pitch.getScaleNote(), chordDescriptor);
 
           ChordAnticipationOrDelay anticipationOrDelay =
               ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);

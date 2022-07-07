@@ -10,12 +10,12 @@ import 'key.dart';
 class ScaleChord implements Comparable<ScaleChord> {
   ScaleChord(this._scaleNote, ChordDescriptor chordDescriptor) : _chordDescriptor = chordDescriptor.deAlias();
 
-  ScaleChord.fromScaleNoteEnum(ScaleNoteEnum scaleNoteEnum)
-      : _scaleNote = ScaleNote.get(scaleNoteEnum),
+  ScaleChord.fromScaleNoteEnum(ScaleNote scaleNoteEnum)
+      : _scaleNote = scaleNoteEnum,
         _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
 
-  ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNoteEnum scaleNoteEnum, ChordDescriptor chordDescriptor)
-      : _scaleNote = ScaleNote.get(scaleNoteEnum),
+  ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote scaleNoteEnum, ChordDescriptor chordDescriptor)
+      : _scaleNote = scaleNoteEnum,
         _chordDescriptor = chordDescriptor.deAlias();
 
   ScaleChord.fromScaleNote(this._scaleNote) : _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();

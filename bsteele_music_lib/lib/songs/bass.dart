@@ -1,3 +1,4 @@
+import 'package:bsteeleMusicLib/songs/musicConstants.dart';
 import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
@@ -15,8 +16,8 @@ class Bass{
 
     static int mapScaleNoteToBassFret( ScaleNote scaleNote ){
         //  deal with the piano numbers starting on A instead of E
-        return( scaleNote.halfStep + 5 ) % 12;
-    }
+        return (scaleNote.halfStep + 5) % MusicConstants.halfStepsPerOctave;
+  }
 
     static Pitch bassFretToPitch( int fret ){
         return _E1.offsetByHalfSteps(fret)!;

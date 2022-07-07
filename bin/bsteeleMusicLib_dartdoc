@@ -5,6 +5,6 @@ set dir=~/github/bsteeleMusicLib
 
 cd $dir/bsteele_music_lib
 
-dartdoc
+dart doc .
 
 exit $status

@@ -193,7 +193,7 @@ class MusicXml {
   }
 
   String _scaleNoteAsMusicXml(ScaleNote scaleNote) {
-    String ret = '<step>${scaleNote.scaleString}</step>';
+    String ret = '<step>${scaleNote.scaleNoteString}</step>';
     if (scaleNote.isSharp) {
       return ret + '<alter>1</alter>';
     }
@@ -224,7 +224,7 @@ class MusicXml {
 
   String _step(ScaleNote scaleNote, {String? basis}) {
     String mod = '${basis != null ? basis + '-' : ''}';
-    String ret = '<${mod}step>${scaleNote.scaleString}</${mod}step>';
+    String ret = '<${mod}step>${scaleNote.scaleNoteString}</${mod}step>';
     if (scaleNote.isSharp) {
       ret += '<${mod}alter>1</${mod}alter>';
     }

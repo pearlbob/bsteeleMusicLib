@@ -411,10 +411,10 @@ class Key implements Comparable<Key> {
   /// Note that a null return means that no accidental should be applied.
   Accidental? accidental(final Pitch pitch) {
     //  adjust the pitch to the key's accidental
-    ScaleNote scaleNote = mappedPitch(pitch).scaleNote;
+    var scaleNote = mappedPitch(pitch).scaleNote;
 
     //  get the key's scale note for the pitch
-    ScaleNote keyScaleNote = getKeyScaleNoteFor(scaleNote);
+    var keyScaleNote = getKeyScaleNoteFor(scaleNote);
 
     //  deal with exceptions
     switch (keyEnum) {
@@ -472,7 +472,7 @@ class Key implements Comparable<Key> {
           case Accidental.natural:
             return scaleNote.scaleNoteString + MusicConstants.naturalChar;
           case Accidental.sharp:
-            return scaleNote.scaleString;
+            return scaleNote.scaleNoteString;
           case Accidental.flat:
             return scaleNote.scaleNoteString + MusicConstants.flatChar;
         }
@@ -483,7 +483,7 @@ class Key implements Comparable<Key> {
           case Accidental.sharp:
             return scaleNote.scaleNoteString + MusicConstants.sharpChar;
           case Accidental.flat:
-            return scaleNote.scaleString;
+            return scaleNote.scaleNoteString;
         }
     }
     //  should never get here
@@ -500,9 +500,9 @@ class Key implements Comparable<Key> {
     ScaleNote ret = _getScaleNoteByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
     if (_keyValue == 6 && ret == ScaleNote.F) {
-      return ScaleNote.get(ScaleNoteEnum.Es);
+      return ScaleNote.Es;
     } else if (_keyValue == -6 && ret == ScaleNote.B) {
-      return ScaleNote.get(ScaleNoteEnum.Cb);
+      return ScaleNote.Cb;
     }
     return ret;
   }
@@ -514,21 +514,20 @@ class Key implements Comparable<Key> {
   }
 
   /// Return the scale note offset by the given half steps in the accidental required by this key.
-  ScaleNoteEnum3 getScaleNoteEnum3ByHalfStep(int halfSteps) {
-    ScaleNoteEnum3 ret = _getScaleNoteEnum3ByHalfStepNoAdjustment(halfSteps);
+  ScaleNote getScaleNoteEnum3ByHalfStep(int halfSteps) {
+    ScaleNote ret = _getScaleNoteEnum3ByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
-    if (_keyValue == 6 && ret == ScaleNoteEnum3.F) {
-      return ScaleNoteEnum3.Es;
-    } else if (_keyValue == -6 && ret == ScaleNoteEnum3.B) {
-      return ScaleNoteEnum3.Cb;
+    if (_keyValue == 6 && ret == ScaleNote.F) {
+      return ScaleNote.Es;
+    } else if (_keyValue == -6 && ret == ScaleNote.B) {
+      return ScaleNote.Cb;
     }
     return ret;
   }
 
-  ScaleNoteEnum3 _getScaleNoteEnum3ByHalfStepNoAdjustment(int halfSteps) {
+  ScaleNote _getScaleNoteEnum3ByHalfStepNoAdjustment(int halfSteps) {
     halfSteps = halfSteps % _halfStepsPerOctave;
-    ScaleNoteEnum3 ret =
-        isSharp ? ScaleNoteEnum3.getSharpByHalfStep(halfSteps) : ScaleNoteEnum3.getFlatByHalfStep(halfSteps);
+    ScaleNote ret = isSharp ? ScaleNote.getSharpByHalfStep(halfSteps) : ScaleNote.getFlatByHalfStep(halfSteps);
     return ret;
   }
 
