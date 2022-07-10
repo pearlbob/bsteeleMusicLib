@@ -1,10 +1,8 @@
 //
 
-import 'dart:collection';
-
 import '../util/util.dart';
-import 'musicConstants.dart';
 import 'key.dart';
+import 'musicConstants.dart';
 
 /// Musical accidentals
 enum Accidental {
