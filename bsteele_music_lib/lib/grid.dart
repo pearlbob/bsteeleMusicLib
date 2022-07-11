@@ -27,29 +27,29 @@ class Grid<T> {
 
   bool get isNotEmpty => grid.isNotEmpty;
 
-  void set(int x, int y, T? t) {
-    if (x < 0) {
-      x = 0;
+  void set(int r, int c, T? t) {
+    if (r < 0) {
+      r = 0;
     }
-    if (y < 0) {
-      y = 0;
+    if (c < 0) {
+      c = 0;
     }
 
-    while (x >= grid.length) {
+    while (r >= grid.length) {
       //  addTo a new row to the grid
       grid.add(List.generate(1, (a) {
         return null;
       }));
     }
 
-    List<T?>? row = grid[x];
-    if (y == row?.length) {
+    List<T?>? row = grid[r];
+    if (c == row?.length) {
       row?.add(t);
     } else {
-      while (y > (row?.length ?? 0) - 1) {
+      while (c > (row?.length ?? 0) - 1) {
         row?.add(null);
       }
-      row?[y] = t;
+      row?[c] = t;
     }
   }
 
@@ -75,13 +75,13 @@ class Grid<T> {
     return sb.toString();
   }
 
-  T? get(int x, int y) {
+  T? get(int r, int c) {
     try {
-      List<T?>? row = grid[x];
+      List<T?>? row = grid[r];
       if (row == null) {
         return null;
       }
-      return row[y];
+      return row[c];
     } catch (ex) {
       return null;
     }
