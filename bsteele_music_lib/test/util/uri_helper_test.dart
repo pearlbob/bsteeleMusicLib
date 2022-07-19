@@ -186,4 +186,21 @@ void main() {
       expect(uri.port, 8080);
     }
   });
+
+  test('test uri domain', () {
+    const String url = 'http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics';
+    Uri? uri = extractUri(url);
+    expect(uri?.host, 'www.bsteele.com');
+    uri = extractUri('http://192.168.0.200/public_html/bsteeleMusicApp/beta/index.html#/');
+    expect(uri?.host, '192.168.0.200');
+    uri = extractUri('http://192.168.1.205:8080/bsteeleMusicApp/#/');
+    expect(uri?.host, '192.168.1.205');
+    uri = extractUri('http://bob64.local/public_html/bsteeleMusicApp/beta/index.html#/');
+    expect(uri?.host, 'bob64.local');
+    uri = extractUri('http://localhost:36117/#/');
+    expect(uri?.host, 'localhost');
+    uri = extractUri('http://localhost:8080/bsteeleMusicApp/index.html#/');
+    expect(uri?.host, 'localhost');
+    expect(uri?.port, 8080);
+  });
 }

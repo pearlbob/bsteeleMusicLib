@@ -35,6 +35,7 @@ void main() {
     MarkedString markedString = MarkedString(s);
     MeasureRepeat refRepeat = MeasureRepeat.parse(markedString, 0, 4, null);
     expect(refRepeat, isNotNull);
+    expect(refRepeat.measureNodeType, MeasureNodeType.repeat);
     expect(refRepeat.toMarkup(), '[A B C D, E F G Gb ] x2 ');
     expect(0, markedString.available());
 
