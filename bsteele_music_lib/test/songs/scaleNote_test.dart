@@ -171,4 +171,19 @@ void main() {
       expect(ScaleNote.parseString(sn.toMarkup())?.toMarkup(), ScaleNote.valueOf(sn.name)?.toMarkup());
     }
   });
+
+  test('test presentation', () {
+    Logger.level = Level.info;
+
+    var sn = ScaleNote.parseString('Gb');
+    expect(sn, isNotNull);
+    sn = sn!;
+    expect(sn.toString(), 'G♭');
+    expect(sn.toMarkup(), 'Gb');
+    expect(sn.name, 'Gb');
+    sn = ScaleNote.Gs;
+    expect(sn.toString(), 'G♯');
+    expect(sn.toMarkup(), 'G#');
+    expect(sn.name, 'Gs');
+  });
 }
