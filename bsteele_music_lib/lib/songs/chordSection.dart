@@ -623,13 +623,13 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   ///Old style markup
   @override
   String toString() {
+    return '${sectionVersion.toString()}\n${phrasesToString()}';
+  }
+
+  String phrasesToString() {
     StringBuffer sb = StringBuffer();
-    sb.write(sectionVersion.toString());
-    sb.write('\n');
-    if (_phrases.isNotEmpty) {
-      for (Phrase phrase in _phrases) {
-        sb.write(phrase.toString());
-      }
+    for (Phrase phrase in _phrases) {
+      sb.write(phrase.toString());
     }
     return sb.toString();
   }

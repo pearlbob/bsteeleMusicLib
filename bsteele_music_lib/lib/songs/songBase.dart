@@ -1472,6 +1472,7 @@ class SongBase {
         sb.write(sectionVersion.toString());
         sb.write(' ');
       } else {
+        //  gather identical section versions to list as a group
         SplayTreeSet<SectionVersion> currentSectionVersions = SplayTreeSet();
         for (SectionVersion otherSectionVersion in sortedSectionVersions) {
           if (listsEqual(chordSection.phrases, _getChordSectionMap()[otherSectionVersion]?.phrases)) {
