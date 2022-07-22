@@ -1,5 +1,7 @@
 //
 
+import 'package:bsteeleMusicLib/songs/nashvilleNote.dart';
+
 import '../util/util.dart';
 import 'key.dart';
 import 'musicConstants.dart';
@@ -157,6 +159,10 @@ enum ScaleNote implements Comparable<ScaleNote> {
       return ScaleNote.X;
     }
     return key.getScaleNoteEnum3ByHalfStep(halfStep + steps);
+  }
+
+  NashvilleNote nashvilleNote(Key key) {
+    return NashvilleNote.byHalfStep(halfStep - key.halfStep);
   }
 
   /// Return the scale note class instance of the given string.

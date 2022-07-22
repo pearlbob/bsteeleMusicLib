@@ -97,4 +97,25 @@ void main() {
     expect(ChordDescriptor.suspended4.isMinor(), false);
     expect(ChordDescriptor.sevenSus4.isMinor(), false);
   });
+
+  test('test Nashville descriptors', () {
+    for (ChordDescriptor cd in ChordDescriptor.values) {
+      logger.d('$cd\t${cd.toNashville()}');
+    }
+    expect(ChordDescriptor.major.toNashville(), '');
+    expect(ChordDescriptor.minor.toNashville(), '-');
+    expect(ChordDescriptor.dominant7.toNashville(), '7');
+    expect(ChordDescriptor.major7.toNashville(), 'Δ');
+    expect(ChordDescriptor.diminished.toNashville(), '°');
+    expect(ChordDescriptor.diminished.nashvilleRaise, true);
+    expect(ChordDescriptor.diminished7.toNashville(), '°7');
+    expect(ChordDescriptor.dominant7.nashvilleRaise, true);
+
+    expect(ChordDescriptor.major.nashvilleRaise, false);
+    expect(ChordDescriptor.minor.nashvilleRaise, false);
+
+    expect(ChordDescriptor.major7.nashvilleRaise, false);
+
+    expect(ChordDescriptor.diminished7.nashvilleRaise, true);
+  });
 }

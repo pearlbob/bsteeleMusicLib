@@ -1624,10 +1624,10 @@ c2:
 
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G F F  O: Dm C B B♭ A  ', '''
-c: cMake me an angel that flies from Montgomery
-	cMake me a poster of an old rodeo
-	cJust give me one thing that I can hold on to
-	cTo believe in this living is just a hard way to go
+c: Make me an angel that flies from Montgomery
+	Make me a poster of an old rodeo
+	Just give me one thing that I can hold on to
+	To believe in this living is just a hard way to go
 o: end here''');
 
     //induce grid generation
