@@ -65,6 +65,7 @@ arguments:
 -perfwrite {file}   update the song performances to a file
 -popSongs           list the most popular songs
 -stat               statistics
+-tomcat {catalina_base}  read the tomcat logs
 -url {url}          read the given url into the utility's allSongs list
 -user               list contributing users
 -v                  verbose output utility's allSongs list
@@ -107,12 +108,14 @@ coerced to reflect the songlist's last modification for that song.
       return;
     }
 
+    Logger.level = Level.info;
+
     //  process the requests
     for (var argCount = 0; argCount < args.length; argCount++) {
       var arg = args[argCount];
       switch (arg) {
         case '-a':
-        //  insist there is another arg
+          //  insist there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             _help();
@@ -917,8 +920,56 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
+        case '-tomcat':
+          //  insist there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing catalina_base path for $arg');
+            _help();
+            exit(-1);
+          }
+          argCount++;
+          {
+            Directory catalina_base = Directory(args[argCount]);
+
+            logger.i('catalina_base: $catalina_base');
+            var logs = catalina_base.listSync().firstWhere((element) => element.path.endsWith('/logs'));
+            logs = logs as Directory;
+            logger.i('logs: $logs');
+            SplayTreeSet<FileSystemEntity> fileSet = SplayTreeSet((f1, f2) {
+              return f1.path.compareTo(f2.path);
+            })
+              ..addAll(logs.listSync().where((e) => e.path.contains('/catalina.')));
+            for (var file in fileSet) {
+              final messagePattern = RegExp(r' onMessage\("(.*)"\)');
+              file = file as File;
+              String fileAsString;
+              if (file.path.endsWith('.log')) {
+                fileAsString = file.readAsStringSync();
+              } else if (file.path.endsWith('.log.gz')) {
+                fileAsString = utf8.decode(zlib.decode(file.readAsBytesSync()));
+              } else {
+                logger.i('not a log file: $file');
+                continue;
+              }
+
+              bool firstLine = true;
+              for (var line in fileAsString.split('\n')) {
+                RegExpMatch? m = messagePattern.firstMatch(line);
+                if (m != null) {
+                  if (firstLine) {
+                    logger.i('');
+                    logger.i('$file:');
+                    firstLine = false;
+                  }
+                  logger.i('json: ${m.group(1)}');
+                }
+              }
+            }
+          }
+          break;
+
         case '-w':
-        //  assert there is another arg
+          //  assert there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing directory path for -a');
             exit(-1);
@@ -1206,6 +1257,7 @@ coerced to reflect the songlist's last modification for that song.
 
         default:
           logger.e('command not understood: "$arg"');
+          print('error: command not understood: "$arg"');
           exit(-1);
       }
     }

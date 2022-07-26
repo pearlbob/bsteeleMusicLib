@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 
+import '../appLogger.dart';
 import '../util/util.dart';
 import 'chordSectionLocation.dart';
 import 'key.dart';
@@ -161,7 +162,7 @@ class Song extends SongBase implements Comparable<Song> {
     jsonString = jsonString.replaceAll('\": null', '\": \"\"');
 
     List<Song> songList = [];
-    dynamic json = jsonDecoder.convert(jsonString);
+    dynamic json = _jsonDecoder.convert(jsonString);
     if (json is List) {
       //  a list of songs
       for (Map jsonMap in json) {
@@ -246,6 +247,9 @@ class Song extends SongBase implements Comparable<Song> {
           break;
         case 'user':
           song.setUser(jsonSong[name]);
+          break;
+        default:
+          logger.w('unknown field in JSON: "$name"');
           break;
       }
     }
@@ -448,7 +452,7 @@ class Song extends SongBase implements Comparable<Song> {
 
   static final RegExp _timeSignatureExp = RegExp(r'^\w*(\d{1,2})\w*\/\w*(\d)\w*$');
 
-  static final JsonDecoder jsonDecoder = JsonDecoder();
+  static final JsonDecoder _jsonDecoder = JsonDecoder();
 
   static const String unknownUser = 'unknown';
 

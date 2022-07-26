@@ -257,9 +257,12 @@ class SongUpdate {
           case 'user':
             songUpdate.setUser(jv.toString());
             break;
+          case 'singer':
+            songUpdate.singer = jv.toString();
+            break;
           default:
             logger.w('unknown field in JSON: "$name"');
-            return null;
+            break;
         }
       }
       songUpdate.setMomentNumber(songUpdate.momentNumber);
@@ -292,9 +295,12 @@ class SongUpdate {
     sb.write('\"beat\": ');
     sb.write(getBeat());
     sb.write(',\n');
-    sb.write('\"user\": \"');
-    sb.write(getUser());
-    sb.write('\",\n');
+    sb.write('\"user\": ');
+    sb.write(jsonEncode(user));
+    sb.write(',\n');
+    sb.write('\"singer\": ');
+    sb.write(jsonEncode(singer));
+    sb.write(',\n');
     sb.write('\"beatsPerMeasure\": ');
     sb.write(getBeatsPerMeasure());
     sb.write(',\n');
@@ -317,12 +323,14 @@ class SongUpdate {
   int get hashCode {
     int hash = hash4(state, currentKey, song, momentNumber);
     hash = 83 * hash + hash4(beat, beatsPerMeasure, currentBeatsPerMinute, user);
+    hash = 17 * hash + singer.hashCode;
     return hash;
   }
 
   SongUpdateState state = SongUpdateState.idle;
   late Song song;
   String user = 'no one';
+  String singer = 'unknown';
   int momentNumber = 0;
   SongMoment? songMoment;
 
