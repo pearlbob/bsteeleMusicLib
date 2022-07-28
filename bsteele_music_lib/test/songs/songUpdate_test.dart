@@ -178,6 +178,7 @@ void main() {
 "momentNumber": 0,
 "beat": 0,
 "user": "no one",
+"singer": "unknown",
 "beatsPerMeasure": 4,
 "currentBeatsPerMinute": 100
 }

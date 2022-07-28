@@ -38,6 +38,9 @@ void main(List<String> args) {
 
 /// a command line utility to help manage song list maintenance
 /// to and from tools like git and the bsteele Music App.
+///
+///  example:
+///  dart run bsteele_music_lib/lib/bsteeleMusicUtil.dart -tomcat $CATALINA_BASE
 class BsteeleMusicUtil {
   /// help message to the user
   void _help() {
