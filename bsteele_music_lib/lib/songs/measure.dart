@@ -273,7 +273,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   String? getId() {
-    return null;
+    return 'm$_id';
   }
 
   @override
@@ -330,6 +330,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return ret;
   }
 
+  int get id => _id;
+  final int _id = lastMeasureId++;
+
   /// The beat count for the measure should be set prior to chord additions
   /// to avoid awkward behavior when chords are added without a count.
   /// Defaults to 4.
@@ -346,4 +349,5 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   static final Measure defaultMeasure = Measure(4, emptyChordList);
 
   static final RegExp sectionRegexp = RegExp('^\\s*(,|\\n)');
+  static int lastMeasureId = 0;
 }

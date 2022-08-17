@@ -18,6 +18,7 @@ dependencies:
   string_scanner:   # for english_words
   flutter_lints:
   dartdoc:
+  csv:
 
 dev_dependencies:
   lints:

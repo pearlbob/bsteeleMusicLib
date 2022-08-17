@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -51,6 +53,52 @@ class LyricSection implements Comparable<LyricSection> {
       lyrics.add(Lyric(''));
     }
     return lyrics;
+  }
+
+  List<Lyric> toLyrics(ChordSection chordSection, bool expanded) {
+    //  gather the section lyrics as if expanded
+    var expandedLyrics = asLyrics(chordSection.chordRowCount);
+    if (expanded) {
+      //   done
+      return expandedLyrics;
+    }
+
+    //  bunch lines for repeats as required
+    var ret = <Lyric>[];
+    int i = 0;
+    for (var phrase in chordSection.phrases) {
+      if (phrase is MeasureRepeat) {
+        var rowCount = phrase.chordRowCountAsPhrase;
+        for (int repeats = 0; repeats < phrase.repeats; repeats++) {
+          Lyric? lyric;
+          for (var phraseRow = 0; phraseRow < rowCount; phraseRow++) {
+            if (lyric == null) {
+              lyric = expandedLyrics[i++];
+            } else {
+              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}');
+            }
+          }
+          assert(lyric != null);
+          if (lyric != null) {
+            ret.add(lyric);
+          }
+        }
+      } else {
+        var rowCount = phrase.chordRowCount;
+        {
+          for (var phraseRow = 0; phraseRow < rowCount; phraseRow++) {
+            Lyric? lyric;
+            if (lyric == null) {
+              lyric = expandedLyrics[i++];
+            } else {
+              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}');
+            }
+            ret.add(lyric);
+          }
+        }
+      }
+    }
+    return ret;
   }
 
   @override

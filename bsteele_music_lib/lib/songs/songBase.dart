@@ -41,6 +41,21 @@ enum UpperCaseState {
   normal,
 }
 
+/// Selection of the user's display style for the player screen.
+enum UserDisplayStyle {
+  /// For a player, the lyrics can be abbreviated.
+  player,
+
+  /// For a singer, most if not all chords will not be required.
+  singer,
+
+  /// For an audience of both singers and players, both chords and lyrics will be fully displayed.
+  both,
+
+  /// White board style minimum player mode
+  proPlayer,
+}
+
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
 ///  mechanics to be tested in the a code environment where debugging is easier.
@@ -3557,7 +3572,7 @@ class SongBase {
             : 'none'));
   }
 
-  Grid<MeasureNode> toGrid({bool? expanded}) {
+  Grid<MeasureNode> toLyricsGrid({bool? expanded}) {
     var grid = Grid<MeasureNode>();
 
     //  find the required chord columns across all sections in the song
@@ -3591,14 +3606,20 @@ class SongBase {
           1; //  chord section version on title row without lyrics!
 
       //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.asLyrics(rows);
+      var lyrics = lyricSection.asLyrics(rows); //  fixme: remove when confident
+      //var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false);//  fixme: replace when confident
 
       //  add the lyrics to the chord section grid as a final column
-      assert(rows == lyrics.length);
+      assert(rows <= lyrics.length);
       sectionGrid.set(0, columns, null); //  section version title row
       for (var i = 1; //  offset for section version title row without lyrics
           i <= rows;
           i++) {
+        var lyric = lyrics[i - 1];
+        sectionGrid.set(i, columns, lyric);
+      }
+      //  if more lyrics than rows
+      for (var i = rows; i <= lyrics.length; i++) {
         var lyric = lyrics[i - 1];
         sectionGrid.set(i, columns, lyric);
       }
@@ -3610,8 +3631,105 @@ class SongBase {
     return grid;
   }
 
-  ///  map the grid to the song moments
-  List<GridCoordinate> songMomentToGrid({bool expanded = false}) {
+  Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
+    var grid = Grid<MeasureNode>();
+
+    switch (userDisplayStyle) {
+      case UserDisplayStyle.proPlayer:
+        {
+          //  row of chord sections
+          var c = 0;
+          for (var lyricSection in lyricSections) {
+            var chordSection = findChordSectionByLyricSection(lyricSection);
+            assert(chordSection != null);
+            grid.set(0, c++, chordSection);
+          }
+          //  rows of chord section measures
+          var r = 0;
+          for (var chordSection in SplayTreeSet<ChordSection>()..addAll(getChordSections())) {
+            r++;
+            grid.set(r, 0, chordSection); //  for the label
+            grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
+          }
+        }
+        return grid;
+      case UserDisplayStyle.singer:
+        {
+          var r = 0;
+          for (var lyricSection in lyricSections) {
+            //  lyric section label and chords
+            var chordSection = findChordSectionByLyricSection(lyricSection);
+            assert(chordSection != null);
+            grid.set(r, 0, chordSection); //  for the label
+            grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
+            r++;
+            for (var lyric in lyricSection.asLyrics(lyricSection.lyricsLines.length)) {
+              grid.set(r++, 0, lyric);
+            }
+          }
+        }
+        return grid;
+      default:
+        break;
+    }
+
+    //  find the required chord columns across all sections in the song
+    var columns = 0;
+    for (var lyricSection in lyricSections) {
+      var chordSection = findChordSectionByLyricSection(lyricSection);
+      assert(chordSection != null);
+      if (chordSection == null) {
+        continue;
+      }
+      columns = max(columns, chordSection.chordRowMaxLength());
+    }
+
+    //  add the lyric sections
+    for (var lyricSection in lyricSections) {
+      //  section by section
+
+      //  get the chord section
+      var chordSection = findChordSectionByLyricSection(lyricSection);
+      assert(chordSection != null);
+      if (chordSection == null) {
+        continue;
+      }
+
+      //  convert to chord section grid
+      var sectionGrid = chordSection.toGrid(chordColumns: columns, expanded: expanded);
+
+      //  find the rows used by the chords
+      var rows = sectionGrid.getRowCount() //
+          -
+          1; //  chord section version on title row without lyrics!
+
+      //  get the lyrics spread properly across the chord row count
+      var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false); //  fixme: replace when confident
+
+      //  add the lyrics to the chord section grid as a final column
+      assert(rows <= lyrics.length);
+      sectionGrid.set(0, columns, null); //  section version title row
+      for (var i = 1; //  offset for section version title row without lyrics
+          i <= rows;
+          i++) {
+        var lyric = lyrics[i - 1];
+        sectionGrid.set(i, columns, lyric);
+      }
+      //  if more lyrics than rows
+      for (var i = rows; i <= lyrics.length; i++) {
+        var lyric = lyrics[i - 1];
+        sectionGrid.set(i, columns, lyric);
+      }
+
+      //  add the lyrics section grid to the song grid
+      grid.add(sectionGrid);
+    }
+
+    return grid;
+  }
+
+  ///  map song moments to the chord and lyrics grid
+  List<GridCoordinate> songMomentToChordGrid({bool expanded = false}) {
     List<GridCoordinate> list = [];
     logger.v('songMoments: $songMoments');
 

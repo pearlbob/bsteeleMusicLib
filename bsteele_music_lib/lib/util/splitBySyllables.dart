@@ -6,6 +6,7 @@ import 'package:bsteeleMusicLib/src/syllables/monosyllabic.dart';
 import 'package:bsteeleMusicLib/src/syllables/problematic.dart';
 import 'package:bsteeleMusicLib/src/syllables/trisyllabic.dart';
 import 'package:string_scanner/string_scanner.dart';
+import 'package:english_words/english_words.dart' as en;
 
 import '../appLogger.dart';
 
@@ -25,8 +26,9 @@ List<String> splitBySyllables(String words) {
     syllables.add(nonAlpha);
     return nonAlpha;
   }, onNonMatch: (word) {
+    logger.i('word: "$word", ${en.syllables(word)}');
     if (word.isNotEmpty) {
-      syllables.addAll(splitWordBySyllables(word));
+      syllables.addAll(_splitWordBySyllables(word));
     }
     return word;
   });
@@ -39,7 +41,7 @@ List<String> splitBySyllables(String words) {
 /// Count syllables in [word].
 ///
 /// Heavily inspired by https://github.com/wooorm/syllable.
-List<String> splitWordBySyllables(String word) {
+List<String> _splitWordBySyllables(String word) {
   assert(
       RegExp(r'^\w+$').hasMatch(word),
       "Word '$word' contains non-alphabetic characters. "

@@ -15,6 +15,7 @@ import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:bsteeleMusicLib/songs/songPerformance.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
+import 'package:csv/csv.dart';
 import 'package:english_words/english_words.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -55,6 +56,7 @@ arguments:
 -cjread {file)      add song metadata
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
+-cjgenre {file}     read the csv version of the CJ genre file
 -expand {file}      expand a songlyrics list file to the output directory
 -f                  force file writes over existing files
 -h                  this help message
@@ -278,6 +280,49 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           _cjCsvRead(inputFile.readAsStringSync());
+          break;
+
+        case '-cjgenre': // {file}
+          //  insist there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing directory path for -a');
+            _help();
+            exit(-1);
+          }
+          argCount++;
+          {
+            File inputFile = File(args[argCount]);
+
+            if (inputFile.statSync().type != FileSystemEntityType.file || !(await inputFile.exists())) {
+              logger.e('missing file for -cjgenre');
+              _help();
+              exit(-1);
+            }
+
+            logger.i('-cjgenre: $inputFile');
+            final input = inputFile.openRead();
+            final fields = await input.transform(utf8.decoder).transform(CsvToListConverter()).toList();
+            assert(fields[1][0] == 'Title');
+            assert(fields[1][1] == 'Artist');
+            assert(fields[1][2] == 'Year');
+            assert(fields[1][3] == 'Jam');
+            assert(fields[1][4] == 'Genre');
+            assert(fields[1][5] == 'Subgenre');
+            assert(fields[1][6] == 'Status');
+
+            for (var r = 2; r < fields.length; r++) {
+              var title = fields[r][0];
+              var artist = fields[r][1];
+              var year = fields[r][2];
+              var jam = fields[r][3].toString();
+              var genre = fields[r][4];
+              var subgenre = fields[r][5];
+              // var status = fields[r][6];
+              if (jam.isNotEmpty || genre.isNotEmpty || subgenre.isNotEmpty) {
+                logger.i('$r: "$title", $artist, $year, $jam, $genre, $subgenre');
+              }
+            }
+          }
           break;
 
         case '-exp':

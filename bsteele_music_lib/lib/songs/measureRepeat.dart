@@ -169,9 +169,9 @@ class MeasureRepeat extends Phrase {
     return super.maxMeasuresPerChordRow() + (rowCount() > 1 ? 1 : 0) + 1;
   }
 
-  @override
 
   /// get a display row at the index, including the repeat markers
+  @override
   List<Measure> rowAt(int index, {expanded = false}) {
     var ret = <Measure>[];
 
@@ -292,6 +292,10 @@ class MeasureRepeat extends Phrase {
   @override
   int get chordRowCount {
     return super.chordRowCount * _repeatMarker.repeats;
+  }
+
+  int get chordRowCountAsPhrase {
+    return super.chordRowCount;
   }
 
   // @override
