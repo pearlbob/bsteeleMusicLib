@@ -5,8 +5,8 @@ import 'package:test/test.dart';
 
 void main() {
   test('test splitBySyllables', () {
-    var words = 'String separable words to test by syllables!';
-    logger.i('splitBySyllables(\'$words\') = ${splitBySyllables(words.toLowerCase())}');
+    // var words = 'String separable words to test by syllables!';
+    // logger.i('splitBySyllables(\'$words\') = ${splitBySyllables(words.toLowerCase())}');
   });
 
 }

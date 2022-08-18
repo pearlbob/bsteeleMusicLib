@@ -1,3 +1,5 @@
+import 'package:bsteeleMusicLib/gridCoordinate.dart';
+
 /// A generic grid used to store data presentations to the user.
 /// Grid locations are logically assigned without the details of the UI mapping.
 class Grid<T> {
@@ -73,6 +75,10 @@ class Grid<T> {
     }
     sb.write('}');
     return sb.toString();
+  }
+
+  T? at(GridCoordinate gc) {
+    return get(gc.row, gc.col);
   }
 
   T? get(int r, int c) {

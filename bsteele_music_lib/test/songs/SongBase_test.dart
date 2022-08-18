@@ -3394,6 +3394,20 @@ v:
         assert(grid.get(0, 0) is ChordSection);
         var chordSection = grid.get(0, 0) as ChordSection;
         expect(chordSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        logger.d(a.songMoments.toString());
+
+        for (var songMoment in a.songMoments) {
+          logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
+          expect(
+              grid.get(0, a.songMomentToGridCoordinate[songMoment.momentNumber].row - 1 /* row is at +1  */)
+                  as ChordSection,
+              songMoment.chordSection);
+        }
+        for (var songMoment in a.songMoments) {
+          logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
+          expect(
+              grid.at(a.songMomentToGridCoordinate[songMoment.momentNumber]) as ChordSection, songMoment.chordSection);
+        }
       }
     }
 
@@ -3414,6 +3428,24 @@ v:
         expect((grid.get(2, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
         expect((grid.get(3, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
         expect((grid.get(3, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+
+        //  in pro, verify top row of chord sections in song order
+        for (var songMoment in a.songMoments) {
+          logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
+          expect(
+              grid.get(0, a.songMomentToGridCoordinate[songMoment.momentNumber].row - 1 /* row is at +1  */)
+                  as ChordSection,
+              songMoment.chordSection);
+        }
+        //  in pro, verify each section has it's label and duplicate for chords
+        for (var songMoment in a.songMoments) {
+          //  expect entry for section labels
+          var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
+          logger.d('$songMoment: $gc');
+          expect(grid.at(gc) as ChordSection, songMoment.chordSection);
+          //  expect duplicate for chords
+          expect(grid.at(GridCoordinate(gc.row, gc.col + 1)) as ChordSection, songMoment.chordSection);
+        }
       }
     }
     {
@@ -3448,6 +3480,13 @@ v:
         expect(lyric.line, 'bob, bob, bob berand');
         lyric = grid.get(4, 0) as Lyric;
         expect(lyric.line, 'You got me');
+
+        for (var songMoment in a.songMoments) {
+          //  expect entry for section labels
+          var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
+          logger.d('$songMoment: $gc');
+          expect(grid.at(gc) as ChordSection, songMoment.chordSection);
+        }
       }
     }
 
@@ -3469,7 +3508,7 @@ v:
       for (var expanded in [false, true]) //  shouldn't matter
       {
         var grid = a.toDisplayGrid(UserDisplayStyle.singer, expanded: expanded);
-        logger.i('a.toDisplayGrid(): $grid');
+        logger.d('a.toDisplayGrid(): $grid');
         expect(grid.getRowCount(), 11);
         expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
         expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
@@ -3490,7 +3529,75 @@ v:
         expect((grid.get(9, 0) as Lyric).line, 'yo yo yo');
         expect((grid.get(10, 0) as Lyric).line, 'yeah');
         expect(grid.get(11, 0), isNull);
+
+        for (var songMoment in a.songMoments) {
+          //  expect entry for section labels
+          var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
+          logger.d('$songMoment: $gc');
+          expect(grid.at(gc) as ChordSection, songMoment.chordSection);
+        }
       }
+    }
+    {
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          104,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          'i: (instrumental)\nmore instrumental\nv: line 1\n line 2\no:\nyo\nyo2\nyo\nyo4');
+
+      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: false);
+      logger.i('a.toDisplayGrid(): $grid');
+      expect(grid.getRowCount(), 13);
+      expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
+      for (var i = 1; i < 7; i++) {
+        expect(grid.get(0, i), isNull);
+      }
+      var r = 1;
+      expect((grid.get(r, 0) as Measure).toMarkup(), 'A');
+      expect((grid.get(r, 1) as Measure).toMarkup(), 'B');
+      expect((grid.get(r, 2) as Measure).toMarkup(), 'C');
+      expect((grid.get(r, 3) as Measure).toMarkup(), 'D');
+      expect((grid.get(r, 4) as Measure).toMarkup(), 'x4');
+      expect(grid.get(r, 5), isNull);
+      expect((grid.get(r, 6) as Lyric).line, '(instrumental)');
+      r = 2;
+      expect(grid.get(r, 0), isNull);
+      expect(grid.get(r, 1), isNull);
+      expect(grid.get(r, 2), isNull);
+      expect(grid.get(r, 3), isNull);
+      expect(grid.get(r, 4), isNull);
+      expect(grid.get(r, 5), isNull);
+      expect((grid.get(r, 6) as Lyric).line, 'more instrumental');
+      r = 3;
+      // expect((grid.get(r, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+      // expect(grid.get(r, 2), isNull);
+      // expect((grid.get(r, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+      // expect((grid.get(3, 0) as Lyric).line, '');
+      // expect((grid.get(4, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+      // expect((grid.get(4, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+      // expect(grid.get(4, 2), isNull);
+      // expect((grid.get(5, 0) as Lyric).line, 'foo foo foo foo baby');
+      // expect(grid.get(5, 1), isNull);
+      // expect((grid.get(6, 0) as Lyric).line, 'oh baby yesterday');
+      // expect((grid.get(7, 0) as Lyric).line, 'bar bar');
+      // expect((grid.get(8, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+      // expect((grid.get(8, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+      // expect((grid.get(9, 0) as Lyric).line, 'yo yo yo');
+      // expect((grid.get(10, 0) as Lyric).line, 'yeah');
+      // expect(grid.get(11, 0), isNull);
+      //
+      // for (var songMoment in a.songMoments) {
+      //   //  expect entry for section labels
+      //   var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
+      //   logger.i('$songMoment: $gc');
+      //   expect(grid.at(gc) as ChordSection, songMoment.chordSection);
+      // }
     }
     // {
     //   a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,

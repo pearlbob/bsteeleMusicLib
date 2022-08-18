@@ -3633,6 +3633,7 @@ class SongBase {
 
   Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
     var grid = Grid<MeasureNode>();
+    _songMomentToGridCoordinate = [];
 
     switch (userDisplayStyle) {
       case UserDisplayStyle.proPlayer:
@@ -3646,26 +3647,39 @@ class SongBase {
           }
           //  rows of chord section measures
           var r = 0;
-          for (var chordSection in SplayTreeSet<ChordSection>()..addAll(getChordSections())) {
+          var chordSections = SplayTreeSet<ChordSection>()..addAll(getChordSections());
+          for (var chordSection in chordSections) {
             r++;
             grid.set(r, 0, chordSection); //  for the label
             grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
+          }
+          var chordSectionsList = chordSections.toList(growable: false);
+          for (var m in songMoments) {
+            _songMomentToGridCoordinate.add(GridCoordinate(1 + chordSectionsList.indexOf(m.chordSection), 0));
           }
         }
         return grid;
       case UserDisplayStyle.singer:
         {
           var r = 0;
+          Map<LyricSection, GridCoordinate> lyricSectionMap = {};
           for (var lyricSection in lyricSections) {
             //  lyric section label and chords
+            lyricSectionMap[lyricSection] = GridCoordinate(r, 0);
             var chordSection = findChordSectionByLyricSection(lyricSection);
             assert(chordSection != null);
             grid.set(r, 0, chordSection); //  for the label
             grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
             r++;
             for (var lyric in lyricSection.asLyrics(lyricSection.lyricsLines.length)) {
-              grid.set(r++, 0, lyric);
+              grid.set(r, 0, lyric);
+              r++;
             }
+          }
+          for (var m in songMoments) {
+            var gc = lyricSectionMap[m.lyricSection];
+            assert(gc != null);
+            _songMomentToGridCoordinate.add(gc!);
           }
         }
         return grid;
@@ -3704,7 +3718,7 @@ class SongBase {
           1; //  chord section version on title row without lyrics!
 
       //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false); //  fixme: replace when confident
+      var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false);
 
       //  add the lyrics to the chord section grid as a final column
       assert(rows <= lyrics.length);
@@ -4128,6 +4142,9 @@ class SongBase {
   List<SongMoment> get songMoments => getSongMoments();
   List<SongMoment> _songMoments = [];
   HashMap<int, SongMoment> _beatsToMoment = HashMap();
+
+  List<GridCoordinate> get songMomentToGridCoordinate => _songMomentToGridCoordinate;
+  List<GridCoordinate> _songMomentToGridCoordinate = [];
 
   static final RegExp _spaceRegexp = RegExp(r'[ \t]');
   static final RegExp theRegExp = RegExp('^ *(the +)(.*)', caseSensitive: false);
