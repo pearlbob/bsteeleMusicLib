@@ -1,5 +1,3 @@
-import 'package:quiver/core.dart';
-
 class GridCoordinate implements Comparable<GridCoordinate> {
   const GridCoordinate(this._row, this._col);
 
@@ -30,7 +28,7 @@ class GridCoordinate implements Comparable<GridCoordinate> {
 
   @override
   int get hashCode {
-    int ret = hash2(_row, _col);
+    int ret = Object.hash(_row, _col);
     return ret;
   }
 

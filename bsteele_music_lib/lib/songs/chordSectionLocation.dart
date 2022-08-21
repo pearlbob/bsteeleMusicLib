@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:quiver/core.dart';
-
 import '../util/util.dart';
 import 'measureRepeatExtension.dart';
 import 'sectionVersion.dart';
@@ -323,7 +321,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   @override
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = hash4(_sectionVersion, _phraseIndex, _measureIndex, _repeats);
+    int ret = Object.hash(_sectionVersion, _phraseIndex, _measureIndex, _repeats);
     if (_labelSectionVersions != null && _labelSectionVersions!.isNotEmpty) {
       ret = ret * 83 + _labelSectionVersions.hashCode;
     }

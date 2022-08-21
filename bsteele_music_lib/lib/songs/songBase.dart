@@ -6,7 +6,6 @@ import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:quiver/collection.dart';
-import 'package:quiver/core.dart';
 
 import '../appLogger.dart';
 import '../grid.dart';
@@ -3939,9 +3938,9 @@ class SongBase {
   @override
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = hash4(title, artist, coverArtist, copyright);
-    ret = ret * 17 + hash3(key.keyEnum, beatsPerMinute, timeSignature);
-    ret = ret * 19 + hash4(_getChords(), _rawLyrics, fileName, fileVersionNumber);
+    int ret = Object.hash(title, artist, coverArtist, copyright);
+    ret = ret * 17 + Object.hash(key.keyEnum, beatsPerMinute, timeSignature);
+    ret = ret * 19 + Object.hash(_getChords(), _rawLyrics, fileName, fileVersionNumber);
     //  note:   _lastModifiedTime intentionally not included
     return ret;
   }

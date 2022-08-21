@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:intl/intl.dart';
-import 'package:quiver/core.dart';
 
 import 'key.dart';
 import 'musicConstants.dart';
@@ -504,7 +503,7 @@ class AllSongPerformances {
   }
 
   @override
-  int get hashCode => hash2(_allSongPerformances, _allSongPerformanceHistory);
+  int get hashCode => Object.hash(_allSongPerformances, _allSongPerformanceHistory);
 
   Map<String, Song> songMap = {};
 

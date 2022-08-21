@@ -1,5 +1,4 @@
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
-import 'package:quiver/core.dart';
 
 import '../util/util.dart';
 import 'chordComponent.dart';
@@ -110,7 +109,7 @@ class ScaleChord implements Comparable<ScaleChord> {
 
   @override
   int get hashCode {
-    int ret = hash2(_scaleNote, _chordDescriptor);
+    int ret = Object.hash(_scaleNote, _chordDescriptor);
     return ret;
   }
 

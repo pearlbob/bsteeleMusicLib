@@ -1,5 +1,3 @@
-import 'package:quiver/core.dart';
-
 import '../util/util.dart';
 import 'section.dart';
 
@@ -93,7 +91,7 @@ class SectionVersion implements Comparable<SectionVersion> {
 
   @override
   int get hashCode {
-    return hash2(_section, _version);
+    return Object.hash(_section, _version);
   }
 
   /// Return the generic section for this section version.

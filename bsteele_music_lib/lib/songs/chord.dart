@@ -4,7 +4,6 @@ import 'package:bsteeleMusicLib/songs/pitch.dart';
 import 'package:bsteeleMusicLib/songs/scaleChord.dart';
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
-import 'package:quiver/core.dart';
 
 import 'chordAnticipationOrDelay.dart';
 import 'key.dart';
@@ -236,7 +235,7 @@ class Chord implements Comparable<Chord> {
 
   @override
   int get hashCode {
-    return hash4(beats, _beatsPerBar, slashScaleNote, _anticipationOrDelay);
+    return Object.hash(beats, _beatsPerBar, slashScaleNote, _anticipationOrDelay);
   }
 
   ScaleChord get scaleChord => _scaleChord;

@@ -9,7 +9,6 @@ import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMoment.dart';
-import 'package:quiver/core.dart';
 
 enum SongUpdateState {
   none,
@@ -321,8 +320,8 @@ class SongUpdate {
 
   @override
   int get hashCode {
-    int hash = hash4(state, currentKey, song, momentNumber);
-    hash = 83 * hash + hash4(beat, beatsPerMeasure, currentBeatsPerMinute, user);
+    int hash = Object.hash(state, currentKey, song, momentNumber);
+    hash = 83 * hash + Object.hash(beat, beatsPerMeasure, currentBeatsPerMinute, user);
     hash = 17 * hash + singer.hashCode;
     return hash;
   }

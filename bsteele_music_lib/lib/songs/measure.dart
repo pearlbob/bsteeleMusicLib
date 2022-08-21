@@ -325,7 +325,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   @override
   int get hashCode {
     //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = hash2(beatCount, endOfRow);
+    int ret = Object.hash(beatCount, endOfRow);
     ret = ret * 17 + hashObjects(chords);
     return ret;
   }
