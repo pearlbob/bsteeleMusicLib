@@ -85,7 +85,7 @@ void main() {
     {
       logger.d('fromJsonObject');
       dynamic jo;
-      SongUpdate? expResult;
+      SongUpdate? expResult = SongUpdate();
       SongUpdate? result;
       try {
         result = SongUpdate.fromJsonObject(jo);
@@ -177,7 +177,7 @@ void main() {
 ,
 "momentNumber": 0,
 "beat": 0,
-"user": "no one",
+"user": "unknown",
 "singer": "unknown",
 "beatsPerMeasure": 4,
 "currentBeatsPerMinute": 100

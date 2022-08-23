@@ -20,7 +20,7 @@ String _StateEnumToString(SongUpdateState s) {
   return s.toString().split('.').last;
 }
 
-SongUpdateState? stateFromString(String s) {
+SongUpdateState? _stateFromString(String s) {
   for (var e in SongUpdateState.values) {
     if (e.toString().endsWith(s)) {
       return e;
@@ -35,8 +35,55 @@ final JsonDecoder _jsonDecoder = JsonDecoder();
 ///
 /// fixme: song update should always have a song
 class SongUpdate {
-  SongUpdate() {
-    assignSong(Song.createEmptySong());
+  SongUpdate(
+      {SongUpdateState? state,
+      Song? song,
+      String? user,
+      String? singer,
+      int? momentNumber,
+      SongMoment? songMoment,
+      int? beat,
+      int? beatsPerMeasure,
+      int? currentBeatsPerMinute,
+      Key? currentKey})
+      : state = state ?? SongUpdateState.idle,
+        user = user ?? 'unknown',
+        singer = singer ?? 'unknown',
+        momentNumber = momentNumber ?? 0,
+        songMoment = songMoment,
+        beat = beat ?? 0,
+        beatsPerMeasure = beatsPerMeasure ?? 4,
+        currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
+        currentKey = currentKey ?? Key.getDefault() {
+    //  notice assignSong() is not used to keep currentKey and currentBeatsPerMinute correct
+    //  that is, the update versions
+    this.song = song ?? Song.createEmptySong(currentBeatsPerMinute: song?.beatsPerMinute, currentKey: song?.getKey());
+  }
+
+  SongUpdate copyWith(
+      {SongUpdateState? state,
+      Song? song,
+      String? user,
+      String? singer,
+      int? momentNumber,
+      SongMoment? songMoment,
+      int? beat,
+      int? beatsPerMeasure,
+      int? currentBeatsPerMinute,
+      Key? currentKey}) {
+    SongUpdate ret = SongUpdate(
+      song: song ?? this.song,
+      state: state ?? this.state,
+      user: user ?? this.user,
+      singer: singer ?? this.singer,
+      momentNumber: momentNumber ?? this.momentNumber,
+      songMoment: songMoment ?? this.songMoment,
+      beat: beat ?? this.beat,
+      beatsPerMeasure: beatsPerMeasure ?? this.beatsPerMeasure,
+      currentBeatsPerMinute: currentBeatsPerMinute ?? this.currentBeatsPerMinute,
+      currentKey: currentKey ?? this.currentKey,
+    );
+    return ret;
   }
 
   static SongUpdate createSongUpdate(Song song) {
@@ -195,7 +242,8 @@ class SongUpdate {
 
   @override
   String toString() {
-    var sb = StringBuffer('SongUpdate: ');
+    var sb = StringBuffer('SongUpdate: "${song.title}" by "${song.artist}" '
+        '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}"' : ''}: ');
     sb.write(getMomentNumber());
     if (songMoment != null) {
       sb.write(' ');
@@ -210,8 +258,21 @@ class SongUpdate {
         sb.write('/');
         sb.write(songMoment!.getRepeatMax());
       }
+      sb.write(', key: $currentKey');
     }
     return sb.toString();
+  }
+
+  SongUpdate updateFromJson(String jsonString) {
+    //logger.i(jsonString);
+
+    SongUpdate ret = copyWith();
+
+    if (jsonString.isEmpty) {
+      return ret;
+    }
+    ret._updateFromJsonObject(_jsonDecoder.convert(jsonString));
+    return ret;
   }
 
   static SongUpdate? fromJson(String jsonString) {
@@ -226,51 +287,52 @@ class SongUpdate {
 
   static SongUpdate? fromJsonObject(dynamic json) {
     SongUpdate songUpdate = SongUpdate();
+    songUpdate._updateFromJsonObject(json);
+    return songUpdate;
+  }
 
+  void _updateFromJsonObject(dynamic json) {
     if (json is Map) {
       for (String name in json.keys) {
         var jv = json[name];
         switch (name) {
           case 'state':
-            songUpdate.setState(stateFromString(jv) ?? SongUpdateState.none);
+            setState(_stateFromString(jv) ?? SongUpdateState.none);
             break;
           case 'currentKey':
-            songUpdate.setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
+            setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
             break;
           case 'song':
-            songUpdate.setSong(Song.songFromJson(jv));
+            setSong(Song.songFromJson(jv));
             break;
           //  momentNumber sequencing details should be found by local processing
           case 'momentNumber':
-            songUpdate.momentNumber = jv;
+            momentNumber = jv;
             break;
           case 'beat':
-            songUpdate.beat = jv;
+            beat = jv;
             break;
           case 'beatsPerMeasure':
-            songUpdate.beatsPerMeasure = jv;
+            beatsPerMeasure = jv;
             break;
           case 'currentBeatsPerMinute':
-            songUpdate.currentBeatsPerMinute = jv;
+            currentBeatsPerMinute = jv;
             break;
           case 'user':
-            songUpdate.setUser(jv.toString());
+            setUser(jv.toString());
             break;
           case 'singer':
-            songUpdate.singer = jv.toString();
+            singer = jv.toString();
             break;
           default:
             logger.w('unknown field in JSON: "$name"');
             break;
         }
       }
-      songUpdate.setMomentNumber(songUpdate.momentNumber);
-      songUpdate.songMoment =
-          songUpdate.song.songMoments[min(max(0, songUpdate.momentNumber), songUpdate.song.getSongMomentsSize())];
-
-      return songUpdate;
+      setMomentNumber(momentNumber);
+      songMoment =
+          song.songMoments.isNotEmpty ? song.songMoments[min(max(0, momentNumber), song.getSongMomentsSize())] : null;
     }
-    return null;
   }
 
   String toJson() {
@@ -326,16 +388,16 @@ class SongUpdate {
     return hash;
   }
 
-  SongUpdateState state = SongUpdateState.idle;
+  SongUpdateState state;
   late Song song;
-  String user = 'no one';
-  String singer = 'unknown';
-  int momentNumber = 0;
+  String user;
+  String singer;
+  int momentNumber;
   SongMoment? songMoment;
 
 //  play values
-  int beat = 0;
-  int beatsPerMeasure = 4;
-  int currentBeatsPerMinute = 100;
-  Key currentKey = Key.getDefault();
+  int beat;
+  int beatsPerMeasure;
+  int currentBeatsPerMinute;
+  Key currentKey;
 }

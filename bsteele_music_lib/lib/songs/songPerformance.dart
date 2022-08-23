@@ -18,9 +18,10 @@ String _cleanPerformer(final String? value) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung})
+  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung, final Song? song})
       : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _singer = _cleanPerformer(singer),
+        song = song,
         _key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
