@@ -2510,14 +2510,14 @@ o: end here''');
   void _testSongMomentToGrid(Song a) {
     for (var expanded in [false, true]) {
       var grid = a.toLyricsGrid(expanded: expanded);
-      logger.i('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
+      logger.d('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
 
       List<GridCoordinate> list = a.songMomentToChordGrid(expanded: expanded);
       assert(list.length == a.getSongMomentsSize());
       for (var songMoment in a.songMoments) {
         var gc = list[songMoment.momentNumber];
         var measureNode = grid.get(gc.row, gc.col);
-        logger.i('${songMoment.momentNumber}: $gc: $measureNode');
+        logger.d('${songMoment.momentNumber}: $gc: $measureNode');
         assert(measureNode is Measure);
         expect(measureNode, songMoment.measure);
       }
@@ -3370,9 +3370,11 @@ v:
 
   test('test songBase toDisplayGrid()', () {
     int beatsPerBar = 4;
-    SongBase a;
+    Song a;
+    var userDisplayStyle = UserDisplayStyle.proPlayer;
 
     {
+      userDisplayStyle = UserDisplayStyle.proPlayer;
       a = Song.createSong(
           'ive go the blanks',
           'bob',
@@ -3388,8 +3390,12 @@ v:
               'bob, bob, bob berand\n'
               'You got me');
       for (var expanded in [false, true]) {
-        var grid = a.toDisplayGrid(UserDisplayStyle.proPlayer, expanded: expanded);
-        logger.d('a.toDisplayGrid(): $grid');
+        var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+        debugGridLog(grid, userDisplayStyle: userDisplayStyle, expanded: expanded);
+        expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: false), '''
+UserDisplayStyle: UserDisplayStyle.proPlayer, expanded: false
+	V:    
+	V:    	V:''');
         expect(grid.getRowCount(), 2);
         assert(grid.get(0, 0) is ChordSection);
         var chordSection = grid.get(0, 0) as ChordSection;
@@ -3408,16 +3414,25 @@ v:
           expect(
               grid.at(a.songMomentToGridCoordinate[songMoment.momentNumber]) as ChordSection, songMoment.chordSection);
         }
+
+        _testSongMomentToGrid(a);
       }
     }
 
     {
+      userDisplayStyle = UserDisplayStyle.proPlayer;
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
 
       for (var expanded in [false, true]) {
-        var grid = a.toDisplayGrid(UserDisplayStyle.proPlayer, expanded: expanded);
-        logger.d('a.toDisplayGrid(): $grid');
+        var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+        debugGridLog(grid, userDisplayStyle: userDisplayStyle, expanded: expanded);
+        expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: false), '''
+UserDisplayStyle: UserDisplayStyle.proPlayer, expanded: false
+	I:    	V:    	O:    
+	I:    	I:    
+	V:    	V:    
+	O:    	O:''');
         expect(grid.getRowCount(), 3 + 1);
         expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
         expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
@@ -3434,7 +3449,7 @@ v:
           logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
           expect(
               grid.get(0, a.songMomentToGridCoordinate[songMoment.momentNumber].row - 1 /* row is at +1  */)
-                  as ChordSection,
+              as ChordSection,
               songMoment.chordSection);
         }
         //  in pro, verify each section has it's label and duplicate for chords
@@ -3446,9 +3461,11 @@ v:
           //  expect duplicate for chords
           expect(grid.at(GridCoordinate(gc.row, gc.col + 1)) as ChordSection, songMoment.chordSection);
         }
+        _testSongMomentToGrid(a);
       }
     }
     {
+      userDisplayStyle = UserDisplayStyle.singer;
       a = Song.createSong(
           'ive go the blanks',
           'bob',
@@ -3464,9 +3481,16 @@ v:
               'bob, bob, bob berand\n'
               'You got me');
       for (var expanded in [false, true]) //  shouldn't matter
-      {
-        var grid = a.toDisplayGrid(UserDisplayStyle.singer, expanded: expanded);
-        logger.d('a.toDisplayGrid(): $grid');
+          {
+        var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+        debugGridLog(grid, userDisplayStyle: userDisplayStyle, expanded: expanded);
+        expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: false), '''
+UserDisplayStyle: UserDisplayStyle.singer, expanded: false
+	V:    	V:    
+	"foo foo foo foo baby oh baby yesterday"
+	"bar bar"
+	"bob, bob, bob berand"
+	"You got me"''');
         expect(grid.getRowCount(), 5);
         assert(grid.get(0, 0) is ChordSection);
         var chordSection = grid.get(0, 0) as ChordSection;
@@ -3481,16 +3505,12 @@ v:
         lyric = grid.get(4, 0) as Lyric;
         expect(lyric.line, 'You got me');
 
-        for (var songMoment in a.songMoments) {
-          //  expect entry for section labels
-          var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
-          logger.d('$songMoment: $gc');
-          expect(grid.at(gc) as ChordSection, songMoment.chordSection);
-        }
+        _testSongMomentToGrid(a);
       }
     }
 
     {
+      userDisplayStyle = UserDisplayStyle.singer;
       a = Song.createSong(
           'ive go the blanks',
           'bob',
@@ -3506,39 +3526,28 @@ v:
               'bar bar\no:  yo yo yo\n yeah');
 
       for (var expanded in [false, true]) //  shouldn't matter
-      {
-        var grid = a.toDisplayGrid(UserDisplayStyle.singer, expanded: expanded);
-        logger.d('a.toDisplayGrid(): $grid');
-        expect(grid.getRowCount(), 11);
-        expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-        expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-        expect(grid.get(0, 2), isNull);
-        expect((grid.get(1, 0) as Lyric).line, '(instrumental)');
-        expect((grid.get(2, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect((grid.get(2, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect((grid.get(3, 0) as Lyric).line, '');
-        expect((grid.get(4, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect((grid.get(4, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect(grid.get(4, 2), isNull);
-        expect((grid.get(5, 0) as Lyric).line, 'foo foo foo foo baby');
-        expect(grid.get(5, 1), isNull);
-        expect((grid.get(6, 0) as Lyric).line, 'oh baby yesterday');
-        expect((grid.get(7, 0) as Lyric).line, 'bar bar');
-        expect((grid.get(8, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-        expect((grid.get(8, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-        expect((grid.get(9, 0) as Lyric).line, 'yo yo yo');
-        expect((grid.get(10, 0) as Lyric).line, 'yeah');
-        expect(grid.get(11, 0), isNull);
-
-        for (var songMoment in a.songMoments) {
-          //  expect entry for section labels
-          var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
-          logger.d('$songMoment: $gc');
-          expect(grid.at(gc) as ChordSection, songMoment.chordSection);
-        }
+          {
+        var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+        debugGridLog(grid, userDisplayStyle: userDisplayStyle, expanded: expanded);
+        expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: false), '''
+UserDisplayStyle: UserDisplayStyle.singer, expanded: false
+	I:    	I:    
+	"(instrumental)"
+	V:    	V:    
+	""    
+	V:    	V:    
+	"foo foo foo foo baby"
+	"oh baby yesterday"
+	"bar bar"
+	O:    	O:    
+	"yo yo yo"
+	"yeah"''');
+        _testSongMomentToGrid(a);
       }
     }
     {
+      userDisplayStyle = UserDisplayStyle.both;
+      bool expanded = false;
       a = Song.createSong(
           'ive go the blanks',
           'bob',
@@ -3556,138 +3565,48 @@ v:
               'yo3\n'
               'yo4');
 
-      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: false);
-      logger.i('a.toDisplayGrid(): $grid');
-      expect(grid.getRowCount(), 13);
-      expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-      for (var i = 1; i < 7; i++) {
-        expect(grid.get(0, i), isNull);
-      }
-      var r = 1;
-      expect((grid.get(r, 0) as Measure).toMarkup(), 'A');
-      expect((grid.get(r, 1) as Measure).toMarkup(), 'B');
-      expect((grid.get(r, 2) as Measure).toMarkup(), 'C');
-      expect((grid.get(r, 3) as Measure).toMarkup(), 'D');
-      expect((grid.get(r, 4) as Measure).toMarkup(), 'x4');
-      expect(grid.get(r, 5), isNull);
-      expect((grid.get(r, 6) as Lyric).line, '(instrumental)');
-      r = 2;
-      expect(grid.get(r, 0), isNull);
-      expect(grid.get(r, 1), isNull);
-      expect(grid.get(r, 2), isNull);
-      expect(grid.get(r, 3), isNull);
-      expect(grid.get(r, 4), isNull);
-      expect(grid.get(r, 5), isNull);
-      expect((grid.get(r, 6) as Lyric).line, 'more instrumental');
-      r = 9;
-      expect((grid.get(r, 0) as Measure).toMarkup(), 'C');
-      expect((grid.get(r, 1) as Measure).toMarkup(), 'C');
-      expect((grid.get(r, 2) as Measure).toMarkup(), 'G');
-      expect((grid.get(r, 3) as Measure).toMarkup(), 'G,');
-      expect((grid.get(r, 4) as Measure).toString(), '⎤');
-      expect(grid.get(r, 5), isNull);
-      expect((grid.get(r, 6) as Lyric).line, 'yo1\nyo2');
-      r = 12;
-      expect(grid.get(r, 0), isNull);
-      expect(grid.get(r, 1), isNull);
-      expect(grid.get(r, 2), isNull);
-      expect(grid.get(r, 3), isNull);
-      expect(grid.get(r, 4), isNull);
-      expect(grid.get(r, 5), isNull);
-      expect((grid.get(r, 6) as Lyric).line, ''); // fixme: verify this
+      var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      debugGridLog(grid, userDisplayStyle: userDisplayStyle, expanded: expanded);
+      expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: expanded), '''
+UserDisplayStyle: UserDisplayStyle.both, expanded: false
+	I:    	(0,1)	(0,2)	(0,3)	(0,4)	(0,5)	(0,6)
+	A     	B     	C     	D     	x4    	(1,5)	"(instrumental)"
+	(2,0)	(2,1)	(2,2)	(2,3)	(2,4)	(2,5)	"more instrumental"
+	(3,0)	(3,1)	(3,2)	(3,3)	(3,4)	(3,5)	""    
+	(4,0)	(4,1)	(4,2)	(4,3)	(4,4)	(4,5)	""    
+	V:    	(5,1)	(5,2)	(5,3)	(5,4)	(5,5)	(5,6)
+	G     	G     	G     	G,    	(6,4)	(6,5)	"line 1"
+	C     	C     	G     	G     	(7,4)	(7,5)	"line 2"
+	O:    	(8,1)	(8,2)	(8,3)	(8,4)	(8,5)	(8,6)
+	C     	C     	G     	G,    	⎤     	(9,5)	"yo1\\nyo2"
+	E     	F     	G     	E     	⎦     	x3    	"yo3\\nyo4"
+	A     	B     	C     	(11,3)	(11,4)	(11,5)	"\\n"  
+	(12,0)	(12,1)	(12,2)	(12,3)	(12,4)	(12,5)	""''');
 
-      //
-      // for (var songMoment in a.songMoments) {
-      //   //  expect entry for section labels
-      //   var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
-      //   logger.i('$songMoment: $gc');
-      //   expect(grid.at(gc) as ChordSection, songMoment.chordSection);
-      // }
+      //  validate song moment to grid coordinates
+      _testSongMomentToGrid(a);
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      debugGridLog(grid, userDisplayStyle: userDisplayStyle, expanded: expanded);
+      expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: expanded), '''
+UserDisplayStyle: UserDisplayStyle.both, expanded: true
+	I:    	(0,1)	(0,2)	(0,3)	(0,4)	(0,5)	(0,6)
+	A     	B     	C     	D     	x4#1  	(1,5)	"(instrumental)"
+	A     	B     	C     	D     	x4#2  	(2,5)	"more instrumental"
+	A     	B     	C     	D     	x4#3  	(3,5)	""    
+	A     	B     	C     	D     	x4#4  	(4,5)	""    
+	V:    	(5,1)	(5,2)	(5,3)	(5,4)	(5,5)	(5,6)
+	G     	G     	G     	G,    	(6,4)	(6,5)	"line 1"
+	C     	C     	G     	G     	(7,4)	(7,5)	"line 2"
+	O:    	(8,1)	(8,2)	(8,3)	(8,4)	(8,5)	(8,6)
+	C     	C     	G     	G,    	⎤     	(9,5)	"yo1" 
+	E     	F     	G     	E     	⎦     	x3#1  	"yo2" 
+	C     	C     	G     	G,    	⎤     	(11,5)	"yo3" 
+	E     	F     	G     	E     	⎦     	x3#2  	"yo4" 
+	C     	C     	G     	G,    	⎤     	(13,5)	""    
+	E     	F     	G     	E     	⎦     	x3#3  	""    
+	A     	B     	C     	(15,3)	(15,4)	(15,5)	""''');
     }
-    // {
-    //   a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-    //       4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
-    //
-    //   var grid = a.toLyricsGrid();
-    //   logger.d('a.toGrid(): $grid');
-    //
-    //   //  assure the lengths are correct
-    //   for (var r = 0; r < 8; r++) {
-    //     expect(grid.rowLength(r), 5 + 1);
-    //   }
-    //
-    //   expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
-    //   for (var i = 1; i < 4; i++) {
-    //     expect(grid.get(0, i), isNull);
-    //   }
-    //   expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
-    //   expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
-    //
-    //   expect(grid.get(2, 0), ChordSection.parseString('V: C F C C#,F F C B x2  G F C Gb', beatsPerBar));
-    //   for (var i = 1; i < 4; i++) {
-    //     expect(grid.get(2, i), isNull);
-    //   }
-    //   expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
-    //   expect(grid.get(3, 3), Measure.parseString('C#', beatsPerBar));
-    //   expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
-    //   expect(grid.get(4, 3), Measure.parseString('B', beatsPerBar));
-    //   expect(grid.get(5, 0), Measure.parseString('G', beatsPerBar));
-    //   expect(grid.get(5, 3), Measure.parseString('Gb', beatsPerBar));
-    //
-    //   expect(grid.get(6, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
-    //   for (var i = 1; i < 4; i++) {
-    //     expect(grid.get(6, i), isNull);
-    //   }
-    //   expect(grid.get(7, 0), Measure.parseString('D', beatsPerBar));
-    //   expect(grid.get(7, 3), Measure.parseString('G#', beatsPerBar));
-    // }
-    //
-    // {
-    //   a = Song.createSong(
-    //       'ive go the blanks',
-    //       'bob',
-    //       'bob',
-    //       music_key.Key.get(music_key.KeyEnum.C),
-    //       106,
-    //       beatsPerBar,
-    //       4,
-    //       'pearlbob',
-    //       'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
-    //       'i: intro lyric\n'
-    //           'v: verse lyric 1\nverse lyric 2\no: outro lyric\n');
-    //
-    //   var grid = a.toLyricsGrid();
-    //   logger.i('a.toGrid(): $grid');
-    //
-    //   //  assure the lengths are correct
-    //   for (var r = 0; r < grid.getRowCount(); r++) {
-    //     expect(grid.rowLength(r), 6 + 1);
-    //   }
-    //
-    //   expect(grid.get(0, 0), ChordSection.parseString('i: D C G G#', beatsPerBar));
-    //   for (var i = 1; i < 4; i++) {
-    //     expect(grid.get(0, i), isNull);
-    //   }
-    //   expect(grid.get(1, 0), Measure.parseString('D', beatsPerBar));
-    //   expect(grid.get(1, 3), Measure.parseString('G#', beatsPerBar));
-    //
-    //   expect(grid.get(2, 0), ChordSection.parseString('V: [C F C C#,F F C B] x2  G F C Gb', beatsPerBar));
-    //   for (var i = 1; i < 4; i++) {
-    //     expect(grid.get(2, i), isNull);
-    //   }
-    //   expect(grid.get(3, 0), Measure.parseString('C', beatsPerBar));
-    //   expect(grid.get(3, 3), Measure.parseString('C#,', beatsPerBar));
-    //   expect(grid.get(4, 0), Measure.parseString('F', beatsPerBar));
-    //   expect(grid.get(4, 3), Measure.parseString('B', beatsPerBar));
-    //   expect(grid.get(5, 0), Measure.parseString('G', beatsPerBar));
-    //   expect(grid.get(5, 3), Measure.parseString('Gb', beatsPerBar));
-    //
-    //   expect(grid.get(6, 0), ChordSection.parseString('o: D C G G#', beatsPerBar));
-    //   for (var i = 1; i < 4; i++) {
-    //     expect(grid.get(6, i), isNull);
-    //   }
-    //   expect(grid.get(7, 0), Measure.parseString('D', beatsPerBar));
-    //   expect(grid.get(7, 3), Measure.parseString('G#', beatsPerBar));
-    // }
   });
 }

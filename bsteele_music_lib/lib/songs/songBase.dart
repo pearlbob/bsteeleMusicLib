@@ -3633,6 +3633,7 @@ class SongBase {
   Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
     var grid = Grid<MeasureNode>();
     _songMomentToGridCoordinate = [];
+    expanded = expanded ?? false;
 
     switch (userDisplayStyle) {
       case UserDisplayStyle.proPlayer:
@@ -3698,44 +3699,98 @@ class SongBase {
     }
 
     //  add the lyric sections
-    for (var lyricSection in lyricSections) {
-      //  section by section
+    {
+      var momentNumber = 0;
+      for (var lyricSection in lyricSections) {
+        //  section by section
 
-      //  get the chord section
-      var chordSection = findChordSectionByLyricSection(lyricSection);
-      assert(chordSection != null);
-      if (chordSection == null) {
-        continue;
+        //  get the chord section
+        var chordSection = findChordSectionByLyricSection(lyricSection);
+        assert(chordSection != null);
+        if (chordSection == null) {
+          continue;
+        }
+
+        //  convert to chord section grid
+        var sectionGrid = chordSection.toGrid(chordColumns: columns, expanded: expanded);
+        //debugGridLog(sectionGrid, expanded: expanded);
+
+        //  find the rows used by the chords
+        var rows = sectionGrid.getRowCount() //
+            -
+            1; //  chord section version on title row without lyrics!
+
+        //  get the lyrics spread properly across the chord row count
+        var lyrics = lyricSection.toLyrics(chordSection, expanded);
+
+        //  add the lyrics to the chord section grid as a final column
+        assert(rows <= lyrics.length);
+        sectionGrid.set(0, columns, null); //  section version title row
+        for (var i = 1; //  offset for section version title row without lyrics
+            i <= rows;
+            i++) {
+          var lyric = lyrics[i - 1];
+          sectionGrid.set(i, columns, lyric);
+        }
+        //  if more lyrics than chord rows
+        for (var i = rows; i <= lyrics.length; i++) {
+          var lyric = lyrics[i - 1];
+          sectionGrid.set(i, columns, lyric);
+        }
+
+        //  assign grid locations to song moments
+        {
+          //  fixme: why is this so difficult and fragile?
+          GridCoordinate gc = GridCoordinate(grid.getRowCount() + 1 /* skip section title row */, 0);
+          int limit = momentNumber + chordSection.getTotalMoments();
+          var lastPhraseIndex = 0;
+          GridCoordinate repeatGc = gc;
+          var lastRepeat = 0;
+          for (var m = momentNumber; m < limit; m++) {
+            var songMoment = songMoments[m];
+
+            //  adjust to new phrase or repeat
+            if (lastPhraseIndex != songMoment.phraseIndex) {
+              lastPhraseIndex = songMoment.phraseIndex;
+              gc = GridCoordinate(gc.row + 1, 0);
+              lastRepeat = songMoment.repeat;
+              repeatGc = gc;
+            } else if (lastRepeat != songMoment.repeat) {
+              lastRepeat = songMoment.repeat;
+              if (expanded) {
+                gc = GridCoordinate(gc.row + 1, 0);
+              } else {
+                gc = repeatGc;
+              }
+            }
+            logger.d('gc: $gc');
+            _songMomentToGridCoordinate.add(gc);
+            {
+              //  prep for next incremental entry
+              logger.d('repeat: ${songMoment.repeat}, repeatMax: ${songMoment.repeatMax}');
+              if (songMoment.measure.endOfRow) {
+                gc = GridCoordinate(gc.row + 1, 0);
+              } else {
+                gc = GridCoordinate(gc.row, gc.col + 1);
+              }
+              logger.d('next gc: $gc');
+            }
+            assert(songMoment.chordSection == chordSection);
+          }
+
+          //  debug
+          if (Logger.level.index <= Level.debug.index) {
+            for (var m = momentNumber; m < limit; m++) {
+              logger.i('$m: ${songMoments[m]}: ${_songMomentToGridCoordinate[m]}');
+            }
+          }
+
+          momentNumber = momentNumber + chordSection.getTotalMoments();
+        }
+
+        //  add the lyrics section grid to the song grid
+        grid.add(sectionGrid);
       }
-
-      //  convert to chord section grid
-      var sectionGrid = chordSection.toGrid(chordColumns: columns, expanded: expanded);
-
-      //  find the rows used by the chords
-      var rows = sectionGrid.getRowCount() //
-          -
-          1; //  chord section version on title row without lyrics!
-
-      //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false);
-
-      //  add the lyrics to the chord section grid as a final column
-      assert(rows <= lyrics.length);
-      sectionGrid.set(0, columns, null); //  section version title row
-      for (var i = 1; //  offset for section version title row without lyrics
-          i <= rows;
-          i++) {
-        var lyric = lyrics[i - 1];
-        sectionGrid.set(i, columns, lyric);
-      }
-      //  if more lyrics than rows
-      for (var i = rows; i <= lyrics.length; i++) {
-        var lyric = lyrics[i - 1];
-        sectionGrid.set(i, columns, lyric);
-      }
-
-      //  add the lyrics section grid to the song grid
-      grid.add(sectionGrid);
     }
 
     return grid;
@@ -4159,4 +4214,38 @@ class LyricParseException {
 
   final String message;
   final MarkedString markedString;
+}
+
+void debugGridLog(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayStyle, bool? expanded}) {
+  logger.i(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: expanded));
+}
+
+String debugGridToString(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayStyle, bool? expanded}) {
+  if (Logger.level.index <= Level.info.index) {
+    var sb = StringBuffer('\nUserDisplayStyle: $userDisplayStyle, expanded: $expanded\n');
+    for (var r = 0; r < grid.getRowCount(); r++) {
+      var row = grid.getRow(r);
+      for (var c = 0; c < (row?.length ?? 0); c++) {
+        var measureNode = grid.get(r, c);
+        if (measureNode == null) {
+          sb.write('\t($r,$c)');
+        } else {
+          var s = '';
+          switch (measureNode.runtimeType) {
+            case ChordSection:
+              s = (measureNode as ChordSection).sectionVersion.toString();
+              break;
+            default:
+              s = measureNode.toString();
+              break;
+          }
+          s = s.replaceAll('\n', '\\n');
+          sb.write('\t${s.padRight(6)}');
+        }
+      }
+      sb.write('\n');
+    }
+    return sb.toString().trim();
+  }
+  return '';
 }
