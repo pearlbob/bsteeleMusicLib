@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
@@ -398,7 +399,14 @@ class AllSongPerformances {
 
   void addFromJsonString(String jsonString) {
     var decoded = jsonDecode(jsonString);
-    if (decoded is List<dynamic>) {
+    if (decoded is Map<String, dynamic>) {
+      //  assume the items are song performances
+      for (var item in decoded[allSongPerformanceHistoryName]) {
+        var performance = SongPerformance._fromJson(item);
+        _allSongPerformances.add(performance);
+        _allSongPerformanceHistory.add(performance);
+      }
+    } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
       for (var item in decoded) {
         var performance = SongPerformance._fromJson(item);
@@ -484,6 +492,13 @@ class AllSongPerformances {
 
   void clearAllSongPerformanceRequests() {
     _allSongPerformanceRequests.clear();
+  }
+
+  void readFileSync(File file) {
+    String jsonString = file.path.endsWith('.gz')
+        ? Utf8Decoder().convert(GZipCodec().decoder.convert(file.readAsBytesSync()))
+        : file.readAsStringSync();
+    addFromJsonString(jsonString);
   }
 
   int get length => _allSongPerformances.length;
