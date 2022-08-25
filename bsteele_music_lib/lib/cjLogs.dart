@@ -39,7 +39,7 @@ class CjLog {
     var dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS'); //  20-Aug-2022 06:08:20.127
     var dotEnv = DotEnv(includePlatformEnvironment: true)..load();
 
-    _catalinaBase = dotEnv['CATALINA_BASE'];
+    _catalinaBase = null;
     _host = dotEnv['HOST'];
 
     //  process the args
@@ -82,17 +82,21 @@ class CjLog {
     }
     logger.log(_cjLogFiles, 'host: $_host');
 
-    if (_catalinaBase == null || _catalinaBase!.isEmpty) {
-      logger.log(_cjLogFiles, 'Empty CATALINA_BASE environment variable: "$_catalinaBase"');
-      exit(-1);
-    }
-    logger.log(_cjLogFiles, 'CATALINA_BASE: $_catalinaBase');
-
-    //  look at the tomcat logs
-    var logs = Directory('$_catalinaBase/logs');
-    logger.log(_cjLogFiles, 'logs: $logs');
-
+    Directory logs;
     var processedLogs = Directory('${dotEnv['HOME']}/communityJams/logs/$_host');
+    if (_catalinaBase != null) {
+      if (_catalinaBase!.isEmpty) {
+        print('Empty CATALINA_BASE environment variable: "$_catalinaBase"');
+        exit(-1);
+      }
+      logger.log(_cjLogFiles, 'CATALINA_BASE: $_catalinaBase');
+      //  look at the tomcat logs directly
+      logs = Directory('$_catalinaBase/logs');
+    } else {
+      logs = processedLogs;
+    }
+
+    logger.log(_cjLogFiles, 'logs: $logs');
     logger.log(_cjLogFiles, 'processedLogs: $processedLogs');
 
     processedLogs.createSync();
