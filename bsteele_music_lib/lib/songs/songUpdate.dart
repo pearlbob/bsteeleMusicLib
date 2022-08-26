@@ -16,6 +16,8 @@ enum SongUpdateState {
   idle,
 }
 
+final unknownSinger = 'unknown';
+
 String _StateEnumToString(SongUpdateState s) {
   return s.toString().split('.').last;
 }
@@ -48,7 +50,7 @@ class SongUpdate {
       Key? currentKey})
       : state = state ?? SongUpdateState.idle,
         user = user ?? 'unknown',
-        singer = singer ?? 'unknown',
+        singer = singer ?? unknownSinger,
         momentNumber = momentNumber ?? 0,
         songMoment = songMoment,
         beat = beat ?? 0,

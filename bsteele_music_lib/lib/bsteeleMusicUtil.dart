@@ -14,6 +14,7 @@ import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:bsteeleMusicLib/songs/songPerformance.dart';
+import 'package:bsteeleMusicLib/songs/songUpdate.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:csv/csv.dart';
 import 'package:english_words/english_words.dart';
@@ -29,6 +30,7 @@ const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
+AllSongPerformances allSongPerformances = AllSongPerformances();
 
 void main(List<String> args) {
   Logger.level = Level.info;
@@ -657,7 +659,6 @@ coerced to reflect the songlist's last modification for that song.
         case '-allSongPerformances':
           {
             //  read the local directory's list of song performance files
-            AllSongPerformances allSongPerformances = AllSongPerformances();
             allSongPerformances.clear();
             assert(allSongPerformances.allSongPerformanceHistory.isEmpty);
             assert(allSongPerformances.allSongPerformances.isEmpty);
@@ -719,16 +720,19 @@ coerced to reflect the songlist's last modification for that song.
               SplayTreeSet<SongPerformance> performanceDelete =
                   SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
               for (var songPerformance in allSongPerformances.allSongPerformances) {
-                if (!songPerformance.singer.contains(' ') ||
+                if ((!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger) ||
                     songPerformance.lastSung < lastSungLimit ||
                     songPerformance.singer.contains('Vikki') ||
                     songPerformance.singer.contains('Alicia C.') ||
                     songPerformance.singer.contains('Bob S.')) {
                   performanceDelete.add(songPerformance);
+                  if (songPerformance.lastSung > 0) {
+                    logger.i('break here?');
+                  }
                 }
               }
               for (var performance in performanceDelete) {
-                logger.d('delete: $performance');
+                logger.i('delete: $performance');
                 allSongPerformances.removeSingerSong(performance.singer, performance.songIdAsString);
                 assert(!allSongPerformances.allSongPerformances.contains(performance));
               }
@@ -736,7 +740,7 @@ coerced to reflect the songlist's last modification for that song.
               //  history
               performanceDelete.clear();
               for (var songPerformance in allSongPerformances.allSongPerformanceHistory) {
-                if (!songPerformance.singer.contains(' ') ||
+                if ((!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger) ||
                     songPerformance.lastSung < lastSungLimit ||
                     songPerformance.singer.contains('Vikki') ||
                     songPerformance.singer.contains('Alicia C.') ||
@@ -745,7 +749,7 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (var performance in performanceDelete) {
-                logger.d('delete history: $performance');
+                logger.i('delete history: $performance');
                 allSongPerformances.removeSingerSongHistory(performance);
                 assert(!allSongPerformances.allSongPerformanceHistory.contains(performance));
               }
@@ -778,7 +782,7 @@ coerced to reflect the songlist's last modification for that song.
 
             if (await file.exists()) {
               logger.i('\'${file.path}\' exists.');
-              AllSongPerformances allSongPerformances = AllSongPerformances();
+
               logger.i('allSongPerformances: ${allSongPerformances.length}');
               allSongPerformances.updateFromJsonString(file.readAsStringSync());
               logger.i('allSongPerformances: ${allSongPerformances.length}');
