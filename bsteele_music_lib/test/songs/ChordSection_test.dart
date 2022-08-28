@@ -1,6 +1,7 @@
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/grid.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureComment.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
@@ -954,5 +955,26 @@ void main() {
         '\n'
         ' A# Bb] x2\n'
         '\n');
+  });
+
+  test('test ChordSection transpose()', () {
+    Logger.level = Level.debug;
+    ChordSection chordSection;
+
+    chordSection = ChordSection.parseString('I: A B C D, D C G G', beatsPerBar);
+    logger.i('${chordSection.phrasesToMarkup()}');
+    expect(chordSection.transpose(Key.C, 0), 'A B C D, D C G G ');
+    expect(chordSection.transpose(Key.C, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
+    expect(chordSection.transpose(Key.C, 2), 'B Db D E, E D A A ');
+    expect(chordSection.transpose(Key.F, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
+    expect(chordSection.transpose(Key.G, 1), 'A# C C# D#, D# C# G# G# ');
+
+    chordSection = ChordSection.parseString('I: A B C X x2, D C G G x3', beatsPerBar);
+    logger.i('${chordSection.phrasesToMarkup()}');
+    expect(chordSection.transpose(Key.C, 0), '[A B C X ] x2 [D C G G ] x3 ');
+    expect(chordSection.transpose(Key.C, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
+    expect(chordSection.transpose(Key.C, 2), '[B Db D X ] x2 [E D A A ] x3 ');
+    expect(chordSection.transpose(Key.F, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
+    expect(chordSection.transpose(Key.G, 1), '[A# C C# X ] x2 [D# C# G# G# ] x3 ');
   });
 }

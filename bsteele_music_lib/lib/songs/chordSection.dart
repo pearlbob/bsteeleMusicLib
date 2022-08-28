@@ -134,7 +134,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       //  consume unused commas
       {
         String s = markedString.remainingStringLimited(10);
-        logger.d('s: ' + s);
+        logger.v('s: ' + s);
         RegExpMatch? mr = _commaRegexp.firstMatch(s);
         if (mr != null) {
           markedString.consume(mr.group(0)!.length);
@@ -468,7 +468,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   @override
   String transpose(Key key, int halfSteps) {
     StringBuffer sb = StringBuffer();
-    sb.write(sectionVersion.toString());
+    // sb.write(sectionVersion.toString());
     for (Phrase phrase in _phrases) {
       sb.write(phrase.transpose(key, halfSteps));
     }

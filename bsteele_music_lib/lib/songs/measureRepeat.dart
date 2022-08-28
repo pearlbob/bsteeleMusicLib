@@ -277,7 +277,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String transpose(Key key, int halfSteps) {
-    return 'x' + repeats.toString();
+    return '[${super.transpose(key, halfSteps)}] x${repeats.toString()} ';
   }
 
   @override

@@ -3672,7 +3672,7 @@ class SongBase {
             grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
             r++;
             for (var lyric in lyricSection.asLyrics(lyricSection.lyricsLines.length)) {
-              grid.set(r, 0, lyric);
+              grid.set(r, 1, lyric);
               r++;
             }
           }

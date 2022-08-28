@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bsteeleMusicLib/gridCoordinate.dart';
 
 /// A generic grid used to store data presentations to the user.
@@ -95,6 +97,14 @@ class Grid<T> {
 
   int getRowCount() {
     return grid.length;
+  }
+
+  int get maxColumnCount {
+    int ret = 0;
+    for (int r = 0; r < getRowCount(); r++) {
+      ret = max(ret, rowLength(r));
+    }
+    return ret;
   }
 
   List<T?>? getRow(int r) {

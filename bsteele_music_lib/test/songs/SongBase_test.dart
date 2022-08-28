@@ -3487,22 +3487,26 @@ UserDisplayStyle: UserDisplayStyle.proPlayer, expanded: false
         expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: false), '''
 UserDisplayStyle: UserDisplayStyle.singer, expanded: false
 	V:    	V:    
-	"foo foo foo foo baby oh baby yesterday"
-	"bar bar"
-	"bob, bob, bob berand"
-	"You got me"''');
+	(1,0)	"foo foo foo foo baby oh baby yesterday"
+	(2,0)	"bar bar"
+	(3,0)	"bob, bob, bob berand"
+	(4,0)	"You got me"''');
         expect(grid.getRowCount(), 5);
         assert(grid.get(0, 0) is ChordSection);
         var chordSection = grid.get(0, 0) as ChordSection;
         expect(chordSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect(grid.get(1, 0)!.measureNodeType, MeasureNodeType.lyric);
-        var lyric = grid.get(1, 0) as Lyric;
+        expect(grid.get(1, 0), isNull);
+        expect(grid.get(1, 1)!.measureNodeType, MeasureNodeType.lyric);
+        var lyric = grid.get(1, 1) as Lyric;
         expect(lyric.line, 'foo foo foo foo baby oh baby yesterday');
-        lyric = grid.get(2, 0) as Lyric;
+        expect(grid.get(2, 0), isNull);
+        lyric = grid.get(2, 1) as Lyric;
         expect(lyric.line, 'bar bar');
-        lyric = grid.get(3, 0) as Lyric;
+        expect(grid.get(3, 0), isNull);
+        lyric = grid.get(3, 1) as Lyric;
         expect(lyric.line, 'bob, bob, bob berand');
-        lyric = grid.get(4, 0) as Lyric;
+        expect(grid.get(4, 0), isNull);
+        lyric = grid.get(4, 1) as Lyric;
         expect(lyric.line, 'You got me');
 
         _testSongMomentToGrid(a);
@@ -3532,16 +3536,16 @@ UserDisplayStyle: UserDisplayStyle.singer, expanded: false
         expect(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: false), '''
 UserDisplayStyle: UserDisplayStyle.singer, expanded: false
 	I:    	I:    
-	"(instrumental)"
+	(1,0)	"(instrumental)"
 	V:    	V:    
-	""    
+	(3,0)	""    
 	V:    	V:    
-	"foo foo foo foo baby"
-	"oh baby yesterday"
-	"bar bar"
+	(5,0)	"foo foo foo foo baby"
+	(6,0)	"oh baby yesterday"
+	(7,0)	"bar bar"
 	O:    	O:    
-	"yo yo yo"
-	"yeah"''');
+	(9,0)	"yo yo yo"
+	(10,0)	"yeah"''');
         _testSongMomentToGrid(a);
       }
     }
