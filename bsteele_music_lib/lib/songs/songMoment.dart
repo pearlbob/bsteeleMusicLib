@@ -1,4 +1,3 @@
-
 import 'chordSection.dart';
 import 'chordSectionLocation.dart';
 import 'lyricSection.dart';
@@ -86,14 +85,10 @@ class SongMoment implements Comparable<SongMoment> {
 
   @override
   String toString() {
-    return momentNumber.toString() +
-        ': ' +
-        momentLocation +
-        ' ' +
-        measure.toMarkup() +
-        ' beat ' +
-        getBeatNumber().toString() +
-        (repeatMax > 1 ? ' ' + repeat.toString() + '/' + repeatMax.toString() : '');
+    return '${momentNumber.toString()}: $momentLocation  ${measure.toMarkup()}'
+        ' beat  ${getBeatNumber()}'
+        '${(repeatMax > 1 ? ' ' + repeat.toString() + '/' + repeatMax.toString() : '')}'
+        ' ${chordSection.sectionVersion} #${sectionCount}';
   }
 
   @override
@@ -131,7 +126,7 @@ class SongMoment implements Comparable<SongMoment> {
 
   @override
   int get hashCode {
-    return momentNumber;  //  all else is dependent on the song
+    return momentNumber; //  all else is dependent on the song
   }
 
   final int momentNumber;
@@ -156,7 +151,7 @@ class SongMoment implements Comparable<SongMoment> {
   final Phrase phrase;
   final int measureIndex;
   final Measure measure;
-  final int sectionCount;
+  final int sectionCount; //  of this type of section
   final int chordSectionSongMomentNumber;
 
   String? lyrics;

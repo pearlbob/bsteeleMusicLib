@@ -169,7 +169,6 @@ class MeasureRepeat extends Phrase {
     return super.maxMeasuresPerChordRow() + (rowCount() > 1 ? 1 : 0) + 1;
   }
 
-
   /// get a display row at the index, including the repeat markers
   @override
   List<Measure> rowAt(int index, {expanded = false}) {
@@ -245,6 +244,16 @@ class MeasureRepeat extends Phrase {
       index %= measures.length;
     }
     return super.measureAt(index);
+  }
+
+  //  return the first measure of the given row
+  @override
+  Measure firstMeasureInRow(int row, {expanded = false}) {
+    if (expanded == false) {
+      return super.firstMeasureInRow(row);
+    }
+    int n = rowCount(expanded: false);
+    return super.firstMeasureInRow(Util.intLimit(row, 0, n * repeats) % n);
   }
 
   @override
@@ -338,7 +347,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String markupEnd({int? rep}) {
-    return '] x' + repeats.toString() + (rep==null?'': '#$rep');
+    return '] x' + repeats.toString() + (rep == null ? '' : '#$rep');
   }
 
   @override

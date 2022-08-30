@@ -57,6 +57,10 @@ class Grid<T> {
     }
   }
 
+  void setAt(GridCoordinate gc, T? t) {
+    set(gc.row, gc.col, t);
+  }
+
   @override
   String toString() {
     return 'Grid{' + grid.toString() + '}';

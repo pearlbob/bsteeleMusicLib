@@ -20,6 +20,7 @@ dependencies:
   dartdoc:
   csv:
   dotenv:
+  tuple:
 
 dev_dependencies:
   lints:

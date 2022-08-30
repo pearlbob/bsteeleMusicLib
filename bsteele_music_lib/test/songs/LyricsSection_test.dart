@@ -71,7 +71,7 @@ void main() {
       for (var lyricSection in a.lyricSections) {
         logger.i('\n$lyricSection in $rows rows:');
         var i = 1;
-        var asLyrics = lyricSection.asLyrics(rows);
+        var asLyrics = lyricSection.asExpandedLyrics(a.findChordSectionByLyricSection(lyricSection)!, rows);
         assert(asLyrics.length == max(1, rows));
         for (var lyric in asLyrics) {
           logger.i('${i++}:  "$lyric"');

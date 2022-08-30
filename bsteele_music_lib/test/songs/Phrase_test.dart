@@ -146,4 +146,26 @@ void main() {
     phrase.edit(MeasureEditType.replace, 5, measure);
     expect(phrase.toMarkup(), 'Dm C B Bb, A F ');
   });
+
+  test('test firstMeasureInRow()', () {
+    Logger.level = Level.info;
+    int phraseIndex = 0;
+    int beatsPerBar = 4;
+
+    var phrase = Phrase.parseString('Dm C B Bb, A, B C D, F', phraseIndex, beatsPerBar, null);
+    logger.i('0: ${phrase.firstMeasureInRow(0)}');
+    expect(phrase.firstMeasureInRow(0).toMarkup(), 'Dm');
+    expect(phrase.firstMeasureInRow(1).toMarkup(), 'A,');
+    expect(phrase.firstMeasureInRow(2).toMarkup(), 'B');
+    expect(phrase.firstMeasureInRow(3).toMarkup(), 'F');
+    expect(phrase.firstMeasureInRow(4).toMarkup(), 'F');
+
+    phrase = Phrase.parseString('Dm C B Bb, A B C D, E F G', phraseIndex, beatsPerBar, null);
+    logger.i('0: ${phrase.firstMeasureInRow(0)}');
+    expect(phrase.firstMeasureInRow(0).toMarkup(), 'Dm');
+    expect(phrase.firstMeasureInRow(1).toMarkup(), 'A');
+    expect(phrase.firstMeasureInRow(2).toMarkup(), 'E');
+    expect(phrase.firstMeasureInRow(3).toMarkup(), 'E');
+    expect(phrase.firstMeasureInRow(4).toMarkup(), 'E');
+  });
 }

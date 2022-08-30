@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
 import 'package:quiver/collection.dart';
-import 'package:quiver/core.dart';
 
 import '../appLogger.dart';
 import 'drumSection.dart';
@@ -13,7 +14,7 @@ import 'sectionVersion.dart';
 /// A _sectionVersion of a song that carries the lyrics, any special drum _sectionVersion,
 /// and the chord changes on a measure basis
 /// with ultimately beat resolution.
-class LyricSection implements Comparable<LyricSection> {
+class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   LyricSection(this._sectionVersion, this._index);
 
   void addLine(String lyricsLine) {
@@ -29,7 +30,7 @@ class LyricSection implements Comparable<LyricSection> {
     }
   }
 
-  List<Lyric> asLyrics(int rows) {
+  List<Lyric> asExpandedLyrics(ChordSection chordSection, int rows) {
     rows = max(rows, 1);
 
     List<Lyric> lyrics = [];
@@ -57,7 +58,7 @@ class LyricSection implements Comparable<LyricSection> {
 
   List<Lyric> toLyrics(ChordSection chordSection, bool expanded) {
     //  gather the section lyrics as if expanded
-    var expandedLyrics = asLyrics(chordSection.chordRowCount);
+    var expandedLyrics = asExpandedLyrics(chordSection, chordSection.chordRowCount);
     if (expanded) {
       //   done
       return expandedLyrics;
@@ -91,6 +92,7 @@ class LyricSection implements Comparable<LyricSection> {
             if (lyric == null) {
               lyric = expandedLyrics[i++];
             } else {
+              //  add more lines
               lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}');
             }
             ret.add(lyric);
@@ -99,6 +101,46 @@ class LyricSection implements Comparable<LyricSection> {
       }
     }
     return ret;
+  }
+
+  @override
+  MeasureNodeType get measureNodeType => MeasureNodeType.lyricSection;
+
+  @override
+  bool setMeasuresPerRow(int measuresPerRow) {
+    // TODO: implement setMeasuresPerRow
+    throw UnimplementedError();
+  }
+
+  @override
+  String toEntry() {
+    return toString();
+  }
+
+  @override
+  String toJson() {
+    // TODO: implement toJson
+    throw UnimplementedError();
+  }
+
+  @override
+  String toMarkup({bool expanded = false}) {
+    return toString();
+  }
+
+  @override
+  String toMarkupWithoutEnd() {
+    return toString();
+  }
+
+  @override
+  String transpose(Key key, int halfSteps) {
+    return toString();
+  }
+
+  @override
+  MeasureNode transposeToKey(Key key) {
+    return this;
   }
 
   @override
@@ -193,9 +235,7 @@ class LyricSection implements Comparable<LyricSection> {
 
   @override
   int get hashCode {
-    int ret = _sectionVersion.hashCode;
-    ret = ret * 13 + drumSection.hashCode;
-    ret = ret * 17 + hashObjects(_lyricsLines);
+    int ret = Object.hash(_sectionVersion, drumSection, _lyricsLines);
     return ret;
   }
 

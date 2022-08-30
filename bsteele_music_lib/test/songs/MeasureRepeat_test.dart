@@ -831,4 +831,33 @@ void main() {
       expect(grid.get(3, 5), MeasureRepeatMarker(3));
     }
   });
+
+  test('test repeat firstMeasureInRow()', () {
+    Logger.level = Level.info;
+    int phraseIndex = 0;
+    int beatsPerBar = 4;
+
+    var repeat = MeasureRepeat.parseString('[Dm C B Bb, A, B C D] x3', phraseIndex, beatsPerBar, null);
+    logger.i('0: ${repeat.firstMeasureInRow(0)}');
+    expect(repeat.firstMeasureInRow(0).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(1).toMarkup(), 'A,');
+    expect(repeat.firstMeasureInRow(2).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(3).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(4).toMarkup(), 'B');
+
+    expect(repeat.firstMeasureInRow(0, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(1, expanded: true).toMarkup(), 'A,');
+    expect(repeat.firstMeasureInRow(2, expanded: true).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(3, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(4, expanded: true).toMarkup(), 'A,');
+    expect(repeat.firstMeasureInRow(5, expanded: true).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(6, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(7, expanded: true).toMarkup(), 'A,');
+    expect(repeat.firstMeasureInRow(8, expanded: true).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(9, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(10, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(11, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(12, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(13, expanded: true).toMarkup(), 'Dm');
+  });
 }

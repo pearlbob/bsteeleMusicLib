@@ -5,37 +5,44 @@ import 'package:bsteeleMusicLib/src/syllables/disyllabic.dart';
 import 'package:bsteeleMusicLib/src/syllables/monosyllabic.dart';
 import 'package:bsteeleMusicLib/src/syllables/problematic.dart';
 import 'package:bsteeleMusicLib/src/syllables/trisyllabic.dart';
+import 'package:logger/logger.dart';
+import 'package:quiver/strings.dart';
 import 'package:string_scanner/string_scanner.dart';
 import 'package:english_words/english_words.dart' as en;
+import 'package:tuple/tuple.dart';
 
 import '../appLogger.dart';
 
 final RegExp _allCaps = RegExp(r'^[A-Z]+$');
-
 final RegExp _alpha = RegExp(r'\w');
-
 final RegExp _vowel = RegExp(r'[aeiouy]', caseSensitive: false);
+final RegExp _notWordRegExp = RegExp(r'\W');
+final RegExp _whitespaceRegExp = RegExp(r'\s');
 
-List<String> splitBySyllables(String words) {
-  List<String> syllables = [];
+const _log = Level.verbose;
 
+List<Tuple2<String, int>> toSyllableTuples(String words) {
   // TODO: deal with contractions
 
-  String joinedWords = words.splitMapJoin(RegExp(r'\W'), onMatch: (m) {
+  List<Tuple2<String, int>> ret = [];
+  String joinedWords = words.splitMapJoin(_notWordRegExp, onMatch: (m) {
     var nonAlpha = m.group(0) ?? '';
-    syllables.add(nonAlpha);
+    if (!_whitespaceRegExp.hasMatch(nonAlpha)) {
+      ret.add(Tuple2(nonAlpha, 0));
+    }
     return nonAlpha;
   }, onNonMatch: (word) {
-    logger.i('word: "$word", ${en.syllables(word)}');
     if (word.isNotEmpty) {
-      syllables.addAll(_splitWordBySyllables(word));
+      var count = en.syllables(word);
+      ret.add(Tuple2(word, count));
+      logger.log(_log, 'word: "$word", $count');
     }
     return word;
   });
   assert(joinedWords == words);
-  logger.i('joinedWords: $joinedWords');
+  logger.log(_log, 'joinedWords: $joinedWords');
 
-  return syllables;
+  return ret;
 }
 
 /// Count syllables in [word].

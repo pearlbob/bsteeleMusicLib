@@ -303,16 +303,18 @@ coerced to reflect the songlist's last modification for that song.
 
             logger.i('-cjgenre: $inputFile');
             final input = inputFile.openRead();
-            final fields = await input.transform(utf8.decoder).transform(CsvToListConverter()).toList();
-            assert(fields[1][0] == 'Title');
-            assert(fields[1][1] == 'Artist');
-            assert(fields[1][2] == 'Year');
-            assert(fields[1][3] == 'Jam');
-            assert(fields[1][4] == 'Genre');
-            assert(fields[1][5] == 'Subgenre');
-            assert(fields[1][6] == 'Status');
+            final fields = await input.transform(utf8.decoder).transform(CsvToListConverter(eol: '\n')).toList();
 
-            for (var r = 2; r < fields.length; r++) {
+            logger.i('${fields.runtimeType}');
+            assert(fields[0][0] == 'Title');
+            assert(fields[0][1] == 'Artist');
+            assert(fields[0][2] == 'Year');
+            assert(fields[0][3] == 'Jam');
+            assert(fields[0][4] == 'Genre');
+            assert(fields[0][5] == 'Subgenre');
+            assert(fields[0][6] == 'Status');
+
+            for (var r = 1; r < fields.length; r++) {
               var title = fields[r][0];
               var artist = fields[r][1];
               var year = fields[r][2];

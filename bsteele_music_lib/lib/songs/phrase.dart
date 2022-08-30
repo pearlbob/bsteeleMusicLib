@@ -164,7 +164,7 @@ class Phrase extends MeasureNode {
     StringBuffer sb = StringBuffer();
     for (Measure measure in _measures) {
       sb.write(measure.transpose(key, halfSteps));
-      sb.write(measure.endOfRow ? ', ':' ');
+      sb.write(measure.endOfRow ? ', ' : ' ');
     }
     return sb.toString();
   }
@@ -461,6 +461,32 @@ class Phrase extends MeasureNode {
     return _measures[measureIndex];
   }
 
+  //  return the first measure of the given row
+  Measure firstMeasureInRow(int row) {
+    int r = 0;
+    Measure? firstInPriorRow;
+    bool wasEndOfRow = false;
+    for (var m in measures) {
+      if (r == row) {
+        return m;
+      }
+      if (wasEndOfRow) {
+        firstInPriorRow = m;
+        wasEndOfRow = false;
+      } else {
+        firstInPriorRow ??= m;
+      }
+      if (m.endOfRow) {
+        r++;
+        wasEndOfRow = true;
+      }
+    }
+    return firstInPriorRow
+        //  shouldn't be necessary:
+        ??
+        measures.last;
+  }
+
   ///  maximum number of measures in a chord row
   ///  note: these measures will include the repeat markers for repeats
   int chordRowMaxLength() {
@@ -553,11 +579,6 @@ class Phrase extends MeasureNode {
   @override
   bool isSingleItem() {
     return false;
-  }
-
-  @override
-  String? getId() {
-    return null;
   }
 
   int get repeats => 1;

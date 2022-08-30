@@ -8,11 +8,6 @@ class Lyric extends MeasureNode {
   Lyric(this.line);
 
   @override
-  String? getId() {
-    return 'line_$line';
-  }
-
-  @override
   MeasureNodeType get measureNodeType => MeasureNodeType.lyric;
 
   @override

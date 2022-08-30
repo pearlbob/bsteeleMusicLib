@@ -255,23 +255,6 @@ class SongBase {
         songMoment.row = momentGridCoordinate.row; //  convenience for later
         songMoment.col = momentGridCoordinate.col; //  convenience for later
         _songMomentGridCoordinateHashMap[songMoment] = momentGridCoordinate;
-
-//        logger.d("moment: " +
-//            songMoment.getMomentNumber().toString() +
-//            ": " +
-//            songMoment.getChordSectionLocation().toString() +
-//            "#" +
-//            songMoment.getSectionCount().toString() +
-//            " m:" +
-//            momentGridCoordinate.toString() +
-//            " " +
-//            songMoment.getMeasure().toMarkup() +
-//            (songMoment.getRepeatMax() > 1
-//                ? " " +
-//                    (songMoment.getRepeat() + 1).toString() +
-//                    "/" +
-//                    songMoment.getRepeatMax().toString()
-//                : ""));
       }
     }
 
@@ -2133,6 +2116,7 @@ class SongBase {
         break;
       case MeasureNodeType.decoration:
       case MeasureNodeType.lyric:
+      case MeasureNodeType.lyricSection:
         return false;
     }
 
@@ -3292,10 +3276,10 @@ class SongBase {
     }
 
     SongMoment firstSongMoment = songMoment;
-    String id = songMoment.getChordSection().getId();
+    int id = songMoment.getChordSection().id;
     for (int m = momentNumber - 1; m >= 0; m--) {
       SongMoment sm = _songMoments[m];
-      if (id != sm.getChordSection().getId() || sm.getSectionCount() != firstSongMoment.getSectionCount()) {
+      if (id != sm.getChordSection().id || sm.getSectionCount() != firstSongMoment.getSectionCount()) {
         return firstSongMoment;
       }
       firstSongMoment = sm;
@@ -3310,11 +3294,11 @@ class SongBase {
     }
 
     SongMoment lastSongMoment = songMoment;
-    String id = songMoment.getChordSection().getId();
+    int id = songMoment.getChordSection().id;
     int limit = _songMoments.length;
     for (int m = momentNumber + 1; m < limit; m++) {
       SongMoment sm = _songMoments[m];
-      if (id != sm.getChordSection().getId() || sm.getSectionCount() != lastSongMoment.getSectionCount()) {
+      if (id != sm.getChordSection().id || sm.getSectionCount() != lastSongMoment.getSectionCount()) {
         return lastSongMoment;
       }
       lastSongMoment = sm;
@@ -3605,7 +3589,7 @@ class SongBase {
           1; //  chord section version on title row without lyrics!
 
       //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.asLyrics(rows); //  fixme: remove when confident
+      var lyrics = lyricSection.asExpandedLyrics(chordSection, rows); //  fixme: remove when confident
       //var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false);//  fixme: replace when confident
 
       //  add the lyrics to the chord section grid as a final column
@@ -3633,6 +3617,7 @@ class SongBase {
   Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
     var grid = Grid<MeasureNode>();
     _songMomentToGridCoordinate = [];
+    _measureNodeIdToGridCoordinate = {};
     expanded = expanded ?? false;
 
     switch (userDisplayStyle) {
@@ -3643,22 +3628,33 @@ class SongBase {
           for (var lyricSection in lyricSections) {
             var chordSection = findChordSectionByLyricSection(lyricSection);
             assert(chordSection != null);
-            grid.set(0, c++, chordSection);
+            GridCoordinate gc = GridCoordinate(0, c++);
+            grid.setAt(gc, chordSection);
+            _measureNodeIdToGridCoordinate[lyricSection.id] = gc;
           }
           //  rows of chord section measures
           var r = 0;
           var chordSections = SplayTreeSet<ChordSection>()..addAll(getChordSections());
           for (var chordSection in chordSections) {
             r++;
-            grid.set(r, 0, chordSection); //  for the label
-            grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
+            //  for the label
+            GridCoordinate gc = GridCoordinate(r, 0);
+            grid.setAt(gc, chordSection);
+            _measureNodeIdToGridCoordinate[chordSection.id] = gc;
+
+            //  for the chords, use phrasesToMarkup()
+            gc = GridCoordinate(r, 1);
+            grid.setAt(gc, chordSection);
+            _measureNodeIdToGridCoordinate[chordSection.id] = gc;
           }
           var chordSectionsList = chordSections.toList(growable: false);
+          //  map song moments to their chord section
           for (var m in songMoments) {
             _songMomentToGridCoordinate.add(GridCoordinate(1 + chordSectionsList.indexOf(m.chordSection), 0));
           }
         }
         return grid;
+
       case UserDisplayStyle.singer:
         {
           var r = 0;
@@ -3668,12 +3664,14 @@ class SongBase {
             lyricSectionMap[lyricSection] = GridCoordinate(r, 0);
             var chordSection = findChordSectionByLyricSection(lyricSection);
             assert(chordSection != null);
+            chordSection = chordSection!;
             grid.set(r, 0, chordSection); //  for the label
             grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
             r++;
-            for (var lyric in lyricSection.asLyrics(lyricSection.lyricsLines.length)) {
-              grid.set(r, 1, lyric);
-              r++;
+            for (var lyric in lyricSection.asExpandedLyrics(chordSection, lyricSection.lyricsLines.length)) {
+              GridCoordinate gc = GridCoordinate(r++, 1);
+              grid.setAt(gc, lyric);
+              _measureNodeIdToGridCoordinate[lyric.id] = gc;
             }
           }
           for (var m in songMoments) {
@@ -4199,6 +4197,9 @@ class SongBase {
 
   List<GridCoordinate> get songMomentToGridCoordinate => _songMomentToGridCoordinate;
   List<GridCoordinate> _songMomentToGridCoordinate = [];
+
+  GridCoordinate? measureNodeIdToGridCoordinate(int id) => _measureNodeIdToGridCoordinate[id];
+  Map<int, GridCoordinate> _measureNodeIdToGridCoordinate = {};
 
   static final RegExp _spaceRegexp = RegExp(r'[ \t]');
   static final RegExp theRegExp = RegExp('^ *(the +)(.*)', caseSensitive: false);

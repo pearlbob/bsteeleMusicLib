@@ -272,11 +272,6 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  String? getId() {
-    return 'm$_id';
-  }
-
-  @override
   bool get isEmpty {
     return false;
   }
@@ -324,14 +319,9 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   int get hashCode {
-    //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = Object.hash(beatCount, endOfRow);
-    ret = ret * 17 + hashObjects(chords);
+     int ret = Object.hash(beatCount, endOfRow, hashObjects(chords));
     return ret;
   }
-
-  int get id => _id;
-  final int _id = lastMeasureId++;
 
   /// The beat count for the measure should be set prior to chord additions
   /// to avoid awkward behavior when chords are added without a count.
@@ -349,5 +339,4 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   static final Measure defaultMeasure = Measure(4, emptyChordList);
 
   static final RegExp sectionRegexp = RegExp('^\\s*(,|\\n)');
-  static int lastMeasureId = 0;
 }

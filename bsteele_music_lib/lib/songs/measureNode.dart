@@ -8,6 +8,7 @@ enum MeasureNodeType {
   lyric,
   comment,
   decoration,
+  lyricSection,
 }
 
 enum MeasureEditType {
@@ -83,11 +84,10 @@ abstract class MeasureNode {
     return 'C';
   }
 
+  int get id => identityHashCode(this); //  unique id for this measure node
+
   ///  Export to JSON
   String toJson();
-
-  /// The id to uniquely identify this measureNode in the song.
-  String? getId();
 
   MeasureNodeType get measureNodeType;
 }

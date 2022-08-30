@@ -446,11 +446,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  String getId() {
-    return _sectionVersion.id;
-  }
-
-  @override
   MeasureNodeType get measureNodeType => MeasureNodeType.section;
 
   MeasureNode? lastMeasureNode() {
