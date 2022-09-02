@@ -83,6 +83,25 @@ class Grid<T> {
     return sb.toString();
   }
 
+  //  an attempt to map the grid to a debug string
+  String debugString() {
+    var sb = StringBuffer();
+    for (var r = 0; r < getRowCount(); r++) {
+      var row = getRow(r);
+      for (var c = 0; c < (row?.length ?? 0); c++) {
+        var cell = get(r, c);
+        if (cell == null) {
+          sb.write('\t($r,$c)');
+        } else {
+          var s = cell.toString().replaceAll('\n', '\\n');
+          sb.write('\t${s.padRight(6)}');
+        }
+      }
+      sb.write('\n');
+    }
+    return sb.toString();
+  }
+
   T? at(GridCoordinate gc) {
     return get(gc.row, gc.col);
   }

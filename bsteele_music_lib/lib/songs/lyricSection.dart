@@ -40,14 +40,25 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     var lineCount = 0;
     String lyricString = '';
 
+    int phraseIndex = 0;
+    int repeat = 0;
+    var phrases = chordSection.phrases;
+    assert(phrases.isNotEmpty);
+    var phrase = phrases.first;
     for (var i = 0; i < lyricsLines.length; i++) {
       lyricString += (lyricString.isNotEmpty ? '\n' : '') + lyricsLines[i];
       lineCount++;
       if (lineCount >= linesPerRow + (lineExtra > 0 ? 1 : 0)) {
-        lyrics.add(Lyric(lyricString));
+        lyrics.add(Lyric(lyricString, phraseIndex: phraseIndex));
         lyricString = '';
         lineCount = 0;
         lineExtra = max(0, lineExtra - 1);
+        repeat++;
+        if (repeat >= phrase.repeats && !identical(phrase, phrases.last)) {
+          phraseIndex++;
+          repeat = 0;
+          phrase = phrases[phraseIndex];
+        }
       }
     }
     for (var i = lyricsLines.length; i < rows; i++) {
@@ -67,6 +78,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     //  bunch lines for repeats as required
     var ret = <Lyric>[];
     int i = 0;
+    int phraseIndex = 0;
     for (var phrase in chordSection.phrases) {
       if (phrase is MeasureRepeat) {
         var rowCount = phrase.chordRowCountAsPhrase;
@@ -74,9 +86,9 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
           Lyric? lyric;
           for (var phraseRow = 0; phraseRow < rowCount; phraseRow++) {
             if (lyric == null) {
-              lyric = expandedLyrics[i++];
+              lyric = Lyric(expandedLyrics[i++].line, phraseIndex: phraseIndex);
             } else {
-              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}');
+              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}', phraseIndex: phraseIndex);
             }
           }
           assert(lyric != null);
@@ -90,15 +102,17 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
           for (var phraseRow = 0; phraseRow < rowCount; phraseRow++) {
             Lyric? lyric;
             if (lyric == null) {
-              lyric = expandedLyrics[i++];
+              lyric = Lyric(expandedLyrics[i++].line, phraseIndex: phraseIndex);
             } else {
               //  add more lines
-              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}');
+              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}', phraseIndex: phraseIndex);
             }
             ret.add(lyric);
           }
         }
       }
+
+      phraseIndex++;
     }
     return ret;
   }

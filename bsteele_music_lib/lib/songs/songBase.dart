@@ -3582,6 +3582,7 @@ class SongBase {
 
       //  convert to chord section grid
       var sectionGrid = chordSection.toGrid(chordColumns: columns, expanded: expanded);
+      chordSection.rowCount(expanded: true);
 
       //  find the rows used by the chords
       var rows = sectionGrid.getRowCount() //
@@ -3589,8 +3590,33 @@ class SongBase {
           1; //  chord section version on title row without lyrics!
 
       //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.asExpandedLyrics(chordSection, rows); //  fixme: remove when confident
+      var lyrics = lyricSection.asExpandedLyrics(
+          chordSection, chordSection.rowCount(expanded: true)); //  fixme: remove when confident
       //var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false);//  fixme: replace when confident
+
+      {
+        //  fixme: an attempt to fix the damaged processing below
+        debugGridLog(sectionGrid, userDisplayStyle: UserDisplayStyle.both, expanded: expanded);
+        logger.i('lyrics: $lyrics');
+        var xGrid = Grid<MeasureNode>();
+        var lyricsIndex = 0;
+        var rowIndex = 0;
+        for (var phrase in chordSection.phrases) {
+          for (var phraseRow = 0; phraseRow < phrase.rowCount(); phraseRow++) {
+            xGrid.add(phrase.toGrid(chordColumns: columns, expanded: expanded));
+            logger.i('   phrase ${phrase.phraseIndex}: $phrase');
+            while (lyricsIndex < lyrics.length && lyrics[lyricsIndex].phraseIndex == phrase.phraseIndex) {
+              xGrid.set(rowIndex++, columns, lyrics[lyricsIndex]);
+              logger.i('      $phraseRow:  lyric $lyricsIndex: ${lyrics[lyricsIndex].line}');
+              lyricsIndex++;
+            }
+            //  one past the longest of chords or lyrics
+            rowIndex = xGrid.getRowCount();
+          }
+        }
+        logger.i('xGrid:');
+        debugGridLog(xGrid, expanded: expanded);
+      }
 
       //  add the lyrics to the chord section grid as a final column
       assert(rows <= lyrics.length);
