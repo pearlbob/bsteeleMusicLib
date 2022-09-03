@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/key.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
-import 'package:bsteeleMusicLib/songs/measureRepeat.dart';
 import 'package:quiver/collection.dart';
 
 import '../appLogger.dart';
@@ -61,60 +60,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
         }
       }
     }
-    for (var i = lyricsLines.length; i < rows; i++) {
-      lyrics.add(Lyric(''));
-    }
     return lyrics;
-  }
-
-  List<Lyric> toLyrics(ChordSection chordSection, bool expanded) {
-    //  gather the section lyrics as if expanded
-    var expandedLyrics = asExpandedLyrics(chordSection, chordSection.chordRowCount);
-    if (expanded) {
-      //   done
-      return expandedLyrics;
-    }
-
-    //  bunch lines for repeats as required
-    var ret = <Lyric>[];
-    int i = 0;
-    int phraseIndex = 0;
-    for (var phrase in chordSection.phrases) {
-      if (phrase is MeasureRepeat) {
-        var rowCount = phrase.chordRowCountAsPhrase;
-        for (int repeats = 0; repeats < phrase.repeats; repeats++) {
-          Lyric? lyric;
-          for (var phraseRow = 0; phraseRow < rowCount; phraseRow++) {
-            if (lyric == null) {
-              lyric = Lyric(expandedLyrics[i++].line, phraseIndex: phraseIndex);
-            } else {
-              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}', phraseIndex: phraseIndex);
-            }
-          }
-          assert(lyric != null);
-          if (lyric != null) {
-            ret.add(lyric);
-          }
-        }
-      } else {
-        var rowCount = phrase.chordRowCount;
-        {
-          for (var phraseRow = 0; phraseRow < rowCount; phraseRow++) {
-            Lyric? lyric;
-            if (lyric == null) {
-              lyric = Lyric(expandedLyrics[i++].line, phraseIndex: phraseIndex);
-            } else {
-              //  add more lines
-              lyric = Lyric('${lyric.line}\n${expandedLyrics[i++].line}', phraseIndex: phraseIndex);
-            }
-            ret.add(lyric);
-          }
-        }
-      }
-
-      phraseIndex++;
-    }
-    return ret;
   }
 
   @override

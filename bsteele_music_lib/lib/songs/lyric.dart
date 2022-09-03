@@ -47,7 +47,7 @@ class Lyric extends MeasureNode {
 
   @override
   String toString() {
-    return '"$line" at $phraseIndex';
+    return '"$line"'; // at $phraseIndex';
   }
 
   final String line;

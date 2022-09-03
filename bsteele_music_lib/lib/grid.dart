@@ -22,14 +22,14 @@ class Grid<T> {
   }
 
   void add(Grid<T> otherGrid) {
-    for (var row in otherGrid.grid) {
-      grid.add(row);
+    for (var row in otherGrid.gridList) {
+      gridList.add(row);
     }
   }
 
-  bool get isEmpty => grid.isEmpty;
+  bool get isEmpty => gridList.isEmpty;
 
-  bool get isNotEmpty => grid.isNotEmpty;
+  bool get isNotEmpty => gridList.isNotEmpty;
 
   void set(int r, int c, T? t) {
     if (r < 0) {
@@ -39,14 +39,14 @@ class Grid<T> {
       c = 0;
     }
 
-    while (r >= grid.length) {
+    while (r >= gridList.length) {
       //  addTo a new row to the grid
-      grid.add(List.generate(1, (a) {
+      gridList.add(List.generate(1, (a) {
         return null;
       }));
     }
 
-    List<T?>? row = grid[r];
+    List<T?>? row = gridList[r];
     if (c == row?.length) {
       row?.add(t);
     } else {
@@ -63,7 +63,7 @@ class Grid<T> {
 
   @override
   String toString() {
-    return 'Grid{' + grid.toString() + '}';
+    return 'Grid{\n${_debugString()}}';
   }
 
   String toMultiLineString() {
@@ -83,21 +83,21 @@ class Grid<T> {
     return sb.toString();
   }
 
-  //  an attempt to map the grid to a debug string
-  String debugString() {
+  //  map the grid to a debug string
+  String _debugString() {
     var sb = StringBuffer();
     for (var r = 0; r < getRowCount(); r++) {
       var row = getRow(r);
+      var s = '\t';
       for (var c = 0; c < (row?.length ?? 0); c++) {
         var cell = get(r, c);
         if (cell == null) {
-          sb.write('\t($r,$c)');
+          s += '($r,$c)'.padRight(8);
         } else {
-          var s = cell.toString().replaceAll('\n', '\\n');
-          sb.write('\t${s.padRight(6)}');
+          s += cell.toString().replaceAll('\n', '\\n').padRight(8);
         }
       }
-      sb.write('\n');
+      sb.write('${s.trimRight()}\n');
     }
     return sb.toString();
   }
@@ -108,7 +108,7 @@ class Grid<T> {
 
   T? get(int r, int c) {
     try {
-      List<T?>? row = grid[r];
+      List<T?>? row = gridList[r];
       if (row == null) {
         return null;
       }
@@ -119,7 +119,7 @@ class Grid<T> {
   }
 
   int getRowCount() {
-    return grid.length;
+    return gridList.length;
   }
 
   int get maxColumnCount {
@@ -132,7 +132,7 @@ class Grid<T> {
 
   List<T?>? getRow(int r) {
     try {
-      return grid[r];
+      return gridList[r];
     } catch (ex) {
       return null;
     }
@@ -140,15 +140,15 @@ class Grid<T> {
 
   int rowLength(int r) {
     try {
-      return grid[r]?.length ?? 0;
+      return gridList[r]?.length ?? 0;
     } catch (ex) {
       return 0;
     }
   }
 
   void clear() {
-    grid.clear();
+    gridList.clear();
   }
 
-  final List<List<T?>?> grid = [];
+  final List<List<T?>?> gridList = [];
 }
