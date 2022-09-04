@@ -256,7 +256,7 @@ class SongUpdate {
       sb.write(songMoment!.getMeasure().toString());
       if (songMoment!.getRepeatMax() > 0) {
         sb.write(' ');
-        sb.write((songMoment!.getRepeat() + 1));
+        sb.write((songMoment!.repeat + 1));
         sb.write('/');
         sb.write(songMoment!.getRepeatMax());
       }

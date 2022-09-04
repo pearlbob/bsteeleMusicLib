@@ -2221,7 +2221,7 @@ o: end here''');
 
   test('test songBase toGrid()', () {
     int beatsPerBar = 4;
-    SongBase a;
+    Song a;
 
     Logger.level = Level.info;
 
@@ -2243,44 +2243,30 @@ o: end here''');
               'You got me');
 
       {
-        var grid = a.toLyricsGrid();
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
         logger.i('a.toGrid(): $grid');
         expect(grid.toString(), '''
 Grid{
+	V:\\nA B C D  x4\\n
 	A       B       C       D       x4      "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
-	(1,0)   (1,1)   (1,2)   (1,3)   (1,4)   "bar bar2"
-	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bob, bob2, bob3 berand"
-	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "You got me"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bar bar2"
+	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "bob, bob2, bob3 berand"
+	(4,0)   (4,1)   (4,2)   (4,3)   (4,4)   "You got me"
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        // logger.i('momentGrid: $momentToGridList');
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
       {
-        var grid = a.toLyricsGrid(expanded: true);
+        var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
+	V:\\nA B C D  x4\\n
 	A       B       C       D       x4#1    "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
 	A       B       C       D       x4#2    "bar bar2"
 	A       B       C       D       x4#3    "bob, bob2, bob3 berand"
 	A       B       C       D       x4#4    "You got me"
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        // logger.i('momentGrid: $momentToGridList');
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
     }
     // if ( false )
@@ -2302,46 +2288,30 @@ Grid{
               '\nlast lyric');
 
       {
-        var grid = a.toLyricsGrid();
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
+	V:\\nA B C D  x2\\nD C G G  x2\\n
 	A       B       C       D       x2      "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
-	(1,0)   (1,1)   (1,2)   (1,3)   (1,4)   "bob, bob2, bob3 berand"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bob, bob2, bob3 berand"
 	D       C       G       G       x2      "You got me"
-	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "last lyric"
+	(4,0)   (4,1)   (4,2)   (4,3)   (4,4)   "last lyric"
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        logger.i('songMoments: ${a.songMoments}');
-        logger.i('momentGrid: $momentToGridList');
-        expect(momentToGridList.length, a.songMoments.length);
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
       {
-        var grid = a.toLyricsGrid(expanded: true);
+        var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
+	V:\\nA B C D  x2\\nD C G G  x2\\n
 	A       B       C       D       x2#1    "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
 	A       B       C       D       x2#2    "bob, bob2, bob3 berand"
 	D       C       G       G       x2#1    "You got me"
 	D       C       G       G       x2#2    "last lyric"
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        // logger.i('momentGrid: $momentToGridList');
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
     }
 
@@ -2351,48 +2321,36 @@ Grid{
           4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
 
       {
-        var grid = a.toLyricsGrid();
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
+	I:\\nD C G G# \\n
 	D       C       G       G#
+	V:\\nC F C C#, F F C B, G F C Gb \\n
 	C       F       C       C#,
 	F       F       C       B,
 	G       F       C       Gb
+	O:\\nD C G G# \\n
 	D       C       G       G#
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        logger.v('songMoments: ${a.songMoments}');
-        logger.v('momentGrid: $momentToGridList');
-        expect(momentToGridList.length, a.songMoments.length);
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          logger.v('${moment.momentNumber}: ${gridCoordinate}'
-              ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-              ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
       {
-        var grid = a.toLyricsGrid(expanded: true);
+        var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
+	I:\\nD C G G# \\n
 	D       C       G       G#
+	V:\\nC F C C#, F F C B, G F C Gb \\n
 	C       F       C       C#,
 	F       F       C       B,
 	G       F       C       Gb
+	O:\\nD C G G# \\n
 	D       C       G       G#
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        // logger.i('momentGrid: $momentToGridList');
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
     }
     {
@@ -2400,49 +2358,37 @@ Grid{
           4, 'pearlbob', 'i:o: D C G G# V: C F C C# [ F F C B ] x2,  G F C Gb', 'i: v: o:');
 
       {
-        var grid = a.toLyricsGrid();
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	D       C       G       G#      (0,4)
-	C       F       C       C#      (1,4)
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)
+	V:\\nC F C C# \\nF F C B  x2\\nG F C Gb \\n
+	C       F       C       C#      (3,4)
 	F       F       C       B       x2
-	G       F       C       Gb      (3,4)
-	D       C       G       G#      (4,4)
+	G       F       C       Gb      (5,4)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (7,4)
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        logger.v('songMoments: ${a.songMoments}');
-        logger.v('momentGrid: $momentToGridList');
-        expect(momentToGridList.length, a.songMoments.length);
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          logger.v('${moment.momentNumber}: ${gridCoordinate}'
-              ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-              ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
       {
-        var grid = a.toLyricsGrid(expanded: true);
+        var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	D       C       G       G#      (0,4)
-	C       F       C       C#      (1,4)
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)
+	V:\\nC F C C# \\nF F C B  x2\\nG F C Gb \\n
+	C       F       C       C#      (3,4)
 	F       F       C       B       x2#1
 	F       F       C       B       x2#2
-	G       F       C       Gb      (4,4)
-	D       C       G       G#      (5,4)
+	G       F       C       Gb      (6,4)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (8,4)
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        // logger.i('momentGrid: $momentToGridList');
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
     }
 
@@ -2461,50 +2407,38 @@ Grid{
               'v: verse lyric 1\nverse lyric 2\no: outro lyric\n');
 
       {
-        var grid = a.toLyricsGrid();
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	D       C       G       G#      (0,4)   (0,5)   "intro lyric"
-	C       F       C       C#,     ⎤       (1,5)   "verse lyric 1"
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
 	F       F       C       B       ⎦       x2      "verse lyric 2"
-	G       F       C       Gb      (3,4)   (3,5)
-	D       C       G       G#      (4,4)   (4,5)   "outro lyric"
+	G       F       C       Gb      (5,4)   (5,5)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        logger.v('songMoments: ${a.songMoments}');
-        logger.v('momentGrid: $momentToGridList');
-        expect(momentToGridList.length, a.songMoments.length);
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          logger.v('${moment.momentNumber}: ${gridCoordinate}'
-              ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-              ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
       {
-        var grid = a.toLyricsGrid(expanded: true);
+        var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	D       C       G       G#      (0,4)   (0,5)   "intro lyric"
-	C       F       C       C#,     ⎤       (1,5)   "verse lyric 1"
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
 	F       F       C       B       ⎦       x2#1    "verse lyric 2"
-	C       F       C       C#,     ⎤       (3,5)
+	C       F       C       C#,     ⎤       (5,5)
 	F       F       C       B       ⎦       x2#2
-	G       F       C       Gb      (5,4)   (5,5)
-	D       C       G       G#      (6,4)   (6,5)   "outro lyric"
+	G       F       C       Gb      (7,4)   (7,5)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
 }''');
-        var momentToGridList = a.songMomentToGridCoordinate;
-        // logger.i('momentGrid: $momentToGridList');
-        for (var moment in a.songMoments) {
-          var gridCoordinate = momentToGridList[moment.momentNumber];
-          // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-          //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-          //     ', "${moment.lyrics}"');
-          expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-        }
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
     }
   });
@@ -2513,102 +2447,70 @@ Grid{
     Logger.level = Level.info;
 
     int beatsPerBar = 4;
-    SongBase a;
+    Song a;
 
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
 
-      var grid = a.toLyricsGrid(expanded: true);
+      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
+	I:\\nD C G G# \\n
 	D       C       G       G#
+	V:\\nC F C C#, F F C B, G F C Gb \\n
 	C       F       C       C#,
 	F       F       C       B,
 	G       F       C       Gb
+	O:\\nD C G G# \\n
 	D       C       G       G#
 }''');
-      var momentToGridList = a.songMomentToGridCoordinate;
-      // logger.i('momentGrid: $momentToGridList');
-      for (var moment in a.songMoments) {
-        var gridCoordinate = momentToGridList[moment.momentNumber];
-        // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-        //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-        //     ', "${moment.lyrics}"');
-        expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-      }
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
 
-      var grid = a.toLyricsGrid(expanded: true);
+      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	D       C       G       G#      (0,4)
-	C       F       C       C#      (1,4)
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)
+	V:\\nC F C C# \\nF F C B  x2\\nG F C Gb \\n
+	C       F       C       C#      (3,4)
 	F       F       C       B       x2#1
 	F       F       C       B       x2#2
-	G       F       C       Gb      (4,4)
-	D       C       G       G#      (5,4)
+	G       F       C       Gb      (6,4)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (8,4)
 }''');
-      var momentToGridList = a.songMomentToGridCoordinate;
-      // logger.i('momentGrid: $momentToGridList');
-      for (var moment in a.songMoments) {
-        var gridCoordinate = momentToGridList[moment.momentNumber];
-        // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-        //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-        //     ', "${moment.lyrics}"');
-        expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-      }
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
 
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb', 'i: v: o:');
 
-      var grid = a.toLyricsGrid(expanded: true);
+      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	D       C       G       G#      (0,4)   (0,5)
-	C       F       C       C#,     ⎤       (1,5)
-	F       F       C       B       ⎦       x2#1
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)   (1,5)
+	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
 	C       F       C       C#,     ⎤       (3,5)
+	F       F       C       B       ⎦       x2#1
+	C       F       C       C#,     ⎤       (5,5)
 	F       F       C       B       ⎦       x2#2
-	G       F       C       Gb      (5,4)   (5,5)
-	D       C       G       G#      (6,4)   (6,5)
+	G       F       C       Gb      (7,4)   (7,5)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (9,4)   (9,5)
 }''');
-      var momentToGridList = a.songMomentToGridCoordinate;
-      // logger.i('momentGrid: $momentToGridList');
-      for (var moment in a.songMoments) {
-        var gridCoordinate = momentToGridList[moment.momentNumber];
-        // logger.i('${moment.momentNumber}: ${gridCoordinate}'
-        //     ': ${moment.measure}: grid: ${grid.get(gridCoordinate.row, gridCoordinate.col)}'
-        //     ', "${moment.lyrics}"');
-        expect(grid.get(gridCoordinate.row, gridCoordinate.col), moment.measure);
-      }
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
   });
-
-  void _testSongMomentToGrid(Song a) {
-    for (var expanded in [false, true]) {
-      var grid = a.toLyricsGrid(expanded: expanded);
-      logger.d('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
-
-      List<GridCoordinate> list = a.songMomentToGridCoordinate;
-      assert(list.length == a.getSongMomentsSize());
-      for (var songMoment in a.songMoments) {
-        var gc = list[songMoment.momentNumber];
-        var measureNode = grid.get(gc.row, gc.col);
-        logger.d('${songMoment.momentNumber}: $gc: $measureNode');
-        assert(measureNode is Measure);
-        expect(measureNode, songMoment.measure);
-      }
-    }
-  }
 
   test('test songBase songMomentToGrid()', () {
     Logger.level = Level.info;
@@ -2631,40 +2533,40 @@ Grid{
               'v: verse lyric\n'
               'more verse lyrcs\n'
               'o: outro lyric');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i: D C G G# x2', 'i: no lyrics here');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i: D C G G# x2', 'i: no lyrics here');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'V: [C F C C#, F F C B] x2', 'v: hey!');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
 
     {
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'i:o: D C G G# V: [C F C C#, F F C B] x2,  G F C Gb', 'i: v: o:');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
 
     {
       //  empty lyrics
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
           4, 'pearlbob', 'v: G G G G, C C G G, D C G D', 'v:');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
   });
 
@@ -3483,11 +3385,13 @@ v:
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
+	I:\\nA B C D  x3\\nC D G C \\n
 	A       B       C       D       x3#1    "(instrumental)"
 	A       B       C       D       x3#2    "more instrumental"
 	A       B       C       D       x3#3    "yet more intro2"
-	C       D       G       C       (3,4)   "last line of intro: C D G C"
-	D       C       G       G       (4,4)   "one verse lyric line"
+	C       D       G       C       (4,4)   "last line of intro: C D G C"
+	V:\\nD C G G \\n
+	D       C       G       G       (6,4)   "one verse lyric line"
 }''');
 
       expanded = false;
@@ -3495,14 +3399,15 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
+	I:\\nA B C D  x3\\nC D G C \\n
 	A       B       C       D       x3      "(instrumental)"
-	(1,0)   (1,1)   (1,2)   (1,3)   (1,4)   "more instrumental"
-	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "yet more intro2"
-	C       D       G       C       (3,4)   "last line of intro: C D G C"
-	D       C       G       G       (4,4)   "one verse lyric line"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "more instrumental"
+	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "yet more intro2"
+	C       D       G       C       (4,4)   "last line of intro: C D G C"
+	V:\\nD C G G \\n
+	D       C       G       G       (6,4)   "one verse lyric line"
 }''');
     }
-
     {
       userDisplayStyle = UserDisplayStyle.proPlayer;
       a = Song.createSong(
@@ -3536,9 +3441,8 @@ Grid{
 	V:\\nA B C D  x4\\n
 	V:\\nA B C D  x4\\nV:\\nA B C D  x4\\n
 }''');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, userDisplayStyle);
     }
-
     {
       userDisplayStyle = UserDisplayStyle.proPlayer;
       a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
@@ -3582,7 +3486,7 @@ Grid{
           //  expect duplicate for chords
           expect(grid.at(GridCoordinate(gc.row, gc.col + 1)) as ChordSection, songMoment.chordSection);
         }
-        _testSongMomentToGrid(a);
+        _testSongMomentToGrid(a, userDisplayStyle);
       }
     }
     {
@@ -3631,10 +3535,9 @@ Grid{
         lyric = grid.get(4, 1) as Lyric;
         expect(lyric.line, 'You got me');
 
-        _testSongMomentToGrid(a);
+        _testSongMomentToGrid(a, userDisplayStyle);
       }
     }
-
     {
       userDisplayStyle = UserDisplayStyle.singer;
       a = Song.createSong(
@@ -3668,9 +3571,10 @@ Grid{
 	(8,0)   "yo yo yo"
 	(9,0)   "yeah"
 }''');
-        _testSongMomentToGrid(a);
+        _testSongMomentToGrid(a, userDisplayStyle);
       }
     }
+
     {
       userDisplayStyle = UserDisplayStyle.both;
       bool expanded = false;
@@ -3684,7 +3588,8 @@ Grid{
           4,
           'pearl bob',
           'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          'i: (instrumental)\nmore instrumental\nv: line 1\n line 2\n'
+          'i: (instrumental)\nmore instrumental'
+              'v: line 1\n line 2\n'
               'o:\n'
               'yo1\n'
               'yo2\n'
@@ -3695,30 +3600,31 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	A       B       C       D       x4      (0,5)   "(instrumental)"
-	(1,0)   (1,1)   (1,2)   (1,3)   (1,4)   (1,5)   "more instrumental"
-	G       G       G       G,      (2,4)   (2,5)   "line 1"
-	C       C       G       G       (3,4)   (3,5)   "line 2"
-	C       C       G       G,      ⎤       (4,5)   "yo1"
+	I:\\nA B C D  x4\\n
+	A       B       C       D       x4      (1,5)   "(instrumental)"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
+	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
+	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	C       C       G       G,      ⎤       (5,5)   "yo1"
 	E       F       G       E       ⎦       x3      "yo2"
-	(6,0)   (6,1)   (6,2)   (6,3)   (6,4)   (6,5)   "yo3"
-	A       B       C       (7,3)   (7,4)   (7,5)   "yo4"
+	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo3"
+	A       B       C       (8,3)   (8,4)   (8,5)   "yo4"
 }''');
 
       //  validate song moment to grid coordinates
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, userDisplayStyle);
 
       expanded = true;
       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	A       B       C       D       x4#1    (0,5)   "(instrumental)"
-	A       B       C       D       x4#2    (1,5)   "more instrumental"
-	A       B       C       D       x4#3
+	I:\\nA B C D  x4\\n
+	A       B       C       D       x4#1    (1,5)   "(instrumental)"
+	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
+	A       B       C       D       x4#3    (3,5)   "line 2"
 	A       B       C       D       x4#4
-	G       G       G       G,      (4,4)   (4,5)   "line 1"
-	C       C       G       G       (5,4)   (5,5)   "line 2"
+	O:\\nC C G G, E F G E  x3\\nA B C \\n
 	C       C       G       G,      ⎤       (6,5)   "yo1"
 	E       F       G       E       ⎦       x3#1    "yo2"
 	C       C       G       G,      ⎤       (8,5)   "yo3"
@@ -3727,7 +3633,71 @@ Grid{
 	E       F       G       E       ⎦       x3#3
 	A       B       C       (12,3)  (12,4)  (12,5)  "yo4"
 }''');
-      _testSongMomentToGrid(a);
+      _testSongMomentToGrid(a, userDisplayStyle);
     }
   });
+
+  test('test songBase toDisplayGrid() more', () {
+    int beatsPerBar = 4;
+    Song a;
+    var userDisplayStyle = UserDisplayStyle.proPlayer;
+    Grid<MeasureNode> grid;
+    bool expanded = true;
+    Logger.level = Level.info;
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 104, beatsPerBar,
+          4, 'pearl bob', 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	V:\\nC7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7 \\n
+	C7      C7      C7      C7,
+	F7      F7      C7      C7,
+	G7      F7      C7      G7
+}''');
+      //  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+
+      expanded = false;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	V:\\nC7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7 \\n
+	C7      C7      C7      C7,
+	F7      F7      C7      C7,
+	G7      F7      C7      G7
+}''');
+
+      //  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+  });
+}
+
+void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {
+  for (var expanded in [false, true]) {
+    var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+    logger.d('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
+
+    List<GridCoordinate> list = a.songMomentToGridCoordinate;
+    expect(list.length, a.songMoments.length);
+    for (var songMoment in a.songMoments) {
+      var gc = list[songMoment.momentNumber];
+      var measureNode = grid.get(gc.row, gc.col);
+      expect(measureNode, isNotNull);
+      logger.d('${songMoment.momentNumber}: $gc: $measureNode');
+      if (measureNode is Measure) {
+        expect(measureNode, songMoment.measure);
+      } else {
+        expect(measureNode, songMoment.chordSection);
+      }
+    }
+  }
 }

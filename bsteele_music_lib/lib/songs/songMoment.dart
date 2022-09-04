@@ -59,10 +59,6 @@ class SongMoment implements Comparable<SongMoment> {
     return measure;
   }
 
-  int getRepeat() {
-    return repeat;
-  }
-
   int getRepeatCycleBeats() {
     return repeatCycleBeats;
   }
