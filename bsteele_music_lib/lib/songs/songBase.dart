@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:math';
 
+import 'package:bsteeleMusicLib/songs/lyric.dart';
 import 'package:bsteeleMusicLib/songs/timeSignature.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
@@ -3586,13 +3587,12 @@ class SongBase {
 
       //  convert to chord section grid
       //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.asExpandedLyrics(
-          chordSection, chordSection.rowCount(expanded: true)); //  fixme: remove when confident
-      //var lyrics = lyricSection.toLyrics(chordSection, expanded ?? false);//  fixme: replace when confident
+      var lyrics = lyricSection.asExpandedLyrics(chordSection, chordSection.rowCount(expanded: true));
 
       //  fill in the two verticals (chords and lyrics), aligning the lyrics by phrase
       var sectionGrid = Grid<MeasureNode>();
 
+      //  map multiple lyrics lines to repeats
       {
         var lyricsIndex = 0;
         var rowIndex = 0;
@@ -3600,17 +3600,42 @@ class SongBase {
         sectionGrid.set(rowIndex++, 0, chordSection);
         for (var phrase in chordSection.phrases) {
           sectionGrid.add(phrase.toGrid(chordColumns: columns, expanded: expanded));
-          logger.log(_logGridDetails, '   phrase ${phrase.phraseIndex}: $phrase');
-          while (lyricsIndex < lyrics.length && lyrics[lyricsIndex].phraseIndex == phrase.phraseIndex) {
-            sectionGrid.set(rowIndex++, columns, lyrics[lyricsIndex]);
-            logger.log(_logGridDetails, '      lyric $lyricsIndex: ${lyrics[lyricsIndex].line}');
-            lyricsIndex++;
-          }
-          //  one past the longest of chords or lyrics
-          rowIndex = sectionGrid.getRowCount();
-        }
 
-        debugGridLog(sectionGrid, expanded: expanded);
+          if (!expanded && phrase.repeats > 1) {
+            for (var repeats = 0; repeats < phrase.repeats; repeats++) {
+              logger.log(_logGridDetails, '   phrase ${phrase.phraseIndex}: $phrase');
+              if (lyricsIndex < lyrics.length) {
+                var lyric = lyrics[lyricsIndex];
+                if (phrase.repeats > 1 && !expanded) {
+                  //  gather all the rows for a repeat
+                  while (lyricsIndex < lyrics.length - 1) {
+                    var nextLyric = lyrics[lyricsIndex + 1];
+                    if (nextLyric.phraseIndex == lyric.phraseIndex && nextLyric.repeat == lyric.repeat) {
+                      lyric = Lyric('${lyric.line}\n${nextLyric.line}',
+                          phraseIndex: lyric.phraseIndex, repeat: lyric.repeat);
+                      lyricsIndex++;
+                      continue;
+                    }
+                    break;
+                  }
+                }
+                lyricsIndex++;
+
+                sectionGrid.set(rowIndex++, columns, lyric);
+                logger.log(_logGridDetails, '      lyric $lyricsIndex: ${lyric.line}');
+              }
+            }
+            //  use the row past the longest of chords or lyrics
+            rowIndex = sectionGrid.getRowCount();
+            logger.log(_logGridDetails, '   sectionGrid.wip: $sectionGrid');
+          } else {
+            for (var phraseRow = 0; phraseRow < phrase.rowCount(expanded: expanded); phraseRow++) {
+              if (lyricsIndex < lyrics.length) {
+                sectionGrid.set(rowIndex++, columns, lyrics[lyricsIndex++]);
+              }
+            }
+          }
+        }
       }
 
       logger.log(_logGrid, 'grid section: $chordSection:  $sectionGrid');

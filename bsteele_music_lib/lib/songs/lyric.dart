@@ -5,7 +5,7 @@ import 'package:bsteeleMusicLib/songs/key.dart';
 import 'measureNode.dart';
 
 class Lyric extends MeasureNode {
-  Lyric(this.line, {this.phraseIndex = 0});
+  Lyric(this.line, {this.phraseIndex = 0, this.repeat = 0});
 
   @override
   MeasureNodeType get measureNodeType => MeasureNodeType.lyric;
@@ -52,4 +52,5 @@ class Lyric extends MeasureNode {
 
   final String line;
   final int phraseIndex;
+  final int repeat;
 }

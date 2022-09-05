@@ -44,19 +44,24 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     var phrases = chordSection.phrases;
     assert(phrases.isNotEmpty);
     var phrase = phrases.first;
+    var phraseRow = 0;
     for (var i = 0; i < lyricsLines.length; i++) {
       lyricString += (lyricString.isNotEmpty ? '\n' : '') + lyricsLines[i];
       lineCount++;
       if (lineCount >= linesPerRow + (lineExtra > 0 ? 1 : 0)) {
-        lyrics.add(Lyric(lyricString, phraseIndex: phraseIndex));
+        lyrics.add(Lyric(lyricString, phraseIndex: phraseIndex, repeat: repeat));
         lyricString = '';
         lineCount = 0;
         lineExtra = max(0, lineExtra - 1);
-        repeat++;
-        if (repeat >= phrase.repeats && !identical(phrase, phrases.last)) {
-          phraseIndex++;
-          repeat = 0;
-          phrase = phrases[phraseIndex];
+        phraseRow++;
+        if (phraseRow >= phrase.rowCount(expanded: false)) {
+          phraseRow = 0;
+          repeat++;
+          if (repeat >= phrase.repeats && !identical(phrase, phrases.last)) {
+            phraseIndex++;
+            repeat = 0;
+            phrase = phrases[phraseIndex];
+          }
         }
       }
     }

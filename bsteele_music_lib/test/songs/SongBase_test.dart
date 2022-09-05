@@ -2414,8 +2414,8 @@ Grid{
 	I:\\nD C G G# \\n
 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
 	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
-	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
-	F       F       C       B       ⎦       x2      "verse lyric 2"
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1\\nverse lyric 2"
+	F       F       C       B       ⎦       x2
 	G       F       C       Gb      (5,4)   (5,5)
 	O:\\nD C G G# \\n
 	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
@@ -2433,6 +2433,56 @@ Grid{
 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
 	F       F       C       B       ⎦       x2#1    "verse lyric 2"
 	C       F       C       C#,     ⎤       (5,5)
+	F       F       C       B       ⎦       x2#2
+	G       F       C       Gb      (7,4)   (7,5)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+    {
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearlbob',
+          'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          'i: intro lyric\n'
+              'v: verse lyric 1\nverse lyric 2\nverse lyric 3\n'
+              'o: outro lyric\n');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1\\nverse lyric 2"
+	F       F       C       B       ⎦       x2      "verse lyric 3"
+	G       F       C       Gb      (5,4)   (5,5)
+	O:\\nD C G G# \\n
+	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:\\nD C G G# \\n
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
+	F       F       C       B       ⎦       x2#1    "verse lyric 2"
+	C       F       C       C#,     ⎤       (5,5)   "verse lyric 3"
 	F       F       C       B       ⎦       x2#2
 	G       F       C       Gb      (7,4)   (7,5)
 	O:\\nD C G G# \\n
@@ -3605,10 +3655,9 @@ Grid{
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
 	O:\\nC C G G, E F G E  x3\\nA B C \\n
-	C       C       G       G,      ⎤       (5,5)   "yo1"
-	E       F       G       E       ⎦       x3      "yo2"
-	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo3"
-	A       B       C       (8,3)   (8,4)   (8,5)   "yo4"
+	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
+	E       F       G       E       ⎦       x3      "yo3\\nyo4"
+	A       B       C       (7,3)   (7,4)   (7,5)
 }''');
 
       //  validate song moment to grid coordinates
@@ -3628,16 +3677,137 @@ Grid{
 	C       C       G       G,      ⎤       (6,5)   "yo1"
 	E       F       G       E       ⎦       x3#1    "yo2"
 	C       C       G       G,      ⎤       (8,5)   "yo3"
-	E       F       G       E       ⎦       x3#2
+	E       F       G       E       ⎦       x3#2    "yo4"
 	C       C       G       G,      ⎤       (10,5)
 	E       F       G       E       ⎦       x3#3
-	A       B       C       (12,3)  (12,4)  (12,5)  "yo4"
+	A       B       C       (12,3)  (12,4)  (12,5)
+}''');
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+      bool expanded = false;
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          104,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          'i: (instrumental)\nmore instrumental'
+              'v: line 1\n line 2\n'
+              'o:\n'
+              'yo1\n'
+              'yo2\n'
+              'yo3\n'
+              'yo4\nyo5\nyo6');
+
+      var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:\\nA B C D  x4\\n
+	A       B       C       D       x4      (1,5)   "(instrumental)"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
+	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
+	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
+	E       F       G       E       ⎦       x3      "yo3\\nyo4"
+	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo5\\nyo6"
+	A       B       C       (8,3)   (8,4)   (8,5)
+}''');
+
+      //  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:\\nA B C D  x4\\n
+	A       B       C       D       x4#1    (1,5)   "(instrumental)"
+	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
+	A       B       C       D       x4#3    (3,5)   "line 2"
+	A       B       C       D       x4#4
+	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	C       C       G       G,      ⎤       (6,5)   "yo1"
+	E       F       G       E       ⎦       x3#1    "yo2"
+	C       C       G       G,      ⎤       (8,5)   "yo3"
+	E       F       G       E       ⎦       x3#2    "yo4"
+	C       C       G       G,      ⎤       (10,5)  "yo5"
+	E       F       G       E       ⎦       x3#3    "yo6"
+	A       B       C       (12,3)  (12,4)  (12,5)
+}''');
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+      bool expanded = false;
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          104,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          'i: (instrumental)\nmore instrumental'
+              'v: line 1\n line 2\n'
+              'o:\n'
+              'yo1\n'
+              'yo2\n'
+              'yo3\n'
+              'yo4\nyo5\nyo6\nyo7');
+
+      var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:\\nA B C D  x4\\n
+	A       B       C       D       x4      (1,5)   "(instrumental)"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
+	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
+	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
+	E       F       G       E       ⎦       x3      "yo3\\nyo4"
+	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo5\\nyo6"
+	A       B       C       (8,3)   (8,4)   (8,5)   "yo7"
+}''');
+
+      //  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:\\nA B C D  x4\\n
+	A       B       C       D       x4#1    (1,5)   "(instrumental)"
+	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
+	A       B       C       D       x4#3    (3,5)   "line 2"
+	A       B       C       D       x4#4
+	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	C       C       G       G,      ⎤       (6,5)   "yo1"
+	E       F       G       E       ⎦       x3#1    "yo2"
+	C       C       G       G,      ⎤       (8,5)   "yo3"
+	E       F       G       E       ⎦       x3#2    "yo4"
+	C       C       G       G,      ⎤       (10,5)  "yo5"
+	E       F       G       E       ⎦       x3#3    "yo6"
+	A       B       C       (12,3)  (12,4)  (12,5)  "yo7"
 }''');
       _testSongMomentToGrid(a, userDisplayStyle);
     }
   });
 
-  test('test songBase toDisplayGrid() more', () {
+  test('test more songBase toDisplayGrid()', () {
     int beatsPerBar = 4;
     Song a;
     var userDisplayStyle = UserDisplayStyle.proPlayer;
@@ -3675,6 +3845,64 @@ Grid{
 	G7      F7      C7      G7
 }''');
 
+      //  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 104, beatsPerBar,
+          4, 'pearl bob', 'v: [  B D#m G#m G#m/F#,A C#m G#m,A A. C#m. ] x3, B D#m G#m G#m/F#, A A. C#m. C#m C#m', '''v:
+I hear the drums echoing tonight but she hears only
+Whispers of some quiet conversation
+-
+She's coming in twelve-thirty flight, her moonlit wings
+Reflect the stars that guide me towards salvation
+-
+I stopped an old man along the way hoping to find some
+Old forgotten words or ancient melodies
+-
+He turned to me as if to say, \"Hurry, boy, it's
+Waiting there for you\"
+''');
+
+      {
+        expanded = false;
+        grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	V:\\nB D#m G#m G#m/F#, A C#m G#m, A A. C#m.  x3\\nB D#m G#m G#m/F#, A A. C#m. C#m C#m \\n
+	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only\\nWhispers of some quiet conversation\\n-"
+	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "She's coming in twelve-thirty flight, her moonlit wings\\nReflect the stars that guide me towards salvation\\n-"
+	A       A.      C#m.    (3,3)   ⎦       x3      "I stopped an old man along the way hoping to find some\\nOld forgotten words or ancient melodies\\n-"
+	B       D#m     G#m     G#m/F#, (4,4)   (4,5)   "He turned to me as if to say, "Hurry, boy, it's"
+	A       A.      C#m.    C#m     C#m     (5,5)   "Waiting there for you""
+}''');
+
+        //  validate song moment to grid coordinates
+        _testSongMomentToGrid(a, userDisplayStyle);
+      }
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	V:\\nB D#m G#m G#m/F#, A C#m G#m, A A. C#m.  x3\\nB D#m G#m G#m/F#, A A. C#m. C#m C#m \\n
+	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only"
+	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "Whispers of some quiet conversation"
+	A       A.      C#m.    (3,3)   ⎦       x3#1    "-"
+	B       D#m     G#m     G#m/F#, ⎤       (4,5)   "She's coming in twelve-thirty flight, her moonlit wings"
+	A       C#m     G#m,    (5,3)   ⎥       (5,5)   "Reflect the stars that guide me towards salvation"
+	A       A.      C#m.    (6,3)   ⎦       x3#2    "-"
+	B       D#m     G#m     G#m/F#, ⎤       (7,5)   "I stopped an old man along the way hoping to find some"
+	A       C#m     G#m,    (8,3)   ⎥       (8,5)   "Old forgotten words or ancient melodies"
+	A       A.      C#m.    (9,3)   ⎦       x3#3    "-"
+	B       D#m     G#m     G#m/F#, (10,4)  (10,5)  "He turned to me as if to say, "Hurry, boy, it's"
+	A       A.      C#m.    C#m     C#m     (11,5)  "Waiting there for you""
+}''');
       //  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
     }

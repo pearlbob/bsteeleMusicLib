@@ -42,7 +42,7 @@ class MeasureRepeatExtension extends MeasureComment {
 
   @override
   String toMarkup({bool expanded = false}) {
-    return '';
+    return markerString;
   }
 
   @override
