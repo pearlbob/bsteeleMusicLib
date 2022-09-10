@@ -2247,7 +2247,7 @@ o: end here''');
         logger.i('a.toGrid(): $grid');
         expect(grid.toString(), '''
 Grid{
-	V:\\nA B C D  x4\\n
+	V:#0
 	A       B       C       D       x4      "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bar bar2"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "bob, bob2, bob3 berand"
@@ -2260,7 +2260,7 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	V:\\nA B C D  x4\\n
+	V:#0
 	A       B       C       D       x4#1    "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
 	A       B       C       D       x4#2    "bar bar2"
 	A       B       C       D       x4#3    "bob, bob2, bob3 berand"
@@ -2292,7 +2292,7 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	V:\\nA B C D  x2\\nD C G G  x2\\n
+	V:#0
 	A       B       C       D       x2      "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bob, bob2, bob3 berand"
 	D       C       G       G       x2      "You got me"
@@ -2305,7 +2305,7 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	V:\\nA B C D  x2\\nD C G G  x2\\n
+	V:#0
 	A       B       C       D       x2#1    "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
 	A       B       C       D       x2#2    "bob, bob2, bob3 berand"
 	D       C       G       G       x2#1    "You got me"
@@ -2325,13 +2325,13 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#
-	V:\\nC F C C#, F F C B, G F C Gb \\n
+	V:#1
 	C       F       C       C#,
 	F       F       C       B,
 	G       F       C       Gb
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2341,13 +2341,13 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#
-	V:\\nC F C C#, F F C B, G F C Gb \\n
+	V:#1
 	C       F       C       C#,
 	F       F       C       B,
 	G       F       C       Gb
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2362,13 +2362,13 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)
-	V:\\nC F C C# \\nF F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#      (3,4)
 	F       F       C       B       x2
 	G       F       C       Gb      (5,4)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (7,4)
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2378,14 +2378,14 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)
-	V:\\nC F C C# \\nF F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#      (3,4)
 	F       F       C       B       x2#1
 	F       F       C       B       x2#2
 	G       F       C       Gb      (6,4)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (8,4)
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2411,13 +2411,13 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1\\nverse lyric 2"
 	F       F       C       B       ⎦       x2
 	G       F       C       Gb      (5,4)   (5,5)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2427,15 +2427,15 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
 	F       F       C       B       ⎦       x2#1    "verse lyric 2"
 	C       F       C       C#,     ⎤       (5,5)
 	F       F       C       B       ⎦       x2#2
 	G       F       C       Gb      (7,4)   (7,5)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2461,13 +2461,13 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1\\nverse lyric 2"
 	F       F       C       B       ⎦       x2      "verse lyric 3"
 	G       F       C       Gb      (5,4)   (5,5)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2477,15 +2477,15 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
 	F       F       C       B       ⎦       x2#1    "verse lyric 2"
 	C       F       C       C#,     ⎤       (5,5)   "verse lyric 3"
 	F       F       C       B       ⎦       x2#2
 	G       F       C       Gb      (7,4)   (7,5)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
 }''');
         _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2507,13 +2507,13 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#
-	V:\\nC F C C#, F F C B, G F C Gb \\n
+	V:#1
 	C       F       C       C#,
 	F       F       C       B,
 	G       F       C       Gb
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#
 }''');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2526,14 +2526,14 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)
-	V:\\nC F C C# \\nF F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#      (3,4)
 	F       F       C       B       x2#1
 	F       F       C       B       x2#2
 	G       F       C       Gb      (6,4)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (8,4)
 }''');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -2547,15 +2547,15 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\n
+	I:#0
 	D       C       G       G#      (1,4)   (1,5)
-	V:\\nC F C C#, F F C B  x2\\nG F C Gb \\n
+	V:#1
 	C       F       C       C#,     ⎤       (3,5)
 	F       F       C       B       ⎦       x2#1
 	C       F       C       C#,     ⎤       (5,5)
 	F       F       C       B       ⎦       x2#2
 	G       F       C       Gb      (7,4)   (7,5)
-	O:\\nD C G G# \\n
+	O:#2
 	D       C       G       G#      (9,4)   (9,5)
 }''');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
@@ -3435,12 +3435,12 @@ v:
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x3\\nC D G C \\n
+	I:#0
 	A       B       C       D       x3#1    "(instrumental)"
 	A       B       C       D       x3#2    "more instrumental"
 	A       B       C       D       x3#3    "yet more intro2"
 	C       D       G       C       (4,4)   "last line of intro: C D G C"
-	V:\\nD C G G \\n
+	V:#1
 	D       C       G       G       (6,4)   "one verse lyric line"
 }''');
 
@@ -3449,12 +3449,12 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x3\\nC D G C \\n
+	I:#0
 	A       B       C       D       x3      "(instrumental)"
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "more instrumental"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "yet more intro2"
 	C       D       G       C       (4,4)   "last line of intro: C D G C"
-	V:\\nD C G G \\n
+	V:#1
 	D       C       G       G       (6,4)   "one verse lyric line"
 }''');
     }
@@ -3650,11 +3650,11 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x4\\n
+	I:#0
 	A       B       C       D       x4      (1,5)   "(instrumental)"
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
-	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	O:#1
 	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
 	E       F       G       E       ⎦       x3      "yo3\\nyo4"
 	A       B       C       (7,3)   (7,4)   (7,5)
@@ -3668,12 +3668,12 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x4\\n
+	I:#0
 	A       B       C       D       x4#1    (1,5)   "(instrumental)"
 	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
 	A       B       C       D       x4#3    (3,5)   "line 2"
 	A       B       C       D       x4#4
-	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	O:#1
 	C       C       G       G,      ⎤       (6,5)   "yo1"
 	E       F       G       E       ⎦       x3#1    "yo2"
 	C       C       G       G,      ⎤       (8,5)   "yo3"
@@ -3710,11 +3710,11 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x4\\n
+	I:#0
 	A       B       C       D       x4      (1,5)   "(instrumental)"
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
-	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	O:#1
 	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
 	E       F       G       E       ⎦       x3      "yo3\\nyo4"
 	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo5\\nyo6"
@@ -3729,12 +3729,12 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x4\\n
+	I:#0
 	A       B       C       D       x4#1    (1,5)   "(instrumental)"
 	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
 	A       B       C       D       x4#3    (3,5)   "line 2"
 	A       B       C       D       x4#4
-	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	O:#1
 	C       C       G       G,      ⎤       (6,5)   "yo1"
 	E       F       G       E       ⎦       x3#1    "yo2"
 	C       C       G       G,      ⎤       (8,5)   "yo3"
@@ -3770,11 +3770,11 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x4\\n
+	I:#0
 	A       B       C       D       x4      (1,5)   "(instrumental)"
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
-	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	O:#1
 	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
 	E       F       G       E       ⎦       x3      "yo3\\nyo4"
 	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo5\\nyo6"
@@ -3789,12 +3789,12 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:\\nA B C D  x4\\n
+	I:#0
 	A       B       C       D       x4#1    (1,5)   "(instrumental)"
 	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
 	A       B       C       D       x4#3    (3,5)   "line 2"
 	A       B       C       D       x4#4
-	O:\\nC C G G, E F G E  x3\\nA B C \\n
+	O:#1
 	C       C       G       G,      ⎤       (6,5)   "yo1"
 	E       F       G       E       ⎦       x3#1    "yo2"
 	C       C       G       G,      ⎤       (8,5)   "yo3"
@@ -3826,7 +3826,7 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	V:\\nC7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7 \\n
+	V:#0
 	C7      C7      C7      C7,
 	F7      F7      C7      C7,
 	G7      F7      C7      G7
@@ -3839,7 +3839,7 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	V:\\nC7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7 \\n
+	V:#0
 	C7      C7      C7      C7,
 	F7      F7      C7      C7,
 	G7      F7      C7      G7
@@ -3873,7 +3873,7 @@ Waiting there for you\"
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	V:\\nB D#m G#m G#m/F#, A C#m G#m, A A. C#m.  x3\\nB D#m G#m G#m/F#, A A. C#m. C#m C#m \\n
+	V:#0
 	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only\\nWhispers of some quiet conversation\\n-"
 	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "She's coming in twelve-thirty flight, her moonlit wings\\nReflect the stars that guide me towards salvation\\n-"
 	A       A.      C#m.    (3,3)   ⎦       x3      "I stopped an old man along the way hoping to find some\\nOld forgotten words or ancient melodies\\n-"
@@ -3890,7 +3890,7 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	V:\\nB D#m G#m G#m/F#, A C#m G#m, A A. C#m.  x3\\nB D#m G#m G#m/F#, A A. C#m. C#m C#m \\n
+	V:#0
 	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only"
 	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "Whispers of some quiet conversation"
 	A       A.      C#m.    (3,3)   ⎦       x3#1    "-"

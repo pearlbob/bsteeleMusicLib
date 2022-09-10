@@ -3597,7 +3597,7 @@ class SongBase {
         var lyricsIndex = 0;
         var rowIndex = 0;
         //  section indicator
-        sectionGrid.set(rowIndex++, 0, chordSection);
+        sectionGrid.set(rowIndex++, 0, lyricSection);
         for (var phrase in chordSection.phrases) {
           sectionGrid.add(phrase.toGrid(chordColumns: columns, expanded: expanded));
 
