@@ -133,6 +133,7 @@ class SongBase {
     _getChordSectionMap();
 
     _songMoments = [];
+    _lyricSectionIndexToMomentNumber = [];
     _beatsToMoment = HashMap();
 
     _parseLyrics();
@@ -150,6 +151,8 @@ class SongBase {
       if (chordSection == null) {
         continue;
       }
+
+      _lyricSectionIndexToMomentNumber.add(_songMoments.length);
 
       //  compute section count
       SectionVersion? sectionVersion = chordSection.sectionVersion;
@@ -3273,6 +3276,15 @@ class SongBase {
     return _songMoments[momentNumber];
   }
 
+  SongMoment firstMomentInLyricSection(LyricSection lyricSection) {
+    //  force parse of lyrics
+    getSongMoments();
+    assert(lyricSections.length == _lyricSectionIndexToMomentNumber.length);
+    assert(lyricSection.index >= 0 && lyricSection.index < _lyricSectionIndexToMomentNumber.length);
+    return _songMoments[_lyricSectionIndexToMomentNumber[
+        Util.intLimit(lyricSection.index, 0, _lyricSectionIndexToMomentNumber.length - 1)]];
+  }
+
   SongMoment? getFirstSongMomentInSection(int momentNumber) {
     SongMoment? songMoment = getSongMoment(momentNumber);
     if (songMoment == null) {
@@ -4108,6 +4120,7 @@ class SongBase {
 
   List<SongMoment> get songMoments => getSongMoments();
   List<SongMoment> _songMoments = [];
+  List<int> _lyricSectionIndexToMomentNumber = [];
   HashMap<int, SongMoment> _beatsToMoment = HashMap();
 
   List<GridCoordinate> get songMomentToGridCoordinate => _songMomentToGridCoordinate;

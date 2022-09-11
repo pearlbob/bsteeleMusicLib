@@ -3908,6 +3908,74 @@ Grid{
       _testSongMomentToGrid(a, userDisplayStyle);
     }
   });
+
+  test('test more songBase firstMomentInLyricSection()', () {
+    int beatsPerBar = 4;
+    Song a;
+    var userDisplayStyle = UserDisplayStyle.proPlayer;
+    Grid<MeasureNode> grid;
+    bool expanded = true;
+    Logger.level = Level.info;
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 104, beatsPerBar,
+          4, 'pearl bob', 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+      for (var lyricSection in a.lyricSections) {
+        logger.v('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
+      }
+      expect(a.firstMomentInLyricSection(a.lyricSections[0]).momentNumber, 0);
+    }
+
+    {
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          104,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          'i: (instrumental)\nmore instrumental'
+              'v: line 1\n line 2\n'
+              'o:\n'
+              'yo1\n'
+              'yo2\n'
+              'yo3\n'
+              'yo4\nyo5\nyo6\nyo7');
+      for (var lyricSection in a.lyricSections) {
+        logger.v('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
+      }
+      expect(a.firstMomentInLyricSection(a.lyricSections[0]).momentNumber, 0);
+      expect(a.firstMomentInLyricSection(a.lyricSections[1]).momentNumber, 16);
+    }
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
+      for (var lyricSection in a.lyricSections) {
+        logger.i('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
+      }
+      expect(a.firstMomentInLyricSection(a.lyricSections[0]).momentNumber, 0);
+      expect(a.firstMomentInLyricSection(a.lyricSections[1]).momentNumber, 4);
+      expect(a.firstMomentInLyricSection(a.lyricSections[2]).momentNumber, 16);
+    }
+
+    {
+      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
+          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B c: [ A B C D ] x4', 'i: v: c: v: c: o:');
+      for (var lyricSection in a.lyricSections) {
+        logger.i('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
+      }
+      expect(a.firstMomentInLyricSection(a.lyricSections[0]).momentNumber, 0);
+      expect(a.firstMomentInLyricSection(a.lyricSections[1]).momentNumber, 4);
+      expect(a.firstMomentInLyricSection(a.lyricSections[2]).momentNumber, 12);
+      expect(a.firstMomentInLyricSection(a.lyricSections[3]).momentNumber, 28);
+      expect(a.firstMomentInLyricSection(a.lyricSections[4]).momentNumber, 36);
+      expect(a.firstMomentInLyricSection(a.lyricSections[5]).momentNumber, 52);
+    }
+  });
 }
 
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {
