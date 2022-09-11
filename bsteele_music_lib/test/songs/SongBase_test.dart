@@ -9,6 +9,7 @@ import 'package:bsteeleMusicLib/songs/chordSectionGridData.dart';
 import 'package:bsteeleMusicLib/songs/chordSectionLocation.dart';
 import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
 import 'package:bsteeleMusicLib/songs/lyric.dart';
+import 'package:bsteeleMusicLib/songs/lyricSection.dart';
 import 'package:bsteeleMusicLib/songs/measure.dart';
 import 'package:bsteeleMusicLib/songs/measureNode.dart';
 import 'package:bsteeleMusicLib/songs/musicConstants.dart';
@@ -3561,16 +3562,16 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	V:\\nA B C D  x4\\nV:\\nA B C D  x4\\n
+	V:#0    V:\\nA B C D  x4\\n
 	(1,0)   "foo foo foo foo baby oh baby yesterday"
 	(2,0)   "bar bar"
 	(3,0)   "bob, bob, bob berand"
 	(4,0)   "You got me"
 }''');
         expect(grid.getRowCount(), 5);
-        assert(grid.get(0, 0) is ChordSection);
-        var chordSection = grid.get(0, 0) as ChordSection;
-        expect(chordSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        assert(grid.get(0, 0) is LyricSection);
+        var lyricSection = grid.get(0, 0) as LyricSection;
+        expect(lyricSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
         expect(grid.get(1, 0), isNull);
         expect(grid.get(1, 1)!.measureNodeType, MeasureNodeType.lyric);
         var lyric = grid.get(1, 1) as Lyric;
@@ -3610,14 +3611,14 @@ Grid{
         logger.i(grid.toString());
         expect(grid.toString(), '''
 Grid{
-	I:\\nD C G G# \\nI:\\nD C G G# \\n
+	I:#0    I:\\nD C G G# \\n
 	(1,0)   "(instrumental)"
-	V:\\nC F C C#, F F C B, G F C Gb \\nV:\\nC F C C#, F F C B, G F C Gb \\n
-	V:\\nC F C C#, F F C B, G F C Gb \\nV:\\nC F C C#, F F C B, G F C Gb \\n
+	V:#1    V:\\nC F C C#, F F C B, G F C Gb \\n
+	V:#2    V:\\nC F C C#, F F C B, G F C Gb \\n
 	(4,0)   "foo foo foo foo baby"
 	(5,0)   "oh baby yesterday"
 	(6,0)   "bar bar"
-	O:\\nD C G G# \\nO:\\nD C G G# \\n
+	O:#3    O:\\nD C G G# \\n
 	(8,0)   "yo yo yo"
 	(9,0)   "yeah"
 }''');
@@ -3923,6 +3924,8 @@ void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {
       logger.d('${songMoment.momentNumber}: $gc: $measureNode');
       if (measureNode is Measure) {
         expect(measureNode, songMoment.measure);
+      } else if (userDisplayStyle == UserDisplayStyle.singer && gc.col == 0) {
+        expect(measureNode, songMoment.lyricSection);
       } else {
         expect(measureNode, songMoment.chordSection);
       }

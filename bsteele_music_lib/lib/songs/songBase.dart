@@ -3738,7 +3738,7 @@ class SongBase {
             var chordSection = findChordSectionByLyricSection(lyricSection);
             assert(chordSection != null);
             chordSection = chordSection!;
-            grid.set(r, 0, chordSection); //  for the label
+            grid.set(r, 0, lyricSection); //  for the label
             grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
             r++;
             for (var lyric in lyricSection.asExpandedLyrics(chordSection, lyricSection.lyricsLines.length)) {
