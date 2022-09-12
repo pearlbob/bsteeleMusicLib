@@ -2015,6 +2015,19 @@ o: end here''');
     int unitsPerMeasure = 4;
     SongBase a;
 
+    {
+      a = SongBase.from(
+          title: 'bob song',
+          artist: 'bob',
+          coverArtist: 'Rolling Stones, The ',
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: unitsPerMeasure,
+          beatsPerMinute: 100,
+          copyright: 'bob stuff');
+      expect(a.artist, 'bob');
+      expect(a.coverArtist, 'Rolling Stones, The');
+    }
+
     a = SongBase.from();
     expect(a.title, 'unknown');
     a = SongBase.from(title: 'bob song');

@@ -3146,6 +3146,7 @@ class SongBase {
 
   /// Sets the song's title and song id from the given title. Leading "The " articles are rotated to the title end.
   String _theToTheEnd(String s) {
+    s = s.trim(); //  old songs may still have the space on the end!
     if (s.length <= 4) {
       return s;
     }
@@ -3928,9 +3929,9 @@ class SongBase {
   //  primary values
 
   void setSongId(String title, String artist, String coverArtist) {
-    _title = _theToTheEnd(title.trim());
-    _artist = _theToTheEnd(artist.trim());
-    _coverArtist = _theToTheEnd(coverArtist.trim());
+    _title = _theToTheEnd(title);
+    _artist = _theToTheEnd(artist);
+    _coverArtist = _theToTheEnd(coverArtist);
     computeSongIdFromSongData();
   }
 
@@ -3939,7 +3940,7 @@ class SongBase {
   String get titleWithCover => _title + (coverArtist.isNotEmpty ? ', cover by $coverArtist' : '');
 
   set title(String s) {
-    s = _theToTheEnd(s.trim());
+    s = _theToTheEnd(s);
     if (_title != s) {
       _title = s;
       computeSongIdFromSongData();
@@ -3951,7 +3952,7 @@ class SongBase {
   String get artist => _artist;
 
   set artist(String s) {
-    s = _theToTheEnd(s.trim());
+    s = _theToTheEnd(s);
     if (_artist != s) {
       _artist = s;
       computeSongIdFromSongData();
