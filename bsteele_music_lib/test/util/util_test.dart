@@ -148,4 +148,15 @@ void main() {
     expect(Util.utcFormat(DateTime.fromMillisecondsSinceEpoch(milliseconds)), s);
     expect(Util.yyyyMMdd_HHmmssStringToDate(s), DateTime.fromMillisecondsSinceEpoch(milliseconds));
   });
+
+  // test('test throw away', () async {
+  //   var regExp = RegExp(r'^([^.]*)(?:\.?(.+?))?$');
+  //   for (var s in ['bob', 'bob.foo']) {
+  //     var m = regExp.firstMatch(s);
+  //     logger.i('$regExp: "$s" match: ${m?.groupCount}');
+  //     for (var i = 0; i <= (m?.groupCount ?? -1); i++) {
+  //       logger.i('  $i: "${m?.group(i)}"');
+  //     }
+  //   }
+  // });
 }

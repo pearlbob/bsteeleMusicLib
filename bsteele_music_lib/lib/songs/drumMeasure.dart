@@ -247,6 +247,6 @@ class DrumParts //  fixme: name confusion with song chord Measure class
   int _beats = 4; //  default
 
   double get volume => _volume;
-  double _volume = 0;
+  double _volume = 1.0;
   final HashMap<DrumTypeEnum, DrumPart> _parts = HashMap<DrumTypeEnum, DrumPart>();
 }
