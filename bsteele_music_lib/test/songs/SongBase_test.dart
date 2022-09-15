@@ -3925,9 +3925,6 @@ Grid{
   test('test more songBase firstMomentInLyricSection()', () {
     int beatsPerBar = 4;
     Song a;
-    var userDisplayStyle = UserDisplayStyle.proPlayer;
-    Grid<MeasureNode> grid;
-    bool expanded = true;
     Logger.level = Level.info;
 
     {
