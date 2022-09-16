@@ -7,6 +7,7 @@ import '../util/util.dart';
 import 'chord.dart';
 import 'key.dart';
 import 'measureNode.dart';
+import 'nashvilleNote.dart';
 import 'section.dart';
 
 /// A measure in a section of a song.
@@ -245,6 +246,20 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
+  String toNashville(Key key) {
+    var sb = StringBuffer();
+    var keyOffset = key.getHalfStep();
+    for (var chord in chords) {
+      sb.write('${NashvilleNote.byHalfStep(chord.scaleChord.scaleNote.halfStep - keyOffset)}'
+          '${chord.scaleChord.chordDescriptor.toNashville()}'
+          //  fixme: strict Nashville inversions call for fractions
+          '${chord.slashScaleNote != null ? '/${NashvilleNote.byHalfStep(chord.slashScaleNote!.halfStep - keyOffset)}' : ''}'
+          ' ');
+    }
+    return sb.toString().trimRight();
+  }
+
+  @override
   String toJson() {
     return toMarkupWithEnd(null);
   }
@@ -319,7 +334,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   int get hashCode {
-     int ret = Object.hash(beatCount, endOfRow, hashObjects(chords));
+    int ret = Object.hash(beatCount, endOfRow, hashObjects(chords));
     return ret;
   }
 

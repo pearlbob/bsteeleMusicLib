@@ -42,6 +42,8 @@ enum ScaleNote implements Comparable<ScaleNote> {
   /// If the note is flat, return its matching sharp equivalent.
   ScaleNote get alias => (isSharp ? asFlat() : (isFlat ? asSharp() : this));
 
+  NashvilleNote getNashvilleNote(Key key) => NashvilleNote.byHalfStep(halfStep - key.halfStep);
+
   @override
   String toString() {
     return _scaleNoteString;

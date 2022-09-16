@@ -3817,6 +3817,17 @@ class SongBase {
     return ChordSection(SectionVersion(Section.get(SectionEnum.chorus), 0), null);
   }
 
+  String toNashville() {
+    StringBuffer sb = StringBuffer();
+    _parseLyrics();
+    for (var lyricSection in lyricSections) {
+      sb.write(lyricSection.sectionVersion.toString());
+      sb.write('  |  ');
+      sb.writeln(findChordSectionByLyricSection(lyricSection)!.toNashville(key));
+    }
+    return sb.toString().trimRight();
+  }
+
   @override
   String toString() {
     return title +

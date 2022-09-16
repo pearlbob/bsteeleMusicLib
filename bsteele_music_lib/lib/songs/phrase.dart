@@ -170,6 +170,16 @@ class Phrase extends MeasureNode {
   }
 
   @override
+  String toNashville(Key key) {
+    StringBuffer sb = StringBuffer();
+    for (Measure measure in _measures) {
+      sb.write(measure.toNashville(key));
+      sb.write(measure.endOfRow ? '     ' : ' '); //  fixme: all on one line?
+    }
+    return sb.toString().trimRight();
+  }
+
+  @override
   MeasureNode transposeToKey(Key key) {
     List<Measure> newMeasures = <Measure>[];
     for (Measure measure in _measures) {

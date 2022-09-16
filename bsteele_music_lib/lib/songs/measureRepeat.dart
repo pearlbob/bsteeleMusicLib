@@ -468,6 +468,17 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
+  String toNashville(Key key) {
+    StringBuffer sb = StringBuffer('\n');
+    for (Measure measure in measures) {
+      sb.write(measure.toNashville(key));
+      sb.write(measure.endOfRow ? '     ' : ' '); //  fixme: all on one line?
+    }
+    sb.write('   x${repeats.toString()}\n');
+    return sb.toString(); //  expecting to get trimmed at the level above
+  }
+
+  @override
   int compareTo(Object o) {
     if (!(o is MeasureRepeat)) {
       return -1;

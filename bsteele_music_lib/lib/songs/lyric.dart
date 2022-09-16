@@ -50,6 +50,11 @@ class Lyric extends MeasureNode {
     return '"$line"'; // at $phraseIndex';
   }
 
+  @override
+  String toNashville(Key key) {
+    return ''; //  no lyrics in Nashville!
+  }
+
   final String line;
   final int phraseIndex;
   final int repeat;

@@ -113,6 +113,11 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     return '${_sectionVersion.toString()}#$_index';
   }
 
+  @override
+  String toNashville(Key key) {
+    return ''; //  no lyrics in Nashville!
+  }
+
   /// Get the song's default drum _sectionVersion.
   /// The _sectionVersion will be played through all of its measures
   /// and then repeated as required for the _sectionVersion's duration.

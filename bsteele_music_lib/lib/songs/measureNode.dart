@@ -57,6 +57,11 @@ abstract class MeasureNode {
   /// Note that the key of C is considered sharp.
   MeasureNode transposeToKey(Key key);
 
+  /// Represent the measure node in Nashville notation at the text level.
+  /// This is only a rough presentation of the Nashville notation.
+  // fixme: inversions need to be graphical!
+  String toNashville(Key key);
+
   /// Represent the measure node to the user in a string form and from storage encoding.
   String toMarkup({bool expanded = false});
 
