@@ -33,3 +33,37 @@ enum NashvilleNote {
   final String _string;
   final String _markup;
 }
+
+enum NashvilleRomanNote {
+  roman1('I', 'I'),
+  romanFlat2('bII', '${MusicConstants.flatChar}II'),
+  roman2('II', 'II'),
+  romanFlat3('bIII', '${MusicConstants.flatChar}III'),
+  roman3('III', 'III'),
+  roman4('IV', 'IV'),
+  romanFlat5('bV', '${MusicConstants.flatChar}V'),
+  roman5('V', 'V'),
+  romanFlat6('bVI', '${MusicConstants.flatChar}VI'),
+  roman6('VI', 'VI'),
+  romanFlat7('bVII', '${MusicConstants.flatChar}VII'),
+  roman7('VII', 'VII');
+
+  const NashvilleRomanNote(this._markup, this._string);
+
+  //  counts from zero!
+  static NashvilleRomanNote byHalfStep(int offset) {
+    return NashvilleRomanNote.values[offset % MusicConstants.halfStepsPerOctave];
+  }
+
+  String toMarkup() {
+    return _markup;
+  }
+
+  @override
+  String toString() {
+    return _string;
+  }
+
+  final String _string;
+  final String _markup;
+}

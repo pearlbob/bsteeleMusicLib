@@ -88,7 +88,7 @@ void main() {
           4, 'pearl bob', 'i: D C G G x2  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
 
       logger.i(a.toNashville());
-      expect(a.toNashville(), '''I:  |  D C G G  x2
+      expect(a.toNashville(), '''I:  |  5 4 1 1    x2
 V:  |  1 1 1 1     4 4 1 1
 O:  |  4 4 1 1''');
     }
@@ -100,15 +100,15 @@ O:  |  4 4 1 1''');
       //logger.i(a.toJsonAsFile());
       logger.i(a.toNashville());
       expect(a.toNashville(), '''I:  |  1 3-/7 6- 5 4 4
-V:  |  A C#m D A  x4
+V:  |  1 3- 4 1    x4
 C:  |  1 4 1 4     1 4     4 4 4 4     1 3-/7 6- 5 4 4
-V:  |  A C#m D A  x4
+V:  |  1 3- 4 1    x4
 C:  |  1 4 1 4     1 4     4 4 4 4     1 3-/7 6- 5 4 4
-V:  |  A C#m D A  x4
+V:  |  1 3- 4 1    x4
 C:  |  1 4 1 4     1 4     4 4 4 4     1 3-/7 6- 5 4 4
-V:  |  A C#m D A  x4
+V:  |  1 3- 4 1    x4
 C:  |  1 4 1 4     1 4     4 4 4 4     1 3-/7 6- 5 4 4
-V:  |  A C#m D A  x4
+V:  |  1 3- 4 1    x4
 C:  |  1 4 1 4     1 4     4 4 4 4     1 3-/7 6- 5 4 4
 O:  |  1 3-/7 6- 5 4 4''');
     }
