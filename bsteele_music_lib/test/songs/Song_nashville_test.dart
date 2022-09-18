@@ -47,7 +47,7 @@ void main() {
     expect(ChordDescriptor.suspended.toNashville(), 'sus');
     expect(ChordDescriptor.suspendedFourth.toNashville(), '4');
     expect(ChordDescriptor.sevenSharp5.toNashville(), '7#5');
-    expect(ChordDescriptor.maj.toNashville(), 'maj');
+    expect(ChordDescriptor.maj.toNashville(), '');
     expect(ChordDescriptor.minor7b5.toNashville(), 'm7b5');
     expect(ChordDescriptor.diminished7.toNashville(), '°7');
     expect(ChordDescriptor.minor11.toNashville(), 'm11');

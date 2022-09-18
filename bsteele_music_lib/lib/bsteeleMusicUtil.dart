@@ -12,6 +12,7 @@ import 'package:bsteeleMusicLib/songs/chordDescriptor.dart';
 import 'package:bsteeleMusicLib/songs/chordSection.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/songs/songId.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:bsteeleMusicLib/songs/songPerformance.dart';
 import 'package:bsteeleMusicLib/songs/songUpdate.dart';
@@ -30,6 +31,8 @@ const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
+final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
+final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 AllSongPerformances allSongPerformances = AllSongPerformances();
 
 void main(List<String> args) {
@@ -314,18 +317,59 @@ coerced to reflect the songlist's last modification for that song.
             assert(fields[0][5] == 'Subgenre');
             assert(fields[0][6] == 'Status');
 
+            // for (var r = 1; r < fields.length; r++) {
+            //   var title = fields[r][0];
+            //   var artist = fields[r][1];
+            //   var year = fields[r][2];
+            //   var jam = fields[r][3].toString();
+            //   var genre = fields[r][4];
+            //   var subgenre = fields[r][5];
+            //   // var status = fields[r][6];
+            //   if (jam.isNotEmpty || genre.isNotEmpty || subgenre.isNotEmpty) {
+            //     logger.i('$r: "$title", $artist, $year, $jam, $genre, $subgenre');
+            //   }
+            // }
+
+            //  read all songs from the standard location
+            _addAllSongsFromFile(_allSongsFile);
+            assert(allSongs.isNotEmpty);
+            SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
+
             for (var r = 1; r < fields.length; r++) {
               var title = fields[r][0];
               var artist = fields[r][1];
-              var year = fields[r][2];
+              var year = fields[r][2].toString();
               var jam = fields[r][3].toString();
-              var genre = fields[r][4];
-              var subgenre = fields[r][5];
-              // var status = fields[r][6];
-              if (jam.isNotEmpty || genre.isNotEmpty || subgenre.isNotEmpty) {
-                logger.i('$r: "$title", $artist, $year, $jam, $genre, $subgenre');
+              var genre = fields[r][4].toString();
+              var subgenre = fields[r][5].toString();
+
+              var songId = SongId.computeSongId(title, artist, null);
+
+              logger.v('try $songId');
+
+              Song song;
+              try {
+                song = allSongs.firstWhere((e) => e.songId == songId);
+              } catch (e) {
+                logger.i('Not found: title: $title, artist: $artist');
+                final songs = allSongs.map((e) => e.songId.toString()).toList(growable: false);
+                BestMatch bestMatch = StringSimilarity.findBestMatch(songId.toString(), songs);
+                var idString = songs[bestMatch.bestMatchIndex];
+                song = allSongs.firstWhere((e) => e.songId.toString() == idString);
+                logger.i('   best match: title: "${song.title}", artist: "${song.artist}"'
+                    ', coverArtist: "${song.coverArtist}"');
+              }
+              if (genre.isNotEmpty || subgenre.isNotEmpty || jam.isNotEmpty || year.isNotEmpty) {
+                logger.v('$song:  genre: $genre, subgenre: $subgenre, jam: $jam, year: $year');
+                if (genre.isNotEmpty) SongMetadata.addSong(song, NameValue('genre', genre));
+                if (subgenre.isNotEmpty) SongMetadata.addSong(song, NameValue('subgenre', subgenre));
+                if (jam.isNotEmpty) SongMetadata.addSong(song, NameValue('jam', jam));
+                if (year.isNotEmpty) SongMetadata.addSong(song, NameValue('year', year));
               }
             }
+
+            logger.d(SongMetadata.toJson());
+            await File('allSongs_test.songmetadata').writeAsString(SongMetadata.toJson(), flush: true);
           }
           break;
 
@@ -1025,7 +1069,7 @@ coerced to reflect the songlist's last modification for that song.
         case '-w':
           //  assert there is another arg
           if (argCount >= args.length - 1) {
-            logger.e('missing directory path for -a');
+            logger.e('missing directory path for -w');
             exit(-1);
           }
           argCount++;

@@ -354,18 +354,25 @@ void main() {
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    SongMetadata.set(SongIdMetadata(SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId,
-        metadata: [NameValue('genre', 'rock'), NameValue('cj', 'best')]));
-    SongMetadata.set(SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
-        metadata: [NameValue('genre', 'rock'), NameValue('cj', 'ok')]));
-    SongMetadata.set(SongIdMetadata(SongId.computeSongId('Boxer, The', 'Simon & Garfunkel', null).songId,
-        metadata: [NameValue('cj', 'best')]));
+    var rock = NameValue('genre', 'rock');
+    var cjBest = NameValue('cj', 'best');
+    var cjOk = NameValue('cj', 'ok');
+
+    SongMetadata.set(SongIdMetadata(SongId.computeSongId('Dead Flowers', 'Stones, The', null).songId, metadata: [
+      rock,
+      cjBest /*ha!*/
+    ]));
+    SongMetadata.set(
+        SongIdMetadata(SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId, metadata: [rock, cjBest]));
+    SongMetadata.set(SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId, metadata: [rock, cjOk]));
+    SongMetadata.set(
+        SongIdMetadata(SongId.computeSongId('Boxer, The', 'Simon & Garfunkel', null).songId, metadata: [cjBest]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
         metadata: [NameValue('christmas', '')]));
 
     matches = SongMetadata.match(_rockMatch);
     expect(matches, isNotNull);
-    expect(matches.length, 2);
+    expect(matches.length, 3);
     expect(matches.first.id, 'Song_39_by_Queen');
 
     matches = SongMetadata.match(_christmasMatch);
@@ -375,7 +382,7 @@ void main() {
 
     matches = SongMetadata.match(_cjRankingBest);
     expect(matches, isNotNull);
-    expect(matches.length, 2);
+    expect(matches.length, 3);
     expect(matches.first.id, 'Song_Boxer_The_by_Simon_Garfunkel');
 
     matches = SongMetadata.match(_rockMatch, from: SongMetadata.match(_christmasMatch));
@@ -385,8 +392,28 @@ void main() {
     matches = SongMetadata.match(_rockMatch,
         from: SongMetadata.match(_cjRankingBest, from: SongMetadata.match(_notChristmasMatch)));
     expect(matches, isNotNull);
-    expect(matches.length, 1);
-    expect(matches.first.id, 'Song_Hey_Joe_by_Jimi_Hendrix');
+    expect(matches.length, 2);
+    expect(matches.first.id, 'Song_Dead_Flowers_by_Stones_The');
+
+    matches = SongMetadata.filterMatch([rock]);
+    expect(matches, isNotNull);
+    expect(matches.length, 3);
+    expect(matches.first.id, 'Song_39_by_Queen');
+    expect(matches.last.id, 'Song_Hey_Joe_by_Jimi_Hendrix');
+
+    matches = SongMetadata.filterMatch([rock, cjBest]);
+    expect(matches, isNotNull);
+    expect(matches.length, 2);
+    expect(matches.first.id, 'Song_Dead_Flowers_by_Stones_The');
+    expect(matches.last.id, 'Song_Hey_Joe_by_Jimi_Hendrix');
+
+    matches = SongMetadata.filterMatch([]);
+    expect(matches, isNotNull);
+    expect(matches.length, 0);
+
+    matches = SongMetadata.filterMatch([cjOk, cjBest]); //  should never match
+    expect(matches, isNotNull);
+    expect(matches.length, 0);
 
     for (var metadata in SongMetadata.idMetadata) {
       logger.i('${SongId.asReadableString(metadata.id)}');

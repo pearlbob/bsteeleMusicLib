@@ -154,7 +154,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _major9 = ChordDescriptor._('major9', 'maj9', 'R 3 5 7 9');
 
   static ChordDescriptor get maj => _maj;
-  static final ChordDescriptor _maj = ChordDescriptor._('maj', 'maj', 'R 3 5');
+  static final ChordDescriptor _maj = ChordDescriptor._('maj', 'maj', 'R 3 5', nashville: '');
 
   static ChordDescriptor get majorNine => _majorNine;
   static final ChordDescriptor _majorNine = ChordDescriptor._('majorNine', 'M9', 'R 3 5 7 9');

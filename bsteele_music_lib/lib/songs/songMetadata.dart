@@ -240,6 +240,26 @@ class SongMetadata {
     return ret;
   }
 
+  /// basically the and function
+  static SplayTreeSet<SongIdMetadata> filterMatch(Iterable<NameValue> filters, {SplayTreeSet<SongIdMetadata>? from}) {
+    SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
+    if (filters.isNotEmpty) {
+      for (SongIdMetadata songIdMetadata in from ?? _singleton._idMetadata) {
+        bool matchedAll = true;
+        for (var filter in filters) {
+          if (!songIdMetadata.contains(filter)) {
+            matchedAll = false;
+            break;
+          }
+        }
+        if (matchedAll) {
+          ret.add(songIdMetadata);
+        }
+      }
+    }
+    return ret;
+  }
+
   static SplayTreeSet<NameValue> songMetadataAt(final String id, final String name) {
     var set = where(idIs: id, nameIs: name);
     assert(set.length == 1);
@@ -262,6 +282,7 @@ class SongMetadata {
       String? nameIs,
       String? valueIs,
       NameValue? nameValue}) {
+    //  no filters allow any id
     if (idIsLike == null &&
         nameIsLike == null &&
         valueIsLike == null &&
