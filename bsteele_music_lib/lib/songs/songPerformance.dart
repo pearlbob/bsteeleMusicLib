@@ -148,6 +148,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   @override
   int get hashCode => _songIdAsString.hashCode ^ _singer.hashCode ^ _key.hashCode ^ _bpm.hashCode;
 
+  Song get performedSong => song ?? (Song.theEmptySong.copySong()..title = _songIdAsString);
   Song? song;
 
   String get songIdAsString => _songIdAsString;
@@ -165,8 +166,9 @@ class SongPerformance implements Comparable<SongPerformance> {
   int get bpm => _bpm;
   final int _bpm;
 
-  String get lastSungDateString =>
-      _lastSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
+  String get lastSungDateString => _lastSung == 0
+      ? ''
+      : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung)); // fixme: performance
 
   DateTime get lastSungDateTime => DateTime.fromMillisecondsSinceEpoch(_lastSung);
 
