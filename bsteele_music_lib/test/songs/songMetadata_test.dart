@@ -435,6 +435,7 @@ void main() {
     Song b = Song.createSong('b song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
     var firstNv = NameValue('test', 'first');
+    SongMetadata.clear();
     SongMetadata.addSong(a, firstNv);
     expect(SongMetadata.where().length, 1);
     expect(SongMetadata.where(idIs: a.songId.toString()).length, 1);
