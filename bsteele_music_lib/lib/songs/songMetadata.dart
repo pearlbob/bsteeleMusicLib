@@ -195,6 +195,10 @@ class SongMetadata {
     }
   }
 
+  static SongIdMetadata? songIdMetadata(final Song song) {
+    return _singleton._idMetadata.lookup(SongIdMetadata(song.songId.toString()));
+  }
+
   //  convenience method
   static void addSong(Song song, NameValue nameValue) {
     SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
@@ -276,6 +280,15 @@ class SongMetadata {
       }
     }
     return ret;
+  }
+
+  static bool contains(NameValue nameValue) {
+    for (SongIdMetadata idm in _singleton._idMetadata) {
+      if (idm.nameValues.contains(nameValue)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static SplayTreeSet<SongIdMetadata> where(
