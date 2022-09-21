@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songId.dart';
 import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:logger/logger.dart';
@@ -9,7 +11,7 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.info;
 
-  test('test Metadata', () {
+  test('test basic Metadata', () {
     SongMetadata.clear();
 
     final String id0 = 'id0';
@@ -73,6 +75,13 @@ void main() {
     expect(set.contains(md1), true);
     expect(set.contains(md2), true);
     expect(set.contains(md3), false);
+    logger.i(set.toString());
+    var idn = SongMetadata.where(idIs: 'id1').first;
+    logger.i('idn: $idn');
+    expect(idn.toString(), '''{ "id": "id1", "metadata": [
+	{"genre":"rock"},
+	{"jam":"advanced"}
+	] }''');
 
     //  get them all
     set = SongMetadata.where();
@@ -418,6 +427,30 @@ void main() {
     for (var metadata in SongMetadata.idMetadata) {
       logger.i('${SongId.asReadableString(metadata.id)}');
     }
+  });
+
+  test('test song metadata', () {
+    Song a = Song.createSong('a song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
+        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    Song b = Song.createSong('b song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
+        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    var firstNv = NameValue('test', 'first');
+    SongMetadata.addSong(a, firstNv);
+    expect(SongMetadata.where().length, 1);
+    expect(SongMetadata.where(idIs: a.songId.toString()).length, 1);
+    SongMetadata.addSong(b, firstNv);
+    expect(SongMetadata.where().length, 2);
+    expect(SongMetadata.where(idIs: a.songId.toString()).length, 1);
+    expect(SongMetadata.where(idIs: b.songId.toString()).length, 1);
+    SongMetadata.removeFromSong(a, firstNv);
+    expect(SongMetadata.where(idIs: a.songId.toString()).length, 0);
+    expect(SongMetadata.where(idIs: b.songId.toString()).length, 1);
+    logger.i(SongMetadata.where(idIs: b.songId.toString()).first.toString());
+    expect(SongMetadata.where(idIs: b.songId.toString()).first.toString(), //
+        '''{ "id": "Song_b_song_by_bob", "metadata": [
+	{"test":"first"}
+	] }''');
+    expect(SongMetadata.where().length, 1);
   });
 }
 

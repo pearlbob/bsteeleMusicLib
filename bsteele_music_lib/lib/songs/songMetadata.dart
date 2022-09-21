@@ -202,14 +202,18 @@ class SongMetadata {
   }
 
   //  convenience method
-  static void removeSong(Song song, NameValue nameValue) {
-    SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
-    remove(songIdMetadata, nameValue);
+  static void removeFromSong(Song song, NameValue nameValue) {
+    //  find the entry, if it exists
+    SongIdMetadata? songIdMetadata = _singleton._idMetadata.lookup(SongIdMetadata(song.songId.toString()));
+    if (songIdMetadata != null) {
+      remove(songIdMetadata, nameValue);
+    }
   }
 
   static void remove(SongIdMetadata songIdMetadata, NameValue nameValue) {
     songIdMetadata.remove(nameValue);
     if (songIdMetadata.isEmpty) {
+      //  remove this id metadata if it was the last one
       _singleton._idMetadata.remove(songIdMetadata);
     }
   }
