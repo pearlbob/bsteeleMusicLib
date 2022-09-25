@@ -61,7 +61,8 @@ arguments:
 -cjread {file)      add song metadata
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
--cjgenre {file}     read the csv version of the CJ genre file
+-cjgenre {file}     read the csv version of the CJ web genre file
+-cjgenrewrite {file}     write the csv version of the CJ web genre file
 -expand {file}      expand a songlyrics list file to the output directory
 -f                  force file writes over existing files
 -h                  this help message
@@ -336,12 +337,13 @@ coerced to reflect the songlist's last modification for that song.
             SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
 
             for (var r = 1; r < fields.length; r++) {
-              var title = fields[r][0];
-              var artist = fields[r][1];
-              var year = fields[r][2].toString();
-              var jam = fields[r][3].toString();
-              var genre = fields[r][4].toString();
-              var subgenre = fields[r][5].toString();
+              var title = fields[r][0].trim();
+              var artist = fields[r][1].trim();
+              var year = fields[r][2].toString().trim();
+              var jam = fields[r][3].toString().trim();
+              var genre = fields[r][4].toString().trim();
+              var subgenre = fields[r][5].toString().trim();
+              var status = fields[r][6].toString().trim();
 
               var songId = SongId.computeSongId(title, artist, null);
 
@@ -365,11 +367,64 @@ coerced to reflect the songlist's last modification for that song.
                 if (subgenre.isNotEmpty) SongMetadata.addSong(song, NameValue('subgenre', subgenre));
                 if (jam.isNotEmpty) SongMetadata.addSong(song, NameValue('jam', jam));
                 if (year.isNotEmpty) SongMetadata.addSong(song, NameValue('year', year));
+                if (status.isNotEmpty) SongMetadata.addSong(song, NameValue('status', status));
               }
             }
 
             logger.d(SongMetadata.toJson());
             await File('allSongs_test.songmetadata').writeAsString(SongMetadata.toJson(), flush: true);
+          }
+          break;
+
+        case '-cjgenrewrite': // {file}
+          //  insist there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing directory path for -a');
+            _help();
+            exit(-1);
+          }
+          argCount++;
+          {
+            File outputFile = File(args[argCount]);
+
+            if (await outputFile.exists() && !_force) {
+              logger.e('"${outputFile.path}" already exists for -w without -f');
+              exit(-1);
+            }
+
+            //  read all songs from the standard location
+            _addAllSongsFromFile(_allSongsFile);
+            assert(allSongs.isNotEmpty);
+            SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
+
+            var converter = ListToCsvConverter();
+            List<List> rows = [];
+            rows.add(['Title', 'Artist', 'Cover Artist', 'Year', 'Jam', 'Genre', 'Subgenre', 'Status']);
+            for (var song in allSongs) {
+              var md = SongMetadata.songMetadata(song, 'year');
+              var year = md.isNotEmpty ? md.first.value : '';
+              md = SongMetadata.songMetadata(song, 'jam');
+              var jam = md.isNotEmpty ? md.first.value : '';
+              md = SongMetadata.songMetadata(song, 'genre');
+              var genre = md.isNotEmpty ? md.first.value : '';
+              md = SongMetadata.songMetadata(song, 'subgenre');
+              var subgenre = md.isNotEmpty ? md.first.value : '';
+              md = SongMetadata.songMetadata(song, 'status');
+              var status = md.isNotEmpty ? md.first.value : '';
+              rows.add([
+                song.title,
+                song.artist,
+                song.coverArtist,
+                year,
+                jam,
+                genre,
+                subgenre,
+                status,
+              ]);
+            }
+            await outputFile.writeAsString(converter.convert(rows), flush: true);
+
+            logger.i('-cjgenrewrite: $outputFile');
           }
           break;
 

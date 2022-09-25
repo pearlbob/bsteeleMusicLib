@@ -268,9 +268,13 @@ class SongMetadata {
     return ret;
   }
 
+  static SplayTreeSet<NameValue> songMetadata(final Song song, final String name) {
+    return songMetadataAt(song.songId.toString(), name);
+  }
+
   static SplayTreeSet<NameValue> songMetadataAt(final String id, final String name) {
     var set = where(idIs: id, nameIs: name);
-    assert(set.length == 1);
+    // assert(set.length == 1); fixme: why was this here?
     var ret = SplayTreeSet<NameValue>();
     for (var songIdMetadata in set) {
       for (var nameValue in songIdMetadata._nameValues) {
