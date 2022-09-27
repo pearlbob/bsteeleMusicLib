@@ -12,6 +12,7 @@ import 'package:bsteeleMusicLib/songs/songMoment.dart';
 
 enum SongUpdateState {
   none,
+  manualPlay,
   playing,
   idle,
 }
@@ -48,7 +49,7 @@ class SongUpdate {
       int? beatsPerMeasure,
       int? currentBeatsPerMinute,
       Key? currentKey})
-      : state = state ?? SongUpdateState.idle,
+      : _state = state ?? SongUpdateState.idle,
         user = user ?? 'unknown',
         singer = singer ?? unknownSinger,
         momentNumber = momentNumber ?? 0,
@@ -75,7 +76,7 @@ class SongUpdate {
       Key? currentKey}) {
     SongUpdate ret = SongUpdate(
       song: song ?? this.song,
-      state: state ?? this.state,
+      state: state ?? _state,
       user: user ?? this.user,
       singer: singer ?? this.singer,
       momentNumber: momentNumber ?? this.momentNumber,
@@ -100,9 +101,7 @@ class SongUpdate {
     currentKey = song.getKey();
   }
 
-  SongUpdateState getState() {
-    return state;
-  }
+  SongUpdateState get state => _state;
 
   SongMoment? getSongMoment() {
     return songMoment;
@@ -186,9 +185,7 @@ class SongUpdate {
     return currentBeatsPerMinute > 0 ? currentBeatsPerMinute : song.beatsPerMinute;
   }
 
-  void setState(SongUpdateState state) {
-    this.state = state;
-  }
+  set state(SongUpdateState state) => _state = state;
 
   /// @param song the song to set
   void setSong(Song song) {
@@ -299,7 +296,7 @@ class SongUpdate {
         var jv = json[name];
         switch (name) {
           case 'state':
-            setState(_stateFromString(jv) ?? SongUpdateState.none);
+            state = (_stateFromString(jv) ?? SongUpdateState.none);
             break;
           case 'currentKey':
             setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
@@ -341,7 +338,7 @@ class SongUpdate {
     var sb = StringBuffer();
     sb.write('{\n');
     sb.write('\"state\": \"');
-    sb.write(_StateEnumToString(getState()));
+    sb.write(_StateEnumToString(_state));
     sb.write('\",\n');
     sb.write('\"currentKey\": \"');
     sb.write(getCurrentKey().name);
@@ -384,20 +381,20 @@ class SongUpdate {
 
   @override
   int get hashCode {
-    int hash = Object.hash(state, currentKey, song, momentNumber);
+    int hash = Object.hash(_state, currentKey, song, momentNumber);
     hash = 83 * hash + Object.hash(beat, beatsPerMeasure, currentBeatsPerMinute, user);
     hash = 17 * hash + singer.hashCode;
     return hash;
   }
 
-  SongUpdateState state;
+  SongUpdateState _state;
   late Song song;
   String user;
   String singer;
   int momentNumber;
   SongMoment? songMoment;
 
-//  play values
+  //  play values
   int beat;
   int beatsPerMeasure;
   int currentBeatsPerMinute;
