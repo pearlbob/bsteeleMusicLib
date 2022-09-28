@@ -54,6 +54,10 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
+  static int indexLimit(final int n, final List list) {
+    return intLimit(n, 0, list.isEmpty ? 0 : list.length - 1); //  fixme: return 0 on empty list?
+  }
+
   static double doubleLimit(final double n, final double limit1, final double limit2) {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
