@@ -66,6 +66,20 @@ class SongPerformance implements Comparable<SongPerformance> {
     return 0;
   }
 
+  static int compareBySinger(SongPerformance first, SongPerformance other) {
+    int ret = first._singer.compareTo(other._singer);
+    if (ret != 0) {
+      return ret;
+    }
+
+    ret = _compareBySongId(first, other);
+    if (ret != 0) {
+      return ret;
+    }
+
+    return 0;
+  }
+
   static int compareByLastSungSongIdAndSinger(SongPerformance first, SongPerformance other) {
     if (identical(first, other)) {
       return 0;
