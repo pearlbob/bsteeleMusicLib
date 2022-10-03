@@ -7,4 +7,4 @@ cd ~/github/bsteeleMusicLib
 cd bsteele_music_lib/
 dart pub get
 cd ..
-dart compile exe -o ~/installs/bsteele/bin/bsteeleMusicUtil bsteele_music_lib/lib/bsteeleMusicUtil.dart
+dart compile exe -o ~/lib/bin/bsteeleMusicUtil bsteele_music_lib/lib/bsteeleMusicUtil.dart

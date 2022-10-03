@@ -32,6 +32,15 @@ class NameValue implements Comparable<NameValue> {
     return '$name:$value';
   }
 
+  /// will return empty name value on parse failure
+  static NameValue parse(String s) {
+    RegExpMatch? m = _nameValueRegexp.firstMatch(s);
+    if (m == null) {
+      return NameValue('', '');
+    }
+    return NameValue(m.group(1) ?? ' ', m.group(2) ?? '');
+  }
+
   String toJson() {
     return '{"name":${jsonEncode(name)},"value":${jsonEncode(value)}}';
   }
@@ -529,3 +538,5 @@ class SongMetadata {
   static SplayTreeSet<SongIdMetadata> get idMetadata => _singleton._idMetadata;
   final SplayTreeSet<SongIdMetadata> _idMetadata = SplayTreeSet();
 }
+
+final RegExp _nameValueRegexp = RegExp(r'\s*(\d)\s*:\s*(\d)\s*$');
