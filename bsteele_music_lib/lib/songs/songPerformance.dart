@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:intl/intl.dart';
+import 'package:string_similarity/string_similarity.dart';
 
 import 'key.dart';
 import 'musicConstants.dart';
@@ -95,7 +96,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   String toString() {
     return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', _key: $_key'
         ', _bpm: $_bpm, sung: ${lastSungDateString}'
-    //' = $_lastSung'
+        //' = $_lastSung'
         '}';
   }
 
@@ -277,16 +278,27 @@ class AllSongPerformances {
       songMap[song.songId.toString().toLowerCase()] = song;
     }
 
+    final List<String> allLowerCaseIds = songMap.keys.toList(growable: false);
+
+    //  fixme: a failed match can choose a wrong-ish "best match" if the song id has been changed too much
+
     for (var songPerformance in _allSongPerformances) {
-      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString];
+      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString] ??
+          songMap[allLowerCaseIds[
+              StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds).bestMatchIndex]];
     }
 
     for (var songPerformance in _allSongPerformanceHistory) {
-      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString];
+      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString] ??
+          songMap[allLowerCaseIds[
+              StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds).bestMatchIndex]];
     }
 
     for (var songRequest in _allSongPerformanceRequests) {
-      songRequest.song = songMap[songRequest._lowerCaseSongIdAsString];
+      songRequest.song = songMap[songRequest._lowerCaseSongIdAsString] ??
+          songMap[allLowerCaseIds[
+              StringSimilarity.findBestMatch(songRequest.song?.songId.toString().toLowerCase(), allLowerCaseIds)
+                  .bestMatchIndex]];
     }
   }
 
