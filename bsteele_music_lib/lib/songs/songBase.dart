@@ -54,6 +54,9 @@ enum UserDisplayStyle {
 
   /// White board style minimum player mode
   proPlayer,
+
+  /// Banner (horizontal) player display mode
+  banner,
 }
 
 const Level _logGrid = Level.debug;
@@ -695,7 +698,7 @@ class SongBase {
           continue toNormal; //  fall through
         toNormal:
         case UpperCaseState.normal:
-          //  reset on sequential reset characters
+        //  reset on sequential reset characters
           if (c == ' ' ||
               c == '\n' ||
               c == '\r' ||
@@ -783,7 +786,7 @@ class SongBase {
     }
 
     //  look for unused sections
-    {
+        {
       var sectionVersions = SplayTreeSet<SectionVersion>();
       sectionVersions.addAll(_getChordSectionMap().keys);
       for (var lyricSection in lyricSections) {
@@ -922,7 +925,7 @@ class SongBase {
           markedString.resetTo(mark);
         }
         //  the entry was not understood, force it to be a comment
-        {
+            {
           int commentIndex = markedString.indexOf(' ');
           if (commentIndex < 0) {
             ret.add(MeasureComment(markedString.toString()));
@@ -1243,7 +1246,7 @@ class SongBase {
                 col = maxCol;
 
                 //  close the multiline repeat marker
-                {
+                    {
                   ChordSectionLocation loc = ChordSectionLocation.withMarker(
                       sectionVersion,
                       phraseIndex,
@@ -1750,7 +1753,7 @@ class SongBase {
       case MeasureNodeType.section:
         switch (editType) {
           case MeasureEditType.delete:
-            //  find the section prior to the one being deleted
+          //  find the section prior to the one being deleted
             SectionVersion? nextSectionVersion = _priorSectionVersion(chordSection.sectionVersion);
             ret = (_getChordSectionMap().remove(chordSection.sectionVersion) != null);
             if (ret) {
@@ -1765,7 +1768,7 @@ class SongBase {
             }
             break;
           default:
-            //  all sections replace themselves
+          //  all sections replace themselves
             newChordSection = measureNode as ChordSection;
             _getChordSectionMap()[newChordSection.sectionVersion] = newChordSection;
             ret = true;
@@ -2066,7 +2069,7 @@ class SongBase {
 
       case MeasureNodeType.measure:
       case MeasureNodeType.comment:
-        //  add measure to current phrase
+    //  add measure to current phrase
         if (location != null) {
           if (location.hasMeasureIndex) {
             newLocation = location;
@@ -2075,7 +2078,7 @@ class SongBase {
                 newLocation = location.nextMeasureIndexLocation();
                 break;
               case MeasureEditType.replace:
-                //  deal with a change of endOfRow
+              //  deal with a change of endOfRow
                 Measure newMeasure = measureNode as Measure;
                 Measure oldMeasure = phrase.measures[newLocation.measureIndex];
                 if (newMeasure.endOfRow != oldMeasure.endOfRow) {
@@ -2145,7 +2148,7 @@ class SongBase {
         break;
 
       case MeasureEditType.append:
-        //  promote marker to repeat
+      //  promote marker to repeat
         if (location != null) {
           try {
             Measure refMeasure = phrase.getMeasure(location.measureIndex);
@@ -2195,7 +2198,7 @@ class SongBase {
         break;
 
       case MeasureEditType.delete:
-        //  note: measureNode is ignored, and should be ignored
+      //  note: measureNode is ignored, and should be ignored
         if (location != null) {
           if (location.isMeasure) {
             ret = phrase.deleteAt(location.measureIndex);
@@ -2265,7 +2268,7 @@ class SongBase {
       resetLastModifiedDateToNow();
 
       switch (currentMeasureEditType) {
-        // case MeasureEditType.replace:
+      // case MeasureEditType.replace:
         case MeasureEditType.delete:
           if (getCurrentChordSectionLocationMeasureNode() == null) {
             setCurrentMeasureEditType(MeasureEditType.append);
@@ -2619,7 +2622,7 @@ class SongBase {
         switch (c) {
           case '\n':
           case '\r':
-            //  insert verse if missing the section declaration
+        //  insert verse if missing the section declaration
             lyricSection ??= LyricSection(Section.getDefaultVersion(), lyricSections.length);
 
             //  add the lyrics
@@ -3105,7 +3108,7 @@ class SongBase {
     }
 
 //  lyrics
-    {
+        {
       int limit = min(a.lyricSections.length, b.lyricSections.length);
       for (int i = 0; i < limit; i++) {
         LyricSection aLyricSection = a.lyricSections[i];
@@ -3606,7 +3609,7 @@ class SongBase {
       var sectionGrid = Grid<MeasureNode>();
 
       //  map multiple lyrics lines to repeats
-      {
+          {
         var lyricsIndex = 0;
         var rowIndex = 0;
         //  section indicator
@@ -3659,7 +3662,7 @@ class SongBase {
 
     //  assign grid locations to song moments
     //  fixme: why is this so difficult and fragile?
-    {
+        {
       _songMomentToGridCoordinate = [];
       //  setup the initial target to find
       int momentNumber = 0;
@@ -3768,9 +3771,30 @@ class SongBase {
           return grid;
         }
 
+      case UserDisplayStyle.banner:
+        {
+          var grid = Grid<MeasureNode>();
+          var c = 0;
+          ChordSection? lastChordSection;
+          for (var m in songMoments) {
+            var chordSection = m.chordSection;
+            var r = 0;
+            var gc = GridCoordinate(r++, c);
+            grid.setAt(gc, chordSection == lastChordSection ? null : chordSection);
+            lastChordSection = chordSection;
+            _songMomentToGridCoordinate.add(gc);
+            gc = GridCoordinate(r++, c);
+            grid.setAt(gc, m.measure);
+            _songMomentToGridCoordinate.add(gc);
+
+            c++;
+          }
+          return grid;
+        }
+
       case UserDisplayStyle.player:
       case UserDisplayStyle.both:
-      return _toBothGrid(expanded: expanded);
+        return _toBothGrid(expanded: expanded);
     }
   }
 

@@ -9,16 +9,16 @@ import 'package:logger/logger.dart';
 import 'package:string_similarity/string_similarity.dart';
 import 'package:test/test.dart';
 
-const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
-const String _junkRelativeDirectory = 'junk'; //  relative to user home
+// const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
+// const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
-final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
+// final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 AllSongPerformances allSongPerformances = AllSongPerformances();
 bool _verbose = false;
-int _updateCount = 0;
+// int _updateCount = 0;
 
 SplayTreeSet<Song> allSongs = SplayTreeSet();
 
@@ -69,7 +69,7 @@ void _addAllSongsFromFile(File inputFile) {
       if (song.lastModifiedTime > listSong.lastModifiedTime) {
         allSongs.remove(listSong);
         allSongs.add(song);
-        _updateCount++;
+        // _updateCount++;
       }
     } else {
       allSongs.add(song);

@@ -147,7 +147,7 @@ void main() {
     expect(songPerformance.lastSungDateString, matches(r'^\d{1,2}/\d{1,2}/202\d$'));
 
     var next = SongPerformance.fromSong(a, singer1, key: Key.A);
-    await Future.delayed(const Duration(milliseconds: 2));
+    await Future.delayed(const Duration(milliseconds: 200));
     expect(next.lastSung > songPerformance.lastSung, true);
 
     songPerformance = SongPerformance.fromJsonString(
