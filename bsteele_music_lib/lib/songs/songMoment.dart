@@ -2,7 +2,6 @@ import 'chordSection.dart';
 import 'chordSectionLocation.dart';
 import 'lyricSection.dart';
 import 'measure.dart';
-import 'measureNode.dart';
 import 'phrase.dart';
 
 class SongMoment implements Comparable<SongMoment> {
@@ -42,10 +41,10 @@ class SongMoment implements Comparable<SongMoment> {
     return chordSection;
   }
 
-  @deprecated
-  MeasureNode getPhrase() {
-    return phrase;
-  }
+  // @Deprecated('Try to avoid the phrase level internal abstraction')
+  // MeasureNode getPhrase() {
+  //   return phrase;
+  // }
 
   int getPhraseIndex() {
     return phraseIndex;
@@ -77,14 +76,14 @@ class SongMoment implements Comparable<SongMoment> {
     return chordSectionLocation!;
   }
 
-  String get momentLocation => getChordSectionLocation().toString() + '#' + sectionCount.toString();
+  String get momentLocation => '${getChordSectionLocation()}#$sectionCount';
 
   @override
   String toString() {
     return '$momentNumber: $momentLocation  ${measure.toMarkup()}'
         ' beat  ${getBeatNumber()}'
-        '${(repeatMax > 1 ? ' ' + repeat.toString() + '/' + repeatMax.toString() : '')}'
-        ' ${chordSection.sectionVersion} #${sectionCount}';
+        '${(repeatMax > 1 ? ' $repeat/$repeatMax' : '')}'
+        ' ${chordSection.sectionVersion} #$sectionCount';
   }
 
   @override

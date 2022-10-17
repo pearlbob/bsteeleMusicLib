@@ -31,7 +31,7 @@ final RegExp endOfTabRegexp = RegExp(r'^\{\s*(end_of_tab|eot)}');
 
 enum _ChordProState {
   normal,
-  start_of_tab,
+  startOfTab,
 }
 
 class _ChordSectionAndLyrics {
@@ -121,11 +121,11 @@ class ChordPro {
   void parseLine(String line) {
     line = line.trim();
     if (line.trim().isNotEmpty) {
-      switch (state) {
+      switch (_state) {
         case _ChordProState.normal:
           parseNonEmptyLine(line);
           break;
-        case _ChordProState.start_of_tab:
+        case _ChordProState.startOfTab:
           consumeToEndOfTab(line);
           break;
       }
@@ -185,7 +185,7 @@ class ChordPro {
         case 'duration':
         case 'capo':
         case 'meta':
-          logger.d('meta: ${name}: $value,  <$line>');
+        logger.d('meta: $name: $value,  <$line>');
           break;
         default:
           logger.d('unknown meta: $value,  <$line>');
@@ -235,7 +235,7 @@ class ChordPro {
         case 'capo':
           break;
         case 'meta':
-          logger.d('standard meta: ${name}: $value,  <$line>');
+          logger.d('standard meta: $name: $value,  <$line>');
           break;
         default:
           logger.d('unknown standard meta: $value,  <$line>');
@@ -254,7 +254,7 @@ class ChordPro {
     m = environmentDirectiveRegexp.firstMatch(line);
     if (m != null) {
       var env = m.group(1);
-      logger.d('env: ${env}: <$line>');
+      logger.d('env: $env: <$line>');
 
       switch (m.group(1)) {
         case 'new_song':
@@ -280,7 +280,7 @@ class ChordPro {
           break;
         case 'start_of_tab':
         case 'sot':
-          state = _ChordProState.start_of_tab;
+        _state = _ChordProState.startOfTab;
           break;
         case 'end_of_tab':
         case 'eot':
@@ -304,7 +304,7 @@ class ChordPro {
         case 'col':
           break;
         default:
-          logger.d('unknown env: ${env}: <$line>');
+          logger.d('unknown env: $env: <$line>');
           break;
       }
       return;
@@ -381,7 +381,7 @@ class ChordPro {
   void consumeToEndOfTab(String line) {
     RegExpMatch? m = endOfTabRegexp.firstMatch(line);
     if (m != null) {
-      state = _ChordProState.normal;
+      _state = _ChordProState.normal;
     }
 
     logger.d('tabbing: <$line>');
@@ -391,6 +391,7 @@ class ChordPro {
   List<String> lyricsLines = [];
   List<Measure> measures = [];
   ChordSection? currentChordSection;
-  _ChordProState state = _ChordProState.normal;
+  _ChordProState _state = _ChordProState.normal;
+
   Song _song = Song.createEmptySong();
 }

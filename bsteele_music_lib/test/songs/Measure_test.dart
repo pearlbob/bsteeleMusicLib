@@ -26,9 +26,9 @@ void main() {
       expect(m, isNotNull);
       Chord chord = Chord.byScaleChordAndBeats(ScaleChord(ScaleNote.B, ChordDescriptor.major), beats, beatsPerBar);
       ref = Measure(beats, [chord]);
-      logger.i('m:   ' + m.toMarkup());
-      logger.i('ref: ' + ref.toMarkup());
-      logger.i('m == ref: ' + (m == ref).toString());
+      logger.i('m:   ${m.toMarkup()}');
+      logger.i('ref: ${ref.toMarkup()}');
+      logger.i('m == ref: ${m == ref}');
       expect(m, ref);
     }
   });
@@ -396,7 +396,7 @@ void main() {
     }
     {
       int beatsPerBar = 3;
-      logger.d('beatsPerBar: ' + beatsPerBar.toString());
+      logger.d('beatsPerBar: $beatsPerBar');
       try {
         m = Measure.parseString(' .G ', beatsPerBar);
         fail('should fail on stupid entry: .G');
@@ -432,18 +432,18 @@ void main() {
     Measure? m;
     //  fixme: test multi chord measures
     for (Key key in Key.values) {
-      logger.i('key: ' + key.toString());
+      logger.i('key: $key');
       for (final scaleNote in ScaleNote.values) {
         if (scaleNote.isSilent) continue;
-        logger.i('scaleNote: ' + scaleNote.toString());
+        logger.i('scaleNote: $scaleNote');
         for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
-          logger.i('beatsPerBar: ' + beatsPerBar.toString());
+          logger.i('beatsPerBar: $beatsPerBar');
           m = Measure.parseString(scaleNote.toString(), beatsPerBar);
           m = m.transposeToKey(key) as Measure;
           for (Chord chord in m.chords) {
             var sn = chord.scaleChord.scaleNote;
 
-            logger.d('key: ' + key.toString() + ' sn: ' + sn.toString());
+            logger.d('key: $key sn: $sn');
             if (sn.isNatural) {
               expect(sn.isSharp, false);
               expect(sn.isFlat, false);
@@ -461,14 +461,7 @@ void main() {
               ScaleNote? slashScaleNote = m.chords[0].slashScaleNote;
               if (slashScaleNote == null) throw TestFailure('transposeToKey result is null');
 
-              logger.d('key: ' +
-                  key.toString() +
-                  ' m: ' +
-                  m.toString() +
-                  ' sn: ' +
-                  sn.toString() +
-                  ' slash: ' +
-                  slashScaleNote.toString());
+              logger.d('key: $key m: $m sn: $sn slash: $slashScaleNote');
               if (sn.isNatural) {
                 expect(sn.isSharp, false);
                 expect(sn.isFlat, false);
@@ -481,8 +474,7 @@ void main() {
                 expect(slashScaleNote.isFlat, false);
               } else {
                 expect(slashScaleNote.isSharp, key.isSharp);
-                logger.d(
-                    'slash.isFlat: ' + slashScaleNote.isFlat.toString() + ', key.isSharp(): ' + key.isSharp.toString());
+                logger.d('slash.isFlat: ${slashScaleNote.isFlat}, key.isSharp(): ${key.isSharp}');
                 expect(!slashScaleNote.isFlat, key.isSharp);
               }
             }

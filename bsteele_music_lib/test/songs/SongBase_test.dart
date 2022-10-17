@@ -43,7 +43,7 @@ String chordSectionToMultiLineString(SongBase song) {
         continue;
       }
 
-      sb.write('\t' + data.toString() + ' ');
+      sb.write('\t$data ');
       if (data.isMeasure) {
         Measure? measure = song.findMeasureByChordSectionLocation(data.chordSectionLocation);
         if (measure == null) {
@@ -86,8 +86,8 @@ void main() {
     expect(a.hashCode != b.hashCode, isTrue);
     b = SongBase.createSongBase('A', 'bob', 'photos.bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D',
         'v: bob, bob, bob berand');
-    logger.d('a.getSongId(): ' + a.getSongId().hashCode.toString());
-    logger.d('b.getSongId(): ' + b.getSongId().hashCode.toString());
+    logger.d('a.getSongId(): ${a.getSongId().hashCode}');
+    logger.d('b.getSongId(): ${b.getSongId().hashCode}');
     expect(a.getSongId().compareTo(b.getSongId()), 0);
     expect(a.getSongId(), b.getSongId());
     expect(a.hashCode != b.hashCode, isTrue);
@@ -330,7 +330,7 @@ void main() {
       SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
           'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
 
-      var gridCoordinate = GridCoordinate(0, 4);
+      var gridCoordinate = const GridCoordinate(0, 4);
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
       a.setCurrentChordSectionLocation(chordSectionLocation);
       logger.d(chordSectionLocation.toString());
@@ -372,13 +372,9 @@ void main() {
               String s = a.toMarkup().trim();
               logger.d(s);
               if (row == 0) {
-                expect(s, 'I: [A B C D ] x' + r.toString() + '  V: E F G A#');
+                expect(s, 'I: [A B C D ] x$r  V: E F G A#');
               } else {
-                expect(
-                    s,
-                    'I: A B C D'
-                            '  V: [E F G A# ] x' +
-                        r.toString());
+                expect(s, 'I: A B C D  V: [E F G A# ] x$r');
               }
               expect(a.currentChordSectionLocation, chordSectionLocation);
             }
@@ -422,13 +418,13 @@ void main() {
       var gridCoordinate = GridCoordinate(2, 1 + measureIndex % 4);
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
       assert(chordSectionLocation != null);
-      logger.d('${chordSectionLocation}: ${a.findMeasureByChordSectionLocation(chordSectionLocation)}');
+      logger.d('$chordSectionLocation: ${a.findMeasureByChordSectionLocation(chordSectionLocation)}');
       a.setCurrentChordSectionLocation(chordSectionLocation);
       a.setRepeat(chordSectionLocation!, 2);
-      gridCoordinate = GridCoordinate(2, 1 + 3);
+      gridCoordinate = const GridCoordinate(2, 1 + 3);
       chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
       assert(chordSectionLocation != null);
-      logger.d('grid: ${chordSectionLocation}: ${a.findMeasureByChordSectionLocation(chordSectionLocation)}');
+      logger.d('grid: $chordSectionLocation: ${a.findMeasureByChordSectionLocation(chordSectionLocation)}');
       logger.i(a.toMarkup());
       expect(a.toMarkup().trim(), 'I: A B C D  V: E F G A# [B C C# D ] x2 D# E F F#, G  O: D E F G');
       expect(a.currentChordSectionLocation, chordSectionLocation);
@@ -662,15 +658,15 @@ void main() {
 
         if (measure != null) {
           expect(measure, a.findMeasureNodeByLocation(a.getChordSectionGrid().get(r, c)?.chordSectionLocation));
-          logger.d('measure(' + c.toString() + ',' + r.toString() + '): ' + measure.toMarkup());
+          logger.d('measure($c,$r): ${measure.toMarkup()}');
           ChordSectionLocation? loc = a.findChordSectionLocationByGrid(GridCoordinate(r, c));
-          logger.d('loc: ' + loc.toString());
+          logger.d('loc: $loc');
           a.setCurrentChordSectionLocation(loc);
 
-          logger.d('current: ' + a.getCurrentMeasureNode()!.toMarkup());
+          logger.d('current: ${a.getCurrentMeasureNode()!.toMarkup()}');
           expect(measure, a.getCurrentMeasureNode());
         }
-        logger.d('grid[' + r.toString() + ',' + c.toString() + ']: ' + node.toString());
+        logger.d('grid[$r,$c]: $node');
       }
     }
   });
@@ -694,7 +690,7 @@ void main() {
             'C: F F# G G# Ab A O: C C C C B',
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no:');
     logger.d(a.getSongId().toString());
-    logger.d('\t' + a.toMarkup());
+    logger.d('\t${a.toMarkup()}');
     logger.d(a.rawLyrics);
 
     ChordSectionLocation chordSectionLocation;
@@ -774,13 +770,13 @@ void main() {
     a.chordSectionLocationDelete(loc);
     logger.d(a.findChordSectionBySectionVersion(SectionVersion.parseString('i:'))!.toMarkup());
     logger.d(a.findMeasureNodeByLocation(loc)!.toMarkup());
-    logger.d('loc: ' + a.getCurrentChordSectionLocation().toString());
+    logger.d('loc: ${a.getCurrentChordSectionLocation()}');
     logger.d(a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation())!.toMarkup());
     expect(a.findMeasureNodeByLocation(loc), a.findMeasureNodeByLocation(a.getCurrentChordSectionLocation()));
     logger.i(a.toMarkup());
     expect(a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup(), 'I: A B D ');
     expect(Measure.parseString('D', beatsPerBar), a.getCurrentChordSectionLocationMeasureNode());
-    logger.d('cur: ' + a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
+    logger.d('cur: ${a.getCurrentChordSectionLocationMeasureNode()!.toMarkup()}');
 
     a.chordSectionLocationDelete(loc);
     expect('I: A B ', a.getChordSection(SectionVersion.parseString('i:'))!.toMarkup());
@@ -846,7 +842,7 @@ void main() {
     expect(2, row.length);
     row = grid.getRow(1);
     if (row == null) throw 'row == null';
-    logger.d('row: ' + row.toString());
+    logger.d('row: $row');
     expect(1 + 4 + 1 + 1, row.length);
     row = grid.getRow(2);
     if (row == null) throw 'row == null';
@@ -885,7 +881,7 @@ c2:
     logger.v('<${a.rawLyrics}>');
 
     for (var ls in a.lyricSections) {
-      logger.v('${ls.sectionVersion.toString()}');
+      logger.v(ls.sectionVersion.toString());
       var i = 1;
       for (var line in ls.lyricsLines) {
         logger.v('    ${i++}: $line');
@@ -936,23 +932,23 @@ c2:
         'O:'
             'D..Dm7 Dm7 C..B♭maj7 B♭maj7  x12',
         'o: nothing');
-    logger.v('grid: ' + a.logGrid());
+    logger.v('grid: ${a.logGrid()}');
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
     MeasureNode? measureNode = a.findMeasureNodeByLocation(location);
-    logger.v('measure: ' + measureNode!.toMarkup());
+    logger.v('measure: ${measureNode!.toMarkup()}');
     expect(measureNode, Measure.parseString('B♭maj7', beatsPerBar));
-    MeasureNode? mn = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    MeasureNode? mn = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     Measure? expectedMn = Measure.parseString('B♭maj7', beatsPerBar);
     expect(mn, expectedMn);
 
-    final int row = 0;
-    final int lastCol = 3;
+    const int row = 0;
+    const int lastCol = 3;
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0),
         phraseIndex: row, measureIndex: lastCol);
     measureNode = a.findMeasureNodeByLocation(location);
     if (measureNode == null) throw 'measureNode == null';
     logger.d(measureNode.toMarkup());
-    expect(measureNode, a.findMeasureNodeByGrid(GridCoordinate(row, lastCol + 1)));
+    expect(measureNode, a.findMeasureNodeByGrid(const GridCoordinate(row, lastCol + 1)));
 
     a = SongBase.createSongBase(
         'A',
@@ -1001,11 +997,11 @@ c2:
         'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
     Measure? m = Measure.parseString('X', a.getBeatsPerBar());
-    expect(a.findMeasureNodeByGrid(GridCoordinate(1, 2)), m);
-    expect(Measure.parseString('C5D5', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(5, 4)));
+    expect(a.findMeasureNodeByGrid(const GridCoordinate(1, 2)), m);
+    expect(Measure.parseString('C5D5', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(5, 4)));
     m = Measure.parseString('DC', a.getBeatsPerBar());
-    expect(a.findMeasureNodeByGrid(GridCoordinate(18, 2)), m);
-    expect(Measure.parseString('C5D#', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(20, 4)));
+    expect(a.findMeasureNodeByGrid(const GridCoordinate(18, 2)), m);
+    expect(Measure.parseString('C5D#', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(20, 4)));
 
     //  not what's intended, but what's declared
     a = SongBase.createSongBase(
@@ -1026,9 +1022,9 @@ c2:
             'O:V:\n',
         'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
-    expect(Measure.parseString('Gm7', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(0, 3)));
-    expect(Measure.parseString('Cm', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(2, 1)));
-    expect(Measure.parseString('F', a.getBeatsPerBar()), a.findMeasureNodeByGrid(GridCoordinate(2, 2)));
+    expect(Measure.parseString('Gm7', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(0, 3)));
+    expect(Measure.parseString('Cm', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(2, 1)));
+    expect(Measure.parseString('F', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(2, 2)));
 
     //  leading blank lines
     a = SongBase.createSongBase(
@@ -1105,13 +1101,13 @@ c2:
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
 
     logger.v(a.toMarkup());
-    logger.d('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
-    logger.d('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
-    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
+    logger.d('testing: ${ChordSectionLocation.parseString('I:0:0')}');
+    logger.d('testing2: ${a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0'))}');
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), const GridCoordinate(0, 1));
 
-    expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
-    expect(GridCoordinate(1, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
-    expect(GridCoordinate(2, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
+    expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
+    expect(const GridCoordinate(1, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
+    expect(const GridCoordinate(2, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
 
     //  see that section identifiers are on first phrase row
     a = SongBase.createSongBase(
@@ -1127,11 +1123,11 @@ c2:
 
     logger.d(a.logGrid());
 
-    expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
-    expect(GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')));
+    expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
+    expect(const GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')));
 
-    expect(GridCoordinate(2, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
-    expect(GridCoordinate(3, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
+    expect(const GridCoordinate(2, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
+    expect(const GridCoordinate(3, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
 
     a = SongBase.createSongBase(
         'A',
@@ -1145,36 +1141,36 @@ c2:
         'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
 
     logger.i(a.toMarkup());
-    expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:')), GridCoordinate(0, 0));
-    expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:0:0')), GridCoordinate(0, 1));
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:')), const GridCoordinate(0, 0));
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:0:0')), const GridCoordinate(0, 1));
 
-    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:')), GridCoordinate(0, 0));
-    expect(a.getGridCoordinate(ChordSectionLocation.parseString('C:')), GridCoordinate(2, 0));
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:')), const GridCoordinate(0, 0));
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('C:')), const GridCoordinate(2, 0));
 
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
         'I: V: c: G D G D ', 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
 
     logger.i(a.toMarkup());
 
-    expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
-    expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
-    expect(GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
+    expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
+    expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
+    expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
     location = ChordSectionLocation.parseString('I:0:0');
-    expect(GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')));
+    expect(const GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')));
     expect(Measure.parseString('G', beatsPerBar), a.findMeasureNodeByLocation(location));
-    expect(GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('v:0:0')));
+    expect(const GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('v:0:0')));
     expect(Measure.parseString('G', beatsPerBar), a.findMeasureNodeByLocation(location));
-    expect(GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('c:0:0')));
+    expect(const GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('c:0:0')));
     expect(Measure.parseString('G', beatsPerBar), a.findMeasureNodeByLocation(location));
     logger.d(a.logGrid());
-    gridCoordinate = GridCoordinate(0, 0);
+    gridCoordinate = const GridCoordinate(0, 0);
     location = a.getChordSectionLocation(gridCoordinate);
     logger.d(location.toString());
     expect(gridCoordinate, a.getGridCoordinate(location));
     location = ChordSectionLocation.parseString('V:0:0');
-    expect(GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('i:0:0')));
+    expect(const GridCoordinate(0, 1), a.getGridCoordinate(ChordSectionLocation.parseString('i:0:0')));
     expect(Measure.parseString('G', beatsPerBar), a.findMeasureNodeByLocation(location));
-    gridCoordinate = GridCoordinate(0, 0);
+    gridCoordinate = const GridCoordinate(0, 0);
     location = a.getChordSectionLocation(gridCoordinate);
     logger.d(location.toString());
     expect(gridCoordinate, a.getGridCoordinate(location));
@@ -1206,7 +1202,7 @@ c2:
         ChordSectionLocation? chordSectionLocation = a.getChordSectionGrid().getRow(r)![c]?.chordSectionLocation;
         if (chordSectionLocation == null) continue;
         expect(chordSectionLocation.toString(), isNotNull);
-        logger.d(coordinate.toString() + '  ' + chordSectionLocation.toString());
+        logger.d('$coordinate  $chordSectionLocation');
         ChordSectionLocation? loc = a.getChordSectionLocation(coordinate);
         logger.d(loc.toString());
         expect(a.getChordSectionGrid().get(r, c)?.chordSectionLocation, a.getChordSectionLocation(coordinate));
@@ -1399,12 +1395,7 @@ c2:
       GridCoordinate? coordinate = a.getMomentGridCoordinate(songMoment);
       SongMoment? songMomentAtRow = a.getFirstSongMomentAtRow(coordinate!.row);
       GridCoordinate? coordinateAtRow = a.getMomentGridCoordinate(songMomentAtRow!);
-      logger.i('songMoment: ' +
-          songMoment.toString() +
-          ' at: ' +
-          coordinate.toString() +
-          ' atRow: ' +
-          coordinateAtRow.toString());
+      logger.i('songMoment: $songMoment at: $coordinate atRow: $coordinateAtRow');
       expect(coordinate.row, coordinateAtRow!.row);
       expect(coordinateAtRow.col, 1);
     }
@@ -1460,7 +1451,7 @@ c2:
   });
 
   test('testGetBeatNumberAtTime', () {
-    final int dtDiv = 2;
+    const int dtDiv = 2;
     //int beatsPerBar = 4;
 
     for (int bpm = 60; bpm < 132; bpm++) {
@@ -1469,20 +1460,14 @@ c2:
       int expected = -12;
       int count = 0;
       for (double t = (-8 * 3) * dt; t < (8 * 3) * dt; t += dt) {
-        logger.d(bpm.toString() +
-            ' ' +
-            t.toString() +
-            ': ' +
-            expected.toString() +
-            '  ' +
-            SongBase.getBeatNumberAtTime(bpm, t).toString());
+        logger.d('$bpm $t: $expected  ${SongBase.getBeatNumberAtTime(bpm, t)}');
         int? result = SongBase.getBeatNumberAtTime(bpm, t);
         if (result == null) throw 'result == null';
-        logger.v('beat at ' + t.toString() + ' = ' + result.toString());
-        logger.v('   expected: ' + expected.toString());
+        logger.v('beat at $t = $result');
+        logger.v('   expected: $expected');
         if (result != expected) {
           //  deal with test rounding issues
-          logger.v('t/dt - e: ' + (t / (dtDiv * dt) - expected).toString());
+          logger.v('t/dt - e: ${t / (dtDiv * dt) - expected}');
           expect((t / (dtDiv * dt) - expected).abs() < 1.5e-14, isTrue);
         }
         count++;
@@ -1495,7 +1480,7 @@ c2:
   });
 
   test('testGetSongMomentNumberAtTime', () {
-    final int dtDiv = 2;
+    const int dtDiv = 2;
     int beatsPerBar = 4;
     SongBase a;
 
@@ -1510,24 +1495,12 @@ c2:
       for (double t = -8 * 3 * dt; t < 8 * 3 * dt; t += dt) {
         int? result = a.getSongMomentNumberAtSongTime(t);
         if (result == null) throw 'result == null';
-        logger.v(t.toString() +
-            ' = ' +
-            (t / dt).toString() +
-            ' x dt ' +
-            '  ' +
-            expected.toString() +
-            '  @' +
-            count.toString() +
-            '  b:' +
-            SongBase.getBeatNumberAtTime(bpm, t).toString() +
-            ': ' +
-            a.getSongMomentNumberAtSongTime(t).toString() +
-            ', bpm: ' +
-            bpm.toString());
+        logger.v(
+            '$t = ${t / dt} x dt   $expected  @$count  b:${SongBase.getBeatNumberAtTime(bpm, t)}: ${a.getSongMomentNumberAtSongTime(t)}, bpm: $bpm');
         if (expected != result) {
           //  deal with test rounding issues
           double e = t / (dtDiv * dt) / beatsPerBar - expected;
-          logger.w('error: ' + e.toString());
+          logger.w('error: $e');
           expect(e < 1e-14, isTrue);
         }
         // expect(expected, );
@@ -1588,7 +1561,7 @@ c2:
 //    logger.v(a.toMarkup());
 //    logger.d('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
 //    logger.d('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
-    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), GridCoordinate(0, 1));
+    expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), const GridCoordinate(0, 1));
 
     grid = a.getChordSectionGrid();
 
@@ -1645,7 +1618,7 @@ o: end here''');
 //     // }
 
     for (SongMoment songMoment in a.songMoments) {
-      logger.d('  ${songMoment}');
+      logger.d('  $songMoment');
       logger.d('      ${songMoment.lyrics}');
     }
 
@@ -2901,7 +2874,7 @@ v:
     }
     {
       for (var lines = 1; lines < 20; lines++) {
-        var lyrics;
+        String lyrics;
         {
           var sb = StringBuffer('i: (instrumental)\n v: ');
           for (var i = 1; i <= lines; i++) {
@@ -3877,8 +3850,8 @@ Reflect the stars that guide me towards salvation
 I stopped an old man along the way hoping to find some
 Old forgotten words or ancient melodies
 -
-He turned to me as if to say, \"Hurry, boy, it's
-Waiting there for you\"
+He turned to me as if to say, "Hurry, boy, it's
+Waiting there for you"
 ''');
 
       {

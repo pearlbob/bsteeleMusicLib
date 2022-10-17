@@ -45,14 +45,8 @@ void main() {
               SongMomentLocation locExpected = SongMomentLocation(
                   ChordSectionLocation(SectionVersion(section, version), phraseIndex: phraseIndex, measureIndex: index),
                   instance);
-              MarkedString markedString = MarkedString(section.toString() +
-                  (version > 0 ? version.toString() : '') +
-                  ':' +
-                  phraseIndex.toString() +
-                  ':' +
-                  index.toString() +
-                  '#' +
-                  instance.toString());
+              MarkedString markedString =
+                  MarkedString('$section${version > 0 ? version.toString() : ''}:$phraseIndex:$index#$instance');
 
               logger.d(markedString.toString());
               loc = SongMomentLocation.parse(markedString);

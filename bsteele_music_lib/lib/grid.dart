@@ -75,7 +75,7 @@ class Grid<T> {
       int colLimit = row?.length ?? 0;
       sb.write('\t[');
       for (int c = 0; c < colLimit; c++) {
-        sb.write('\t' + (row?[c].toString() ?? '') + ',');
+        sb.write('\t${row?[c].toString() ?? ''},');
       }
       sb.write('\t]\n');
     }

@@ -447,7 +447,7 @@ On Allison Road
     if (Logger.level.index <= Level.debug.index) {
       logger.i('=======');
       for (SongMoment songMoment in a.songMoments) {
-        logger.i('${songMoment.toString()}');
+        logger.i(songMoment.toString());
       }
       logger.i('=======');
     }
@@ -624,7 +624,7 @@ On Allison Road
     {
       logger.d('=======');
       for (SongMoment songMoment in a.songMoments) {
-        logger.d('${songMoment.toString()}');
+        logger.d(songMoment.toString());
       }
       logger.d('=======');
     }

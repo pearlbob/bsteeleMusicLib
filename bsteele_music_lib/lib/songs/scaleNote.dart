@@ -1,5 +1,7 @@
 //
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:bsteeleMusicLib/songs/nashvilleNote.dart';
 
 import '../util/util.dart';

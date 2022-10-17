@@ -10,11 +10,11 @@ import 'package:logger/logger.dart';
 import 'appLogger.dart';
 
 final _firstValidDate = DateTime(2022, 7, 26);
-final _ageLimit = Duration(days: 90);
+const _ageLimit = Duration(days: 90);
 
-final _cjLogFiles = Level.debug;
-final _cjLogLines = Level.debug;
-final _cjLogPerformances = Level.debug;
+const _cjLogFiles = Level.debug;
+const _cjLogLines = Level.debug;
+const _cjLogPerformances = Level.debug;
 
 const songPerformanceExtension = '.songperformances';
 
@@ -35,7 +35,7 @@ class CjLog {
   void runMain(List<String> args) async {
     //  setup
     var gZipDecoder = GZipCodec().decoder;
-    Utf8Decoder utf8Decoder = Utf8Decoder();
+    Utf8Decoder utf8Decoder = const Utf8Decoder();
     var dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS'); //  20-Aug-2022 06:08:20.127
     var dotEnv = DotEnv(includePlatformEnvironment: true)..load();
 

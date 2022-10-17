@@ -147,9 +147,9 @@ coerced to reflect the songlist's last modification for that song.
             }
           }
           File inputFile = File(args[argCount]);
-          logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
+          logger.i('a: ${(await inputFile.exists())}, ${inputFile is Directory}');
 
-          if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
+          if (!(await inputFile.exists()) && inputFile is! Directory) {
             logger.e('missing input file/directory for -a: ${inputFile.path}');
             exit(-1);
           }
@@ -186,9 +186,9 @@ coerced to reflect the songlist's last modification for that song.
             }
           }
           File inputFile = File(args[argCount]);
-          logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
+          logger.i('a: ${(await inputFile.exists())}, ${(inputFile is Directory)}');
 
-          if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
+          if (!(await inputFile.exists()) && (inputFile is! Directory)) {
             logger.e('missing input file/directory for -a: ${inputFile.path}');
             exit(-1);
           }
@@ -279,9 +279,9 @@ coerced to reflect the songlist's last modification for that song.
             }
           }
           File inputFile = File(args[argCount]);
-          logger.i('a: ${(await inputFile.exists())}, ${(await inputFile is Directory)}');
+          logger.i('a: ${(await inputFile.exists())}, ${inputFile is Directory}');
 
-          if (!(await inputFile.exists()) && !(await inputFile is Directory)) {
+          if (!(await inputFile.exists()) && inputFile is! Directory) {
             logger.e('missing input file/directory for -a: ${inputFile.path}');
             exit(-1);
           }
@@ -307,7 +307,7 @@ coerced to reflect the songlist's last modification for that song.
 
             logger.i('-cjgenre: $inputFile');
             final input = inputFile.openRead();
-            final fields = await input.transform(utf8.decoder).transform(CsvToListConverter(eol: '\n')).toList();
+            final fields = await input.transform(utf8.decoder).transform(const CsvToListConverter(eol: '\n')).toList();
 
             logger.i('${fields.runtimeType}');
             assert(fields[0][0] == 'Title');
@@ -397,7 +397,7 @@ coerced to reflect the songlist's last modification for that song.
             assert(allSongs.isNotEmpty);
             SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
 
-            var converter = ListToCsvConverter();
+            var converter = const ListToCsvConverter();
             List<List> rows = [];
             rows.add(['Title', 'Artist', 'Cover Artist', 'Year', 'Jam', 'Genre', 'Subgenre', 'Status']);
             for (var song in allSongs) {
@@ -463,9 +463,8 @@ coerced to reflect the songlist's last modification for that song.
           if (_file != null) {
             if (_verbose) print('input file path: ${_file.toString()}');
             if (!(await _file!.exists())) {
-              logger.d('input file path: ${_file.toString()}'
-                      ' is missing' +
-                  (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
+              logger.d(
+                  'input file path: ${_file.toString()} is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
 
               exit(-1);
             }
@@ -506,12 +505,12 @@ coerced to reflect the songlist's last modification for that song.
               Directory songDir;
               {
                 String s = song.getTitle().replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
-                songDir = Directory(_outputDirectory.path + '/' + s);
+                songDir = Directory('${_outputDirectory.path}/$s');
               }
               songDir.createSync();
 
-              File writeTo = File(songDir.path + '/' + song.songId.toString() + '.songlyrics');
-              if (_verbose) logger.d('\t' + writeTo.path);
+              File writeTo = File('${songDir.path}/${song.songId}.songlyrics');
+              if (_verbose) logger.d('\t${writeTo.path}');
               String fileAsJson = song.toJsonAsFile();
               if (writeTo.existsSync()) {
                 String fileAsRead = writeTo.readAsStringSync();
@@ -720,7 +719,7 @@ coerced to reflect the songlist's last modification for that song.
               for (Song song in sortedSongs) {
                 print('"${song.title}" by "${song.artist}"'
                     '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                    ':  /bpi ${i}  /bpm ${song.beatsPerMinute}  ${ninjamSections[song]?.toMarkup()}');
+                    ':  /bpi $i  /bpm ${song.beatsPerMinute}  ${ninjamSections[song]?.toMarkup()}');
               }
             }
           }
@@ -737,15 +736,13 @@ coerced to reflect the songlist's last modification for that song.
             if (!(await _outputDirectory.exists())) {
               if (_verbose) {
                 logger.d('output path: ${_outputDirectory.toString()}'
-                        ' is missing' +
-                    (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
+                    ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
               }
 
               Directory parent = _outputDirectory.parent;
               if (!(await parent.exists())) {
                 logger.d('parent path: ${parent.toString()}'
-                        ' is missing' +
-                    (_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'));
+                    ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
                 return;
               }
               _outputDirectory.createSync();
@@ -779,7 +776,7 @@ coerced to reflect the songlist's last modification for that song.
             lastSungDateTime = DateTime(lastSungDateTime.year, lastSungDateTime.month, lastSungDateTime.day);
             logger.i('lastSungDateTime: $lastSungDateTime');
 
-            var dir = Directory(Util.homePath() + '/' + _allSongPerformancesDirectoryLocation);
+            var dir = Directory('${Util.homePath()}/$_allSongPerformancesDirectoryLocation');
             SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
             for (var file in dir.listSync()) {
               if (file is File) {
@@ -1082,10 +1079,10 @@ coerced to reflect the songlist's last modification for that song.
           }
           argCount++;
           {
-            Directory catalina_base = Directory(args[argCount]);
+            Directory catalinaBase = Directory(args[argCount]);
 
-            logger.i('catalina_base: $catalina_base');
-            var logs = catalina_base.listSync().firstWhere((element) => element.path.endsWith('/logs'));
+            logger.i('catalina_base: $catalinaBase');
+            var logs = catalinaBase.listSync().firstWhere((element) => element.path.endsWith('/logs'));
             logs = logs as Directory;
             logger.i('logs: $logs');
             SplayTreeSet<FileSystemEntity> fileSet = SplayTreeSet((f1, f2) {
@@ -1218,7 +1215,7 @@ coerced to reflect the songlist's last modification for that song.
             for (Song song in allSongs) {
               var newUser = userCorrections[song.user];
               if (newUser != null) {
-                logger.i('${song.titleWithCover} from ${song.user} to ${newUser}');
+                logger.i('${song.titleWithCover} from ${song.user} to $newUser');
                 song.user = newUser;
               }
             }
@@ -1257,7 +1254,7 @@ coerced to reflect the songlist's last modification for that song.
           SongMetadata.clear();
           for (Song song in allSongs) {
             if (christmasRegExp.hasMatch(song.songId.songId)) {
-              SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [NameValue('christmas', '')]));
+              SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [const NameValue('christmas', '')]));
             }
           }
           print(SongMetadata.toJson());
@@ -1506,7 +1503,7 @@ coerced to reflect the songlist's last modification for that song.
         List<String> ranking = line.split(_csvLineSplit);
         if (ranking[1].isNotEmpty) {
           logger.v('$i: ${ranking[0]}, ${ranking[1]}');
-          SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[]..add(NameValue('cj', ranking[1]))));
+          SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[NameValue('cj', ranking[1])]));
         }
       }
       i++;

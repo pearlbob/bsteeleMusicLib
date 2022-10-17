@@ -195,10 +195,10 @@ class MusicXml {
   String _scaleNoteAsMusicXml(ScaleNote scaleNote) {
     String ret = '<step>${scaleNote.scaleNoteString}</step>';
     if (scaleNote.isSharp) {
-      return ret + '<alter>1</alter>';
+      return '$ret<alter>1</alter>';
     }
     if (scaleNote.isFlat) {
-      return ret + '<alter>-1</alter>';
+      return '$ret<alter>-1</alter>';
     }
     return ret;
   }
@@ -223,7 +223,7 @@ class MusicXml {
   }
 
   String _step(ScaleNote scaleNote, {String? basis}) {
-    String mod = '${basis != null ? basis + '-' : ''}';
+    String mod = basis != null ? '$basis-' : '';
     String ret = '<${mod}step>${scaleNote.scaleNoteString}</${mod}step>';
     if (scaleNote.isSharp) {
       ret += '<${mod}alter>1</${mod}alter>';
@@ -261,7 +261,7 @@ class MusicXml {
   String _chordAsMusicXml(SongMoment songMoment, Chord chord) {
     ScaleNote scaleNote = chord.scaleChord.scaleNote;
 
-    String ret = '\t<harmony><root>' + _rootStep(scaleNote);
+    String ret = '\t<harmony><root>${_rootStep(scaleNote)}';
 
     String? name = _getChordDescriptorName(chord.scaleChord);
     ret += '</root><kind halign="center" text="7">${name ?? chord.scaleChord}</kind>';
@@ -275,7 +275,7 @@ class MusicXml {
     for (Pitch pitch in chord.getPitches(_chordBase)) {
       Pitch p = _song.key.mappedPitch(pitch);
       ret += '''
-\t<note><!--    ${p}   -->
+\t<note><!--    $p   -->
 ''';
       if (first) {
         first = false;

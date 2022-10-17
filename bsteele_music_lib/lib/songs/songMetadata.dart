@@ -36,7 +36,7 @@ class NameValue implements Comparable<NameValue> {
   static NameValue parse(String s) {
     RegExpMatch? m = _nameValueRegexp.firstMatch(s);
     if (m == null) {
-      return NameValue('', '');
+      return const NameValue('', '');
     }
     return NameValue(m.group(1) ?? ' ', m.group(2) ?? '');
   }
@@ -194,7 +194,7 @@ class SongMetadata {
       //  the metadata already matches a key, so remove the old and try again
       _singleton._idMetadata.remove(songIdMetadata);
       _singleton._idMetadata.add(songIdMetadata);
-      _isDirty = true;
+      isDirty = true;
     }
   }
 
@@ -205,7 +205,7 @@ class SongMetadata {
     } else {
       set(songIdMetadata);
     }
-    _isDirty = true;
+    isDirty = true;
   }
 
   static SongIdMetadata? songIdMetadata(final Song song) {
@@ -216,7 +216,7 @@ class SongMetadata {
   static void addSong(Song song, NameValue nameValue) {
     SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
     add(songIdMetadata);
-    _isDirty = true;
+    isDirty = true;
   }
 
   //  convenience method
@@ -225,13 +225,13 @@ class SongMetadata {
     SongIdMetadata? songIdMetadata = _singleton._idMetadata.lookup(SongIdMetadata(song.songId.toString()));
     if (songIdMetadata != null) {
       remove(songIdMetadata, nameValue);
-      _isDirty = true;
+      isDirty = true;
     }
   }
 
   static void remove(SongIdMetadata songIdMetadata, NameValue nameValue) {
     songIdMetadata.remove(nameValue);
-    _isDirty = true;
+    isDirty = true;
     if (songIdMetadata.isEmpty) {
       //  remove this id metadata if it was the last one
       _singleton._idMetadata.remove(songIdMetadata);
@@ -251,7 +251,7 @@ class SongMetadata {
       }
     }
     _idMetadata.removeAll(removeSet);
-    _isDirty = true;
+    isDirty = true;
   }
 
   static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata songIdMetadata) doesMatch,
@@ -460,7 +460,7 @@ class SongMetadata {
   /// clear all metadata.
   static void clear() {
     _singleton._idMetadata.clear();
-    _isDirty = false;
+    isDirty = false;
   }
 
   static String toJson({Iterable<SongIdMetadata>? values}) {
@@ -516,14 +516,10 @@ class SongMetadata {
         }
       }
     }
-    _isDirty = true;
+    isDirty = true;
   }
 
-  static set isDirty(bool value) => _isDirty = value;
-
-  static bool get isDirty => _isDirty;
-
-  static bool _isDirty = false;
+  static bool isDirty = false;
 
   @override
   bool operator ==(Object other) =>

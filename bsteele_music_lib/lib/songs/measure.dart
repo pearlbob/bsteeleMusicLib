@@ -281,7 +281,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       return sb.toString();
     }
     if (endOfRowChar != null && endOfRow) {
-      return 'X' + endOfRowChar;
+      return 'X$endOfRowChar';
     }
     return 'X'; // no chords
   }

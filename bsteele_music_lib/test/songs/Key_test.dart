@@ -172,15 +172,7 @@ void main() {
     for (int i = -6; i <= 6; i++) {
       Key key = Key.getKeyByValue(i);
       expect(i, key.getKeyValue());
-      logger.v((i >= 0 ? ' ' : '') +
-              i.toString() +
-              ' ' +
-              key.name
-              //+ " toString: "
-              +
-              ' (' +
-              key.toString() +
-              ')\t'
+      logger.v('${i >= 0 ? ' ' : ''}$i ${key.name} ($key)\t'
           //+ " html: " + key.toHtml()
           );
 
@@ -318,17 +310,17 @@ void main() {
 
   test('testScaleNoteByHalfStep testing', () {
     for (Key key in Key.values) {
-      logger.i('key ' + key.toString());
+      logger.i('key $key');
       if (key.isSharp) {
         for (int i = -18; i < 18; i++) {
           var scaleNote = key.getScaleNoteByHalfStep(i);
-          logger.i('\t' + i.toString() + ': ' + scaleNote.toString());
+          logger.i('\t$i: $scaleNote');
           expect(!scaleNote.toString().contains('♭'), true);
         }
       } else {
         for (int i = -18; i < 18; i++) {
           var scaleNote = key.getScaleNoteByHalfStep(i);
-          logger.i('\t' + i.toString() + ': ' + scaleNote.toString());
+          logger.i('\t$i: $scaleNote');
           expect(!scaleNote.toString().contains('♯'), true);
         }
       }
@@ -483,7 +475,7 @@ void main() {
   test('testTranspose testing', () {
     for (int k = -6; k <= 6; k++) {
       Key key = Key.getKeyByValue(k);
-      logger.d(key.toString() + ':');
+      logger.d('$key:');
 
       for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
         ScaleNote fsn = ScaleNote.getFlatByHalfStep(i);

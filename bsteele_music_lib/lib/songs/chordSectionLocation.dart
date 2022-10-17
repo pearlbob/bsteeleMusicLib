@@ -209,7 +209,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     if (id == null) {
       if (_labelSectionVersions == null) {
         id = _sectionVersion.toString() +
-            (_hasPhraseIndex ? _phraseIndex.toString() + (_hasMeasureIndex ? ':' + _measureIndex.toString() : '') : '');
+            (_hasPhraseIndex ? _phraseIndex.toString() + (_hasMeasureIndex ? ':$_measureIndex' : '') : '');
       } else {
         StringBuffer sb = StringBuffer();
         for (SectionVersion sv in _labelSectionVersions!) {
@@ -224,10 +224,10 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
 
   @override
   int compareTo(ChordSectionLocation other) {
-    int ret = 0;
+    int ret;
 
     if (_sectionVersion == null && other._sectionVersion == null) {
-      ;
+      ret = 0;
     } else if (other._sectionVersion == null) {
       ret = -1;
     } else {
@@ -238,7 +238,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
     }
 
     if (_repeats == null && other._repeats == null) {
-      ;
+      ret = 0;
     } else if (other._repeats == null) {
       ret = -1;
     } else {

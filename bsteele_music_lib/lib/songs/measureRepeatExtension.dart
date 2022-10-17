@@ -29,11 +29,11 @@ class MeasureRepeatExtension extends MeasureComment {
   @override
   MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
 
-  @override
-  @deprecated
-  String getHtmlBlockId() {
-    return 'RE';
-  }
+  // @override
+  // @Deprecated('dont use this')
+  // String getHtmlBlockId() {
+  //   return 'RE';
+  // }
 
   @override
   String transpose(Key key, int halfSteps) {
@@ -60,12 +60,12 @@ class MeasureRepeatExtension extends MeasureComment {
     return markerString;
   }
 
-  static final String _upperRight = '\u23A4';
-  static final String _lowerRight = '\u23A6';
+  static const String _upperRight = '\u23A4';
+  static const String _lowerRight = '\u23A6';
 
   // static final String _upperLeft = '\u23A1';
   // static final String _lowerLeft = '\u23A3';
-  static final String _extension = '\u23A5';
+  static const String _extension = '\u23A5';
   static final MeasureRepeatExtension upperRightMeasureRepeatExtension =
       MeasureRepeatExtension(ChordSectionLocationMarker.repeatUpperRight, _upperRight);
   static final MeasureRepeatExtension middleRightMeasureRepeatExtension =

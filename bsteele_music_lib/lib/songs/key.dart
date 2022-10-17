@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:collection';
 
 import 'package:bsteeleMusicLib/songs/pitch.dart';
@@ -54,7 +56,7 @@ class Key implements Comparable<Key> {
     [KeyEnum.B, 5, 2],
     [KeyEnum.Fs, 6, 9]
   ];
-  static late Map<String, KeyEnum> _keyEnumMap = {};
+  static Map<String, KeyEnum> _keyEnumMap = {};
 
   static List<Key> keysByHalfStep() {
     if (_keysByHalfStep.isEmpty) {
@@ -174,8 +176,8 @@ class Key implements Comparable<Key> {
 
   static double _staffSpacesFromA0(Pitch pitch) {
     return (pitch.scaleNumber +
-            (pitch.scaleNumber >= _notesFromAtoC ? pitch.octaveNumber - 1 : pitch.octaveNumber) *
-                MusicConstants.notesPerScale) /
+        (pitch.scaleNumber >= _notesFromAtoC ? pitch.octaveNumber - 1 : pitch.octaveNumber) *
+            MusicConstants.notesPerScale) /
         2;
   }
 
@@ -310,7 +312,7 @@ class Key implements Comparable<Key> {
     int minKeyValue = 2 ^ 63 - 1;
 
     //  find the key with the greatest parse to it's diatonic chords
-    {
+        {
       int? count;
       ScaleChord? diatonic;
       ScaleNote diatonicScaleNote;
@@ -552,10 +554,10 @@ class Key implements Comparable<Key> {
   /// using the simpler b or # instead of their musical font character values ( ♭ or ♯ ).
   String sharpsFlatsToMarkup() {
     if (_keyValue < 0) {
-      return _keyValue.abs().toString() + 'b';
+      return '${_keyValue.abs()}b';
     }
     if (_keyValue > 0) {
-      return _keyValue.toString() + '#';
+      return '$_keyValue#';
     }
     return '';
   }
@@ -577,7 +579,7 @@ class Key implements Comparable<Key> {
   bool get isSharp => _keyValue > 0;
 
   String toJson() {
-    return '"key":      ${halfStep}';
+    return '"key":      $halfStep';
   }
 
   /// Returns the name of this key in a formal format using UTF-8.

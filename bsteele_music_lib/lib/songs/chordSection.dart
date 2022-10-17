@@ -134,7 +134,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       //  consume unused commas
       {
         String s = markedString.remainingStringLimited(10);
-        logger.v('s: ' + s);
+        logger.v('s: $s');
         RegExpMatch? mr = _commaRegexp.firstMatch(s);
         if (mr != null) {
           markedString.consume(mr.group(0)!.length);
@@ -183,11 +183,11 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
           lineMeasures.add(measureComment);
           continue;
         } else {
-          logger.i('ChordSection parse: junk found: ' + s);
+          logger.i('ChordSection parse: junk found: $s');
         }
       }
-      logger.i("can't figure out: " + markedString.toString());
-      throw "can't figure out: " + markedString.toString(); //  all whitespace
+      logger.i("can't figure out: $markedString");
+      throw "can't figure out: $markedString"; //  all whitespace
     }
 
     //  don't assume every line has an eol

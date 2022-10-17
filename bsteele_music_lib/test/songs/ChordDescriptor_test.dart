@@ -6,8 +6,8 @@ import 'package:test/test.dart';
 void main() {
   test('ChordDescriptor testing', () {
     expect(ChordDescriptor.major, ChordDescriptor.major);
-    expect(ChordDescriptor.parseString('' + MusicConstants.greekCapitalDelta), ChordDescriptor.major7);
-    expect(ChordDescriptor.diminished, ChordDescriptor.parseString('' + MusicConstants.diminishedCircle));
+    expect(ChordDescriptor.parseString(MusicConstants.greekCapitalDelta), ChordDescriptor.major7);
+    expect(ChordDescriptor.diminished, ChordDescriptor.parseString(MusicConstants.diminishedCircle));
     expect(ChordDescriptor.major, ChordDescriptor.parseString(''));
     expect(ChordDescriptor.minor, ChordDescriptor.parseString('m'));
     expect(ChordDescriptor.dominant7, ChordDescriptor.parseString('7'));
@@ -43,7 +43,7 @@ void main() {
     expect(ChordDescriptor.minor13, ChordDescriptor.parseString('m13'));
 
     for (ChordDescriptor cd in ChordDescriptor.values) {
-      logger.i(cd.toString() + ':\t' + cd.chordComponentsToString());
+      logger.i('$cd:\t${cd.chordComponentsToString()}');
     }
     {
       ChordDescriptor cd1 = ChordDescriptor.dominant7;
@@ -51,7 +51,7 @@ void main() {
         int compareValue = cd2.compareTo(cd1);
         compareValue = (compareValue < 0 ? -1 : (compareValue > 0 ? 1 : 0));
 
-        logger.i(cd2.toString() + ':\tcompare:\t' + compareValue.toString());
+        logger.i('$cd2:\tcompare:\t$compareValue');
         if (cd1 == cd2) {
           expect(compareValue, 0);
         } else {

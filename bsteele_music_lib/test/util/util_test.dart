@@ -116,7 +116,7 @@ void main() {
     expect(nowAsString.compareTo('20220409_233603'), 1);
     expect(nowAsString.compareTo('20520409_232804'), -1);
 
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     var laterAsString = Util.utcNow();
     logger.i(laterAsString);
@@ -144,9 +144,10 @@ void main() {
         Util.firstUtcDateTime);
 
     int milliseconds = 1646518349000;
-    String s = '20220305_141229';
-    expect(Util.utcFormat(DateTime.fromMillisecondsSinceEpoch(milliseconds)), s);
-    expect(Util.yyyyMMdd_HHmmssStringToDate(s), DateTime.fromMillisecondsSinceEpoch(milliseconds));
+    String s = '20220305_221229';
+    expect(Util.utcFormat(DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true)), s);
+    expect(Util.yyyyMMdd_HHmmssStringToDate(s, isUtc: true),
+        DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true));
   });
 
   // test('test throw away', () async {

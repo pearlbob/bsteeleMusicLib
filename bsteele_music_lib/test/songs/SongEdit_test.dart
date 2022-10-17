@@ -38,19 +38,19 @@ class TestSong {
     }
 
     //  process the edits
-    logger.d('editEntry: ' + (editEntry ?? 'null'));
-    logger.v('edit loc: ' + _myA.getCurrentChordSectionLocation().toString());
+    logger.d('editEntry: ${editEntry ?? 'null'}');
+    logger.v('edit loc: ${_myA.getCurrentChordSectionLocation()}');
     List<MeasureNode> measureNodes = _myA.parseChordEntry(editEntry);
     if (measureNodes.isEmpty && (editEntry == null || editEntry.isEmpty) && type == MeasureEditType.delete) {
       expect(_myA.deleteCurrentSelection(), isTrue);
     } else {
       for (MeasureNode measureNode in measureNodes) {
-        logger.d('edit: ' + measureNode.toMarkup());
+        logger.d('edit: ${measureNode.toMarkup()}');
       }
       //  the edit is here:
       expect(_myA.editList(measureNodes), isTrue);
     }
-    logger.v('after edit loc: ' + _myA.getCurrentChordSectionLocation().toString());
+    logger.v('after edit loc: ${_myA.getCurrentChordSectionLocation()}');
   }
 
   void resultChords(String chords) {
@@ -63,12 +63,12 @@ class TestSong {
     expect(_myA.currentMeasureEditType, type);
     expect(_myA.getCurrentChordSectionLocation().toString(), currentLocationString);
 
-    logger.d('getCurrentMeasureNode(): ' + _myA.getCurrentMeasureNode().toString());
+    logger.d('getCurrentMeasureNode(): ${_myA.getCurrentMeasureNode()}');
     if (currentMeasureNodeString == null) {
       logger.d('measureNodeString: null');
       expect(_myA.getCurrentMeasureNode(), isNull);
     } else {
-      logger.d('measureNodeString: ' + currentMeasureNodeString);
+      logger.d('measureNodeString: $currentMeasureNodeString');
       expect(_myA.getCurrentMeasureNode(), isNotNull);
       expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), currentMeasureNodeString.trim());
     }
@@ -420,20 +420,13 @@ void main() {
     location = ChordSectionLocation.parseString('i:0:3');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newPhrase = Phrase.parseString('Db C B A', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newPhrase), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D D♭ C B A  V: D E F F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect('I:0:7', _a.getCurrentChordSectionLocation().toString());
     expect('A', _a.getCurrentMeasureNode()!.toMarkup());
 
@@ -443,13 +436,8 @@ void main() {
     location = ChordSectionLocation.parseString('v:1');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.i(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.i(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[]x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -458,9 +446,7 @@ void main() {
       'V: C F C C, GB F C Dm7, G F C G',
     );
     //                        0 1 2 3 4  5 6 7   8 9 0 1
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.getCurrentChordSectionLocation().toString(), 'V:0:7');
     expect(_a.getCurrentMeasureNode()!.toMarkup(), 'Dm7,');
 
@@ -480,20 +466,13 @@ void main() {
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newSection = ChordSection.parseString('v: A D C D', beatsPerBar);
     expect(_a.editMeasureNode(newSection), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
     expect(newSection, _a.getCurrentMeasureNode());
 
@@ -510,41 +489,25 @@ void main() {
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 1);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
     location = ChordSectionLocation.parseString('i:0:3');
     _a.setCurrentChordSectionLocation(location);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newMeasure = Measure.parseString('F', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D F  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('i:0:4'), _a.getCurrentChordSectionLocation());
     expect(newMeasure.toMarkup(), _a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
 
@@ -562,19 +525,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -591,19 +547,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('section	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -621,19 +570,12 @@ void main() {
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
 
     logger.d('repeat	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -649,24 +591,15 @@ void main() {
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 1);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -683,19 +616,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -712,19 +638,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('section	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -742,19 +661,12 @@ void main() {
     location = ChordSectionLocation(iSection);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('repeat	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -771,19 +683,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 1));
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -800,19 +705,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
@@ -829,19 +727,12 @@ void main() {
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0, measureIndex: 2));
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('section	delete	section(s)	yes	append	measure	delete section');
@@ -859,19 +750,12 @@ void main() {
     location = ChordSectionLocation(iSection);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('V: D E F F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.getCurrentChordSectionLocation(), ChordSectionLocation(v));
     _a = SongBase.createSongBase(
         'A',
@@ -887,19 +771,12 @@ void main() {
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation(iSection), _a.getCurrentChordSectionLocation());
 
     logger.d('repeat  delete  section(s)  yes  append  measure  delete repeat');
@@ -916,20 +793,13 @@ void main() {
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 1);
     _a.setCurrentChordSectionLocation(location);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:0:3'), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase	delete	section(s)	yes	append	measure	delete phrase');
@@ -947,19 +817,12 @@ void main() {
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v:', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('I:'), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	delete	section(s)	yes	append	measure	delete measure');
@@ -977,19 +840,12 @@ void main() {
     location = ChordSectionLocation(v, phraseIndex: 0, measureIndex: 1);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D F F♯ [D C B A ] x2  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:0:1'), _a.getCurrentChordSectionLocation());
 
     logger.d('section  append  repeat    replace  repeat  add to start of section');
@@ -1007,20 +863,13 @@ void main() {
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯ [A D C D ] x3  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:1'), _a.getCurrentChordSectionLocation());
 
     //   current type	current edit loc	entry	replace entry	 edit type	 edit loc	result
@@ -1040,20 +889,13 @@ void main() {
     location = ChordSectionLocation(v, phraseIndex: 0);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:0'), _a.getCurrentChordSectionLocation());
 
     //  empty x1 repeat appended should be convert repeat to phrase
@@ -1071,20 +913,13 @@ void main() {
     location = ChordSectionLocation(v, phraseIndex: 0);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[] x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:0:3'), _a.getCurrentChordSectionLocation());
 
     _a = SongBase.createSongBase(
@@ -1101,20 +936,13 @@ void main() {
     location = ChordSectionLocation(v, phraseIndex: 0);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x4', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: [A D C D ] x4  C: D C G G', _a.toMarkup().trim());
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:0'), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase  append  repeat    replace  repeat  append repeat');
@@ -1135,20 +963,13 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:3');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ ] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: [D E F F♯ ] x3  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('v:0'), _a.getCurrentChordSectionLocation());
     //  non-empty repeat appends to current section
     _a = SongBase.createSongBase(
@@ -1165,20 +986,13 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:3');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ D C G G] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F F♯ [D C G G ] x3  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('v:1'), _a.getCurrentChordSectionLocation());
 
     logger.d('section  insert  repeat    replace  repeat  add to start of section');
@@ -1232,20 +1046,13 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.i(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.i(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newMeasure = Measure.parseString('Gm', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.i(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E Gm F F♯ [A D C D ] x3  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
 
     logger.d('section  replace  measure    append  measure  replace section content');
@@ -1269,19 +1076,12 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
 
     logger.d('measure  delete  measure  yes  append  measure  delete measure');
@@ -1299,19 +1099,12 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
     _a = SongBase.createSongBase(
         'A',
@@ -1327,20 +1120,13 @@ void main() {
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation()).toString() +
-        ' ' +
-        _a.currentMeasureEditType.toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d(
+        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newMeasure = Measure.parseString('F', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
-    logger.d(_a.getCurrentChordSectionLocation().toString() +
-        ' ' +
-        _a.getCurrentChordSectionLocationMeasureNode().toString());
+    logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
   });
 

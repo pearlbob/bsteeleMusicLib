@@ -19,7 +19,7 @@ void main() {
     final RegExp endsInS = RegExp(r's$');
     for (final e in ScaleNote.values) {
       sn = e;
-      logger.d(e.name + ': ' + endsInB.hasMatch(e.toString()).toString());
+      logger.d('${e.name}: ${endsInB.hasMatch(e.toString())}');
       expect(sn.isFlat, endsInB.hasMatch(e.name));
       expect(sn.isSharp, endsInS.hasMatch(e.name));
       if (e != ScaleNote.X) {
@@ -130,7 +130,7 @@ void main() {
     Logger.level = Level.info;
 
     for (final sn in ScaleNote.values) {
-      logger.i('${sn.name}');
+      logger.i(sn.name);
     }
     logger.i('${ScaleNote.valueOf(ScaleNote.As.name)}');
 

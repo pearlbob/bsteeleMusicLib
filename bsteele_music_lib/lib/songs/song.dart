@@ -159,7 +159,7 @@ class Song extends SongBase implements Comparable<Song> {
   /// Read a single song or a list from a JSON string
   static List<Song> songListFromJson(String jsonString) {
     //  fix for damaged files
-    jsonString = jsonString.replaceAll('\": null', '\": \"\"');
+    jsonString = jsonString.replaceAll('": null', '": ""');
 
     List<Song> songList = [];
     dynamic json = _jsonDecoder.convert(jsonString);
@@ -273,11 +273,11 @@ class Song extends SongBase implements Comparable<Song> {
   }
 
   String toJsonAsFile() {
-    return '{ \"file\": ' +
+    return '{ "file": ' +
         jsonEncode(getFileName()) +
-        ', \"lastModifiedDate\": ' +
+        ', "lastModifiedDate": ' +
         lastModifiedTime.toString() +
-        ', \"song\":' +
+        ', "song":' +
         ' \n' +
         toJson() +
         '}';
@@ -288,38 +288,38 @@ class Song extends SongBase implements Comparable<Song> {
     StringBuffer sb = StringBuffer();
 
     sb.write('{\n');
-    sb.write('\"title\": ');
+    sb.write('"title": ');
     sb.write(jsonEncode(getTitle()));
     sb.write(',\n');
-    sb.write('\"artist\": ');
+    sb.write('"artist": ');
     sb.write(jsonEncode(getArtist()));
     sb.write(',\n');
     if (coverArtist.isNotEmpty) {
-      sb.write('\"coverArtist\": ');
+      sb.write('"coverArtist": ');
       sb.write(jsonEncode(coverArtist));
       sb.write(',\n');
     }
-    sb.write('\"user\": ');
+    sb.write('"user": ');
     sb.write(jsonEncode(getUser()));
     sb.write(',\n');
-    sb.write('\"lastModifiedDate\": ');
+    sb.write('"lastModifiedDate": ');
     sb.write(lastModifiedTime);
     sb.write(',\n');
-    sb.write('\"copyright\": ');
+    sb.write('"copyright": ');
     sb.write(jsonEncode(getCopyright()));
     sb.write(',\n');
-    sb.write('\"key\": \"');
+    sb.write('"key": "');
     sb.write(getKey().toMarkup());
-    sb.write('\",\n');
-    sb.write('\"defaultBpm\": ');
+    sb.write('",\n');
+    sb.write('"defaultBpm": ');
     sb.write(getDefaultBpm());
     sb.write(',\n');
-    sb.write('\"timeSignature\": \"');
+    sb.write('"timeSignature": "');
     sb.write(getBeatsPerBar());
     sb.write('/');
     sb.write(getUnitsPerMeasure());
-    sb.write('\",\n');
-    sb.write('\"chords\": \n');
+    sb.write('",\n');
+    sb.write('"chords": \n');
     sb.write('    [\n');
 
     //  chord content
@@ -337,7 +337,7 @@ class Song extends SongBase implements Comparable<Song> {
       sb.write(jsonEncode(s));
     }
     sb.write('\n    ],\n');
-    sb.write('\"lyrics\": \n');
+    sb.write('"lyrics": \n');
     sb.write('    [\n');
 
     //  lyrics content
@@ -452,7 +452,7 @@ class Song extends SongBase implements Comparable<Song> {
 
   static final RegExp _timeSignatureExp = RegExp(r'^\w*(\d{1,2})\w*\/\w*(\d)\w*$');
 
-  static final JsonDecoder _jsonDecoder = JsonDecoder();
+  static const JsonDecoder _jsonDecoder = JsonDecoder();
 
   static const String unknownUser = 'unknown';
 

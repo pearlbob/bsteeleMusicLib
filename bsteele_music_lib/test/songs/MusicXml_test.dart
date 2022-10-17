@@ -113,7 +113,7 @@ void main() {
 
       for (String scorePart in partMap.keys) {
         XmlElement? part = partMap[scorePart];
-        logger.v('    scorePart: ${part}');
+        logger.v('    scorePart: $part');
 
         for (XmlElement xmlMeasure in part?.findElements('measure') ?? []) {
           var numberAttr = xmlMeasure.getAttribute('number');
@@ -299,15 +299,15 @@ const String sampleSongString = '''
 	"I pulled into Nazareth, was feeling 'bout half past dead",
 	"I just need some place where I can lay my head",
 	"Hey, mister, can you tell me, where a man might find a bed?",
-	"He just grinned and shook my hand, \\\"No\\\" was all he said.",
+	"He just grinned and shook my hand, \\"No\\" was all he said.",
 	"c:",
 	"Take a load off Fanny, take a load for free",
 	"Take a load off Fanny, and you put the load right on me",
 	"v:",
 	"I picked up my bags, I went looking for a place to hide",
 	"When I saw old Carmen and the Devil, walking side by side",
-	"I said, \\\"Hey, Carmen, c'mon, let's go downtown\\\"",
-	"She said, \\\"I gotta go, but my friend can stick around\\\"",
+	"I said, \\"Hey, Carmen, c'mon, let's go downtown\\"",
+	"She said, \\"I gotta go, but my friend can stick around\\"",
 	"",
 	"c:",
 	"Take a load off Fanny, take a load for free",
@@ -316,15 +316,15 @@ const String sampleSongString = '''
 	"Go down, Miss Moses, ain't nothin' you can say",
 	"It's just old Luke, and Luke's waiting on the judgment day",
 	"Well, Luke, my friend, what about young Annalee",
-	"He said, \\\"Do me a favor, son, won't you stay and keep Annalee company\\\"",
+	"He said, \\"Do me a favor, son, won't you stay and keep Annalee company\\"",
 	"c:",
 	"Take a load off Fanny, take a load for free",
 	"Take a load off Fanny, and you put the load right on me",
 	"v:",
 	"Crazy Chester followed me, and he caught me in the fog",
-	"Said, \\\"I will fix your rag, if you'll take Jack, my dog\\\"",
-	"I said, \\\"Wait a minute Chester, you know, I'm a peaceful man\\\"",
-	"He said, \\\"That's okay, boy, won't you feed him when you can\\\"",
+	"Said, \\"I will fix your rag, if you'll take Jack, my dog\\"",
+	"I said, \\"Wait a minute Chester, you know, I'm a peaceful man\\"",
+	"He said, \\"That's okay, boy, won't you feed him when you can\\"",
 	"c:",
 	"Take a load off Fanny, take a load for free",
 	"Take a load off Fanny, and you put the load right on me",

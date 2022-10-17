@@ -92,13 +92,13 @@ class Section implements Comparable<Section> {
       SectionEnum.a,
       'A',
       null,
-      'A section labeled \"A\" to be used in contrast the \"B\" section.  A concept borrowed from jazz.'
+      'A section labeled "A" to be used in contrast the "B" section.  A concept borrowed from jazz.'
     ],
     [
       SectionEnum.b,
       'B',
       null,
-      'A section labeled \"B\" to be used in contrast the \"A\" section.  A concept borrowed from jazz.'
+      'A section labeled "B" to be used in contrast the "A" section.  A concept borrowed from jazz.'
     ],
     [
       SectionEnum.bridge,
@@ -246,9 +246,9 @@ class Section implements Comparable<Section> {
 
   int get weight => _sectionWeights[_sectionEnum] ?? 0;
 
-  static late HashMap<String, Section> mapStringToSection = HashMap();
+  static HashMap<String, Section> mapStringToSection = HashMap();
 
-  static final int maxLength = 10; //  fixme: compute
+  static const int maxLength = 10; //  fixme: compute
 
   static final defaultInstance = Section.get(SectionEnum.verse);
 

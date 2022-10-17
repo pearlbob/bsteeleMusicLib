@@ -143,11 +143,11 @@ void main() {
 
     var singer1 = 'bodhi';
     SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.A);
-    logger.d('${songPerformance}');
+    logger.d('$songPerformance');
     expect(songPerformance.lastSungDateString, matches(r'^\d{1,2}/\d{1,2}/202\d$'));
 
     var next = SongPerformance.fromSong(a, singer1, key: Key.A);
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(seconds: 5));
     expect(next.lastSung > songPerformance.lastSung, true);
 
     songPerformance = SongPerformance.fromJsonString(
@@ -661,7 +661,7 @@ void main() {
     expect(allSongPerformances.allSongPerformances.length, 2);
     expect(allSongPerformances.allSongPerformanceHistory.length, 2);
     for (var h in allSongPerformances.allSongPerformanceHistory) {
-      logger.i('${h}');
+      logger.i('$h');
     }
     logger.i('performance1 ${performance1.songIdAsString} vs performance2 ${performance2.songIdAsString}');
     logger.i('performance1.compareTo(performance2): ${performance1.compareTo(performance2)}');

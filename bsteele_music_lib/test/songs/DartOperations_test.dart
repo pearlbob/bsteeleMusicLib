@@ -59,8 +59,8 @@ void main() {
           expect(chord1, chord2);
           expect(chord1 == chord2, isTrue);
         } else {
-          logger.d('chord1: ' + chord1.toString());
-          logger.d('chord2: ' + chord2.toString());
+          logger.d('chord1: $chord1');
+          logger.d('chord2: $chord2');
           expect(chord1 != chord2, isTrue);
         }
       }
@@ -81,8 +81,8 @@ void main() {
           expect(m1, m2);
           expect(m1 == m2, isTrue);
         } else {
-          logger.d('m1: ' + m1.toString());
-          logger.d('m2: ' + m2.toString());
+          logger.d('m1: $m1');
+          logger.d('m2: $m2');
           expect(m1 != m2, isTrue);
         }
       }
@@ -104,8 +104,8 @@ void main() {
           expect(ph1, ph2);
           expect(ph1 == ph2, isTrue);
         } else {
-          logger.d('ph1: ' + ph1.toString());
-          logger.d('ph2: ' + ph2.toString());
+          logger.d('ph1: $ph1');
+          logger.d('ph2: $ph2');
           expect(ph1 != ph2, isTrue);
         }
       }

@@ -29,7 +29,7 @@ class Util {
     if (s.isEmpty) {
       return '';
     }
-    s = s.replaceAll("'", "\'").replaceAll('\n', "\\n'\n'");
+    s = s.replaceAll("'", "'").replaceAll('\n', "\\n'\n'");
     return "'$s'";
   }
 
@@ -152,12 +152,12 @@ class Util {
 
   static String underScoresToCamelCase(String s) {
     return s.replaceAllMapped(_underScoreRegExp, (Match match) {
-      return '${match.group(1)!.toUpperCase()}';
+      return match.group(1)!.toUpperCase();
     }).trimLeft();
   }
 
   static String jsonEncodeNewLines(String s) {
-    return s.replaceAll(_jsonEncodeNewLineRegexp, '},\n{') + '\n';
+    return '${s.replaceAll(_jsonEncodeNewLineRegexp, '},\n{')}\n';
   }
 
   static final RegExp _jsonEncodeNewLineRegexp = RegExp(r'\},\{');
@@ -342,7 +342,7 @@ class StringTriple {
 
   @override
   String toString() {
-    return '(' + _a + ': \"' + _b + '\", \"' + _c + '\")';
+    return '($_a: "$_b", "$_c")';
   }
 
   String get a => _a;

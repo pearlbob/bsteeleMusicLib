@@ -10,14 +10,11 @@ import 'key.dart';
 
 ///
 class Chord implements Comparable<Chord> {
-  Chord(ScaleChord scaleChord, int beats, int beatsPerBar, ScaleNote? slashScaleNote,
-      ChordAnticipationOrDelay anticipationOrDelay, bool implicitBeats)
+  Chord(ScaleChord scaleChord, this.beats, int beatsPerBar, this.slashScaleNote,
+      ChordAnticipationOrDelay anticipationOrDelay, this.implicitBeats)
       : _anticipationOrDelay = anticipationOrDelay {
     _scaleChord = scaleChord;
-    this.beats = beats;
     _beatsPerBar = beatsPerBar;
-    this.slashScaleNote = slashScaleNote;
-    this.implicitBeats = implicitBeats;
   }
 
   Chord.copy(Chord chord) : _anticipationOrDelay = chord._anticipationOrDelay {
@@ -147,7 +144,7 @@ class Chord implements Comparable<Chord> {
   @override
   String toString() {
     String ret = _scaleChord.toString() +
-        (slashScaleNote == null ? '' : '/' + slashScaleNote.toString()) +
+        (slashScaleNote == null ? '' : '/$slashScaleNote') +
         _anticipationOrDelay.toString() +
         beatsToString();
     return ret;
@@ -171,7 +168,7 @@ class Chord implements Comparable<Chord> {
   /// Returns a markup representation of the object.
   String toMarkup() {
     String ret = _scaleChord.toMarkup() +
-        (slashScaleNote == null ? '' : '/' + slashScaleNote!.toMarkup()) +
+        (slashScaleNote == null ? '' : '/${slashScaleNote!.toMarkup()}') +
         _anticipationOrDelay.toString();
     if (!implicitBeats && beats < _beatsPerBar) {
       if (beats == 1) {

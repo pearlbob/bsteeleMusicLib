@@ -32,15 +32,15 @@ void main() {
   test('ScaleChord HTML', () {
     StringBuffer sb = StringBuffer();
     sb.write('<!DOCTYPE html>\n'
-        '<html lang=\"en\">\n'
+        '<html lang="en">\n'
         '  <head>\n'
-        '    <meta charset=\"utf-8\">\n'
+        '    <meta charset="utf-8">\n'
         '    <title>title</title>\n'
-        '    <link rel=\"stylesheet\" href=\"style.css\">\n'
-        '    <script src=\"script.js\"></script>\n'
+        '    <link rel="stylesheet" href="style.css">\n'
+        '    <script src="script.js"></script>\n'
         '  </head>\n'
         '  <body>\n'
-        '    <table border=\"1\" >\n');
+        '    <table border="1" >\n');
 
     for (final sn in ScaleNote.values) {
       if (sn == ScaleNote.X) {

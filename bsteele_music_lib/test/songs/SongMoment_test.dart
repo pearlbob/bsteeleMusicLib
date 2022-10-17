@@ -9,7 +9,7 @@ void main() {
   Logger.level = Level.info;
 
   test('moment songTime', () {
-    final int beatsPerBar = 4;
+    const int beatsPerBar = 4;
     int bpm = 106;
     {
       var a = Song.createSong(

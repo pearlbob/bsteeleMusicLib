@@ -44,7 +44,7 @@ class MeasureRepeat extends Phrase {
     for (int i = 0; i < 1e3; i++) //  safety
     {
       markedString.stripLeadingSpaces();
-      logger.v('repeat parsing: ' + markedString.remainingStringLimited(10));
+      logger.v('repeat parsing: ${markedString.remainingStringLimited(10)}');
       if (markedString.isEmpty) {
         markedString.resetTo(initialMark);
         throw 'no data to parse';
@@ -105,7 +105,7 @@ class MeasureRepeat extends Phrase {
       break;
     }
 
-    final RegExp repeatExp = RegExp('^' + (hasBracket ? '\\s*]' : '') + '\\s*x(\\d+)\\s*');
+    final RegExp repeatExp = RegExp('^${hasBracket ? '\\s*]' : ''}\\s*x(\\d+)\\s*');
     RegExpMatch? mr = repeatExp.firstMatch(markedString.toString());
     if (mr != null) {
       int repeats = int.parse(mr.group(1)!);
@@ -113,7 +113,7 @@ class MeasureRepeat extends Phrase {
         measures.last.endOfRow = false;
       }
       MeasureRepeat ret = MeasureRepeat(measures, phraseIndex, repeats);
-      logger.d(' measure repeat: ' + ret.toMarkup());
+      logger.d(' measure repeat: ${ret.toMarkup()}');
       markedString.consume(mr.group(0)!.length);
       return ret;
     }
@@ -236,14 +236,14 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  Measure? measureAt(int index, {expanded = false}) {
+  Measure? measureAt(int measureIndex, {expanded = false}) {
     if (expanded) {
-      if (index >= measures.length * repeats) {
+      if (measureIndex >= measures.length * repeats) {
         return null;
       }
-      index %= measures.length;
+      measureIndex %= measures.length;
     }
-    return super.measureAt(index);
+    return super.measureAt(measureIndex);
   }
 
   //  return the first measure of the given row
@@ -332,12 +332,12 @@ class MeasureRepeat extends Phrase {
       }
       return sb.toString();
     }
-    return '[' + (measures.isEmpty ? '' : super.toMarkup()) + markupEnd() + ' ';
+    return '[${measures.isEmpty ? '' : super.toMarkup()}${markupEnd()} ';
   }
 
   @override
   String toMarkupWithoutEnd() {
-    return '[' + (measures.isEmpty ? '' : super.toMarkupWithoutEnd()) + markupEnd() + ' ';
+    return '[${measures.isEmpty ? '' : super.toMarkupWithoutEnd()}${markupEnd()} ';
   }
 
   @override
@@ -347,7 +347,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String markupEnd({int? rep}) {
-    return '] x' + repeats.toString() + (rep == null ? '' : '#$rep');
+    return '] x$repeats${rep == null ? '' : '#$rep'}';
   }
 
   @override
@@ -385,7 +385,7 @@ class MeasureRepeat extends Phrase {
           if (rowCount > 0) {
             sb.write(' |');
           }
-          sb.write(' x' + repeats.toString() + '\n');
+          sb.write(' x$repeats\n');
           break;
         } else if (measure.endOfRow) {
           sb.write(' |\n');
@@ -428,7 +428,7 @@ class MeasureRepeat extends Phrase {
             }
 
             //  add the extension
-            var extension;
+            MeasureRepeatExtension extension;
             if (rowMod == 0) {
               extension = MeasureRepeatExtension.upperRightMeasureRepeatExtension;
             } else if (rowMod == rowCount - 1) {
@@ -464,7 +464,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String toString() {
-    return super.toMarkup() + ' x' + repeats.toString() + '\n';
+    return '${super.toMarkup()} x$repeats\n';
   }
 
   @override
@@ -480,7 +480,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   int compareTo(Object o) {
-    if (!(o is MeasureRepeat)) {
+    if (o is! MeasureRepeat) {
       return -1;
     }
 

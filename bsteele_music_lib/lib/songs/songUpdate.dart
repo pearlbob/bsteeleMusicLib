@@ -17,7 +17,7 @@ enum SongUpdateState {
   idle,
 }
 
-final unknownSinger = 'unknown';
+const unknownSinger = 'unknown';
 
 String _StateEnumToString(SongUpdateState s) {
   return s.toString().split('.').last;
@@ -32,7 +32,7 @@ SongUpdateState? _stateFromString(String s) {
   return null;
 }
 
-final JsonDecoder _jsonDecoder = JsonDecoder();
+const JsonDecoder _jsonDecoder = JsonDecoder();
 
 /// Immutable song update data
 ///
@@ -44,7 +44,7 @@ class SongUpdate {
       String? user,
       String? singer,
       int? momentNumber,
-      SongMoment? songMoment,
+      this.songMoment,
       int? beat,
       int? beatsPerMeasure,
       int? currentBeatsPerMinute,
@@ -53,7 +53,6 @@ class SongUpdate {
         user = user ?? 'unknown',
         singer = singer ?? unknownSinger,
         momentNumber = momentNumber ?? 0,
-        songMoment = songMoment,
         beat = beat ?? 0,
         beatsPerMeasure = beatsPerMeasure ?? 4,
         currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
@@ -225,16 +224,16 @@ class SongUpdate {
 
   String diff(SongUpdate other) {
     if (!song.songBaseSameContent(other.song)) {
-      return 'new song: ' + other.song.getTitle() + ', ' + other.song.getArtist();
+      return 'new song: ${other.song.getTitle()}, ${other.song.getArtist()}';
     }
     if (currentKey != other.currentKey) {
-      return 'new key: ' + other.currentKey.toString();
+      return 'new key: ${other.currentKey}';
     }
     if (currentKey != other.currentKey) {
-      return 'new key: ' + other.currentKey.toString();
+      return 'new key: ${other.currentKey}';
     }
     if (currentBeatsPerMinute != other.currentBeatsPerMinute) {
-      return 'new tempo: ' + other.currentBeatsPerMinute.toString();
+      return 'new tempo: ${other.currentBeatsPerMinute}';
     }
     return 'no change';
   }
@@ -337,34 +336,34 @@ class SongUpdate {
   String toJson() {
     var sb = StringBuffer();
     sb.write('{\n');
-    sb.write('\"state\": \"');
+    sb.write('"state": "');
     sb.write(_StateEnumToString(_state));
-    sb.write('\",\n');
-    sb.write('\"currentKey\": \"');
+    sb.write('",\n');
+    sb.write('"currentKey": "');
     sb.write(getCurrentKey().name);
-    sb.write('\",\n');
+    sb.write('",\n');
 
-    sb.write('\"song\": ');
+    sb.write('"song": ');
     sb.write(song.toJson());
     sb.write(',\n');
 
     //  momentNumber sequencing details should be found by local processing
-    sb.write('\"momentNumber\": ');
+    sb.write('"momentNumber": ');
     sb.write(getMomentNumber());
     sb.write(',\n');
-    sb.write('\"beat\": ');
+    sb.write('"beat": ');
     sb.write(getBeat());
     sb.write(',\n');
-    sb.write('\"user\": ');
+    sb.write('"user": ');
     sb.write(jsonEncode(user));
     sb.write(',\n');
-    sb.write('\"singer\": ');
+    sb.write('"singer": ');
     sb.write(jsonEncode(singer));
     sb.write(',\n');
-    sb.write('\"beatsPerMeasure\": ');
+    sb.write('"beatsPerMeasure": ');
     sb.write(getBeatsPerMeasure());
     sb.write(',\n');
-    sb.write('\"currentBeatsPerMinute\": ');
+    sb.write('"currentBeatsPerMinute": ');
     sb.write(getCurrentBeatsPerMinute());
     sb.write('\n}\n');
 
@@ -372,11 +371,11 @@ class SongUpdate {
   }
 
   @override
-  bool operator ==(o) {
-    if (identical(this, o)) {
+  bool operator ==(other) {
+    if (identical(this, other)) {
       return true;
     }
-    return runtimeType == o.runtimeType && o is SongUpdate && hashCode == o.hashCode;
+    return runtimeType == other.runtimeType && other is SongUpdate && hashCode == other.hashCode;
   }
 
   @override

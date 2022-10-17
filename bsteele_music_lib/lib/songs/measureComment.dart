@@ -71,12 +71,12 @@ class MeasureComment extends Measure {
 
   @override
   String toEntry() {
-    return '\n' + toString() + '\n';
+    return '\n${toString()}\n';
   }
 
   @override
   String toString() {
-    return _comment.isEmpty ? '' : '(' + _comment + ')';
+    return _comment.isEmpty ? '' : '($_comment)';
   }
 
   @override

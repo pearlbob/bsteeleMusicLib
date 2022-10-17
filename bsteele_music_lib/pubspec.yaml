@@ -19,12 +19,12 @@ dependencies:
   flutter_lints:
   dartdoc:
   csv:
+  xml:
   dotenv:
   tuple:
 
 dev_dependencies:
   lints:
   test:
-  xml:
   build_runner:
   build_web_compilers:

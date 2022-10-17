@@ -84,7 +84,7 @@ class UndoStack<T> {
   }
 
   final int _max;
-  static final int _defaultSize = 100;
+  static const int _defaultSize = 100;
   final List<T> _undoStack = <T>[];
   int _undoStackPointer = -1; //  point to where the top is.  less than zero means no top
   int _undoStackCount = 0;

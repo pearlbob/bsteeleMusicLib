@@ -140,41 +140,41 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(5, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 2));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 2));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('Bm', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 3));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 3));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('F♯m', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('G', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('GBm', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 2));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 2));
     expect(measureNode, isNull);
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 3));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 3));
     expect(measureNode, isNull);
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNull);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(1, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     logger.i(a.logGrid());
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(1, 4 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(1, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
 
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
@@ -194,42 +194,42 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(9, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 2));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 2));
     expect(measureNode, isNotNull);
     m = Measure.parseString('B', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 3));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 3));
     expect(measureNode, isNull);
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNull);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 3));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 3));
     expect(measureNode, isNotNull);
     m = Measure.parseString('Eb', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNull);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNull);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
@@ -262,32 +262,32 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(16, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 1));
     expect(measureNode, isNotNull);
     expect(measureNode, Measure.parseString('A', a.getBeatsPerBar()));
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 1));
     expect(measureNode, isNotNull);
     expect(measureNode, Measure.parseString('D', a.getBeatsPerBar()));
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
     expect(measureNode, Measure.parseString('Gb', a.getBeatsPerBar()));
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 7));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 7));
     expect(measureNode, isNotNull);
     expect(measureNode, Measure.parseString('G#', a.getBeatsPerBar()));
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 8));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 8));
     expect(measureNode, isNotNull);
     expect(measureNode, Measure.parseString('A#', a.getBeatsPerBar()));
 
     logger.i(a.logGrid());
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 8 + 1));
     expect(chordSectionLocation, isNotNull);
     logger.i(chordSectionLocation);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 8 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 8 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
@@ -310,15 +310,15 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(4, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('D', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(0, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(0, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
@@ -341,15 +341,15 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(4, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('D', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(0, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(0, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(
       chordSectionLocation!.marker,
@@ -372,29 +372,29 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(12, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('D', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('Db', a.getBeatsPerBar());
     m.endOfRow = true;
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
@@ -414,33 +414,33 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(11, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('D', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('Db', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 3));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 3));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 4));
     expect(measureNode, isNull);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
@@ -460,34 +460,34 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(12, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('Db', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('D', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('Db', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(ChordSectionLocationMarker.repeatLowerRight, chordSectionLocation!.marker);
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(2, 4 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
@@ -507,32 +507,32 @@ void main() {
     measureRepeat = phrase as MeasureRepeat;
     expect(12, measureRepeat.length);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 1));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 1));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('A', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(0, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('Gb', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(1, 3));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(1, 3));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('C', a.getBeatsPerBar()), measureNode);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(2, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(2, 4));
     expect(measureNode, isNotNull);
     m = Measure.parseString('Db', a.getBeatsPerBar());
     m.endOfRow = true;
     expect(measureNode, m);
 
-    measureNode = a.findMeasureNodeByGrid(GridCoordinate(3, 4));
+    measureNode = a.findMeasureNodeByGrid(const GridCoordinate(3, 4));
     expect(measureNode, isNotNull);
     expect(Measure.parseString('G#', a.getBeatsPerBar()), measureNode);
 
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(3, 4 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
-    chordSectionLocation = a.getChordSectionLocation(GridCoordinate(3, 4 + 1 + 1));
+    chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(3, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
@@ -543,7 +543,7 @@ void main() {
   test('test repeat chord rows', () {
     int beatsPerBar = 4;
     var expanded = true;
-    var m;
+    MeasureRepeat m;
 
     m = MeasureRepeat.parseString('[A B C D, E F G, D C G G ] x2', 0, beatsPerBar, null);
     expect(m.chordRowMaxLength(), 6);

@@ -69,7 +69,7 @@ class SongMomentLocation {
 
   final ChordSectionLocation _chordSectionLocation;
   final int _index;
-  static final String separator = '#';
+  static const String separator = '#';
 
-  static final RegExp numberRegexp = RegExp('^' + separator + '(\\d+)');
+  static final RegExp numberRegexp = RegExp('^$separator(\\d+)');
 }

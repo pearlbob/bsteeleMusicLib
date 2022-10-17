@@ -21,15 +21,7 @@ void testChordTranspose(Key key) {
         for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
           ScaleNote snHalfSteps = sn.transpose(key, halfSteps);
 
-          logger.d(sn.toString() +
-              chordDescriptor.shortName +
-              ' ' +
-              halfSteps.toString() +
-              ' in key ' +
-              key.toString() +
-              ' ' +
-              beatsPerBar.toString() +
-              ' beats');
+          logger.d('$sn${chordDescriptor.shortName} $halfSteps in key $key $beatsPerBar beats');
           expect(
               Chord.parseString(snHalfSteps.toString() + chordDescriptor.shortName, beatsPerBar),
               CompareTo(Chord.parseString(sn.toString() + chordDescriptor.shortName, beatsPerBar)
@@ -39,7 +31,7 @@ void testChordTranspose(Key key) {
       }
     }
   }
-  logger.d('transpose count: ' + count.toString());
+  logger.d('transpose count: $count');
 
   count = 0;
   for (final sn in ScaleNote.values) {
@@ -50,31 +42,18 @@ void testChordTranspose(Key key) {
             var snHalfSteps = sn.transpose(key, halfSteps);
             var slashSnHalfSteps = slashSn.transpose(key, halfSteps);
 
-            logger.d(sn.toString() +
-                chordDescriptor.shortName +
-                '/' +
-                slashSn.toString() +
-                ' ' +
-                halfSteps.toString() +
-                ' in key ' +
-                key.toString() +
-                ' ' +
-                beatsPerBar.toString() +
-                ' beats');
+            logger.d('$sn${chordDescriptor.shortName}/$slashSn $halfSteps in key $key $beatsPerBar beats');
             expect(
-                Chord.parseString(
-                    snHalfSteps.toString() + chordDescriptor.shortName + '/' + slashSnHalfSteps.toString(),
-                    beatsPerBar),
-                CompareTo(
-                    Chord.parseString(sn.toString() + chordDescriptor.shortName + '/' + slashSn.toString(), beatsPerBar)
-                        ?.transpose(key, halfSteps)));
+                Chord.parseString('$snHalfSteps${chordDescriptor.shortName}/$slashSnHalfSteps', beatsPerBar),
+                CompareTo(Chord.parseString('$sn${chordDescriptor.shortName}/$slashSn', beatsPerBar)
+                    ?.transpose(key, halfSteps)));
             count++;
           }
         }
       }
     }
   }
-  logger.d('transpose slash count: ' + count.toString());
+  logger.d('transpose slash count: $count');
 }
 
 void main() {
@@ -85,7 +64,7 @@ void main() {
       SplayTreeSet<ScaleChord> slashScaleChords = SplayTreeSet();
       for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
         for (ChordAnticipationOrDelay anticipationOrDelay in ChordAnticipationOrDelay.values) {
-          logger.d('anticipationOrDelay: ' + anticipationOrDelay.toString());
+          logger.d('anticipationOrDelay: $anticipationOrDelay');
           for (final scaleNote in ScaleNote.values) {
             if (scaleNote == ScaleNote.X) {
               continue;
@@ -121,9 +100,9 @@ void main() {
           Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.D, ChordDescriptor.diminished));
       chord.slashScaleNote = ScaleNote.G;
 
-      logger.i('\"' + Chord.parseString('Ddim/G', beatsPerBar).toString() + '\"');
-      logger.i('compare: ' + (Chord.parseString('Ddim/G', beatsPerBar)?.compareTo(chord)).toString());
-      logger.i('==: ' + (Chord.parseString('Ddim/G', beatsPerBar) == chord ? 'true' : 'false'));
+      logger.i('"${Chord.parseString('Ddim/G', beatsPerBar)}"');
+      logger.i('compare: ${Chord.parseString('Ddim/G', beatsPerBar)?.compareTo(chord)}');
+      logger.i('==: ${Chord.parseString('Ddim/G', beatsPerBar) == chord ? 'true' : 'false'}');
       Chord? pChord = Chord.parseString('Ddim/G', beatsPerBar);
       expect(pChord, CompareTo(chord));
 
@@ -161,13 +140,7 @@ void main() {
           for (int halfSteps = 0; halfSteps < 12; halfSteps++) {
             var snHalfSteps = sn.transpose(key, halfSteps);
 
-            logger.d(sn.toString() +
-                ' ' +
-                halfSteps.toString() +
-                ' in key ' +
-                key.toString() +
-                ' +> ' +
-                snHalfSteps.toString());
+            logger.d('$sn $halfSteps in key $key +> $snHalfSteps');
 //                                assertEquals(Chord.parse(snHalfSteps + chordDescriptor.getShortName(), beatsPerBar),
 //                                        Chord.parse(sn + chordDescriptor.getShortName(), beatsPerBar)
 //                                                .transpose(key, halfSteps));
@@ -175,7 +148,7 @@ void main() {
           }
         }
       }
-      logger.d('transpose count: ' + count.toString());
+      logger.d('transpose count: $count');
     });
 
     test('testChordTranspose testing', () {

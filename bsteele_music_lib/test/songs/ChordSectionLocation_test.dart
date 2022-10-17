@@ -46,8 +46,8 @@ void main() {
           for (int index = 1; index <= 40; index++) {
             ChordSectionLocation chordSectionLocationExpected =
                 ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: index);
-            ChordSectionLocation chordSectionLocation = ChordSectionLocation.parseString(
-                sectionVersion.id.toString() + ':' + phraseIndex.toString() + ':' + index.toString());
+            ChordSectionLocation chordSectionLocation =
+                ChordSectionLocation.parseString('${sectionVersion.id}:$phraseIndex:$index');
             logger.d(chordSectionLocationExpected.toString());
             expect(chordSectionLocation, chordSectionLocationExpected);
           }
@@ -62,7 +62,7 @@ void main() {
           for (int index = 1; index <= 40; index++) {
             ChordSectionLocation chordSectionLocationExpected =
                 ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: index);
-            logger.i('chordSectionLocationExpected: ' + chordSectionLocationExpected.toString());
+            logger.i('chordSectionLocationExpected: $chordSectionLocationExpected');
             ChordSectionLocation chordSectionLocation =
                 ChordSectionLocation.parseString(chordSectionLocationExpected.toString());
             logger.d(chordSectionLocationExpected.toString());

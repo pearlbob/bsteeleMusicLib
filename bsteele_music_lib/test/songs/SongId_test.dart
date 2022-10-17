@@ -10,7 +10,7 @@ void main() {
   Logger.level = Level.info;
 
   test('test SongId', () {
-    final int beatsPerBar = 4;
+    const int beatsPerBar = 4;
     int bpm = 106;
     {
       var a = Song.createSong(

@@ -96,7 +96,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   static ChordDescriptor get diminishedAsCircle => _diminishedAsCircle;
   static final ChordDescriptor _diminishedAsCircle = ChordDescriptor._(
-      'diminishedAsCircle', '' + MusicConstants.diminishedCircle, 'R m3 b5',
+      'diminishedAsCircle', MusicConstants.diminishedCircle, 'R m3 b5',
       alias: diminished, nashville: '°');
 
   static ChordDescriptor get augmented5 => _augmented5;
@@ -145,7 +145,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   static ChordDescriptor get deltaMajor7 => _deltaMajor7;
   static final ChordDescriptor _deltaMajor7 =
-      ChordDescriptor._('deltaMajor7', '' + MusicConstants.greekCapitalDelta, 'R 3 5 7', alias: major7);
+      ChordDescriptor._('deltaMajor7', MusicConstants.greekCapitalDelta, 'R 3 5 7', alias: major7);
 
   static ChordDescriptor get capMajor7 => _capMajor7;
   static final ChordDescriptor _capMajor7 = ChordDescriptor._('capMajor7', 'Maj7', 'R 3 5 7', alias: major7);

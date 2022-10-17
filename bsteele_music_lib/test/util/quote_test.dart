@@ -14,7 +14,7 @@ void main() {
     s = ' ';
     expect(Util.quote(s), '\'$s\'');
     s = ' nothing special, per se &nbsp;';
-    expect(Util.quote(s), '\'' + s + '\'');
+    expect(Util.quote(s), '\'$s\'');
     s = ' something special,\nhere;';
     qs = Util.quote(s);
     expect(qs, '\' something special,\\n\'\n\'here;\'');

@@ -32,7 +32,7 @@ void main() {
   List<Phrase> phrases;
   Phrase phrase;
   List<Measure> measures;
-  final int beatsPerBar = 4;
+  const int beatsPerBar = 4;
 
   test('testChordSectionparseString', () {
     {
@@ -962,7 +962,7 @@ void main() {
     ChordSection chordSection;
 
     chordSection = ChordSection.parseString('I: A B C D, D C G G', beatsPerBar);
-    logger.i('${chordSection.phrasesToMarkup()}');
+    logger.i(chordSection.phrasesToMarkup());
     expect(chordSection.transpose(Key.C, 0), 'A B C D, D C G G ');
     expect(chordSection.transpose(Key.C, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
     expect(chordSection.transpose(Key.C, 2), 'B Db D E, E D A A ');
@@ -970,7 +970,7 @@ void main() {
     expect(chordSection.transpose(Key.G, 1), 'A# C C# D#, D# C# G# G# ');
 
     chordSection = ChordSection.parseString('I: A B C X x2, D C G G x3', beatsPerBar);
-    logger.i('${chordSection.phrasesToMarkup()}');
+    logger.i(chordSection.phrasesToMarkup());
     expect(chordSection.transpose(Key.C, 0), '[A B C X ] x2 [D C G G ] x3 ');
     expect(chordSection.transpose(Key.C, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
     expect(chordSection.transpose(Key.C, 2), '[B Db D X ] x2 [E D A A ] x3 ');

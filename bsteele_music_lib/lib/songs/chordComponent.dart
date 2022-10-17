@@ -63,7 +63,7 @@ class ChordComponent implements Comparable<ChordComponent> {
             cc = thirteenth;
             break;
           default:
-            throw ArgumentError('unknown component: <' + s + '>');
+            throw ArgumentError('unknown component: <$s>');
         }
       }
       ret.add(cc);

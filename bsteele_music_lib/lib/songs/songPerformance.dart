@@ -20,18 +20,16 @@ String _cleanPerformer(final String? value) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung, final Song? song})
+  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung, this.song})
       : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _singer = _cleanPerformer(singer),
-        song = song,
         _key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(final Song song, final String singer, {Key? key, int? bpm, int? lastSung})
+  SongPerformance.fromSong(Song this.song, final String singer, {Key? key, int? bpm, int? lastSung})
       : _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
         _singer = _cleanPerformer(singer),
-        song = song,
         _songIdAsString = song.songId.toString(),
         _key = key ?? song.key,
         _bpm = bpm ?? song.beatsPerMinute,
@@ -95,7 +93,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   @override
   String toString() {
     return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', _key: $_key'
-        ', _bpm: $_bpm, sung: ${lastSungDateString}'
+        ', _bpm: $_bpm, sung: $lastSungDateString'
         //' = $_lastSung'
         '}';
   }
@@ -524,7 +522,7 @@ class AllSongPerformances {
 
   void readFileSync(File file) {
     String jsonString = file.path.endsWith('.gz')
-        ? Utf8Decoder().convert(GZipCodec().decoder.convert(file.readAsBytesSync()))
+        ? const Utf8Decoder().convert(GZipCodec().decoder.convert(file.readAsBytesSync()))
         : file.readAsStringSync();
     addFromJsonString(jsonString);
   }

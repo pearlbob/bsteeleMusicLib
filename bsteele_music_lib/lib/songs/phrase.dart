@@ -82,9 +82,7 @@ class Phrase extends MeasureNode {
           rowMark = markedString.mark();
         }
         continue;
-      } catch (e) {
-        ;
-      }
+      } catch (e) {}
 
       if (!hasBracket) {
         //  look for repeat marker
@@ -108,7 +106,6 @@ class Phrase extends MeasureNode {
         priorMeasure = null;
         continue;
       } catch (e) {
-        ;
       }
 
       //  end of bracketed phrase
@@ -205,7 +202,7 @@ class Phrase extends MeasureNode {
     int ret = _measures.indexOf(measureNode as Measure);
 
     if (ret < 0) {
-      throw 'measureNode not found: ' + measureNode.toMarkup();
+      throw 'measureNode not found: ${measureNode.toMarkup()}';
     }
 
     return ret;
@@ -789,7 +786,7 @@ class Phrase extends MeasureNode {
 
   @override
   String toString() {
-    return toMarkup() + '\n';
+    return '${toMarkup()}\n';
   }
 
   int get length => _measures.length;
@@ -803,7 +800,7 @@ class Phrase extends MeasureNode {
   }
 
   int compareTo(Object o) {
-    if (!(o is Phrase)) {
+    if (o is! Phrase) {
       return -1;
     }
     Phrase other = o;

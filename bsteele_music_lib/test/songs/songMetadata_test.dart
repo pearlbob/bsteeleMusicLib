@@ -14,25 +14,29 @@ void main() {
   test('test basic Metadata', () {
     SongMetadata.clear();
 
-    final String id0 = 'id0';
+    const String id0 = 'id0';
     {
-      expect(SongIdMetadata(id0, metadata: [NameValue('genre', 'rock')]).toJson(),
+      expect(SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock')]).toJson(),
           '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      expect(SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('genre', 'rock')]).toJson(),
+      expect(
+          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('genre', 'rock')]).toJson(),
           '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
 
-      SongIdMetadata md = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
+      SongIdMetadata md =
+          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
       expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
-      md.remove(NameValue('jam', 'casual'));
+      md.remove(const NameValue('jam', 'casual'));
       expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      md.add(NameValue('jam', 'casual'));
+      md.add(const NameValue('jam', 'casual'));
       expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
     }
 
     //  metadata
-    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
-    SongIdMetadata md1 = SongIdMetadata('id1', metadata: [NameValue('genre', 'rock'), NameValue('jam', 'advanced')]);
-    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [NameValue('jam', 'advanced')]);
+    SongIdMetadata md0 =
+        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
+    SongIdMetadata md1 =
+        SongIdMetadata('id1', metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
+    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [const NameValue('jam', 'advanced')]);
     SongIdMetadata md3 = SongIdMetadata('id3 christmas');
 
     SplayTreeSet<SongIdMetadata> set = SplayTreeSet();
@@ -131,7 +135,7 @@ void main() {
       //  list all
       logger.d('');
       for (SongIdMetadata idMetadata in SongMetadata.idMetadata) {
-        logger.d('${idMetadata.toString()}');
+        logger.d(idMetadata.toString());
       }
     }
   });
@@ -139,25 +143,29 @@ void main() {
   test('test Metadata exact matches', () {
     SongMetadata.clear();
 
-    final String id0 = 'id0';
+    const String id0 = 'id0';
     {
-      expect(SongIdMetadata(id0, metadata: [NameValue('genre', 'rock')]).toJson(),
+      expect(SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock')]).toJson(),
           '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      expect(SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('genre', 'rock')]).toJson(),
+      expect(
+          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('genre', 'rock')]).toJson(),
           '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
 
-      SongIdMetadata md = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
+      SongIdMetadata md =
+          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
       expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
-      md.remove(NameValue('jam', 'casual'));
+      md.remove(const NameValue('jam', 'casual'));
       expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      md.add(NameValue('jam', 'casual'));
+      md.add(const NameValue('jam', 'casual'));
       expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
     }
 
     //  metadata
-    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
-    SongIdMetadata md1 = SongIdMetadata('id1', metadata: [NameValue('genre', 'rock'), NameValue('jam', 'advanced')]);
-    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [NameValue('jam', 'advanced')]);
+    SongIdMetadata md0 =
+        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
+    SongIdMetadata md1 =
+        SongIdMetadata('id1', metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
+    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [const NameValue('jam', 'advanced')]);
     SongIdMetadata md3 = SongIdMetadata('id3 christmas');
 
     SplayTreeSet<SongIdMetadata> set = SplayTreeSet();
@@ -250,7 +258,7 @@ void main() {
       //  list all
       logger.d('');
       for (SongIdMetadata idMetadata in SongMetadata.idMetadata) {
-        logger.d('${idMetadata.toString()}');
+        logger.d(idMetadata.toString());
       }
     }
   });
@@ -259,13 +267,14 @@ void main() {
     final String id0 = SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId;
 
     //  metadata
-    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
+    SongIdMetadata md0 =
+        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
     SongIdMetadata md1 = SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
-        metadata: [NameValue('genre', 'rock'), NameValue('jam', 'advanced')]);
+        metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
     SongIdMetadata md2 = SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
-        metadata: [NameValue('jam', 'advanced')]);
+        metadata: [const NameValue('jam', 'advanced')]);
     SongIdMetadata md3 = SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
-        metadata: [NameValue('christmas', '')]);
+        metadata: [const NameValue('christmas', '')]);
     SongMetadata.clear();
     SongMetadata.set(md0);
     SongMetadata.set(md1);
@@ -278,7 +287,7 @@ void main() {
       SongMetadata.clear();
       SongMetadata.fromJson(s);
 
-      logger.i('$original');
+      logger.i(original);
       //logger.d('${Metadata.toJson()}');
       expect(SongMetadata.toJson(), original);
     }
@@ -288,13 +297,14 @@ void main() {
     final String id0 = SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId;
 
     //  metadata
-    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('genre', 'rock'), NameValue('jam', 'casual')]);
+    SongIdMetadata md0 =
+        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
     SongIdMetadata md1 = SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
-        metadata: [NameValue('genre', 'rock'), NameValue('jam', 'advanced')]);
+        metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
     SongIdMetadata md2 = SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
-        metadata: [NameValue('jam', 'advanced')]);
+        metadata: [const NameValue('jam', 'advanced')]);
     SongIdMetadata md3 = SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
-        metadata: [NameValue('christmas', '')]);
+        metadata: [const NameValue('christmas', '')]);
     SongMetadata.clear();
     SongMetadata.set(md0);
     SongMetadata.set(md1);
@@ -302,21 +312,21 @@ void main() {
     SongMetadata.set(md3);
 
     expect(
-        SongMetadata.toJsonAt(nameValue: NameValue('genre', 'rock')),
+        SongMetadata.toJsonAt(nameValue: const NameValue('genre', 'rock')),
         '[{"id":"Song_39_by_Queen","metadata":[{"name":"genre","value":"rock"}]},\n'
         '{"id":"Song_Hey_Joe_by_Jimi_Hendrix","metadata":[{"name":"genre","value":"rock"}]}]');
     expect(
-        SongMetadata.toJsonAt(nameValue: NameValue('jam', 'advanced')),
+        SongMetadata.toJsonAt(nameValue: const NameValue('jam', 'advanced')),
         '[{"id":"Song_39_by_Queen","metadata":[{"name":"jam","value":"advanced"}]},\n'
         '{"id":"Song_Boxer_The_by_Boxer_The","metadata":[{"name":"jam","value":"advanced"}]}]');
-    expect(SongMetadata.toJsonAt(nameValue: NameValue('christmas', '')),
+    expect(SongMetadata.toJsonAt(nameValue: const NameValue('christmas', '')),
         '[{"id":"Song_Holly_Jolly_Christmas_by_Burl_Ives","metadata":[{"name":"christmas","value":""}]}]');
 
     //  wrong name: jams not jam
-    expect(SongMetadata.toJsonAt(nameValue: NameValue('jams', 'advanced')), '[]');
+    expect(SongMetadata.toJsonAt(nameValue: const NameValue('jams', 'advanced')), '[]');
 
     //  wrong value: something not jam
-    expect(SongMetadata.toJsonAt(nameValue: NameValue('jam', 'somethingElse')), '[]');
+    expect(SongMetadata.toJsonAt(nameValue: const NameValue('jam', 'somethingElse')), '[]');
   });
 
   bool _rockMatch(SongIdMetadata idMetadata) {
@@ -363,9 +373,9 @@ void main() {
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    var rock = NameValue('genre', 'rock');
-    var cjBest = NameValue('cj', 'best');
-    var cjOk = NameValue('cj', 'ok');
+    var rock = const NameValue('genre', 'rock');
+    var cjBest = const NameValue('cj', 'best');
+    var cjOk = const NameValue('cj', 'ok');
 
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Dead Flowers', 'Stones, The', null).songId, metadata: [
       rock,
@@ -377,7 +387,7 @@ void main() {
     SongMetadata.set(
         SongIdMetadata(SongId.computeSongId('Boxer, The', 'Simon & Garfunkel', null).songId, metadata: [cjBest]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
-        metadata: [NameValue('christmas', '')]));
+        metadata: [const NameValue('christmas', '')]));
 
     matches = SongMetadata.match(_rockMatch);
     expect(matches, isNotNull);
@@ -425,7 +435,7 @@ void main() {
     expect(matches.length, 0);
 
     for (var metadata in SongMetadata.idMetadata) {
-      logger.i('${SongId.asReadableString(metadata.id)}');
+      logger.i(SongId.asReadableString(metadata.id));
     }
   });
 
@@ -434,7 +444,7 @@ void main() {
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
     Song b = Song.createSong('b song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
-    var firstNv = NameValue('test', 'first');
+    var firstNv = const NameValue('test', 'first');
     SongMetadata.clear();
     SongMetadata.addSong(a, firstNv);
     expect(SongMetadata.where().length, 1);

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:math';
 
 import 'package:bsteeleMusicLib/songs/scaleNote.dart';
@@ -202,8 +204,8 @@ class Pitch implements Comparable<Pitch> {
       int fromC = (n - MusicConstants.halfStepsFromAtoC) % MusicConstants.halfStepsPerOctave;
       //  compute halfSteps from A0
       n += ((fromC >= (MusicConstants.halfStepsPerOctave - MusicConstants.halfStepsFromAtoC))
-              ? _octaveNumber
-              : _octaveNumber - 1) *
+          ? _octaveNumber
+          : _octaveNumber - 1) *
           MusicConstants.halfStepsPerOctave;
     }
     _number = n;
