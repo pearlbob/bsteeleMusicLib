@@ -61,12 +61,13 @@ enum UserDisplayStyle {
   banner,
 }
 
-enum BannerRows {
-  chordSectionsAndRepeats,
+enum BannerColumn {
+  chordSections,
+  repeats,
   lyrics,
   chords,
-  sheetMusic,
-  noiseToNotes,
+  // sheetMusic,
+  // noiseToNotes,
 }
 
 const Level _logGrid = Level.debug;
@@ -91,16 +92,17 @@ class SongBase {
   }
 
   /// Constructor from a set of named arguments.
-  SongBase.from({String title = 'unknown',
-    String artist = 'unknown',
-    String coverArtist = '',
-    String copyright = 'unknown',
-    Key? key,
-    int beatsPerMinute = MusicConstants.defaultBpm,
-    int beatsPerBar = 4,
-    int unitsPerMeasure = 4,
-    String chords = '',
-    String rawLyrics = ''}) {
+  SongBase.from(
+      {String title = 'unknown',
+      String artist = 'unknown',
+      String coverArtist = '',
+      String copyright = 'unknown',
+      Key? key,
+      int beatsPerMinute = MusicConstants.defaultBpm,
+      int beatsPerBar = 4,
+      int unitsPerMeasure = 4,
+      String chords = '',
+      String rawLyrics = ''}) {
     this.title = title;
     this.artist = artist;
     this.coverArtist = coverArtist;
@@ -371,7 +373,8 @@ class SongBase {
 
   /// share the given lines to the given row.
   /// extra lines go to the early measures until depleted.
-  static String shareLinesToRow(int rowCount,
+  static String shareLinesToRow(
+      int rowCount,
       int sectionRowNumber, //  measure number - section start measure number
       List<String> lines) {
     StringBuffer ret = StringBuffer();
@@ -380,10 +383,10 @@ class SongBase {
     int linesPerMeasure = lineCount ~/ rowCount;
     int extraLines = lineCount.remainder(rowCount);
     int line = sectionRowNumber *
-        (linesPerMeasure +
-            //  all early lines have an extra one
-            (sectionRowNumber < extraLines ? 1 : 0) //
-        ) +
+            (linesPerMeasure +
+                //  all early lines have an extra one
+                (sectionRowNumber < extraLines ? 1 : 0) //
+            ) +
         //  all later lines have to skip over the early lines
         (sectionRowNumber >= extraLines ? extraLines : 0);
 
@@ -402,7 +405,8 @@ class SongBase {
 
   /// split the given line to the given measure.
   /// extra lines go to the early measures until depleted.
-  String _splitWordsToMeasure(int measureCountInRow,
+  String _splitWordsToMeasure(
+      int measureCountInRow,
       int rowMeasureNumber, //  measure number - row start measure number
       String? line) {
     if (line == null || line.isEmpty) {
@@ -419,10 +423,10 @@ class SongBase {
     int wordsPerMeasure = wordCount ~/ measureCountInRow;
     int extraWords = wordCount.remainder(measureCountInRow);
     int wordIndex = rowMeasureNumber *
-        (wordsPerMeasure +
-            //  all early lines have an extra one
-            (rowMeasureNumber < extraWords ? 1 : 0) //
-        ) +
+            (wordsPerMeasure +
+                //  all early lines have an extra one
+                (rowMeasureNumber < extraWords ? 1 : 0) //
+            ) +
         //  all later lines have to skip over the early lines
         (rowMeasureNumber >= extraWords ? extraWords : 0);
     for (int i = 0; i < wordsPerMeasure; i++) {
@@ -471,7 +475,7 @@ class SongBase {
     _computeSongMoments();
     //  assure there is a next moment
     if (momentNumber < -1 || _songMoments.isEmpty || momentNumber >= _songMoments.length - 1 // room for one more index
-    ) {
+        ) {
       return '';
     }
     return _songMoments[momentNumber + 1].getMeasure().transpose(key, halfStepOffset);
@@ -1183,7 +1187,7 @@ class SongBase {
                   row++;
                 }
                 ChordSectionLocation loc =
-                ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
+                    ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
                 grid.set(row, offset, ChordSectionGridData(loc, chordSection, phrase, measure));
                 GridCoordinate coordinate = GridCoordinate(row, offset);
                 _gridCoordinateChordSectionLocationMap[coordinate] = loc;
@@ -1197,8 +1201,8 @@ class SongBase {
               }
 
               if ((lastMeasure != null && lastMeasure.endOfRow) ||
-                  col >= offset + measuresPerRow //  limit line length to the measures per line
-              ) {
+                      col >= offset + measuresPerRow //  limit line length to the measures per line
+                  ) {
                 //  fill the row with nulls if the row is shorter then the others in this phrase
                 while (col < maxCol) {
                   grid.set(row, col++, null);
@@ -1230,7 +1234,7 @@ class SongBase {
               {
                 //  grid the measure with it's location
                 ChordSectionLocation loc =
-                ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
+                    ChordSectionLocation(sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
                 GridCoordinate coordinate = GridCoordinate(row, col);
                 _gridCoordinateChordSectionLocationMap[coordinate] = loc;
                 _gridChordSectionLocationCoordinateMap[loc] = coordinate;
@@ -2026,7 +2030,7 @@ class SongBase {
 
       case MeasureNodeType.measure:
       case MeasureNodeType.comment:
-      //  add measure to current phrase
+    //  add measure to current phrase
         if (location != null) {
           if (location.hasMeasureIndex) {
             newLocation = location;
@@ -2577,7 +2581,7 @@ class SongBase {
         switch (c) {
           case '\n':
           case '\r':
-          //  insert verse if missing the section declaration
+        //  insert verse if missing the section declaration
             lyricSection ??= LyricSection(Section.getDefaultVersion(), lyricSections.length);
 
             //  add the lyrics
@@ -2852,7 +2856,8 @@ class SongBase {
    * @return a new song if the fields are valid
    * @throws ParseException exception thrown if the song's fields don't match properly.
    */
-  static Song checkSongBase(String? title,
+  static Song checkSongBase(
+      String? title,
       String? artist,
       String? copyright,
       Key? key,
@@ -3234,7 +3239,7 @@ class SongBase {
     assert(lyricSections.length == _lyricSectionIndexToMomentNumber.length);
     assert(lyricSection.index >= 0 && lyricSection.index < _lyricSectionIndexToMomentNumber.length);
     return _songMoments[_lyricSectionIndexToMomentNumber[
-    Util.intLimit(lyricSection.index, 0, _lyricSectionIndexToMomentNumber.length - 1)]];
+        Util.intLimit(lyricSection.index, 0, _lyricSectionIndexToMomentNumber.length - 1)]];
   }
 
   SongMoment? getFirstSongMomentInSection(int momentNumber) {
@@ -3483,7 +3488,7 @@ class SongBase {
         ChordSection? cs = chordSection;
         if (cs == null) {
           SplayTreeSet<SectionVersion> sortedSectionVersions =
-          SplayTreeSet<SectionVersion>.of(_getChordSectionMap().keys);
+              SplayTreeSet<SectionVersion>.of(_getChordSectionMap().keys);
           cs = _getChordSectionMap()[sortedSectionVersions.last];
         }
         if (cs != null && chordSectionLocation.hasPhraseIndex) {
@@ -3714,24 +3719,30 @@ class SongBase {
       case UserDisplayStyle.banner:
         {
           var grid = Grid<MeasureNode>();
-          var c = 0;
           ChordSection? lastChordSection;
+          MeasureRepeatMarker? lastMarker;
           for (var m in songMoments) {
             var chordSection = m.chordSection;
-            var gc = GridCoordinate(BannerRows.chordSectionsAndRepeats.index, c);
+            var gc = GridCoordinate(BannerColumn.chordSections.index, m.momentNumber);
             grid.setAt(gc, chordSection == lastChordSection ? null : chordSection);
             lastChordSection = chordSection;
-            _songMomentToGridCoordinate.add(gc);
 
-            gc = GridCoordinate(BannerRows.chords.index, c);
+            var marker = m.phrase is MeasureRepeat ? MeasureRepeatMarker(m.repeatMax, repetition: m.repeat) : null;
+            if (marker == lastMarker) {
+              marker = null;
+            } else {
+              lastMarker = marker;
+            }
+            logger.v('banner marker: $lastMarker  $marker');
+            gc = GridCoordinate(BannerColumn.repeats.index, m.momentNumber);
+            grid.setAt(gc, marker);
+
+            gc = GridCoordinate(BannerColumn.lyrics.index, m.momentNumber);
+            grid.setAt(gc, Lyric(m.lyrics ?? ''));
+
+            gc = GridCoordinate(BannerColumn.chords.index, m.momentNumber);
             grid.setAt(gc, m.measure);
-            _songMomentToGridCoordinate.add(gc);
-
-            gc = GridCoordinate(BannerRows.lyrics.index, c);
-            grid.setAt(gc, m.lyricSection);
-            _songMomentToGridCoordinate.add(gc);
-
-            c++;
+            _songMomentToGridCoordinate.add(gc); //  only row likely to always have an entry
           }
           return grid;
         }

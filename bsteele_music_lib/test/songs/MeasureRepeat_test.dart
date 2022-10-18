@@ -720,7 +720,7 @@ void main() {
       expect(grid.getRowCount(), 2);
       expect(grid.rowLength(0), 5);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('D', beatsPerBar));
-      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2, repetition: 1));
     }
     {
       s = 'A B C D E F G A x3';
@@ -729,7 +729,7 @@ void main() {
       expect(grid.getRowCount(), 3);
       expect(grid.rowLength(0), 9);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('A', beatsPerBar));
-      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3, repetition: 1));
     }
     {
       s = '[A B C D, E F G A#] x4';
@@ -745,7 +745,7 @@ void main() {
       r = 1;
       expect(grid.get(r, grid.rowLength(r) - 3), Measure.parseString('A#', beatsPerBar));
       expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4));
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4, repetition: 1));
     }
     {
       s = '[A B C D, E F G A#, Bb CE C#] x2';
@@ -767,7 +767,7 @@ void main() {
       expect(grid.get(r, grid.rowLength(r) - 4), Measure.parseString('C#', beatsPerBar));
       expect(grid.get(r, grid.rowLength(r) - 3), isNull);
       expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2));
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2, repetition: 1));
     }
     {
       s = '[A, E F, Bb CE C#, A# B C D] x2';
@@ -797,7 +797,7 @@ void main() {
 
       expect(grid.get(3, 3), Measure.parseString('D', beatsPerBar));
       expect(grid.get(3, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(3, 5), MeasureRepeatMarker(2));
+      expect(grid.get(3, 5), MeasureRepeatMarker(2, repetition: 1));
     }
     {
       s = '[A# B C D, Bb CE C#, E F, A,  ] x3';
@@ -828,7 +828,7 @@ void main() {
       expect(grid.get(3, 2), isNull);
       expect(grid.get(3, 3), isNull);
       expect(grid.get(3, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
-      expect(grid.get(3, 5), MeasureRepeatMarker(3));
+      expect(grid.get(3, 5), MeasureRepeatMarker(3, repetition: 1));
     }
   });
 

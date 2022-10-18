@@ -29,11 +29,11 @@ class MeasureRepeatExtension extends MeasureComment {
   @override
   MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
 
-  // @override
-  // @Deprecated('dont use this')
-  // String getHtmlBlockId() {
-  //   return 'RE';
-  // }
+  @override
+  @Deprecated('dont use this')
+  String getHtmlBlockId() {
+    return 'RE';
+  }
 
   @override
   String transpose(Key key, int halfSteps) {
