@@ -3,21 +3,7 @@ import 'dart:convert';
 
 import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
-
-enum CjRankingEnum {
-  all,
-  poor,
-  ok,
-  good,
-  best,
-}
-
-extension CjRankingEnumParser on String {
-  CjRankingEnum toCjRankingEnum() {
-    return CjRankingEnum.values.firstWhere((e) => e.toString() == 'CjRankingEnum.$this',
-        orElse: () => CjRankingEnum.all); //return all if not found
-  }
-}
+import 'package:bsteeleMusicLib/songs/songBase.dart';
 
 /// name and value pair
 class NameValue implements Comparable<NameValue> {
@@ -179,6 +165,16 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
   final SplayTreeSet<NameValue> _nameValues = SplayTreeSet();
 }
 
+String mapYearToDecade(int year) {
+  if (year < 0) {
+    year = 0;
+  }
+  if (year < 1940 || year >= 2030) {
+    return '${year ~/ 10}0\'s';
+  }
+  return '${(year ~/ 10) % 10}0\'s';
+}
+
 /// system metadata registry that is a set of id metadata
 class SongMetadata {
   static final SongMetadata _singleton = SongMetadata._internal();
@@ -310,6 +306,31 @@ class SongMetadata {
       }
     }
     return false;
+  }
+
+  static void generateDecades(Iterable<Song> songs) {
+    for (var song in songs) {
+      generateDecade(song);
+    }
+  }
+
+  /// Generate a decades metadata entry from the copyright year
+  static void generateDecade(Song song) {
+    const decadeName = 'Decade';
+
+    SongIdMetadata? idm = songIdMetadata(song);
+    //  remove any existing decade metadata
+    if (idm != null) {
+      for (var nv in idm.where((nameValue) => nameValue.name.compareTo(decadeName) == 0)) {
+        idm.remove(nv);
+      }
+    }
+
+    //  add the decade metadata
+    int year = song.getCopyrightYear();
+    if (year != SongBase.defaultYear) {
+      addSong(song, NameValue(decadeName, mapYearToDecade(year)));
+    }
   }
 
   static SplayTreeSet<SongIdMetadata> where(

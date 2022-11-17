@@ -8,6 +8,8 @@ import 'package:bsteeleMusicLib/songs/songMetadata.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
+var cjBest = const NameValue('cj', 'best');
+
 void main() {
   Logger.level = Level.info;
 
@@ -329,14 +331,14 @@ void main() {
     expect(SongMetadata.toJsonAt(nameValue: const NameValue('jam', 'somethingElse')), '[]');
   });
 
-  bool _rockMatch(SongIdMetadata idMetadata) {
+  bool rockMatch(SongIdMetadata idMetadata) {
     for (NameValue nameValue in idMetadata.nameValues) {
       if (nameValue.name == 'genre' && nameValue.value == 'rock') return true;
     }
     return false;
   }
 
-  bool _christmasMatch(SongIdMetadata idMetadata) {
+  bool christmasMatch(SongIdMetadata idMetadata) {
     if (christmasRegExp.hasMatch(idMetadata.id)) {
       return true;
     }
@@ -346,35 +348,22 @@ void main() {
     return false;
   }
 
-  bool _notChristmasMatch(SongIdMetadata idMetadata) {
-    return !_christmasMatch(idMetadata);
+  bool notChristmasMatch(SongIdMetadata idMetadata) {
+    return !christmasMatch(idMetadata);
   }
 
-  bool _cjRanking(SongIdMetadata idMetadata, CjRankingEnum ranking) {
-    for (NameValue nameValue in idMetadata.nameValues) {
-      if (nameValue.name == 'cj') {
-        CjRankingEnum r = nameValue.value.toCjRankingEnum();
-        if (r.index >= ranking.index) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  bool _cjRankingBest(SongIdMetadata idMetadata) {
-    return _cjRanking(idMetadata, CjRankingEnum.best);
+  bool cjRankingBest(SongIdMetadata idMetadata) {
+    return idMetadata.contains(cjBest);
   }
 
   test('test match', () {
     //  metadata
     SongMetadata.clear();
-    SplayTreeSet<SongIdMetadata> matches = SongMetadata.match(_rockMatch);
+    SplayTreeSet<SongIdMetadata> matches = SongMetadata.match(rockMatch);
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
     var rock = const NameValue('genre', 'rock');
-    var cjBest = const NameValue('cj', 'best');
     var cjOk = const NameValue('cj', 'ok');
 
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Dead Flowers', 'Stones, The', null).songId, metadata: [
@@ -389,27 +378,27 @@ void main() {
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
         metadata: [const NameValue('christmas', '')]));
 
-    matches = SongMetadata.match(_rockMatch);
+    matches = SongMetadata.match(rockMatch);
     expect(matches, isNotNull);
     expect(matches.length, 3);
     expect(matches.first.id, 'Song_39_by_Queen');
 
-    matches = SongMetadata.match(_christmasMatch);
+    matches = SongMetadata.match(christmasMatch);
     expect(matches, isNotNull);
     expect(matches.length, 1);
     expect(matches.first.id, 'Song_Holly_Jolly_Christmas_by_Burl_Ives');
 
-    matches = SongMetadata.match(_cjRankingBest);
+    matches = SongMetadata.match(cjRankingBest);
     expect(matches, isNotNull);
     expect(matches.length, 3);
     expect(matches.first.id, 'Song_Boxer_The_by_Simon_Garfunkel');
 
-    matches = SongMetadata.match(_rockMatch, from: SongMetadata.match(_christmasMatch));
+    matches = SongMetadata.match(rockMatch, from: SongMetadata.match(christmasMatch));
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    matches = SongMetadata.match(_rockMatch,
-        from: SongMetadata.match(_cjRankingBest, from: SongMetadata.match(_notChristmasMatch)));
+    matches = SongMetadata.match(rockMatch,
+        from: SongMetadata.match(cjRankingBest, from: SongMetadata.match(notChristmasMatch)));
     expect(matches, isNotNull);
     expect(matches.length, 2);
     expect(matches.first.id, 'Song_Dead_Flowers_by_Stones_The');
@@ -462,6 +451,53 @@ void main() {
 	{"test":"first"}
 	] }''');
     expect(SongMetadata.where().length, 1);
+  });
+
+  test('test mapYearToDecade', () {
+    expect(mapYearToDecade(2020), '20\'s');
+    expect(mapYearToDecade(2019), '10\'s');
+    expect(mapYearToDecade(2010), '10\'s');
+    expect(mapYearToDecade(1980), '80\'s');
+    expect(mapYearToDecade(1979), '70\'s');
+    expect(mapYearToDecade(1969), '60\'s');
+    expect(mapYearToDecade(1954), '50\'s');
+    expect(mapYearToDecade(1944), '40\'s');
+    expect(mapYearToDecade(1939), '1930\'s');
+    expect(mapYearToDecade(1879), '1870\'s');
+    expect(mapYearToDecade(1875), '1870\'s');
+    expect(mapYearToDecade(1870), '1870\'s');
+    expect(mapYearToDecade(2022), '20\'s');
+    expect(mapYearToDecade(2033), '2030\'s');
+  });
+
+  test('test generateDecade(Song song)', () {
+    Song a = Song.createSong('a song', 'bob', 'Copyright 2022 bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
+        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    SongMetadata.clear(); //  eliminate data from other tests
+    var idmA = SongMetadata.songIdMetadata(a);
+    expect(idmA, isNull);
+    SongMetadata.generateDecade(a);
+    idmA = SongMetadata.songIdMetadata(a);
+    expect(idmA, isNotNull);
+    idmA = idmA!;
+    expect(idmA.isNotEmpty, true);
+    expect(idmA.contains(const NameValue('Decade', '20\'s')), isTrue);
+
+    Song b = Song.createSong('b song', 'bob', 'no year bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
+        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    var idmB = SongMetadata.songIdMetadata(b);
+    expect(idmB, isNull);
+    SongMetadata.generateDecade(b);
+    idmB = SongMetadata.songIdMetadata(b);
+    expect(idmB, isNull);
+    b.copyright = '1969';
+    logger.i('b.copyright: "${b.copyright}"');
+    SongMetadata.generateDecades([a, b]);
+    idmB = SongMetadata.songIdMetadata(b);
+    expect(idmB, isNotNull);
+    idmB = idmB!;
+    expect(idmB.isNotEmpty, true);
+    expect(idmB.contains(const NameValue('Decade', '60\'s')), isTrue);
   });
 }
 

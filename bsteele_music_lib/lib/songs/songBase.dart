@@ -3413,17 +3413,16 @@ class SongBase {
     if (_copyrightYear == null) {
       //  find the year
       RegExpMatch? m = _yearRegexp.firstMatch(_copyright);
-      _copyrightYear = int.parse(m?.group(1) ?? _defaultYear.toString());
+      _copyrightYear = int.parse(m?.group(1) ?? defaultYear.toString());
     }
     return _copyrightYear!;
   }
 
   String getCopyrightYearAsString() {
-    return getCopyrightYear() == _defaultYear ? '' : _copyrightYear.toString();
+    return getCopyrightYear() == defaultYear ? '' : _copyrightYear.toString();
   }
 
-  static int get defaultYear => _defaultYear;
-  static const int _defaultYear = 3000;
+  static const int defaultYear = 0;
   static final RegExp _yearRegexp = RegExp(r'(?:\D|^)(\d{4})(?:\D|$)');
 
   void setChords(String chords) {
@@ -3974,6 +3973,7 @@ class SongBase {
   set copyright(String s) {
     if (_copyright != s) {
       _copyright = s;
+      _copyrightYear = null; //  lazy eval
     }
   }
 
