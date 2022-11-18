@@ -9,13 +9,13 @@ import '../util/util.dart';
 
 enum SongMetadataGeneratedValue {
   decade,
-  // timeSignature,
-  // user,
-  // beatsPerMinute;
+  beats,
+  user,
+  key,
   ;
 
-  static bool isGenerated(NameValue nv) {
-    var name = Util.firstToLower(nv.name);
+  static bool isGenerated(NameValue nameValue) {
+    var name = Util.firstToLower(nameValue.name);
     for (var genValue in SongMetadataGeneratedValue.values) {
       if (name == genValue.name) {
         return true;
@@ -77,6 +77,76 @@ class NameValue implements Comparable<NameValue> {
 
   String get value => _value;
   final String _value;
+}
+
+class NameValueFilter {
+  NameValueFilter(final Iterable<NameValue> nameValues) {
+    Map<String, SplayTreeSet<NameValue>> map = {};
+    for (var nv in nameValues) {
+      var mappedList = map[nv.name];
+      mappedList ??= SplayTreeSet();
+      mappedList.add(nv); //  fixme: deal with nameValue changes?
+      map[nv.name] = mappedList;
+    }
+    filterMap = map;
+  }
+
+  bool isOr(final NameValue nameValue) {
+    var values = filterMap[nameValue.name];
+    return values != null && values.contains(nameValue) && values.length > 1;
+  }
+
+  SplayTreeSet<NameValue> nameValues() {
+    SplayTreeSet<NameValue> ret = SplayTreeSet();
+    for (var key in SplayTreeSet<String>()..addAll(filterMap.keys)) {
+      ret.addAll(filterMap[key] ?? []);
+    }
+    return ret;
+  }
+
+  bool testAll(final SplayTreeSet<NameValue>? nameValues) {
+    if (nameValues == null) {
+      return false;
+    }
+
+    Map<String, SplayTreeSet<NameValue>> map = {};
+    for (var nv in nameValues) {
+      var mappedSet = map[nv.name];
+      mappedSet ??= SplayTreeSet<NameValue>();
+      mappedSet.add(nv); //  fixme: deal with nameValue changes?
+      map[nv.name] = mappedSet;
+    }
+
+    for (var key in filterMap.keys) {
+      SplayTreeSet<NameValue>? mappedSet = map[key];
+      //  set intersection is the equivalent of the or function for name values with the same name
+      if (mappedSet == null || mappedSet.intersection(filterMap[key]!.toSet()).isEmpty) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool test(final NameValue nameValue) {
+    var values = filterMap[nameValue.name];
+    if (values == null || values.isEmpty) {
+      return false;
+    }
+    //  an AND term
+    if (values.length == 1) {
+      return nameValue.value == values.first.value;
+    }
+    //  an OR term
+    for (var key in filterMap.keys) {
+      if (filterMap[key]?.contains(nameValue) ?? false) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  late final Map<String, SplayTreeSet<NameValue>> filterMap;
 }
 
 /// name value pairs attached to an id
@@ -183,7 +253,7 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
   String get id => _id;
   final String _id;
 
-  List<NameValue> get nameValues => _nameValues.toList();
+  SplayTreeSet<NameValue> get nameValues => _nameValues;
   final SplayTreeSet<NameValue> _nameValues = SplayTreeSet();
 }
 
@@ -333,21 +403,25 @@ class SongMetadata {
     return false;
   }
 
-  static void generateDecades(Iterable<Song> songs) {
+  static void generateMetadata(Iterable<Song> songs) {
     for (var song in songs) {
-      generateDecade(song);
+      generateSongMetadata(song);
     }
   }
 
   /// Generate a decades metadata entry from the copyright year
-  static void generateDecade(Song song) {
+  static void generateSongMetadata(Song song) {
     for (var genValue in SongMetadataGeneratedValue.values) {
       final name = Util.firstToUpper(genValue.name);
 
       SongIdMetadata? idm = songIdMetadata(song);
       //  remove any existing decade metadata
       if (idm != null) {
+        SplayTreeSet<NameValue> removals = SplayTreeSet(); //  avoid concurrent removals
         for (var nv in idm.where((nameValue) => nameValue.name.compareTo(name) == 0)) {
+          removals.add(nv);
+        }
+        for (var nv in removals) {
           idm.remove(nv);
         }
       }
@@ -359,6 +433,15 @@ class SongMetadata {
           if (year != SongBase.defaultYear) {
             addSong(song, NameValue(name, mapYearToDecade(year)));
           }
+          break;
+        case SongMetadataGeneratedValue.beats:
+          addSong(song, NameValue(name, song.timeSignature.beatsPerBar.toString()));
+          break;
+        case SongMetadataGeneratedValue.user:
+          addSong(song, NameValue(name, song.user.toString()));
+          break;
+        case SongMetadataGeneratedValue.key:
+          addSong(song, NameValue(name, song.key.toString()));
           break;
       }
     }

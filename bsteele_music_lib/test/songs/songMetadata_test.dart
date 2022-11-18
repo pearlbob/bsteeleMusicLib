@@ -476,7 +476,7 @@ void main() {
     SongMetadata.clear(); //  eliminate data from other tests
     var idmA = SongMetadata.songIdMetadata(a);
     expect(idmA, isNull);
-    SongMetadata.generateDecade(a);
+    SongMetadata.generateSongMetadata(a);
     idmA = SongMetadata.songIdMetadata(a);
     expect(idmA, isNotNull);
     idmA = idmA!;
@@ -485,19 +485,82 @@ void main() {
 
     Song b = Song.createSong('b song', 'bob', 'no year bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    SongMetadata.clear(); //  eliminate data from other tests
     var idmB = SongMetadata.songIdMetadata(b);
     expect(idmB, isNull);
-    SongMetadata.generateDecade(b);
+    SongMetadata.generateSongMetadata(b);
     idmB = SongMetadata.songIdMetadata(b);
-    expect(idmB, isNull);
+    expect(idmB, isNotNull);
+    logger.i('idmB: $idmB');
     b.copyright = '1969';
     logger.i('b.copyright: "${b.copyright}"');
-    SongMetadata.generateDecades([a, b]);
+    SongMetadata.generateMetadata([a, b]);
     idmB = SongMetadata.songIdMetadata(b);
     expect(idmB, isNotNull);
     idmB = idmB!;
     expect(idmB.isNotEmpty, true);
     expect(idmB.contains(const NameValue('Decade', '60\'s')), isTrue);
+  });
+
+  test('test NameValueFilter', () {
+    const userBob = NameValue('user', 'bob');
+    const userShari = NameValue('user', 'Shari');
+    const userBodhi = NameValue('user', 'Bodhi');
+
+    var filter = NameValueFilter([]);
+    expect(filter.test(userBob), false);
+    expect(filter.test(userShari), false);
+    expect(filter.test(userBodhi), false);
+    expect(filter.isOr(userBob), false);
+    expect(filter.isOr(userShari), false);
+    expect(filter.isOr(userBodhi), false);
+    expect(filter.nameValues().toList().toString(), '[]');
+
+    filter = NameValueFilter([userBob]);
+    expect(filter.test(userBob), true);
+    expect(filter.test(userShari), false);
+    expect(filter.test(userBodhi), false);
+    expect(filter.isOr(userBob), false);
+    expect(filter.isOr(userShari), false);
+    expect(filter.isOr(userBodhi), false);
+    logger.i(filter.nameValues().toList().toString());
+    expect(filter.nameValues().toList().toString(), '[{"user":"bob"}]');
+
+    filter = NameValueFilter([userBob, userShari]);
+    expect(filter.test(userBob), true);
+    expect(filter.test(userShari), true);
+    expect(filter.test(userBodhi), false);
+    expect(filter.isOr(userBob), true);
+    expect(filter.isOr(userShari), true);
+    expect(filter.isOr(userBodhi), false);
+    logger.i(filter.nameValues().toList().toString());
+    expect(filter.nameValues().toList().toString(), '[{"user":"Shari"}, {"user":"bob"}]');
+  });
+
+  test('test NameValueFilter testAll', () {
+    const userBob = NameValue('user', 'bob');
+    const userShari = NameValue('user', 'Shari');
+    const userBodhi = NameValue('user', 'Bodhi');
+
+    var filter = NameValueFilter([userBob, userShari]);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), true);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), true);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
+
+    filter = NameValueFilter([userBob, userShari, const NameValue('foo', 'bar')]);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), false);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), false);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
+
+    filter = NameValueFilter([const NameValue('foo', 'bar')]);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), false);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), false);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
+
+    filter = NameValueFilter([userBob, userShari, const NameValue('foo', 'bar')]);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob, const NameValue('foo', 'bar')])), true);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari, const NameValue('foo', 'bar')])), true);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi, const NameValue('foo', 'bar')])), false);
   });
 }
 

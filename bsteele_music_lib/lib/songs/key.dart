@@ -8,6 +8,7 @@ import 'package:bsteeleMusicLib/songs/scaleNote.dart';
 
 import 'musicConstants.dart';
 
+// ignore: constant_identifier_names
 enum KeyEnum { Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, Fs }
 
 ///

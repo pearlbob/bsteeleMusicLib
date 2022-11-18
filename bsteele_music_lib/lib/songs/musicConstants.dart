@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'chordDescriptor.dart';
 
+// ignore: constant_identifier_names
 enum MajorDiatonic { I, ii, iii, IV, V, VI, vii }
 
+// ignore: constant_identifier_names
 enum MinorDiatonic { i, ii, III, iv, v, VI, VII }
 
 class MusicConstants {

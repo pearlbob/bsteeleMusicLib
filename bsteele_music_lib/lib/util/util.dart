@@ -122,6 +122,7 @@ class Util {
     return _dateFormat.format(dateTime);
   }
 
+  // ignore: non_constant_identifier_names
   static DateTime yyyyMMdd_HHmmssStringToDate(String s, {bool? isUtc = false}) {
     var m = _dateRegExp.firstMatch(s);
     if (isUtc ?? false) {
