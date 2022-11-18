@@ -61,7 +61,7 @@ void main() {
   });
 
   test('grid ', () {
-    SongBase _a = SongBase.createSongBase(
+    SongBase a = SongBase.createSongBase(
         'A',
         'bob',
         'bsteele.com',
@@ -72,7 +72,7 @@ void main() {
         'i: A B C D V: D E F F# [ D C B A ]x2 (comment) c: D C G G A B o: G',
         'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
 
-    Grid<SongMoment> songMomentGrid = _a.songMomentGrid;
+    Grid<SongMoment> songMomentGrid = a.songMomentGrid;
 
     logger.v(songMomentGrid.toString());
     expect(songMomentGrid.getRowCount(), 8);

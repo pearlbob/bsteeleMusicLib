@@ -4091,13 +4091,7 @@ class SongBase {
   String? _chordsAsMarkup;
   int? _copyrightYear;
 
-  String? get message => _message;
-
-  set message(String? m) {
-    _message = m;
-  }
-
-  String? _message;
+  String? message;
 
   List<SongMoment> get songMoments => getSongMoments();
   List<SongMoment> _songMoments = [];

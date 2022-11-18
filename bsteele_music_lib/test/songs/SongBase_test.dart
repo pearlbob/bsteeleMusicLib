@@ -877,7 +877,7 @@ c2:
 
 
 ''');
-    ;
+
     logger.v('<${a.rawLyrics}>');
 
     for (var ls in a.lyricSections) {
@@ -3037,7 +3037,7 @@ v:
     }
   });
 
-  final RegExp _lastModifiedDateRegexp = RegExp(r'"lastModifiedDate": \d+,\n');
+  final RegExp lastModifiedDateRegexp = RegExp(r'"lastModifiedDate": \d+,\n');
   test('test songBase to/from JSON', () {
     int beatsPerBar = 4;
     {
@@ -3054,7 +3054,7 @@ v:
           'i: (instrumental)\nv: line 1\no:\n');
 
       expect(
-          a.toJson().replaceAll(_lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
+          a.toJson().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
           '{\n'
           '"title": "ive go the blanks",\n'
           '"artist": "bob",\n'
@@ -3093,7 +3093,7 @@ v:
       a.coverArtist = 'Bob Marley';
       expect(a.toString(), 'ive go the blanks by bob, cover by Bob Marley');
       expect(
-          a.toJson().replaceAll(_lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
+          a.toJson().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
           '{\n'
           '"title": "ive go the blanks",\n'
           '"artist": "bob",\n'

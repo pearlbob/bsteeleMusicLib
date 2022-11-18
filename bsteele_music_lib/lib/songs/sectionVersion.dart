@@ -56,13 +56,13 @@ class SectionVersion implements Comparable<SectionVersion> {
   @override
   String toString() {
     //  note: designed to go to the user display
-    return _name + ':';
+    return '$_name:';
   }
 
   ///Gets a more formal name for the section version that can be presented to the user.
   String getFormalName() {
     //  note: designed to go to the user display
-    return _section.formalName + (_version > 0 ? _version.toString() : '') + ':';
+    return '${_section.formalName}${_version > 0 ? _version.toString() : ''}:';
   }
 
   @override

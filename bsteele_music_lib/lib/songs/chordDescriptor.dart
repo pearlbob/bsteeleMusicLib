@@ -494,7 +494,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     for (var chordDescriptor in _everyChordDescriptor) {
       if (!values.contains(chordDescriptor)) {
         ret++;
-        print('missing: ${chordDescriptor.name}');
+        logger.w('missing: ${chordDescriptor.name}');
       }
     }
     return ret;

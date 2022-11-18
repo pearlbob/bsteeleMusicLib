@@ -2,6 +2,7 @@
 //  -v -o songs -x allSongs.songlyrics -a songs -f -w allSongs2.songlyrics -o songs2 -x allSongs2.songlyrics
 //   -v -url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics -ninjam
 //  -v -url http://www.bsteele.com/bsteeleMusicApp/allSongs.songlyrics
+
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
@@ -50,7 +51,7 @@ void main(List<String> args) {
 class BsteeleMusicUtil {
   /// help message to the user
   void _help() {
-    print('''
+    logger.i('''
 bsteeleMusicUtil:
 //  a utility for the bsteele Music App
 arguments:
@@ -431,7 +432,7 @@ coerced to reflect the songlist's last modification for that song.
         case '-exp':
           for (Song song in allSongs) {
             if (song.lastModifiedTime == 0) {
-              print(song.toString());
+              logger.i(song.toString());
             }
           }
           // for (Song song in allSongs) {
@@ -442,9 +443,9 @@ coerced to reflect the songlist's last modification for that song.
           //     if (line.contains('|')) {
           //       if ( first == true) {
           //         first = false;
-          //         print('${song.title} by ${song.title}, songId: ${song.songId}');
+          //         logger.i('${song.title} by ${song.title}, songId: ${song.songId}');
           //       }
-          //       print('   $i: $line');
+          //       logger.i('   $i: $line');
           //     }
           //   }
           // }
@@ -461,7 +462,7 @@ coerced to reflect the songlist's last modification for that song.
           argCount++;
           _file = File(args[argCount]);
           if (_file != null) {
-            if (_verbose) print('input file path: ${_file.toString()}');
+            if (_verbose) logger.i('input file path: ${_file.toString()}');
             if (!(await _file!.exists())) {
               logger.d(
                   'input file path: ${_file.toString()} is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
@@ -551,7 +552,7 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-html':
           {
-            print('''<!DOCTYPE html>
+            logger.i('''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -574,11 +575,11 @@ coerced to reflect the songlist's last modification for that song.
 <ul>
 ''');
             for (Song song in allSongs) {
-              print('<li><span class="title">${song.title}</span> by <span class="artist">${song.artist}</span>'
+              logger.i('<li><span class="title">${song.title}</span> by <span class="artist">${song.artist}</span>'
                   '${song.coverArtist.isNotEmpty ? ' cover by <span class="coverArtist">${song.coverArtist}</span>' : ''}'
                   '</li>');
             }
-            print('''</ul>
+            logger.i('''</ul>
 </body>
 </html>
 ''');
@@ -587,7 +588,7 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-list':
           for (Song song in allSongs) {
-            print('${song.title} by ${song.title}, songId: ${song.songId}');
+            logger.i('${song.title} by ${song.title}, songId: ${song.songId}');
           }
           break;
 
@@ -616,7 +617,7 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (Song song in sortedSongs) {
-                print('"${song.title}" by "${song.artist}"'
+                logger.i('"${song.title}" by "${song.artist}"'
                     '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
                     ': maxLength: $i');
               }
@@ -649,7 +650,7 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (Song song in sortedSongs) {
-                print('"${song.title}" by "${song.artist}"'
+                logger.i('"${song.title}" by "${song.artist}"'
                     '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
                     ': maxLength: $i');
               }
@@ -717,7 +718,7 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (Song song in sortedSongs) {
-                print('"${song.title}" by "${song.artist}"'
+                logger.i('"${song.title}" by "${song.artist}"'
                     '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
                     ':  /bpi $i  /bpm ${song.beatsPerMinute}  ${ninjamSections[song]?.toMarkup()}');
               }
@@ -793,7 +794,7 @@ coerced to reflect the songlist's last modification for that song.
                 if (date.compareTo(lastSungDateTime) >= 0) {
                   logger.i('');
                   if (_verbose) {
-                    print('process: file: $name');
+                    logger.i('process: file: $name');
                   }
 
                   //  clear all the requests so only the most current set is used
@@ -804,7 +805,7 @@ coerced to reflect the songlist's last modification for that song.
                   logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
                 } else {
                   if (_verbose) {
-                    print('ignore:  file: $name');
+                    logger.i('ignore:  file: $name');
                   }
                   logger.d('ignore:  file: $name');
                 }
@@ -867,7 +868,7 @@ coerced to reflect the songlist's last modification for that song.
             }
             await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
             if (_verbose) {
-              print('allSongPerformances location: ${outputFile.path}');
+              logger.i('allSongPerformances location: ${outputFile.path}');
             }
           }
           break;
@@ -1011,11 +1012,11 @@ coerced to reflect the songlist's last modification for that song.
                   continue;
                 }
                 if (r >= 0.8) {
-                  print('"${song.title.toString()}" by ${song.artist.toString()}');
+                  logger.i('"${song.title.toString()}" by ${song.artist.toString()}');
                   Song? similar = map[rating.target];
                   if (similar != null) {
-                    print('"${similar.title.toString()}" by ${similar.artist.toString()}');
-                    print(' ');
+                    logger.i('"${similar.title.toString()}" by ${similar.artist.toString()}');
+                    logger.i(' ');
                   }
                   listed.add(rating.target ?? 'null');
                 }
@@ -1026,8 +1027,8 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-stat':
-          print('songs: ${allSongs.length}');
-          print('updates: $_updateCount');
+          logger.i('songs: ${allSongs.length}');
+          logger.i('updates: $_updateCount');
           {
             var covers = 0;
             for (var song in allSongs) {
@@ -1035,7 +1036,7 @@ coerced to reflect the songlist's last modification for that song.
                 covers++;
               }
             }
-            print('covers: $covers');
+            logger.i('covers: $covers');
           }
           {
             var chordDescriptorUsageMap = <ChordDescriptor, int>{};
@@ -1051,12 +1052,12 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
             }
-            print('chordDescriptorUsageMap: ${chordDescriptorUsageMap.keys.length}');
+            logger.i('chordDescriptorUsageMap: ${chordDescriptorUsageMap.keys.length}');
             var sortedValues = SplayTreeSet<int>();
             sortedValues.addAll(chordDescriptorUsageMap.values);
             for (var usage in sortedValues.toList().reversed) {
               for (var key in chordDescriptorUsageMap.keys.where((e) => chordDescriptorUsageMap[e] == usage)) {
-                print('   _${key.name}, //  ${chordDescriptorUsageMap[key]}');
+                logger.i('   _${key.name}, //  ${chordDescriptorUsageMap[key]}');
               }
             }
           }
@@ -1257,7 +1258,7 @@ coerced to reflect the songlist's last modification for that song.
               SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [const NameValue('christmas', '')]));
             }
           }
-          print(SongMetadata.toJson());
+          logger.i(SongMetadata.toJson());
           break;
 
         case '-meta':
@@ -1407,7 +1408,7 @@ coerced to reflect the songlist's last modification for that song.
 
         default:
           logger.e('command not understood: "$arg"');
-          print('error: command not understood: "$arg"');
+          logger.i('error: command not understood: "$arg"');
           exit(-1);
       }
     }
@@ -1461,7 +1462,7 @@ coerced to reflect the songlist's last modification for that song.
       if (copyright.isEmpty) {
         continue;
       }
-      //print('${song.copyright} ${song.songId.toString()}');
+      //logger.i('${song.copyright} ${song.songId.toString()}');
       SplayTreeSet<Song>? set = copyrights[copyright];
       if (set == null) {
         set = SplayTreeSet();
@@ -1475,9 +1476,9 @@ coerced to reflect the songlist's last modification for that song.
     SplayTreeSet<String> orderedKeys = SplayTreeSet();
     orderedKeys.addAll(copyrights.keys);
     for (String copyright in orderedKeys) {
-      print('"$copyright"');
+      logger.i('"$copyright"');
       for (Song song in copyrights[copyright] ?? {}) {
-        print('\t${song.songId.toString()}');
+        logger.i('\t${song.songId.toString()}');
       }
     }
   }
@@ -1532,7 +1533,7 @@ coerced to reflect the songlist's last modification for that song.
 //         '\n');
 //   }
 //
-//   //print(sb.toString());
+//   //logger.i(sb.toString());
 //   File writeTo = File(Util.homePath() + '/allSongs.csv');
 //   writeTo.writeAsStringSync(sb.toString(), flush: true);
 // }

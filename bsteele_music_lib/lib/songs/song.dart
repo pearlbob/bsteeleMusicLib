@@ -273,14 +273,7 @@ class Song extends SongBase implements Comparable<Song> {
   }
 
   String toJsonAsFile() {
-    return '{ "file": ' +
-        jsonEncode(getFileName()) +
-        ', "lastModifiedDate": ' +
-        lastModifiedTime.toString() +
-        ', "song":' +
-        ' \n' +
-        toJson() +
-        '}';
+    return '{ "file": ${jsonEncode(getFileName())}, "lastModifiedDate": $lastModifiedTime, "song": \n${toJson()}}';
   }
 
   ///Generate the JSON expression of this song.

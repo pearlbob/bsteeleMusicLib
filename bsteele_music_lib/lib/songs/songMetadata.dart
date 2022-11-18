@@ -5,6 +5,26 @@ import 'package:bsteeleMusicLib/appLogger.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/songBase.dart';
 
+import '../util/util.dart';
+
+enum SongMetadataGeneratedValue {
+  decade,
+  // timeSignature,
+  // user,
+  // beatsPerMinute;
+  ;
+
+  static bool isGenerated(NameValue nv) {
+    var name = Util.firstToLower(nv.name);
+    for (var genValue in SongMetadataGeneratedValue.values) {
+      if (name == genValue.name) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 /// name and value pair
 class NameValue implements Comparable<NameValue> {
   const NameValue(this._name, this._value);
@@ -115,12 +135,14 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     StringBuffer sb = StringBuffer();
     bool first = true;
     for (NameValue nv in _nameValues) {
-      if (first) {
-        first = false;
-      } else {
-        sb.write(',');
+      if (!SongMetadataGeneratedValue.isGenerated(nv)) {
+        if (first) {
+          first = false;
+        } else {
+          sb.write(',');
+        }
+        sb.write(nv.toJson());
       }
-      sb.write(nv.toJson());
     }
     return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
@@ -169,7 +191,10 @@ String mapYearToDecade(int year) {
   if (year < 0) {
     year = 0;
   }
-  if (year < 1940 || year >= 2030) {
+  if (year < 1940) {
+    return 'prior to 1940';
+  }
+  if (year >= 2030) {
     return '${year ~/ 10}0\'s';
   }
   return '${(year ~/ 10) % 10}0\'s';
@@ -316,20 +341,26 @@ class SongMetadata {
 
   /// Generate a decades metadata entry from the copyright year
   static void generateDecade(Song song) {
-    const decadeName = 'Decade';
+    for (var genValue in SongMetadataGeneratedValue.values) {
+      final name = Util.firstToUpper(genValue.name);
 
-    SongIdMetadata? idm = songIdMetadata(song);
-    //  remove any existing decade metadata
-    if (idm != null) {
-      for (var nv in idm.where((nameValue) => nameValue.name.compareTo(decadeName) == 0)) {
-        idm.remove(nv);
+      SongIdMetadata? idm = songIdMetadata(song);
+      //  remove any existing decade metadata
+      if (idm != null) {
+        for (var nv in idm.where((nameValue) => nameValue.name.compareTo(name) == 0)) {
+          idm.remove(nv);
+        }
       }
-    }
 
-    //  add the decade metadata
-    int year = song.getCopyrightYear();
-    if (year != SongBase.defaultYear) {
-      addSong(song, NameValue(decadeName, mapYearToDecade(year)));
+      switch (genValue) {
+        case SongMetadataGeneratedValue.decade:
+          //  add the decade metadata
+          int year = song.getCopyrightYear();
+          if (year != SongBase.defaultYear) {
+            addSong(song, NameValue(name, mapYearToDecade(year)));
+          }
+          break;
+      }
     }
   }
 
@@ -498,21 +529,21 @@ class SongMetadata {
     return '[${sb.toString()}]';
   }
 
-  static String toJsonAt({Iterable<SongIdMetadata>? idValues, required NameValue nameValue}) {
-    StringBuffer sb = StringBuffer();
-    bool first = true;
-    for (SongIdMetadata songIdMetadata in idValues ?? _singleton._idMetadata) {
-      if (songIdMetadata.contains(nameValue)) {
-        if (first) {
-          first = false;
-        } else {
-          sb.write(',\n');
-        }
-        sb.write(songIdMetadata.toJsonAt(nameValue));
-      }
-    }
-    return '[${sb.toString()}]';
-  }
+  // static String toJsonAt({Iterable<SongIdMetadata>? idValues, required NameValue nameValue}) {
+  //   StringBuffer sb = StringBuffer();
+  //   bool first = true;
+  //   for (SongIdMetadata songIdMetadata in idValues ?? _singleton._idMetadata) {
+  //     if (songIdMetadata.contains(nameValue)) {
+  //       if (first) {
+  //         first = false;
+  //       } else {
+  //         sb.write(',\n');
+  //       }
+  //       sb.write(songIdMetadata.toJsonAt(nameValue));
+  //     }
+  //   }
+  //   return '[${sb.toString()}]';
+  // }
 
   static void fromJson(String jsonString) {
     var decoded = json.decode(jsonString);

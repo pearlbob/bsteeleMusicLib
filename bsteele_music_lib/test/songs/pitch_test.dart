@@ -29,7 +29,7 @@ void main() {
       sb.write(p.number);
       sb.write(' ');
       sb.write(p.frequency.toStringAsFixed(6));
-      print(sb.toString());
+      logger.i(sb.toString());
     }
 
     expect(Pitch.get(PitchEnum.A1).frequency, closeTo(55.0, 1e-20));

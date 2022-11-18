@@ -86,7 +86,7 @@ class CjLog {
     var processedLogs = Directory('${dotEnv['HOME']}/communityJams/logs/$_host');
     if (_catalinaBase != null) {
       if (_catalinaBase!.isEmpty) {
-        print('Empty CATALINA_BASE environment variable: "$_catalinaBase"');
+        logger.i('Empty CATALINA_BASE environment variable: "$_catalinaBase"');
         exit(-1);
       }
       logger.log(_cjLogFiles, 'CATALINA_BASE: $_catalinaBase');
@@ -123,13 +123,13 @@ class CjLog {
       }
 
       if (_verbose > 1) {
-        print(file.toString());
+        logger.i(file.toString());
       }
 
       //  don't go too far back in time... the file format is wrong!
       if (date.microsecondsSinceEpoch < _firstValidDate.microsecondsSinceEpoch) {
         if (_verbose > 1) {
-          print('\ttoo early: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
+          logger.i('\ttoo early: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
         }
         continue;
       }
@@ -138,7 +138,7 @@ class CjLog {
         var age = Duration(microseconds: now.microsecondsSinceEpoch - date.microsecondsSinceEpoch);
         if (age > _ageLimit) {
           if (_verbose > 0) {
-            print('\ttoo old: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
+            logger.i('\ttoo old: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
           }
           continue;
         }
@@ -153,7 +153,7 @@ class CjLog {
           jsonOutputFile.lastModifiedSync().microsecondsSinceEpoch > file.lastModifiedSync().microsecondsSinceEpoch) {
         fileList.add(jsonOutputFile);
         if (_verbose > 0) {
-          print('\texisting: ${jsonOutputFile.path}');
+          logger.i('\texisting: ${jsonOutputFile.path}');
         }
         continue;
       }
@@ -212,7 +212,7 @@ class CjLog {
         file.writeAsStringSync(allSongPerformances.toJsonString(prettyPrint: true), flush: true);
       }
       if (_verbose > 0) {
-        print('\twrote: ${file.path}');
+        logger.i('\twrote: ${file.path}');
       }
     }
   }

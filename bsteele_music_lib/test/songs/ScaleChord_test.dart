@@ -53,12 +53,12 @@ void main() {
 
       expect(sn, sc!.scaleNote);
 
-      s = sn.toString() + 'º';
+      s = '$snº';
       sc = ScaleChord.parseString(s);
       expect(sn, sc!.scaleNote);
       expect(ChordDescriptor.diminished, sc.chordDescriptor);
 
-      s = sn.toString() + 'º7';
+      s = '$snº7';
       sc = ScaleChord.parseString(s);
       expect(sn, sc!.scaleNote);
       expect(ChordDescriptor.diminished7, sc.chordDescriptor);
@@ -83,15 +83,8 @@ void main() {
         scaleChords.add(builtScaleChord);
         Key key = Key.guessKey(scaleChords);
 
-        sb.write('<tr><td>' +
-            builtScaleChord.toString() +
-            '</td><td>' +
-            chordComponentsToString(builtScaleChord.getChordComponents()) +
-            '</td><td>' +
-            key.getKeyScaleNote().toString() +
-            '</td><td>' +
-            chordComponentScaleNotesToString(key, builtScaleChord) +
-            '</td></tr>\n');
+        sb.write(
+            '<tr><td>$builtScaleChord</td><td>${chordComponentsToString(builtScaleChord.getChordComponents())}</td><td>${key.getKeyScaleNote()}</td><td>${chordComponentScaleNotesToString(key, builtScaleChord)}</td></tr>\n');
       }
     }
     sb.write('  </table>\n' '  </body>\n' '</html>');

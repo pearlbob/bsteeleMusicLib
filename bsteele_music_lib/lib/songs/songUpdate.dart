@@ -19,7 +19,7 @@ enum SongUpdateState {
 
 const unknownSinger = 'unknown';
 
-String _StateEnumToString(SongUpdateState s) {
+String songUpdateStateToString(SongUpdateState s) {
   return s.toString().split('.').last;
 }
 
@@ -49,7 +49,7 @@ class SongUpdate {
       int? beatsPerMeasure,
       int? currentBeatsPerMinute,
       Key? currentKey})
-      : _state = state ?? SongUpdateState.idle,
+      : state = state ?? SongUpdateState.idle,
         user = user ?? 'unknown',
         singer = singer ?? unknownSinger,
         momentNumber = momentNumber ?? 0,
@@ -75,7 +75,7 @@ class SongUpdate {
       Key? currentKey}) {
     SongUpdate ret = SongUpdate(
       song: song ?? this.song,
-      state: state ?? _state,
+      state: state ?? this.state,
       user: user ?? this.user,
       singer: singer ?? this.singer,
       momentNumber: momentNumber ?? this.momentNumber,
@@ -99,8 +99,6 @@ class SongUpdate {
     currentBeatsPerMinute = song.beatsPerMinute;
     currentKey = song.getKey();
   }
-
-  SongUpdateState get state => _state;
 
   SongMoment? getSongMoment() {
     return songMoment;
@@ -183,8 +181,6 @@ class SongUpdate {
   int getCurrentBeatsPerMinute() {
     return currentBeatsPerMinute > 0 ? currentBeatsPerMinute : song.beatsPerMinute;
   }
-
-  set state(SongUpdateState state) => _state = state;
 
   /// @param song the song to set
   void setSong(Song song) {
@@ -337,7 +333,7 @@ class SongUpdate {
     var sb = StringBuffer();
     sb.write('{\n');
     sb.write('"state": "');
-    sb.write(_StateEnumToString(_state));
+    sb.write(songUpdateStateToString(state));
     sb.write('",\n');
     sb.write('"currentKey": "');
     sb.write(getCurrentKey().name);
@@ -380,13 +376,13 @@ class SongUpdate {
 
   @override
   int get hashCode {
-    int hash = Object.hash(_state, currentKey, song, momentNumber);
+    int hash = Object.hash(state, currentKey, song, momentNumber);
     hash = 83 * hash + Object.hash(beat, beatsPerMeasure, currentBeatsPerMinute, user);
     hash = 17 * hash + singer.hashCode;
     return hash;
   }
 
-  SongUpdateState _state;
+  SongUpdateState state;
   late Song song;
   String user;
   String singer;

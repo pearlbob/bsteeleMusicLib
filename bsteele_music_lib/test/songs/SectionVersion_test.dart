@@ -13,23 +13,19 @@ void main() {
   test('parseString', () {
     for (Section section in Section.values) {
       for (int i = 0; i < 10; i++) {
-        SectionVersion sectionVersionExpected =
-            SectionVersion.bySection(section);
+        SectionVersion sectionVersionExpected = SectionVersion.bySection(section);
         SectionVersion sectionVersion;
 
-        sectionVersion = SectionVersion.parseString(section.toString() + ':');
+        sectionVersion = SectionVersion.parseString('$section:');
 
         expect(sectionVersionExpected, sectionVersion);
-        sectionVersion =
-            SectionVersion.parseString(section.abbreviation.toString() + ':  ');
+        sectionVersion = SectionVersion.parseString('${section.abbreviation}:  ');
         expect(sectionVersionExpected, sectionVersion);
-        sectionVersion =
-            SectionVersion.parseString(section.formalName + ': A B C');
+        sectionVersion = SectionVersion.parseString('${section.formalName}: A B C');
         logger.d(sectionVersion.toString());
         expect(sectionVersionExpected, sectionVersion);
         try {
-          sectionVersion =
-              SectionVersion.parseString(section.formalName + 'asdf');
+          sectionVersion = SectionVersion.parseString('${section.formalName}asdf');
           fail('bad section name should not pass the test');
         } catch (e) {
           //  expected
@@ -43,8 +39,7 @@ void main() {
       logger.i(section.toString());
       for (int i = 0; i < 10; i++) {
         String chords = ' D C G G ';
-        MarkedString markedString = MarkedString(
-            section.toString() + (i > 0 ? i.toString() : '') + ':' + chords);
+        MarkedString markedString = MarkedString('$section${i > 0 ? i.toString() : ''}:$chords');
         logger.d(markedString.toString());
         SectionVersion sectionVersion;
 
@@ -56,8 +51,7 @@ void main() {
         expect(i, sectionVersion.version);
 
         chords = chords.trim();
-        markedString = MarkedString(
-            section.toString() + (i > 0 ? i.toString() : '') + ':' + chords);
+        markedString = MarkedString('$section${i > 0 ? i.toString() : ''}:$chords');
         sectionVersion = SectionVersion.parse(markedString);
         expect(chords, markedString.toString());
         expect(sectionVersion, isNotNull);

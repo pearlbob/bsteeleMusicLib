@@ -82,7 +82,9 @@ class Phrase extends MeasureNode {
           rowMark = markedString.mark();
         }
         continue;
-      } catch (e) {}
+      } catch (e) {
+        //  fall through
+      }
 
       if (!hasBracket) {
         //  look for repeat marker
@@ -106,6 +108,7 @@ class Phrase extends MeasureNode {
         priorMeasure = null;
         continue;
       } catch (e) {
+        //  fall through
       }
 
       //  end of bracketed phrase

@@ -20,6 +20,7 @@ void main() {
       phrase = Phrase.parseString(s, phraseIndex, beatsPerBar, null);
       fail('a repeat is not a phrase');
     } catch (e) {
+      //  fall through
     }
 
     s = 'A B C D, G F E D x2';
