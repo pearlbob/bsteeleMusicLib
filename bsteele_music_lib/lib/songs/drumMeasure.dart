@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:bsteeleMusicLib/util/util.dart';
 
@@ -12,13 +13,24 @@ enum DrumSubBeatEnum {
 final drumSubBeatsPerBeat = DrumSubBeatEnum.values.length;
 const maxDrumBeatsPerBar = 6; //  fixme eventually
 int beatsLimit(int value) => Util.intLimit(value, 2, maxDrumBeatsPerBar);
-const List<String> _drumShortSubBeatNames = <String>['', 'e', 'and', 'a'];
+const List<String> _drumShortSubBeatNames = <String>['', 'e', '&', 'a'];
 
 String drumShortSubBeatName(DrumSubBeatEnum drumSubBeatEnum) {
   return _drumShortSubBeatNames[drumSubBeatEnum.index];
 }
 
-enum DrumTypeEnum { closedHighHat, openHighHat, snare, kick, bass }
+enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
+  closedHighHat,
+  openHighHat,
+  snare,
+  kick,
+  bass;
+
+  @override
+  int compareTo(DrumTypeEnum other) {
+    return index.compareTo(other.index);
+  }
+}
 
 /// Descriptor of a single drum in the measure.
 
@@ -116,6 +128,29 @@ class DrumPart implements Comparable<DrumPart> {
     return 'DrumPart{${_drumType.name}, beats: $beats, selection: ${sb.toString()} }  ';
   }
 
+  String toJson() {
+    StringBuffer sb = StringBuffer();
+
+    sb.write('{');
+    sb.write(' "drumType": ${jsonEncode(drumType.name)},');
+    sb.write(' "beats": $_beats,');
+    sb.write(' "beatSelection": [');
+    bool first = true;
+    for (int i = 0; i < _beatSelection.length; i++) {
+      if (_beatSelection[i]) {
+        if (first) {
+          first = false;
+        } else {
+          sb.write(', ');
+        }
+        sb.write(i);
+      }
+    }
+    sb.write(']');
+    sb.write('}');
+    return sb.toString();
+  }
+
   @override
   int compareTo(DrumPart other) {
     if (identical(this, other)) return 0;
@@ -201,6 +236,9 @@ class DrumParts //  fixme: name confusion with song chord Measure class
     var first = true;
     for (var type in _parts.keys) {
       var part = _parts[type]!;
+      if (part.isEmpty) {
+        continue;
+      }
       if (first) {
         first = false;
       } else {
@@ -209,7 +247,33 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       sb.write(part.toString());
     }
 
-    return 'DrumMeasure{parts: ${sb.toString()} }  ';
+    return 'DrumMeasure{${sb.toString()} }  ';
+  }
+
+  String toJson() {
+    StringBuffer sb = StringBuffer();
+
+    sb.write('{\n');
+    sb.write(' "subBeats": $drumSubBeatsPerBeat,');
+    sb.write(' "beats": $_beats,');
+    sb.write(' "volume": $_volume,');
+    sb.write('\n "parts": [');
+    bool first = true;
+    for (var key in SplayTreeSet<DrumTypeEnum>()..addAll(_parts.keys)) {
+      var part = _parts[key]!;
+      if (part.isEmpty) {
+        continue;
+      }
+      if (first) {
+        first = false;
+      } else {
+        sb.write(',\n   ');
+      }
+      sb.write(part.toJson());
+    }
+    sb.write(']\n');
+    sb.write('}\n');
+    return sb.toString();
   }
 
   @override

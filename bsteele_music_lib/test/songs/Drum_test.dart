@@ -244,4 +244,24 @@ void main() {
       expect(closedHighHat.timings(t0, bpm), [0.0, 0.25, 0.5, 1.5]);
     }
   });
+
+  test('drumParts to/from JSON', () {
+    {
+      DrumParts drumParts = DrumParts();
+
+      // logger.i(drumParts.toJson());
+
+      DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
+      int beats = 4;
+
+      DrumPart? dp = drumParts.at(drumType);
+      if (dp != null) {
+        for (var beat = 1; beat < beats; beat += 2) {
+          dp.addBeat(beat);
+        }
+      }
+      drumParts.at(DrumTypeEnum.kick)?.setBeatSelection(1, DrumSubBeatEnum.subBeat, true);
+      logger.i(drumParts.toJson());
+    }
+  });
 }
