@@ -2,7 +2,11 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
+
+const DeepCollectionEquality deepCollectionEquality = DeepCollectionEquality();
+const DeepCollectionEquality deepUnorderedCollectionEquality = DeepCollectionEquality.unordered();
 
 final DateFormat _dateFormat = DateFormat('yyyyMMdd_HHmmss');
 final RegExp _dateRegExp = RegExp(r'(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})');

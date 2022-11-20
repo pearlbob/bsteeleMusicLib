@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:bsteeleMusicLib/util/util.dart';
 
+import '../appLogger.dart';
+
 enum DrumSubBeatEnum {
   subBeat,
   subBeatE,
@@ -14,6 +16,7 @@ final drumSubBeatsPerBeat = DrumSubBeatEnum.values.length;
 const maxDrumBeatsPerBar = 6; //  fixme eventually
 int beatsLimit(int value) => Util.intLimit(value, 2, maxDrumBeatsPerBar);
 const List<String> _drumShortSubBeatNames = <String>['', 'e', '&', 'a'];
+const JsonDecoder _jsonDecoder = JsonDecoder();
 
 String drumShortSubBeatName(DrumSubBeatEnum drumSubBeatEnum) {
   return _drumShortSubBeatNames[drumSubBeatEnum.index];
@@ -130,11 +133,10 @@ class DrumPart implements Comparable<DrumPart> {
 
   String toJson() {
     StringBuffer sb = StringBuffer();
-
     sb.write('{');
-    sb.write(' "drumType": ${jsonEncode(drumType.name)},');
-    sb.write(' "beats": $_beats,');
-    sb.write(' "beatSelection": [');
+    sb.write(' "drumType": "${drumType.name}"');
+    sb.write(', "beats": $_beats');
+    sb.write(', "selection": [ ');
     bool first = true;
     for (int i = 0; i < _beatSelection.length; i++) {
       if (_beatSelection[i]) {
@@ -146,9 +148,51 @@ class DrumPart implements Comparable<DrumPart> {
         sb.write(i);
       }
     }
-    sb.write(']');
+    sb.write(' ]');
     sb.write('}');
+
     return sb.toString();
+  }
+
+  static DrumPart? fromJson(String jsonString) {
+    return fromJsonDecoderConvert(_jsonDecoder.convert(jsonString));
+  }
+
+  static DrumPart? fromJsonDecoderConvert(dynamic json) {
+    if (json is Map) {
+      DrumTypeEnum? drumType;
+      var beats = 0;
+      List<int> selections = [];
+      for (String name in json.keys) {
+        switch (name) {
+          case 'drumType':
+            logger.v('type: ${json[name]}');
+            drumType = Util.enumFromString<DrumTypeEnum>(json[name], DrumTypeEnum.values);
+            break;
+          case 'beats':
+            beats = json[name];
+            break;
+          case 'selection':
+            logger.v('selections: ${json[name]}');
+            for (var v in json[name]) {
+              selections.add(v as int);
+            }
+            break;
+        }
+      }
+      if (drumType != null && beats > 0) {
+        // logger.i(
+        //     'selections: $selections'
+        // );
+        var ret = DrumPart(drumType, beats: beats);
+        for (var beat in selections) {
+          ret.setBeatSelection(beat ~/ DrumSubBeatEnum.values.length,
+              DrumSubBeatEnum.values[beat % DrumSubBeatEnum.values.length], true);
+        }
+        return ret;
+      }
+    }
+    return null;
   }
 
   @override
@@ -179,6 +223,18 @@ class DrumPart implements Comparable<DrumPart> {
     return 0;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DrumPart &&
+          runtimeType == other.runtimeType &&
+          deepCollectionEquality.equals(_beatSelection, other._beatSelection) &&
+          _beats == other._beats &&
+          _drumType == other._drumType;
+
+  @override
+  int get hashCode => _beatSelection.hashCode ^ _beats.hashCode ^ _drumType.hashCode;
+
   late final List<bool> _beatSelection;
 
   int _offset(int beat, DrumSubBeatEnum drumSubBeatEnum) => beat * drumSubBeatsPerBeat + drumSubBeatEnum.index;
@@ -197,23 +253,18 @@ class DrumPart implements Comparable<DrumPart> {
 class DrumParts //  fixme: name confusion with song chord Measure class
     implements
         Comparable<DrumParts> {
-  DrumParts() {
-    for (var drumType in DrumTypeEnum.values) {
-      addPart(DrumPart(drumType, beats: maxDrumBeatsPerBar));
-    }
-  }
-
   /// Set an individual drum's part.
-  void addPart(DrumPart part) {
+  DrumPart addPart(DrumPart part) {
     _parts[part.drumType] = part;
+    return part;
   }
 
   void removePart(DrumPart part) {
     _parts.remove(part.drumType);
   }
 
-  DrumPart? at(DrumTypeEnum drumType) {
-    return _parts[drumType];
+  DrumPart at(DrumTypeEnum drumType) {
+    return _parts[drumType] ?? addPart(DrumPart(drumType, beats: beats));
   }
 
   int get length => _parts.keys.length;
@@ -236,9 +287,9 @@ class DrumParts //  fixme: name confusion with song chord Measure class
     var first = true;
     for (var type in _parts.keys) {
       var part = _parts[type]!;
-      if (part.isEmpty) {
-        continue;
-      }
+      // if (part.isEmpty) {
+      //   continue;
+      // }
       if (first) {
         first = false;
       } else {
@@ -247,23 +298,20 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       sb.write(part.toString());
     }
 
-    return 'DrumMeasure{${sb.toString()} }  ';
+    return 'DrumParts{${sb.toString()} }  ';
   }
 
   String toJson() {
     StringBuffer sb = StringBuffer();
 
     sb.write('{\n');
-    sb.write(' "subBeats": $drumSubBeatsPerBeat,');
     sb.write(' "beats": $_beats,');
+    sb.write(' "subBeats": $subBeats,');
     sb.write(' "volume": $_volume,');
     sb.write('\n "parts": [');
     bool first = true;
     for (var key in SplayTreeSet<DrumTypeEnum>()..addAll(_parts.keys)) {
       var part = _parts[key]!;
-      if (part.isEmpty) {
-        continue;
-      }
       if (first) {
         first = false;
       } else {
@@ -274,6 +322,53 @@ class DrumParts //  fixme: name confusion with song chord Measure class
     sb.write(']\n');
     sb.write('}\n');
     return sb.toString();
+  }
+
+  static DrumParts? fromJson(String jsonString) {
+    dynamic json = _jsonDecoder.convert(jsonString);
+    if (json is Map) {
+      var beats = 0;
+      var subBeats = 0;
+      var volume = 0.0;
+      HashMap<DrumTypeEnum, DrumPart> parts = HashMap();
+      for (String name in json.keys) {
+        switch (name) {
+          case 'beats':
+            beats = json[name];
+            break;
+          case 'subBeats':
+            subBeats = json[name];
+            break;
+          case 'volume':
+            volume = json[name];
+            break;
+          case 'parts':
+            logger.v('parts: ${json[name].runtimeType} ${json[name]}');
+            for (var jsonPart in json[name]) {
+              logger.v('json part: ${jsonPart.runtimeType} $jsonPart');
+              var part = DrumPart.fromJsonDecoderConvert(jsonPart);
+              if (part != null) {
+                parts[part.drumType] = part;
+              }
+            }
+            break;
+          default:
+            logger.i('bad json name: $name');
+            break;
+        }
+      }
+      if (beats > 0 && subBeats > 0) {
+        var ret = DrumParts();
+        ret.beats = beats;
+        ret.subBeats = subBeats;
+        ret.volume = volume;
+        for (var key in parts.keys) {
+          ret._parts[key] = parts[key]!;
+        }
+        return ret;
+      }
+    }
+    return null;
   }
 
   @override
@@ -294,11 +389,31 @@ class DrumParts //  fixme: name confusion with song chord Measure class
     return _parts.values;
   }
 
-  set volume(double value) {
-    assert(value >= 0);
-    assert(value <= 1.0);
-    _volume = value > 1.0 ? 1.0 : (value < 0 ? 0 : value);
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (!(other is DrumParts &&
+        runtimeType == other.runtimeType &&
+        _beats == other._beats &&
+        _volume == other._volume &&
+        deepUnorderedCollectionEquality.equals(_parts.keys, other._parts.keys))) {
+      return false;
+    }
+
+    //  fixme: why do empty parts kill deepUnorderedCollectionEquality.equals() test for empty maps?
+    for (var key in _parts.keys) {
+      if (_parts[key] != other._parts[key]) {
+        return false;
+      }
+    }
+
+    return true;
   }
+
+  @override
+  int get hashCode => _beats.hashCode ^ _volume.hashCode ^ _parts.hashCode;
 
   set beats(int value) {
     _beats = Util.intLimit(value, 2, maxDrumBeatsPerBar);
@@ -310,7 +425,16 @@ class DrumParts //  fixme: name confusion with song chord Measure class
   int get beats => _beats;
   int _beats = 4; //  default
 
+  int subBeats = drumSubBeatsPerBeat;
+
+  set volume(double value) {
+    assert(value >= 0);
+    assert(value <= 1.0);
+    _volume = value > 1.0 ? 1.0 : (value < 0 ? 0 : value);
+  }
+
   double get volume => _volume;
   double _volume = 1.0;
-  final HashMap<DrumTypeEnum, DrumPart> _parts = HashMap<DrumTypeEnum, DrumPart>();
+
+  final HashMap<DrumTypeEnum, DrumPart> _parts = HashMap();
 }

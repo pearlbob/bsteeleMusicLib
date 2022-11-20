@@ -165,14 +165,14 @@ void main() {
       DrumParts drumParts = DrumParts();
 
       expect(drumParts.isSilent(), true);
-      expect(drumParts.length, DrumTypeEnum.values.length);
+      expect(drumParts.length, 0);
       drumParts.addPart(DrumPart(DrumTypeEnum.closedHighHat, beats: 4));
-      expect(drumParts.length, DrumTypeEnum.values.length);
+      expect(drumParts.length, 1);
       expect(drumParts.isSilent(), true);
       logger.log(debugLog, 'dm: $drumParts');
       var drumPart = drumParts.at(DrumTypeEnum.closedHighHat);
       expect(drumPart, isNotNull);
-      expect(drumPart!.beats, 4);
+      expect(drumPart.beats, 4);
       expect(drumPart.isEmpty, true);
       drumPart.setBeatSelection(0, DrumSubBeatEnum.subBeat, true);
       expect(drumPart.isEmpty, false);
@@ -218,7 +218,7 @@ void main() {
       dm.addPart(closedHighHat);
       expect(dm.isSilent(), false);
       logger.log(debugLog, 'dm: $dm');
-      expect(dm.length, DrumTypeEnum.values.length);
+      expect(dm.length, 1);
       for (var part in dm.parts) {
         if (part.drumType == DrumTypeEnum.closedHighHat) {
           logger.log(debugLog, 'timings: ${part.timings(t0, bpm)}');
@@ -249,19 +249,63 @@ void main() {
     {
       DrumParts drumParts = DrumParts();
 
-      // logger.i(drumParts.toJson());
+      logger.i(drumParts.toJson());
 
       DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
       int beats = 4;
 
-      DrumPart? dp = drumParts.at(drumType);
-      if (dp != null) {
-        for (var beat = 1; beat < beats; beat += 2) {
-          dp.addBeat(beat);
-        }
+      DrumPart dp = drumParts.at(drumType);
+      for (var beat = 1; beat < beats; beat += 2) {
+        dp.addBeat(beat);
       }
-      drumParts.at(DrumTypeEnum.kick)?.setBeatSelection(1, DrumSubBeatEnum.subBeat, true);
+      drumParts.at(DrumTypeEnum.kick).setBeatSelection(1, DrumSubBeatEnum.subBeat, true);
+      //  logger.i(drumParts.toString());
+      expect(drumParts == drumParts, true);
+
+      var drumPart = drumParts.parts.first;
+      // logger.i(drumPart.toString());
+      logger.i(drumPart.toJson());
+      var drumPartFromJson = DrumPart.fromJson(drumPart.toJson());
+      logger.i(drumPartFromJson?.toJson());
+      expect(drumPart == drumPartFromJson, isTrue);
+
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeat, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatE, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatAnd, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatAndA, true);
+
+      var drumPartsFromJson = DrumParts.fromJson(drumParts.toJson());
       logger.i(drumParts.toJson());
+      logger.i(drumPartsFromJson?.toJson());
+      expect(drumParts == drumPartsFromJson, isTrue);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatAndA, false);
+      expect(drumParts == drumPartsFromJson, isFalse);
+    }
+    {
+      //  cumulative entries
+      for (var beats = 2; beats <= 6; beats += 2) {
+        DrumParts drumParts = DrumParts();
+        logger.i('beats: $beats');
+        for (var beat = 0; beat < beats; beat++) {
+          logger.i('  beat: $beat');
+          for (var drumSubBeat in DrumSubBeatEnum.values) {
+            logger.i('    drumSubBeat: $drumSubBeat');
+            for (var drumType in DrumTypeEnum.values) {
+              drumParts.beats = beats;
+              var drumPart = drumParts.at(drumType);
+              drumPart.addBeat(beat, subBeat: drumSubBeat);
+
+              drumParts.addPart(drumPart);
+
+              var drumPartsFromJson = DrumParts.fromJson(drumParts.toJson());
+              logger.v(drumParts.toJson());
+              logger.v(drumPartsFromJson?.toJson());
+              expect(drumParts == drumPartsFromJson, isTrue);
+            }
+          }
+        }
+        logger.i(drumParts.toJson());
+      }
     }
   });
 }
