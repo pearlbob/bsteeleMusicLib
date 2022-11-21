@@ -312,4 +312,44 @@ void main() {
       }
     }
   });
+
+  test('drumParts copyWith', () {
+    DrumParts drumParts = DrumParts(name: 'bob stuff', beats: 4);
+
+    logger.i(drumParts.toString());
+    expect(drumParts.copyWith(), drumParts);
+
+    DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
+
+    DrumPart dp = drumParts.at(drumType);
+    for (var beat = 1; beat < drumParts.beats; beat += 2) {
+      dp.addBeat(beat, subBeat: DrumSubBeatEnum.subBeatAnd);
+      logger.i(drumParts.toString());
+      expect(drumParts.copyWith(), drumParts);
+    }
+    {
+      //  cumulative entries
+      for (var beats = 2; beats <= 6; beats += 2) {
+        DrumParts drumParts = DrumParts();
+        drumParts.name = 'bob stuff for $beats beats';
+        logger.v('beats: $beats');
+        for (var beat = 0; beat < beats; beat++) {
+          logger.v('  beat: $beat');
+          for (var drumSubBeat in DrumSubBeatEnum.values) {
+            logger.v('    drumSubBeat: $drumSubBeat');
+            for (var drumType in DrumTypeEnum.values) {
+              drumParts.beats = beats;
+              var drumPart = drumParts.at(drumType);
+              drumPart.addBeat(beat, subBeat: drumSubBeat);
+
+              drumParts.addPart(drumPart);
+
+              logger.v(drumParts.toString());
+              expect(drumParts.copyWith(), drumParts);
+            }
+          }
+        }
+      }
+    }
+  });
 }

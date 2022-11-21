@@ -45,6 +45,22 @@ class DrumPart implements Comparable<DrumPart> {
     assert(beats <= maxDrumBeatsPerBar);
   }
 
+  DrumPart copyWith() {
+    var ret = DrumPart(_drumType, beats: _beats);
+    for (var s = 0; s < _beatSelection.length; s++) {
+      if (_beatSelection[s]) {
+        ret._beatSelection[s] = true;
+      }
+    }
+    return ret;
+  }
+
+  clear() {
+    for (var s = 0; s < _beatSelection.length; s++) {
+      _beatSelection[s] = false;
+    }
+  }
+
   List<double> timings(double t0, int bpm) {
     List<double> ret = [];
     double offsetPeriod = 60.0 / (bpm * drumSubBeatsPerBeat);
@@ -114,21 +130,15 @@ class DrumPart implements Comparable<DrumPart> {
   @override
   String toString() {
     var sb = StringBuffer();
-    var first = true;
     for (var beat = 0; beat < beats; beat++) {
       for (var subBeat in DrumSubBeatEnum.values) {
         if (beatSelection(beat, subBeat)) {
-          if (first) {
-            first = false;
-          } else {
-            sb.write(', ');
-          }
           //  beats count from 0!
-          sb.write('${beat + 1}${_drumShortSubBeatNames[subBeat.index]}');
+          sb.write(' ${beat + 1}${_drumShortSubBeatNames[subBeat.index]}');
         }
       }
     }
-    return 'DrumPart{${_drumType.name}, beats: $beats, selection: ${sb.toString()} }  ';
+    return '${_drumType.name}:${sb.toString()}';
   }
 
   String toJson() {
@@ -253,7 +263,25 @@ class DrumPart implements Comparable<DrumPart> {
 class DrumParts //  fixme: name confusion with song chord Measure class
     implements
         Comparable<DrumParts> {
-  DrumParts({beats = 4}) : _beats = beats;
+  DrumParts({this.name = 'unknown', beats = 4, List<DrumPart>? parts}) : _beats = beats {
+    for (var part in parts ?? []) {
+      addPart(part);
+    }
+  }
+
+  DrumParts copyWith() {
+    List<DrumPart> copyParts = [];
+    for (var part in parts) {
+      copyParts.add(part.copyWith());
+    }
+    return DrumParts(name: name, beats: beats, parts: copyParts);
+  }
+
+  clear() {
+    for (var part in parts) {
+      part.clear();
+    }
+  }
 
   /// Set an individual drum's part.
   DrumPart addPart(DrumPart part) {
@@ -300,7 +328,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       sb.write(part.toString());
     }
 
-    return 'DrumParts{name: "$name", ${sb.toString()} }  ';
+    return '$name:$beats: ${sb.toString()}';
   }
 
   String toJson() {
@@ -431,7 +459,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
     }
   }
 
-  String name = 'unknown';
+  String name;
 
   int get beats => _beats;
   int _beats = 4; //  default
