@@ -253,6 +253,8 @@ class DrumPart implements Comparable<DrumPart> {
 class DrumParts //  fixme: name confusion with song chord Measure class
     implements
         Comparable<DrumParts> {
+  DrumParts({beats = 4}) : _beats = beats;
+
   /// Set an individual drum's part.
   DrumPart addPart(DrumPart part) {
     _parts[part.drumType] = part;
@@ -298,13 +300,14 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       sb.write(part.toString());
     }
 
-    return 'DrumParts{${sb.toString()} }  ';
+    return 'DrumParts{name: "$name", ${sb.toString()} }  ';
   }
 
   String toJson() {
     StringBuffer sb = StringBuffer();
 
     sb.write('{\n');
+    sb.write(' "name": ${jsonEncode(name)},');
     sb.write(' "beats": $_beats,');
     sb.write(' "subBeats": $subBeats,');
     sb.write(' "volume": $_volume,');
@@ -327,12 +330,16 @@ class DrumParts //  fixme: name confusion with song chord Measure class
   static DrumParts? fromJson(String jsonString) {
     dynamic json = _jsonDecoder.convert(jsonString);
     if (json is Map) {
+      var drumPartsName = 'unknown';
       var beats = 0;
       var subBeats = 0;
       var volume = 0.0;
       HashMap<DrumTypeEnum, DrumPart> parts = HashMap();
       for (String name in json.keys) {
         switch (name) {
+          case 'name':
+            drumPartsName = json[name];
+            break;
           case 'beats':
             beats = json[name];
             break;
@@ -359,6 +366,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       }
       if (beats > 0 && subBeats > 0) {
         var ret = DrumParts();
+        ret.name = drumPartsName;
         ret.beats = beats;
         ret.subBeats = subBeats;
         ret.volume = volume;
@@ -396,6 +404,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
     }
     if (!(other is DrumParts &&
         runtimeType == other.runtimeType &&
+        name == other.name &&
         _beats == other._beats &&
         _volume == other._volume &&
         deepUnorderedCollectionEquality.equals(_parts.keys, other._parts.keys))) {
@@ -413,7 +422,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
   }
 
   @override
-  int get hashCode => _beats.hashCode ^ _volume.hashCode ^ _parts.hashCode;
+  int get hashCode => name.hashCode ^ _beats.hashCode ^ _volume.hashCode ^ _parts.hashCode;
 
   set beats(int value) {
     _beats = Util.intLimit(value, 2, maxDrumBeatsPerBar);
@@ -421,6 +430,8 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       _parts[key]!.beats = beats;
     }
   }
+
+  String name = 'unknown';
 
   int get beats => _beats;
   int _beats = 4; //  default

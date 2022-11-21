@@ -163,6 +163,7 @@ void main() {
   test('drumParts', () {
     {
       DrumParts drumParts = DrumParts();
+      drumParts.name = 'bob stuff';
 
       expect(drumParts.isSilent(), true);
       expect(drumParts.length, 0);
@@ -254,6 +255,8 @@ void main() {
       DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
       int beats = 4;
 
+      drumParts.name = 'bob stuff';
+
       DrumPart dp = drumParts.at(drumType);
       for (var beat = 1; beat < beats; beat += 2) {
         dp.addBeat(beat);
@@ -285,6 +288,7 @@ void main() {
       //  cumulative entries
       for (var beats = 2; beats <= 6; beats += 2) {
         DrumParts drumParts = DrumParts();
+        drumParts.name = 'bob stuff for $beats beats';
         logger.i('beats: $beats');
         for (var beat = 0; beat < beats; beat++) {
           logger.i('  beat: $beat');
