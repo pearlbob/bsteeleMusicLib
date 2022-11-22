@@ -3,10 +3,10 @@
 import 'dart:collection';
 
 import 'package:bsteeleMusicLib/songs/pitch.dart';
-import 'package:bsteeleMusicLib/songs/scaleChord.dart';
-import 'package:bsteeleMusicLib/songs/scaleNote.dart';
+import 'package:bsteeleMusicLib/songs/scale_chord.dart';
+import 'package:bsteeleMusicLib/songs/scale_note.dart';
 
-import 'musicConstants.dart';
+import 'music_constants.dart';
 
 // ignore: constant_identifier_names
 enum KeyEnum { Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, Fs }

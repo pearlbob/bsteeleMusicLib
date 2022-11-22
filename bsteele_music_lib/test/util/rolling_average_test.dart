@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/util/rollingAverage.dart';
+import 'package:bsteeleMusicLib/util/rolling_average.dart';
 import 'package:test/test.dart';
 
 void main() {

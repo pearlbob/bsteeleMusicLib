@@ -1,18 +1,18 @@
-import 'package:bsteeleMusicLib/songs/musicConstants.dart';
+import 'package:bsteeleMusicLib/songs/music_constants.dart';
 import 'package:bsteeleMusicLib/songs/pitch.dart';
-import 'package:bsteeleMusicLib/songs/scaleChord.dart';
-import 'package:bsteeleMusicLib/songs/scaleNote.dart';
+import 'package:bsteeleMusicLib/songs/scale_chord.dart';
+import 'package:bsteeleMusicLib/songs/scale_note.dart';
 
-class Bass{
-    static int mapPitchToBassFret( Pitch pitch ){
-        //  deal with the piano numbers starting on A instead of E
-        return mapScaleNoteToBassFret( pitch.scaleNote);
-    }
+class Bass {
+  static int mapPitchToBassFret(Pitch pitch) {
+    //  deal with the piano numbers starting on A instead of E
+    return mapScaleNoteToBassFret(pitch.scaleNote);
+  }
 
-    static int mapScaleChordToBassFret( ScaleChord scaleChord ){
-        //  deal with the piano numbers starting on A instead of E
-        return mapScaleNoteToBassFret( scaleChord.scaleNote);
-    }
+  static int mapScaleChordToBassFret(ScaleChord scaleChord) {
+    //  deal with the piano numbers starting on A instead of E
+    return mapScaleNoteToBassFret(scaleChord.scaleNote);
+  }
 
   static int mapScaleNoteToBassFret(ScaleNote scaleNote) {
     //  deal with the piano numbers starting on A instead of E

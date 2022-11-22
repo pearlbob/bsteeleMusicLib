@@ -6,8 +6,8 @@ import 'package:quiver/core.dart';
 import '../util/util.dart';
 import 'chord.dart';
 import 'key.dart';
-import 'measureNode.dart';
-import 'nashvilleNote.dart';
+import 'measure_node.dart';
+import 'nashville_note.dart';
 import 'section.dart';
 
 /// A measure in a section of a song.

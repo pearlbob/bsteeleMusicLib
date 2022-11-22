@@ -8,9 +8,9 @@ import '../grid.dart';
 import '../util/util.dart';
 import 'key.dart';
 import 'measure.dart';
-import 'measureComment.dart';
-import 'measureNode.dart';
-import 'musicConstants.dart';
+import 'measure_comment.dart';
+import 'measure_node.dart';
+import 'music_constants.dart';
 import 'section.dart';
 
 class Phrase extends MeasureNode {

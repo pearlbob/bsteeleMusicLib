@@ -2,9 +2,9 @@
 
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/songs/scaleNote.dart';
+import 'package:bsteeleMusicLib/songs/scale_note.dart';
 
-import 'musicConstants.dart';
+import 'music_constants.dart';
 
 ///
 /// All possible piano pitches and their notational alias's.

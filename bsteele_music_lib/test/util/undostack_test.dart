@@ -1,9 +1,9 @@
-import 'package:bsteeleMusicLib/appLogger.dart';
-import 'package:bsteeleMusicLib/util/undoStack.dart';
+import 'package:bsteeleMusicLib/app_logger.dart';
+import 'package:bsteeleMusicLib/util/undo_stack.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
-void _logStack(UndoStack undoStack){
+void _logStack(UndoStack undoStack) {
   logger.i('$undoStack:');
 }
 

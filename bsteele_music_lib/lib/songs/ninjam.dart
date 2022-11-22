@@ -3,7 +3,7 @@ import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:quiver/collection.dart';
 
-import 'chordSection.dart';
+import 'chord_section.dart';
 import 'key.dart';
 import 'measure.dart';
 

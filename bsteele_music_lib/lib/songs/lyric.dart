@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:bsteeleMusicLib/songs/key.dart';
 
-import 'measureNode.dart';
+import 'measure_node.dart';
 
 class Lyric extends MeasureNode {
   Lyric(this.line, {this.phraseIndex = 0, this.repeat = 0});
