@@ -352,4 +352,71 @@ void main() {
       }
     }
   });
+
+  test('drumParts DrumPartsList', () {
+    DrumPartsList drumPartsList = DrumPartsList();
+    logger.i(drumPartsList.toJson());
+    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [] }''');
+    DrumParts drumParts = DrumParts(name: 'bob stuff', beats: 4);
+
+    drumPartsList.add(drumParts);
+
+    logger.i(drumPartsList.toJson());
+    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
+ "name": "bob stuff", "beats": 4, "subBeats": 4, "volume": 1.0,
+ "parts": []
+}
+] }''');
+
+    drumPartsList.add(drumParts);
+    //  no change
+    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
+ "name": "bob stuff", "beats": 4, "subBeats": 4, "volume": 1.0,
+ "parts": []
+}
+] }''');
+    logger.i(drumPartsList.toJson());
+
+    var original = drumPartsList.toJson();
+    drumPartsList.fromJson(drumPartsList.toJson());
+    logger.i(drumParts.toString());
+    expect(drumPartsList.toJson(), original);
+
+    DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
+
+    DrumPart dp = drumParts.at(drumType);
+    for (var beat = 1; beat < drumParts.beats; beat += 2) {
+      dp.addBeat(beat, subBeat: DrumSubBeatEnum.subBeatAnd);
+      var original = drumPartsList.toJson();
+      drumPartsList.fromJson(drumPartsList.toJson());
+      logger.i(drumParts.toString());
+      expect(drumPartsList.toJson(), original);
+    }
+    {
+      //  cumulative entries
+      for (var beats = 2; beats <= 6; beats += 2) {
+        DrumParts drumParts = DrumParts();
+        drumParts.name = 'bob stuff for $beats beats';
+        logger.v('beats: $beats');
+        for (var beat = 0; beat < beats; beat++) {
+          logger.v('  beat: $beat');
+          for (var drumSubBeat in DrumSubBeatEnum.values) {
+            logger.v('    drumSubBeat: $drumSubBeat');
+            for (var drumType in DrumTypeEnum.values) {
+              drumParts.beats = beats;
+              var drumPart = drumParts.at(drumType);
+              drumPart.addBeat(beat, subBeat: drumSubBeat);
+
+              drumParts.addPart(drumPart);
+
+              var original = drumPartsList.toJson();
+              drumPartsList.fromJson(drumPartsList.toJson());
+              logger.i(drumParts.toString());
+              expect(drumPartsList.toJson(), original);
+            }
+          }
+        }
+      }
+    }
+  });
 }

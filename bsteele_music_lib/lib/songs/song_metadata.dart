@@ -233,6 +233,15 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
 
+  bool get hasNonGeneratedNameValues {
+    for (NameValue nv in _nameValues) {
+      if (!SongMetadataGeneratedValue.isGenerated(nv)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool get isEmpty => _nameValues.isEmpty;
 
   bool get isNotEmpty => _nameValues.isNotEmpty;
@@ -326,6 +335,7 @@ class SongMetadata {
     if (songIdMetadata.isEmpty) {
       //  remove this id metadata if it was the last one
       _singleton._idMetadata.remove(songIdMetadata);
+      //  fixme: generate generated values?
     }
   }
 
@@ -602,12 +612,14 @@ class SongMetadata {
     StringBuffer sb = StringBuffer();
     bool first = true;
     for (SongIdMetadata songIdMetadata in values ?? _singleton._idMetadata) {
-      if (first) {
-        first = false;
-      } else {
-        sb.write(',\n');
+      if (songIdMetadata.hasNonGeneratedNameValues) {
+        if (first) {
+          first = false;
+        } else {
+          sb.write(',\n');
+        }
+        sb.write(songIdMetadata.toJson());
       }
-      sb.write(songIdMetadata.toJson());
     }
     return '[${sb.toString()}]';
   }

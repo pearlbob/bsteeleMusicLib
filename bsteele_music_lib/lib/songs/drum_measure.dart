@@ -361,51 +361,56 @@ class DrumParts //  fixme: name confusion with song chord Measure class
   static DrumParts? fromJson(String jsonString) {
     dynamic json = _jsonDecoder.convert(jsonString);
     if (json is Map) {
-      var drumPartsName = 'unknown';
-      var beats = 0;
-      var subBeats = 0;
-      var volume = 0.0;
-      HashMap<DrumTypeEnum, DrumPart> parts = HashMap();
-      for (String name in json.keys) {
-        switch (name) {
-          case 'name':
-            drumPartsName = json[name];
-            break;
-          case 'beats':
-            beats = json[name];
-            break;
-          case 'subBeats':
-            subBeats = json[name];
-            break;
-          case 'volume':
-            volume = json[name];
-            break;
-          case 'parts':
-            logger.v('parts: ${json[name].runtimeType} ${json[name]}');
-            for (var jsonPart in json[name]) {
-              logger.v('json part: ${jsonPart.runtimeType} $jsonPart');
-              var part = DrumPart.fromJsonDecoderConvert(jsonPart);
-              if (part != null) {
-                parts[part.drumType] = part;
-              }
+      return fromJsonMap(json);
+    }
+    return null;
+  }
+
+  static DrumParts? fromJsonMap(Map json) {
+    var drumPartsName = 'unknown';
+    var beats = 0;
+    var subBeats = 0;
+    var volume = 0.0;
+    HashMap<DrumTypeEnum, DrumPart> parts = HashMap();
+    for (String name in json.keys) {
+      switch (name) {
+        case 'name':
+          drumPartsName = json[name];
+          break;
+        case 'beats':
+          beats = json[name];
+          break;
+        case 'subBeats':
+          subBeats = json[name];
+          break;
+        case 'volume':
+          volume = json[name];
+          break;
+        case 'parts':
+          logger.v('parts: ${json[name].runtimeType} ${json[name]}');
+          for (var jsonPart in json[name]) {
+            logger.v('json part: ${jsonPart.runtimeType} $jsonPart');
+            var part = DrumPart.fromJsonDecoderConvert(jsonPart);
+            if (part != null) {
+              parts[part.drumType] = part;
             }
-            break;
-          default:
-            logger.i('bad json name: $name');
-            break;
-        }
+          }
+          break;
+        default:
+          logger.i('bad json name: $name');
+          break;
       }
-      if (beats > 0 && subBeats > 0) {
-        var ret = DrumParts();
-        ret.name = drumPartsName;
-        ret.beats = beats;
-        ret.subBeats = subBeats;
-        ret.volume = volume;
-        for (var key in parts.keys) {
-          ret._parts[key] = parts[key]!;
-        }
-        return ret;
+    }
+    if (beats > 0 && subBeats > 0) {
+      var ret = DrumParts();
+      ret.name = drumPartsName;
+      ret.beats = beats;
+      ret.subBeats = subBeats;
+      ret.volume = volume;
+      for (var key in parts.keys) {
+        ret._parts[key] = parts[key]!;
       }
+      return ret;
     }
     return null;
   }
@@ -491,7 +496,7 @@ class DrumPartsList {
 
   DrumPartsList._internal();
 
-  static void add(DrumParts drumParts) {
+  void add(DrumParts drumParts) {
     try {
       var original = _singleton._drumPartsList.firstWhere((dp) => dp.name == drumParts.name);
       _singleton._drumPartsList.remove(original);
@@ -501,7 +506,7 @@ class DrumPartsList {
     _singleton._drumPartsList.add(drumParts);
   }
 
-  static void remove(DrumParts drumParts) {
+  void remove(DrumParts drumParts) {
     try {
       var original = _singleton._drumPartsList.firstWhere((dp) => dp.name == drumParts.name);
       _singleton._drumPartsList.remove(original);
@@ -511,11 +516,11 @@ class DrumPartsList {
   }
 
   /// clear all metadata.
-  static void clear() {
+  void clear() {
     _singleton._drumPartsList.clear();
   }
 
-  static String toJson() {
+  String toJson({final bool asObject = true}) {
     StringBuffer sb = StringBuffer();
     bool first = true;
     for (var drumPart in _singleton._drumPartsList) {
@@ -526,26 +531,32 @@ class DrumPartsList {
       }
       sb.write(drumPart.toJson());
     }
-    return '{"drumPartsList": [${sb.toString()}]';
+    return '${asObject ? '{ ' : ''}"drumPartsList" : [${sb.toString()}]${asObject ? ' }' : ''}';
   }
 
-  static void fromJson(String jsonString) {
+  void fromJson(String jsonString) {
     var decoded = json.decode(jsonString);
-    if (decoded != null) {
-      for (var item in decoded) {
-        for (String key in item.keys) {
-          logger.d('\t${key.toString()}:');
-          switch (key) {
-            case 'drumPartsList':
-              for (var nv in item[key]) {
-                logger.i('nv: $nv');
-                if (nv is Map) {
-                  //  _singleton.add(_singleton(id, metadata: [NameValue(nv['name'], nv['value'])]));
-                }
-              }
-              break;
+    if (decoded != null && decoded is Map) {
+      fromJsonMap(decoded);
+    }
+  }
+
+  void fromJsonMap(Map decoded) {
+    clear(); //  expect things to go well
+    for (var decodedKey in decoded.keys) {
+      switch (decodedKey) {
+        case 'drumPartsList':
+          for (var partMap in decoded[decodedKey]) {
+            var parts = DrumParts.fromJsonMap(partMap);
+            logger.d('\t$parts');
+            if (parts != null) {
+              add(parts);
+            }
           }
-        }
+          break;
+        default:
+          logger.w('unknown $runtimeType.fromJsonMap: "$decodedKey"');
+          break;
       }
     }
   }
