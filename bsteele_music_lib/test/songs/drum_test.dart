@@ -356,8 +356,14 @@ void main() {
   test('drumParts DrumPartsList', () {
     DrumPartsList drumPartsList = DrumPartsList();
     logger.i(drumPartsList.toJson());
+    expect(drumPartsList.length, 0);
     expect(drumPartsList.toJson(), '''{ "drumPartsList" : [] }''');
     DrumParts drumParts = DrumParts(name: 'bob stuff', beats: 4);
+
+    int beats = 4;
+    var test1 =
+        DrumParts(name: 'test1', beats: beats, parts: [DrumPart(DrumTypeEnum.closedHighHat, beats: beats)..addBeat(0)]);
+    expect(drumParts.compareTo(test1), -1);
 
     drumPartsList.add(drumParts);
 
@@ -375,7 +381,29 @@ void main() {
  "parts": []
 }
 ] }''');
+    expect(drumPartsList.length, 1);
     logger.i(drumPartsList.toJson());
+
+    logger.i('bob stuff: $drumPartsList');
+
+    drumPartsList.add(test1);
+    expect(drumPartsList.length, 2);
+    drumPartsList.add(test1);
+    expect(drumPartsList.length, 2);
+
+    var test2 = DrumParts(name: 'test2', beats: beats, parts: [DrumPart(DrumTypeEnum.bass, beats: beats)..addBeat(1)]);
+    drumPartsList.add(test2);
+
+    var test3 = test1.copyWith();
+    test3.at(DrumTypeEnum.closedHighHat).addBeat(2);
+    logger.i('$test3');
+    drumPartsList.add(test3);
+    logger.i('bob+test1+test3: $drumPartsList');
+    expect(drumPartsList.length, 3);
+    drumPartsList.add(test3);
+    expect(drumPartsList.length, 3);
+    drumPartsList.add(test2);
+    expect(drumPartsList.length, 3);
 
     var original = drumPartsList.toJson();
     drumPartsList.fromJson(drumPartsList.toJson());

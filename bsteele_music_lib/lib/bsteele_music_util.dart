@@ -229,7 +229,7 @@ coerced to reflect the songlist's last modification for that song.
             }
             SplayTreeSet<Song> cjSongs = SplayTreeSet();
             for (Song song in allSongs) {
-              var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'cj');
+              var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'jam');
               if (meta.isNotEmpty) {
                 cjSongs.add(song);
                 logger.i('"${song.songId.songId}", cj:${meta.first.nameValues.first.value}');
@@ -1255,7 +1255,7 @@ coerced to reflect the songlist's last modification for that song.
           SongMetadata.clear();
           for (Song song in allSongs) {
             if (christmasRegExp.hasMatch(song.songId.songId)) {
-              SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [const NameValue('christmas', '')]));
+              SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [NameValue('christmas', '')]));
             }
           }
           logger.i(SongMetadata.toJson());
@@ -1489,7 +1489,7 @@ coerced to reflect the songlist's last modification for that song.
         ',ranking'
         '\n');
     for (Song song in allSongs) {
-      var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'cj');
+      var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'jam');
       if (meta.isNotEmpty) {
         sb.write('"${song.songId.songId}","${meta.first.nameValues.first.value}"\n');
       }
@@ -1504,7 +1504,7 @@ coerced to reflect the songlist's last modification for that song.
         List<String> ranking = line.split(_csvLineSplit);
         if (ranking[1].isNotEmpty) {
           logger.v('$i: ${ranking[0]}, ${ranking[1]}');
-          SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[NameValue('cj', ranking[1])]));
+          SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[NameValue('jam', ranking[1])]));
         }
       }
       i++;

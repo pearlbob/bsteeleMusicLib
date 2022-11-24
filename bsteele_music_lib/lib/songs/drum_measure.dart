@@ -40,7 +40,7 @@ enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
 class DrumPart implements Comparable<DrumPart> {
   DrumPart(this._drumType, {required beats})
       : _beats = beatsLimit(beats),
-        _beatSelection = List.filled(beats * drumSubBeatsPerBeat, false, growable: false) {
+        _beatSelection = List.filled(maxDrumBeatsPerBar * drumSubBeatsPerBeat, false, growable: false) {
     assert(beats >= 2);
     assert(beats <= maxDrumBeatsPerBar);
   }
@@ -243,7 +243,7 @@ class DrumPart implements Comparable<DrumPart> {
           _drumType == other._drumType;
 
   @override
-  int get hashCode => _beatSelection.hashCode ^ _beats.hashCode ^ _drumType.hashCode;
+  int get hashCode => Object.hash(_beats, _drumType, _beatSelection);
 
   late final List<bool> _beatSelection;
 
@@ -260,9 +260,7 @@ class DrumPart implements Comparable<DrumPart> {
 
 /// Descriptor of the drums to be played for the given measure and
 /// likely subsequent measures.
-class DrumParts //  fixme: name confusion with song chord Measure class
-    implements
-        Comparable<DrumParts> {
+class DrumParts implements Comparable<DrumParts> {
   DrumParts({this.name = 'unknown', beats = 4, List<DrumPart>? parts}) : _beats = beats {
     for (var part in parts ?? []) {
       addPart(part);
@@ -313,13 +311,17 @@ class DrumParts //  fixme: name confusion with song chord Measure class
 
   @override
   String toString() {
+    return '$name:$beats: ${partsToString()}';
+  }
+
+  String partsToString() {
     var sb = StringBuffer();
     var first = true;
     for (var type in _parts.keys) {
       var part = _parts[type]!;
-      // if (part.isEmpty) {
-      //   continue;
-      // }
+      if (part.isEmpty) {
+        continue;
+      }
       if (first) {
         first = false;
       } else {
@@ -328,7 +330,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
       sb.write(part.toString());
     }
 
-    return '$name:$beats: ${sb.toString()}';
+    return sb.toString();
   }
 
   String toJson() {
@@ -397,7 +399,7 @@ class DrumParts //  fixme: name confusion with song chord Measure class
           }
           break;
         default:
-          logger.i('bad json name: $name');
+          logger.w('bad json name: $name');
           break;
       }
     }
@@ -417,14 +419,24 @@ class DrumParts //  fixme: name confusion with song chord Measure class
 
   @override
   int compareTo(DrumParts other) {
-    if (identical(this, other)) return 0;
+    if (identical(this, other)) {
+      return 0;
+    }
+    int ret = name.compareTo(other.name);
+    if (ret != 0) {
+      return ret;
+    }
     for (var type in _parts.keys) {
       var thisPart = _parts[type];
       assert(thisPart != null);
       var otherPart = other._parts[type];
-      if (otherPart == null) return -1;
+      if (otherPart == null) {
+        return -1;
+      }
       int ret = thisPart!.compareTo(otherPart);
-      if (ret != 0) return ret;
+      if (ret != 0) {
+        return ret;
+      }
     }
     return 0;
   }
@@ -502,8 +514,10 @@ class DrumPartsList {
       _singleton._drumPartsList.remove(original);
     } catch (e) {
       //
+      logger.v('e: $e');
     }
     _singleton._drumPartsList.add(drumParts);
+    logger.v(' _singleton._drumPartsList.add(): ${_singleton._drumPartsList}');
   }
 
   void remove(DrumParts drumParts) {
@@ -520,16 +534,27 @@ class DrumPartsList {
     _singleton._drumPartsList.clear();
   }
 
+  bool get isEmpty => _drumPartsList.isEmpty;
+
+  bool get isNotEmpty => _drumPartsList.isNotEmpty;
+
+  int get length => _drumPartsList.length;
+
+  @override
+  String toString() {
+    return '{${_drumPartsList.length}: ${_drumPartsList.map((e) => e.toString())} }';
+  }
+
   String toJson({final bool asObject = true}) {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (var drumPart in _singleton._drumPartsList) {
+    for (var drumParts in _singleton._drumPartsList) {
       if (first) {
         first = false;
       } else {
         sb.write(',\n');
       }
-      sb.write(drumPart.toJson());
+      sb.write(drumParts.toJson());
     }
     return '${asObject ? '{ ' : ''}"drumPartsList" : [${sb.toString()}]${asObject ? ' }' : ''}';
   }
@@ -561,5 +586,9 @@ class DrumPartsList {
     }
   }
 
-  final SplayTreeSet<DrumParts> _drumPartsList = SplayTreeSet();
+  SplayTreeSet<DrumParts> get drumParts => _drumPartsList;
+
+  final SplayTreeSet<DrumParts> _drumPartsList = SplayTreeSet((e1, e2) =>
+      //  unique by name only
+      e1.name.compareTo(e2.name));
 }

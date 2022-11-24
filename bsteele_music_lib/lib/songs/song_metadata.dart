@@ -27,7 +27,9 @@ enum SongMetadataGeneratedValue {
 
 /// name and value pair
 class NameValue implements Comparable<NameValue> {
-  const NameValue(this._name, this._value);
+  NameValue(String name, String value)
+      : _name = Util.firstToUpper(name),
+        _value = Util.firstToUpper(value);
 
   @override
   String toString() {
@@ -42,7 +44,7 @@ class NameValue implements Comparable<NameValue> {
   static NameValue parse(String s) {
     RegExpMatch? m = _nameValueRegexp.firstMatch(s);
     if (m == null) {
-      return const NameValue('', '');
+      return NameValue('', '');
     }
     return NameValue(m.group(1) ?? ' ', m.group(2) ?? '');
   }

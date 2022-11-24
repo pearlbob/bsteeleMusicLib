@@ -8,7 +8,7 @@ import 'package:bsteeleMusicLib/songs/song_metadata.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
-var cjBest = const NameValue('cj', 'best');
+var jamBest = NameValue('Jam', 'Best');
 
 void main() {
   Logger.level = Level.info;
@@ -18,27 +18,23 @@ void main() {
 
     const String id0 = 'id0';
     {
-      expect(SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock')]).toJson(),
-          '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      expect(
-          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('genre', 'rock')]).toJson(),
-          '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
+      expect(SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock')]).toJson(),
+          '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"}]}');
+      expect(SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Genre', 'Rock')]).toJson(),
+          '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"}]}');
 
-      SongIdMetadata md =
-          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
-      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
-      md.remove(const NameValue('jam', 'casual'));
-      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      md.add(const NameValue('jam', 'casual'));
-      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
+      SongIdMetadata md = SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'casual')]);
+      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"},{"name":"Jam","value":"Casual"}]}');
+      md.remove(NameValue('Jam', 'casual'));
+      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"}]}');
+      md.add(NameValue('Jam', 'casual'));
+      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"},{"name":"Jam","value":"Casual"}]}');
     }
 
     //  metadata
-    SongIdMetadata md0 =
-        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
-    SongIdMetadata md1 =
-        SongIdMetadata('id1', metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
-    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [const NameValue('jam', 'advanced')]);
+    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'Casual')]);
+    SongIdMetadata md1 = SongIdMetadata('id1', metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'Advanced')]);
+    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [NameValue('Jam', 'Advanced')]);
     SongIdMetadata md3 = SongIdMetadata('id3 christmas');
 
     SplayTreeSet<SongIdMetadata> set = SplayTreeSet();
@@ -67,14 +63,14 @@ void main() {
     set = SongMetadata.where(idIsLike: 'foo');
     expect(set.isEmpty, true);
 
-    set = SongMetadata.where(nameIsLike: 'genre');
+    set = SongMetadata.where(nameIsLike: 'Genre');
     expect(set.isEmpty, false);
     expect(set.length, 2);
     expect(set.contains(md0), true);
     expect(set.contains(md1), true);
     expect(set.contains(md2), false);
 
-    set = SongMetadata.where(nameIsLike: 'jam', valueIsLike: 'ad');
+    set = SongMetadata.where(nameIsLike: 'Jam', valueIsLike: 'ad');
     expect(set.isEmpty, false);
     expect(set.length, 2);
     expect(set.contains(md0), false);
@@ -85,8 +81,8 @@ void main() {
     var idn = SongMetadata.where(idIs: 'id1').first;
     logger.i('idn: $idn');
     expect(idn.toString(), '''{ "id": "id1", "metadata": [
-	{"genre":"rock"},
-	{"jam":"advanced"}
+	{"Genre":"Rock"},
+	{"Jam":"Advanced"}
 	] }''');
 
     //  get them all
@@ -104,19 +100,19 @@ void main() {
     expect(set.contains(md2), true);
     expect(set.contains(md3), false);
 
-    //  verify there are no christmas genre songs
-    set = SongMetadata.where(nameIsLike: 'genre', valueIsLike: 'christmas');
+    //  verify there are no christmas Genre songs
+    set = SongMetadata.where(nameIsLike: 'Genre', valueIsLike: 'christmas');
     expect(set.isEmpty, true);
 
-    //  set songs with christmas in the title or artist to be the christmas genre
+    //  set songs with christmas in the title or artist to be the christmas Genre
     String christmasGenreValue = 'Christmas';
     set = SongMetadata.where(idIsLike: christmasGenreValue);
     for (SongIdMetadata idm in set) {
-      idm.add(NameValue('genre', christmasGenreValue));
+      idm.add(NameValue('Genre', christmasGenreValue));
     }
 
-    //  verify there are christmas genre songs
-    set = SongMetadata.where(nameIsLike: 'genre', valueIsLike: christmasGenreValue);
+    //  verify there are christmas Genre songs
+    set = SongMetadata.where(nameIsLike: 'Genre', valueIsLike: christmasGenreValue);
     expect(set.isEmpty, false);
     expect(set.length, 1);
     expect(set.contains(md0), false);
@@ -147,27 +143,23 @@ void main() {
 
     const String id0 = 'id0';
     {
-      expect(SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock')]).toJson(),
-          '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      expect(
-          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('genre', 'rock')]).toJson(),
-          '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
+      expect(SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock')]).toJson(),
+          '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"}]}');
+      expect(SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Genre', 'Rock')]).toJson(),
+          '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"}]}');
 
-      SongIdMetadata md =
-          SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
-      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
-      md.remove(const NameValue('jam', 'casual'));
-      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"}]}');
-      md.add(const NameValue('jam', 'casual'));
-      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"genre","value":"rock"},{"name":"jam","value":"casual"}]}');
+      SongIdMetadata md = SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'casual')]);
+      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"},{"name":"Jam","value":"Casual"}]}');
+      md.remove(NameValue('Jam', 'casual'));
+      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"}]}');
+      md.add(NameValue('Jam', 'casual'));
+      expect(md.toJson(), '{"id":"id0","metadata":[{"name":"Genre","value":"Rock"},{"name":"Jam","value":"Casual"}]}');
     }
 
     //  metadata
-    SongIdMetadata md0 =
-        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
-    SongIdMetadata md1 =
-        SongIdMetadata('id1', metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
-    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [const NameValue('jam', 'advanced')]);
+    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'Casual')]);
+    SongIdMetadata md1 = SongIdMetadata('id1', metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'Advanced')]);
+    SongIdMetadata md2 = SongIdMetadata('id2', metadata: [NameValue('Jam', 'Advanced')]);
     SongIdMetadata md3 = SongIdMetadata('id3 christmas');
 
     SplayTreeSet<SongIdMetadata> set = SplayTreeSet();
@@ -193,14 +185,14 @@ void main() {
     set = SongMetadata.where(idIs: 'foo');
     expect(set.isEmpty, true);
 
-    set = SongMetadata.where(nameIs: 'genre');
+    set = SongMetadata.where(nameIs: 'Genre');
     expect(set.isEmpty, false);
     expect(set.length, 2);
     expect(set.contains(md0), true);
     expect(set.contains(md1), true);
     expect(set.contains(md2), false);
 
-    set = SongMetadata.where(nameIs: 'jam', valueIs: 'advanced');
+    set = SongMetadata.where(nameIs: 'Jam', valueIs: 'Advanced');
     logger.i('set: $set');
     expect(set.isEmpty, false);
     expect(set.length, 2);
@@ -225,19 +217,19 @@ void main() {
     expect(set.contains(md2), true);
     expect(set.contains(md3), true);
 
-    //  verify there are no christmas genre songs
-    set = SongMetadata.where(nameIs: 'genre', valueIs: 'christmas');
+    //  verify there are no christmas Genre songs
+    set = SongMetadata.where(nameIs: 'Genre', valueIs: 'christmas');
     expect(set.isEmpty, true);
 
-    //  set songs with christmas in the title or artist to be the christmas genre
+    //  set songs with christmas in the title or artist to be the christmas Genre
     String christmasGenreValue = 'Christmas';
     set = SongMetadata.where(idIs: christmasGenreValue);
     for (SongIdMetadata idm in set) {
-      idm.add(NameValue('genre', christmasGenreValue));
+      idm.add(NameValue('Genre', christmasGenreValue));
     }
 
-    //  verify there are christmas genre songs
-    set = SongMetadata.where(nameIs: 'genre', valueIs: christmasGenreValue);
+    //  verify there are christmas Genre songs
+    set = SongMetadata.where(nameIs: 'Genre', valueIs: christmasGenreValue);
     logger.i('set: $set');
     // 'Christmas' != 'christmas'
     expect(set.isEmpty, true);
@@ -269,14 +261,13 @@ void main() {
     final String id0 = SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId;
 
     //  metadata
-    SongIdMetadata md0 =
-        SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
+    SongIdMetadata md0 = SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'casual')]);
     SongIdMetadata md1 = SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
-        metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
+        metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'advanced')]);
     SongIdMetadata md2 = SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
-        metadata: [const NameValue('jam', 'advanced')]);
+        metadata: [NameValue('Jam', 'advanced')]);
     SongIdMetadata md3 = SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
-        metadata: [const NameValue('christmas', '')]);
+        metadata: [NameValue('christmas', '')]);
     SongMetadata.clear();
     SongMetadata.set(md0);
     SongMetadata.set(md1);
@@ -300,13 +291,13 @@ void main() {
   //
   //   //  metadata
   //   SongIdMetadata md0 =
-  //       SongIdMetadata(id0, metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'casual')]);
+  //       SongIdMetadata(id0, metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'casual')]);
   //   SongIdMetadata md1 = SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId,
-  //       metadata: [const NameValue('genre', 'rock'), const NameValue('jam', 'advanced')]);
+  //       metadata: [NameValue('Genre', 'Rock'), NameValue('Jam', 'advanced')]);
   //   SongIdMetadata md2 = SongIdMetadata(SongId.computeSongId('Boxer, The', 'Boxer, The', null).songId,
-  //       metadata: [const NameValue('jam', 'advanced')]);
+  //       metadata: [NameValue('Jam', 'advanced')]);
   //   SongIdMetadata md3 = SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
-  //       metadata: [const NameValue('christmas', '')]);
+  //       metadata: [NameValue('christmas', '')]);
   //   SongMetadata.clear();
   //   SongMetadata.set(md0);
   //   SongMetadata.set(md1);
@@ -314,26 +305,26 @@ void main() {
   //   SongMetadata.set(md3);
   //
   // expect(
-  //     SongMetadata.toJsonAt(nameValue: const NameValue('genre', 'rock')),
-  //     '[{"id":"Song_39_by_Queen","metadata":[{"name":"genre","value":"rock"}]},\n'
-  //     '{"id":"Song_Hey_Joe_by_Jimi_Hendrix","metadata":[{"name":"genre","value":"rock"}]}]');
+  //     SongMetadata.toJsonAt(nameValue: NameValue('Genre', 'Rock')),
+  //     '[{"id":"Song_39_by_Queen","metadata":[{"name":"Genre","value":"Rock"}]},\n'
+  //     '{"id":"Song_Hey_Joe_by_Jimi_Hendrix","metadata":[{"name":"Genre","value":"Rock"}]}]');
   // expect(
-  //     SongMetadata.toJsonAt(nameValue: const NameValue('jam', 'advanced')),
-  //     '[{"id":"Song_39_by_Queen","metadata":[{"name":"jam","value":"advanced"}]},\n'
-  //     '{"id":"Song_Boxer_The_by_Boxer_The","metadata":[{"name":"jam","value":"advanced"}]}]');
-  // expect(SongMetadata.toJsonAt(nameValue: const NameValue('christmas', '')),
+  //     SongMetadata.toJsonAt(nameValue: NameValue('Jam', 'advanced')),
+  //     '[{"id":"Song_39_by_Queen","metadata":[{"name":"Jam","value":"advanced"}]},\n'
+  //     '{"id":"Song_Boxer_The_by_Boxer_The","metadata":[{"name":"Jam","value":"advanced"}]}]');
+  // expect(SongMetadata.toJsonAt(nameValue: NameValue('christmas', '')),
   //     '[{"id":"Song_Holly_Jolly_Christmas_by_Burl_Ives","metadata":[{"name":"christmas","value":""}]}]');
   //
-  // //  wrong name: jams not jam
-  // expect(SongMetadata.toJsonAt(nameValue: const NameValue('jams', 'advanced')), '[]');
+  // //  wrong name: Jams not Jam
+  // expect(SongMetadata.toJsonAt(nameValue: NameValue('Jams', 'advanced')), '[]');
   //
-  // //  wrong value: something not jam
-  // expect(SongMetadata.toJsonAt(nameValue: const NameValue('jam', 'somethingElse')), '[]');
+  // //  wrong value: something not Jam
+  // expect(SongMetadata.toJsonAt(nameValue: NameValue('Jam', 'somethingElse')), '[]');
   //});
 
-  bool rockMatch(SongIdMetadata idMetadata) {
+  bool RockMatch(SongIdMetadata idMetadata) {
     for (NameValue nameValue in idMetadata.nameValues) {
-      if (nameValue.name == 'genre' && nameValue.value == 'rock') return true;
+      if (nameValue.name == 'Genre' && nameValue.value == 'Rock') return true;
     }
     return false;
   }
@@ -353,32 +344,32 @@ void main() {
   }
 
   bool cjRankingBest(SongIdMetadata idMetadata) {
-    return idMetadata.contains(cjBest);
+    return idMetadata.contains(jamBest);
   }
 
   test('test match', () {
     //  metadata
     SongMetadata.clear();
-    SplayTreeSet<SongIdMetadata> matches = SongMetadata.match(rockMatch);
+    SplayTreeSet<SongIdMetadata> matches = SongMetadata.match(RockMatch);
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    var rock = const NameValue('genre', 'rock');
-    var cjOk = const NameValue('cj', 'ok');
+    var rock = NameValue('Genre', 'Rock');
+    var jamOk = NameValue('Jam', 'Ok');
 
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Dead Flowers', 'Stones, The', null).songId, metadata: [
       rock,
-      cjBest /*ha!*/
+      jamBest /*ha!*/
     ]));
     SongMetadata.set(
-        SongIdMetadata(SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId, metadata: [rock, cjBest]));
-    SongMetadata.set(SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId, metadata: [rock, cjOk]));
+        SongIdMetadata(SongId.computeSongId('Hey Joe', 'Jimi Hendrix', null).songId, metadata: [rock, jamBest]));
+    SongMetadata.set(SongIdMetadata(SongId.computeSongId('\'39', 'Queen', null).songId, metadata: [rock, jamOk]));
     SongMetadata.set(
-        SongIdMetadata(SongId.computeSongId('Boxer, The', 'Simon & Garfunkel', null).songId, metadata: [cjBest]));
+        SongIdMetadata(SongId.computeSongId('Boxer, The', 'Simon & Garfunkel', null).songId, metadata: [jamBest]));
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
-        metadata: [const NameValue('christmas', '')]));
+        metadata: [NameValue('christmas', '')]));
 
-    matches = SongMetadata.match(rockMatch);
+    matches = SongMetadata.match(RockMatch);
     expect(matches, isNotNull);
     expect(matches.length, 3);
     expect(matches.first.id, 'Song_39_by_Queen');
@@ -393,11 +384,11 @@ void main() {
     expect(matches.length, 3);
     expect(matches.first.id, 'Song_Boxer_The_by_Simon_Garfunkel');
 
-    matches = SongMetadata.match(rockMatch, from: SongMetadata.match(christmasMatch));
+    matches = SongMetadata.match(RockMatch, from: SongMetadata.match(christmasMatch));
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    matches = SongMetadata.match(rockMatch,
+    matches = SongMetadata.match(RockMatch,
         from: SongMetadata.match(cjRankingBest, from: SongMetadata.match(notChristmasMatch)));
     expect(matches, isNotNull);
     expect(matches.length, 2);
@@ -409,7 +400,7 @@ void main() {
     expect(matches.first.id, 'Song_39_by_Queen');
     expect(matches.last.id, 'Song_Hey_Joe_by_Jimi_Hendrix');
 
-    matches = SongMetadata.filterMatch([rock, cjBest]);
+    matches = SongMetadata.filterMatch([rock, jamBest]);
     expect(matches, isNotNull);
     expect(matches.length, 2);
     expect(matches.first.id, 'Song_Dead_Flowers_by_Stones_The');
@@ -419,7 +410,7 @@ void main() {
     expect(matches, isNotNull);
     expect(matches.length, 0);
 
-    matches = SongMetadata.filterMatch([cjOk, cjBest]); //  should never match
+    matches = SongMetadata.filterMatch([jamOk, jamBest]); //  should never match
     expect(matches, isNotNull);
     expect(matches.length, 0);
 
@@ -433,7 +424,7 @@ void main() {
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
     Song b = Song.createSong('b song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
-    var firstNv = const NameValue('test', 'first');
+    var firstNv = NameValue('test', 'first');
     SongMetadata.clear();
     SongMetadata.addSong(a, firstNv);
     expect(SongMetadata.where().length, 1);
@@ -448,7 +439,7 @@ void main() {
     logger.i(SongMetadata.where(idIs: b.songId.toString()).first.toString());
     expect(SongMetadata.where(idIs: b.songId.toString()).first.toString(), //
         '''{ "id": "Song_b_song_by_bob", "metadata": [
-	{"test":"first"}
+	{"Test":"First"}
 	] }''');
     expect(SongMetadata.where().length, 1);
   });
@@ -481,7 +472,7 @@ void main() {
     expect(idmA, isNotNull);
     idmA = idmA!;
     expect(idmA.isNotEmpty, true);
-    expect(idmA.contains(const NameValue('Decade', '20\'s')), isTrue);
+    expect(idmA.contains(NameValue('Decade', '20\'s')), isTrue);
 
     Song b = Song.createSong('b song', 'bob', 'no year bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
         'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
@@ -499,13 +490,13 @@ void main() {
     expect(idmB, isNotNull);
     idmB = idmB!;
     expect(idmB.isNotEmpty, true);
-    expect(idmB.contains(const NameValue('Decade', '60\'s')), isTrue);
+    expect(idmB.contains(NameValue('Decade', '60\'s')), isTrue);
   });
 
   test('test NameValueFilter', () {
-    const userBob = NameValue('user', 'bob');
-    const userShari = NameValue('user', 'Shari');
-    const userBodhi = NameValue('user', 'Bodhi');
+    final userBob = NameValue('user', 'bob');
+    final userShari = NameValue('user', 'Shari');
+    final userBodhi = NameValue('user', 'Bodhi');
 
     var filter = NameValueFilter([]);
     expect(filter.test(userBob), false);
@@ -524,7 +515,7 @@ void main() {
     expect(filter.isOr(userShari), false);
     expect(filter.isOr(userBodhi), false);
     logger.i(filter.nameValues().toList().toString());
-    expect(filter.nameValues().toList().toString(), '[{"user":"bob"}]');
+    expect(filter.nameValues().toList().toString(), '[{"User":"Bob"}]');
 
     filter = NameValueFilter([userBob, userShari]);
     expect(filter.test(userBob), true);
@@ -534,33 +525,33 @@ void main() {
     expect(filter.isOr(userShari), true);
     expect(filter.isOr(userBodhi), false);
     logger.i(filter.nameValues().toList().toString());
-    expect(filter.nameValues().toList().toString(), '[{"user":"Shari"}, {"user":"bob"}]');
+    expect(filter.nameValues().toList().toString(), '[{"User":"Bob"}, {"User":"Shari"}]');
   });
 
   test('test NameValueFilter testAll', () {
-    const userBob = NameValue('user', 'bob');
-    const userShari = NameValue('user', 'Shari');
-    const userBodhi = NameValue('user', 'Bodhi');
+    final userBob = NameValue('User', 'bob');
+    final userShari = NameValue('User', 'Shari');
+    final userBodhi = NameValue('User', 'Bodhi');
 
     var filter = NameValueFilter([userBob, userShari]);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), true);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), true);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
 
-    filter = NameValueFilter([userBob, userShari, const NameValue('foo', 'bar')]);
+    filter = NameValueFilter([userBob, userShari, NameValue('foo', 'bar')]);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), false);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), false);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
 
-    filter = NameValueFilter([const NameValue('foo', 'bar')]);
+    filter = NameValueFilter([NameValue('foo', 'bar')]);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), false);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), false);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
 
-    filter = NameValueFilter([userBob, userShari, const NameValue('foo', 'bar')]);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob, const NameValue('foo', 'bar')])), true);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari, const NameValue('foo', 'bar')])), true);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi, const NameValue('foo', 'bar')])), false);
+    filter = NameValueFilter([userBob, userShari, NameValue('foo', 'bar')]);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob, NameValue('foo', 'bar')])), true);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari, NameValue('foo', 'bar')])), true);
+    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi, NameValue('foo', 'bar')])), false);
   });
 }
 
