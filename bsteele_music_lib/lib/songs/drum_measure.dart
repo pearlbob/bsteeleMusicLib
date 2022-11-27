@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 
 import '../app_logger.dart';
@@ -356,7 +357,7 @@ class DrumParts implements Comparable<DrumParts> {
       sb.write(part.toJson());
     }
     sb.write(']\n');
-    sb.write('}\n');
+    sb.write('}');
     return sb.toString();
   }
 
@@ -509,54 +510,75 @@ class DrumPartsList {
   DrumPartsList._internal();
 
   void add(DrumParts drumParts) {
-    try {
-      var original = _singleton._drumPartsList.firstWhere((dp) => dp.name == drumParts.name);
-      _singleton._drumPartsList.remove(original);
-    } catch (e) {
-      //
-      logger.v('e: $e');
-    }
-    _singleton._drumPartsList.add(drumParts);
-    logger.v(' _singleton._drumPartsList.add(): ${_singleton._drumPartsList}');
+    _drumPartsMap[drumParts.name] = drumParts;
   }
 
   void remove(DrumParts drumParts) {
-    try {
-      var original = _singleton._drumPartsList.firstWhere((dp) => dp.name == drumParts.name);
-      _singleton._drumPartsList.remove(original);
-    } catch (e) {
-      //
+    _drumPartsMap.remove(drumParts.name);
+  }
+
+  match(Song song, DrumParts drumParts) {
+    assert(_drumPartsMap.values.contains(drumParts));
+    _songIdToDrumPartsNameMap[song.songId.toString()] = drumParts.name;
+  }
+
+  removeMatch(Song song) {
+    _songIdToDrumPartsNameMap.remove(song.songId.toString());
+  }
+
+  DrumParts? operator [](Song song) {
+    var name = _songIdToDrumPartsNameMap[song.songId.toString()];
+    if (name != null) {
+      return _drumPartsMap[name];
     }
+    return null;
   }
 
-  /// clear all metadata.
+  /// clear all drumparts
   void clear() {
-    _singleton._drumPartsList.clear();
+    _drumPartsMap.clear();
+    _songIdToDrumPartsNameMap.clear();
   }
 
-  bool get isEmpty => _drumPartsList.isEmpty;
+  bool get isEmpty => _drumPartsMap.isEmpty;
 
-  bool get isNotEmpty => _drumPartsList.isNotEmpty;
+  bool get isNotEmpty => _drumPartsMap.isNotEmpty;
 
-  int get length => _drumPartsList.length;
+  int get length => _drumPartsMap.keys.length;
 
   @override
   String toString() {
-    return '{${_drumPartsList.length}: ${_drumPartsList.map((e) => e.toString())} }';
+    return '{${_drumPartsMap.keys.length}: ${_drumPartsMap.keys} }';
   }
 
   String toJson({final bool asObject = true}) {
-    StringBuffer sb = StringBuffer();
+    StringBuffer partsBuffer = StringBuffer();
     bool first = true;
-    for (var drumParts in _singleton._drumPartsList) {
+    for (var dp in drumParts) {
       if (first) {
         first = false;
       } else {
-        sb.write(',\n');
+        partsBuffer.write(',\n');
       }
-      sb.write(drumParts.toJson());
+      partsBuffer.write(dp.toJson());
     }
-    return '${asObject ? '{ ' : ''}"drumPartsList" : [${sb.toString()}]${asObject ? ' }' : ''}';
+
+    StringBuffer matchesBuffer = StringBuffer();
+    first = true;
+    for (var songKey in SplayTreeSet<String>()..addAll(_songIdToDrumPartsNameMap.keys)) {
+      var drumPartsName = _songIdToDrumPartsNameMap[songKey];
+      assert(drumPartsName != null);
+      if (first) {
+        first = false;
+      } else {
+        matchesBuffer.write(',\n');
+      }
+      matchesBuffer.write(' ${jsonEncode(songKey)}: ${jsonEncode(drumPartsName)}');
+    }
+    return '${asObject ? '{ ' : ''}'
+        '"drumPartsList" : [${partsBuffer.toString()}],'
+        '"matchesList" : {${matchesBuffer.toString()}}'
+        '${asObject ? ' }' : ''}';
   }
 
   void fromJson(String jsonString) {
@@ -579,6 +601,13 @@ class DrumPartsList {
             }
           }
           break;
+        case 'matchesList':
+          var jsonMatches = decoded[decodedKey];
+          for (var key in jsonMatches.keys) {
+            logger.v('$key: ${jsonMatches[key]}');
+            _songIdToDrumPartsNameMap[key] = jsonMatches[key];
+          }
+          break;
         default:
           logger.w('unknown $runtimeType.fromJsonMap: "$decodedKey"');
           break;
@@ -586,9 +615,9 @@ class DrumPartsList {
     }
   }
 
-  SplayTreeSet<DrumParts> get drumParts => _drumPartsList;
+  final HashMap<String, String> _songIdToDrumPartsNameMap = HashMap();
 
-  final SplayTreeSet<DrumParts> _drumPartsList = SplayTreeSet((e1, e2) =>
-      //  unique by name only
-      e1.name.compareTo(e2.name));
+  SplayTreeSet<DrumParts> get drumParts => SplayTreeSet<DrumParts>()..addAll(_drumPartsMap.values);
+
+  final HashMap<String, DrumParts> _drumPartsMap = HashMap();
 }

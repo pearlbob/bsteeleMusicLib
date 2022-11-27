@@ -204,8 +204,8 @@ class Pitch implements Comparable<Pitch> {
       int fromC = (n - MusicConstants.halfStepsFromAtoC) % MusicConstants.halfStepsPerOctave;
       //  compute halfSteps from A0
       n += ((fromC >= (MusicConstants.halfStepsPerOctave - MusicConstants.halfStepsFromAtoC))
-          ? _octaveNumber
-          : _octaveNumber - 1) *
+              ? _octaveNumber
+              : _octaveNumber - 1) *
           MusicConstants.halfStepsPerOctave;
     }
     _number = n;
@@ -371,9 +371,6 @@ class Pitch implements Comparable<Pitch> {
     return list[n];
   }
 
-  /// Return the frequency of the pitch.
-  double get frequency => _frequency;
-
   /// Return the scale note represented by this pitch.
   ScaleNote getScaleNote() {
     return _scaleNote;
@@ -410,18 +407,6 @@ class Pitch implements Comparable<Pitch> {
 
   bool get isFlat => _scaleNote.isFlat;
 
-  /// return matching sharp accidental
-  /// Naturals and sharps return themselves
-  Pitch asSharp() {
-    return _asSharp;
-  }
-
-  /// return matching flat accidental
-  /// Naturals and flats return themselves
-  Pitch asFlat() {
-    return _asFlat;
-  }
-
   @override
   int compareTo(Pitch other) {
     return _pitchEnum.index.compareTo(other._pitchEnum.index);
@@ -439,14 +424,33 @@ class Pitch implements Comparable<Pitch> {
 
   Accidental get accidental => _scaleNote.accidental;
 
+  /// A number identifying the pitch's octave.  They range from 0 to 8 based on a piano's range.
   int get octaveNumber => _octaveNumber;
   late int _octaveNumber;
 
+  /// A number representing the pitch's halfStep count offset from A0.
+  /// Thus A0's number is 0, C8's number is 87.
   int get number => _number;
   late int _number;
+
+  /// Return the frequency of the pitch in cycles per second (Hertz).
+  double get frequency => _frequency;
   late double _frequency;
 
+  /// return matching sharp accidental
+  /// Naturals and sharps return themselves
+  Pitch asSharp() {
+    return _asSharp;
+  }
+
   late Pitch _asSharp;
+
+  /// return matching flat accidental
+  /// Naturals and flats return themselves
+  Pitch asFlat() {
+    return _asFlat;
+  }
+
   late Pitch _asFlat;
 
   static final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');

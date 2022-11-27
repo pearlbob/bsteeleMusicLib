@@ -15,6 +15,14 @@ void main() {
             3 /* high note aliases */);
   });
 
+  test('pitch numbers', () {
+    for (var e in PitchEnum.values) {
+      var pitch = Pitch.get(e);
+
+      logger.i('$e: $pitch: ${pitch.number}');
+    }
+  });
+
   test('testParsing', () {
     //  print table
     for (Pitch p in Pitch.getPitches()) {

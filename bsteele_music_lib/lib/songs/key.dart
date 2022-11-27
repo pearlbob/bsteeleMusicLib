@@ -8,13 +8,60 @@ import 'package:bsteeleMusicLib/songs/scale_note.dart';
 
 import 'music_constants.dart';
 
-// ignore: constant_identifier_names
-enum KeyEnum { Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, Fs }
+/// An enumeration of all major keys.
+
+enum KeyEnum {
+  // ignore: constant_identifier_names
+  /// G flat
+  // ignore: constant_identifier_names
+  Gb,
+
+  /// D flat
+  // ignore: constant_identifier_names
+  Db,
+
+  /// A flat
+  // ignore: constant_identifier_names
+  Ab,
+
+  /// E flat
+  // ignore: constant_identifier_names
+  Eb,
+
+  /// B flat
+  // ignore: constant_identifier_names
+  Bb,
+
+  /// F
+  F,
+
+  /// CS
+  C,
+
+  /// G
+  G,
+
+  /// D
+  D,
+
+  /// A
+  A,
+
+  /// E
+  E,
+
+  /// B
+  B,
+
+  /// F sharp (aka. G flat)
+  // ignore: constant_identifier_names
+  Fs
+}
 
 ///
 /// Representation of the song key used generate the expression of the proper scales.
 ///
-/// Six flats and six sharps are labeled differently but are otherwise the same key.
+/// Six flats (G♭) and six sharps (F♯) are labeled differently but are otherwise the same key.
 /// Seven flats and seven sharps are not included.
 class Key implements Comparable<Key> {
   Key._(this._keyEnum, this._keyValue, this._halfStep, this._capoLocation)

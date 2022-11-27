@@ -1,5 +1,7 @@
 import 'package:bsteeleMusicLib/app_logger.dart';
 import 'package:bsteeleMusicLib/songs/drum_measure.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -357,7 +359,7 @@ void main() {
     DrumPartsList drumPartsList = DrumPartsList();
     logger.i(drumPartsList.toJson());
     expect(drumPartsList.length, 0);
-    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [] }''');
+    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [],"matchesList" : {} }''');
     DrumParts drumParts = DrumParts(name: 'bob stuff', beats: 4);
 
     int beats = 4;
@@ -371,16 +373,14 @@ void main() {
     expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
  "name": "bob stuff", "beats": 4, "subBeats": 4, "volume": 1.0,
  "parts": []
-}
-] }''');
+}],"matchesList" : {} }''');
 
     drumPartsList.add(drumParts);
     //  no change
     expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
  "name": "bob stuff", "beats": 4, "subBeats": 4, "volume": 1.0,
  "parts": []
-}
-] }''');
+}],"matchesList" : {} }''');
     expect(drumPartsList.length, 1);
     logger.i(drumPartsList.toJson());
 
@@ -446,5 +446,93 @@ void main() {
         }
       }
     }
+  });
+
+  test('drumParts DrumPartsList song matches', () {
+    DrumPartsList drumPartsList = DrumPartsList();
+    drumPartsList.clear();
+
+    Song a = Song.createSong('a song', 'bob', 'bob', Key.C, 104, 4, 4, 'pearl bob', 'v: A A A A',
+        'v: Ain\'t you going to play something else?');
+    Song b = Song.createSong('b song', 'bob', 'bob', Key.C, 104, 4, 4, 'pearl bob', 'v: B B B Bb', 'v: Be flat.');
+    Song c =
+        Song.createSong('c never sung song', 'bob', 'bob', Key.G, 104, 4, 4, 'pearl bob', 'v: G D C G', 'v: Gee baby');
+    expect(drumPartsList[a], null);
+    expect(drumPartsList[b], null);
+    expect(drumPartsList[c], null);
+
+    int beats = 4;
+    var simplisticDrumParts = DrumParts(name: 'simplistic', beats: beats, parts: [
+      DrumPart(DrumTypeEnum.closedHighHat, beats: beats)
+        ..addBeat(0)
+        ..addBeat(2),
+      DrumPart(DrumTypeEnum.snare, beats: beats)
+        ..addBeat(1)
+        ..addBeat(3)
+    ]);
+    var rockDrumParts = DrumParts(name: 'rock', beats: beats, parts: [
+      DrumPart(DrumTypeEnum.closedHighHat, beats: beats)
+        ..addBeat(0)
+        ..addBeat(1)
+        ..addBeat(2)
+        ..addBeat(3),
+      DrumPart(DrumTypeEnum.snare, beats: beats)
+        ..addBeat(0)
+        ..addBeat(1)
+        ..addBeat(2)
+        ..addBeat(3),
+    ]);
+    drumPartsList.add(simplisticDrumParts);
+    drumPartsList.add(rockDrumParts);
+    drumPartsList.match(a, simplisticDrumParts);
+
+    logger.i('drumPartsList["${a.title}"]: ${drumPartsList[a]}');
+    expect(drumPartsList[a], simplisticDrumParts);
+    expect(drumPartsList[b], null);
+    expect(drumPartsList[c], null);
+
+    drumPartsList.match(b, simplisticDrumParts);
+    expect(drumPartsList[a], simplisticDrumParts);
+    expect(drumPartsList[b], simplisticDrumParts);
+    expect(drumPartsList[c], null);
+
+    drumPartsList.match(b, rockDrumParts);
+    expect(drumPartsList[a], simplisticDrumParts);
+    expect(drumPartsList[b], rockDrumParts);
+    expect(drumPartsList[c], null);
+
+    drumPartsList.removeMatch(b);
+    expect(drumPartsList[a], simplisticDrumParts);
+    expect(drumPartsList[b], null);
+    expect(drumPartsList[c], null);
+
+    drumPartsList.match(b, rockDrumParts);
+    expect(drumPartsList[a], simplisticDrumParts);
+    expect(drumPartsList[b], rockDrumParts);
+    expect(drumPartsList[c], null);
+
+    logger.i(drumPartsList.toJson());
+    var drumPartsListToJson = drumPartsList.toJson();
+    expect(drumPartsListToJson, '''{ "drumPartsList" : [{
+ "name": "rock", "beats": 4, "subBeats": 4, "volume": 1.0,
+ "parts": [{ "drumType": "closedHighHat", "beats": 4, "selection": [ 0, 4, 8, 12 ]},
+   { "drumType": "snare", "beats": 4, "selection": [ 0, 4, 8, 12 ]}]
+},
+{
+ "name": "simplistic", "beats": 4, "subBeats": 4, "volume": 1.0,
+ "parts": [{ "drumType": "closedHighHat", "beats": 4, "selection": [ 0, 8 ]},
+   { "drumType": "snare", "beats": 4, "selection": [ 4, 12 ]}]
+}],"matchesList" : { "Song_a_song_by_bob": "simplistic",
+ "Song_b_song_by_bob": "rock"} }''');
+
+    drumPartsList.clear();
+    expect(drumPartsList[a], null);
+    expect(drumPartsList[b], null);
+    expect(drumPartsList[c], null);
+
+    drumPartsList.fromJson(drumPartsListToJson);
+    expect(drumPartsList[a], simplisticDrumParts);
+    expect(drumPartsList[b], rockDrumParts);
+    expect(drumPartsList[c], null);
   });
 }

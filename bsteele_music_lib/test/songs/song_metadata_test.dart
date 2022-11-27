@@ -322,7 +322,7 @@ void main() {
   // expect(SongMetadata.toJsonAt(nameValue: NameValue('Jam', 'somethingElse')), '[]');
   //});
 
-  bool RockMatch(SongIdMetadata idMetadata) {
+  bool rockMatch(SongIdMetadata idMetadata) {
     for (NameValue nameValue in idMetadata.nameValues) {
       if (nameValue.name == 'Genre' && nameValue.value == 'Rock') return true;
     }
@@ -350,7 +350,7 @@ void main() {
   test('test match', () {
     //  metadata
     SongMetadata.clear();
-    SplayTreeSet<SongIdMetadata> matches = SongMetadata.match(RockMatch);
+    SplayTreeSet<SongIdMetadata> matches = SongMetadata.match(rockMatch);
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
@@ -369,7 +369,7 @@ void main() {
     SongMetadata.set(SongIdMetadata(SongId.computeSongId('Holly Jolly Christmas', 'Burl Ives', null).songId,
         metadata: [NameValue('christmas', '')]));
 
-    matches = SongMetadata.match(RockMatch);
+    matches = SongMetadata.match(rockMatch);
     expect(matches, isNotNull);
     expect(matches.length, 3);
     expect(matches.first.id, 'Song_39_by_Queen');
@@ -384,11 +384,11 @@ void main() {
     expect(matches.length, 3);
     expect(matches.first.id, 'Song_Boxer_The_by_Simon_Garfunkel');
 
-    matches = SongMetadata.match(RockMatch, from: SongMetadata.match(christmasMatch));
+    matches = SongMetadata.match(rockMatch, from: SongMetadata.match(christmasMatch));
     expect(matches, isNotNull);
     expect(matches, isEmpty);
 
-    matches = SongMetadata.match(RockMatch,
+    matches = SongMetadata.match(rockMatch,
         from: SongMetadata.match(cjRankingBest, from: SongMetadata.match(notChristmasMatch)));
     expect(matches, isNotNull);
     expect(matches.length, 2);

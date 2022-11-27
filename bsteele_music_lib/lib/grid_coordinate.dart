@@ -1,3 +1,5 @@
+///   Grid coordinate storage for row and column values.
+///   Rows and columns both start counting from zero.
 class GridCoordinate implements Comparable<GridCoordinate> {
   const GridCoordinate(this._row, this._col);
 
@@ -32,9 +34,13 @@ class GridCoordinate implements Comparable<GridCoordinate> {
     return ret;
   }
 
+  /// Row coordinate of the grid location.
+  /// Starts counting from zero.
   int get row => _row;
   final int _row;
 
+  /// Column coordinate of the grid location.
+  /// Starts counting from zero.
   int get col => _col;
   final int _col;
 }

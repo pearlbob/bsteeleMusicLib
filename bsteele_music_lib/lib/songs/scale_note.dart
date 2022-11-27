@@ -15,6 +15,7 @@ enum Accidental {
   natural,
 }
 
+/// Musical scale notes and their properties
 enum ScaleNote implements Comparable<ScaleNote> {
   Ab(11, 'Ab', 'A♭', false, true, scaleNumber: 0, isSilent: false),
   A(0, 'A', 'A', false, false, scaleNumber: 0, isSilent: false),
@@ -37,6 +38,8 @@ enum ScaleNote implements Comparable<ScaleNote> {
   Gb(9, 'Gb', 'G♭', false, true, scaleNumber: 6, isSilent: false),
   G(10, 'G', 'G', false, false, scaleNumber: 6, isSilent: false),
   Gs(11, 'G#', 'G♯', true, false, scaleNumber: 6, isSilent: false),
+
+  /// As a convenience, silence is considered a scale note.
   X(0, 'X', 'X', false, false, scaleNumber: -1, isSilent: true); //  No scale note!  Used to avoid testing for null
 
   /// Return the alias for this note.
