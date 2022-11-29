@@ -517,9 +517,17 @@ class DrumPartsList {
     _drumPartsMap.remove(drumParts.name);
   }
 
-  match(Song song, DrumParts drumParts) {
-    assert(_drumPartsMap.values.contains(drumParts));
-    _songIdToDrumPartsNameMap[song.songId.toString()] = drumParts.name;
+  DrumParts? songMatch(final Song song) {
+    logger.i('songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
+        '${_drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]]}');
+    return _drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]];
+  }
+
+  match(final Song song, DrumParts? drumParts) {
+    if (drumParts != null) {
+      assert(_drumPartsMap.values.contains(drumParts));
+      _songIdToDrumPartsNameMap[song.songId.toString()] = drumParts.name;
+    }
   }
 
   removeMatch(Song song) {
@@ -582,9 +590,13 @@ class DrumPartsList {
   }
 
   void fromJson(String jsonString) {
-    var decoded = json.decode(jsonString);
-    if (decoded != null && decoded is Map) {
-      fromJsonMap(decoded);
+    try {
+      var decoded = json.decode(jsonString);
+      if (decoded != null && decoded is Map) {
+        fromJsonMap(decoded);
+      }
+    } catch (e) {
+      //
     }
   }
 
