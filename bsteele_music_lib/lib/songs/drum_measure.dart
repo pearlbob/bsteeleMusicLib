@@ -23,6 +23,17 @@ String drumShortSubBeatName(DrumSubBeatEnum drumSubBeatEnum) {
   return _drumShortSubBeatNames[drumSubBeatEnum.index];
 }
 
+/// Map from beats counting from 1 to counting from 0
+//  Must be in order!
+enum DrumBeat {
+  beat1,
+  beat2,
+  beat3,
+  beat4,
+  beat5,
+  beat6;
+}
+
 enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
   closedHighHat,
   openHighHat,
@@ -66,10 +77,10 @@ class DrumPart implements Comparable<DrumPart> {
     List<double> ret = [];
     double offsetPeriod = 60.0 / (bpm * drumSubBeatsPerBeat);
     if (bpm > 0) {
-      for (var beat = 0; beat < beats; beat++) {
+      for (var beat in DrumBeat.values) {
         for (var subBeat in DrumSubBeatEnum.values) {
           if (beatSelection(beat, subBeat)) {
-            ret.add(t0 + _offset(beat, subBeat) * offsetPeriod);
+            ret.add(t0 + _offset(beat.index, subBeat) * offsetPeriod);
           }
         }
       }
@@ -78,25 +89,16 @@ class DrumPart implements Comparable<DrumPart> {
   }
 
   /// Count from zero
-  bool beatSelection(
-      int beat, //  counts from 0!
-      DrumSubBeatEnum subBeat) {
-    assert(beat >= 0);
-    assert(beat < beats);
-    return _beatSelection[_offset(beat, subBeat)];
+  bool beatSelection(final DrumBeat beat, DrumSubBeatEnum subBeat) {
+    return _beatSelection[_offset(beat.index, subBeat)];
   }
 
-  void setBeatSelection(
-      int beat, //  counts from 0!
-      DrumSubBeatEnum subBeat,
-      bool b) {
-    assert(beat >= 0);
-    assert(beat < beats);
-    _beatSelection[_offset(beat, subBeat)] = b;
+  void setBeatSelection(final DrumBeat beat, DrumSubBeatEnum subBeat, bool b) {
+    _beatSelection[_offset(beat.index, subBeat)] = b;
   }
 
   bool get isEmpty {
-    for (var beat = 0; beat < beats; beat++) {
+    for (var beat in DrumBeat.values) {
       for (var subBeat in DrumSubBeatEnum.values) {
         if (beatSelection(beat, subBeat)) {
           return false;
@@ -108,7 +110,7 @@ class DrumPart implements Comparable<DrumPart> {
 
   int get beatCount {
     int ret = 0;
-    for (var beat = 0; beat < beats; beat++) {
+    for (var beat in DrumBeat.values) {
       for (var subBeat in DrumSubBeatEnum.values) {
         if (beatSelection(beat, subBeat)) {
           ret++;
@@ -118,24 +120,22 @@ class DrumPart implements Comparable<DrumPart> {
     return ret;
   }
 
-  void addBeat(int beat, //  counts from 0!
-      {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
+  void addBeat(final DrumBeat beat, {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
     setBeatSelection(beat, subBeat, true);
   }
 
-  void removeBeat(int beat, //  counts from 0!
-      {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
+  void removeBeat(final DrumBeat beat, {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
     setBeatSelection(beat, subBeat, false);
   }
 
   @override
   String toString() {
     var sb = StringBuffer();
-    for (var beat = 0; beat < beats; beat++) {
+    for (var beat in DrumBeat.values) {
       for (var subBeat in DrumSubBeatEnum.values) {
         if (beatSelection(beat, subBeat)) {
           //  beats count from 0!
-          sb.write(' ${beat + 1}${_drumShortSubBeatNames[subBeat.index]}');
+          sb.write(' ${beat.index + 1}${_drumShortSubBeatNames[subBeat.index]}');
         }
       }
     }
@@ -192,12 +192,9 @@ class DrumPart implements Comparable<DrumPart> {
         }
       }
       if (drumType != null && beats > 0) {
-        // logger.i(
-        //     'selections: $selections'
-        // );
         var ret = DrumPart(drumType, beats: beats);
         for (var beat in selections) {
-          ret.setBeatSelection(beat ~/ DrumSubBeatEnum.values.length,
+          ret.setBeatSelection(DrumBeat.values[beat ~/ DrumSubBeatEnum.values.length],
               DrumSubBeatEnum.values[beat % DrumSubBeatEnum.values.length], true);
         }
         return ret;
@@ -509,8 +506,14 @@ class DrumPartsList {
 
   DrumPartsList._internal();
 
+  static const defaultName = 'Default';
+
   void add(DrumParts drumParts) {
     _drumPartsMap[drumParts.name] = drumParts;
+  }
+
+  DrumParts? findByName(final String name) {
+    return _drumPartsMap[name];
   }
 
   void remove(DrumParts drumParts) {
@@ -542,7 +545,7 @@ class DrumPartsList {
     return null;
   }
 
-  /// clear all drumparts
+  /// clear all drum parts
   void clear() {
     _drumPartsMap.clear();
     _songIdToDrumPartsNameMap.clear();
@@ -631,5 +634,17 @@ class DrumPartsList {
 
   SplayTreeSet<DrumParts> get drumParts => SplayTreeSet<DrumParts>()..addAll(_drumPartsMap.values);
 
-  final HashMap<String, DrumParts> _drumPartsMap = HashMap();
+  final HashMap<String, DrumParts> _drumPartsMap = HashMap()
+    ..addAll({
+      DrumPartsList.defaultName: DrumParts(name: DrumPartsList.defaultName, beats: 6, parts: [
+        DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
+          ..addBeat(DrumBeat.beat1)
+          ..addBeat(DrumBeat.beat3)
+          ..addBeat(DrumBeat.beat5),
+        DrumPart(DrumTypeEnum.snare, beats: 6)
+          ..addBeat(DrumBeat.beat2)
+          ..addBeat(DrumBeat.beat4)
+          ..addBeat(DrumBeat.beat6),
+      ])
+    });
 }

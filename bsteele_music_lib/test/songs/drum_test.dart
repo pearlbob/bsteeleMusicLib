@@ -14,12 +14,14 @@ void main() {
     for (var drumType in DrumTypeEnum.values) {
       for (var beats = 2; beats <= 6; beats += 2) {
         {
+          assert(beats <= DrumBeat.values.length);
           DrumPart dp = DrumPart(drumType, beats: beats);
 
           int beatCount = 0;
           expect(dp.beatCount, beatCount);
 
-          for (var beat = 0; beat < beats; beat++) {
+          for (var i = 0; i < beats; i++) {
+            var beat = DrumBeat.values[i];
             for (var subBeat in DrumSubBeatEnum.values) {
               dp.addBeat(beat, subBeat: subBeat);
               beatCount++;
@@ -30,11 +32,13 @@ void main() {
           beatCount = beats * drumSubBeatsPerBeat;
           expect(dp.beatCount, beatCount);
 
-          for (var beat = 0; beat < beats; beat++) {
+          for (var beat in DrumBeat.values) {
             for (var subBeat in DrumSubBeatEnum.values) {
               dp.removeBeat(beat, subBeat: subBeat);
               logger.log(debugLog, 'dp: $dp');
-              beatCount--;
+              if (beatCount > 0) {
+                beatCount--;
+              }
               expect(dp.beatCount, beatCount);
             }
           }
@@ -49,7 +53,8 @@ void main() {
           expect(dp.beatCount, beatCount);
           expect(dp.timings(t0, bpm), expectedTimings);
 
-          for (var beat = 0; beat < beats; beat++) {
+          for (var i = 0; i < beats; i++) {
+            var beat = DrumBeat.values[i];
             for (var subBeat in DrumSubBeatEnum.values) {
               dp.addBeat(beat, subBeat: subBeat);
               beatCount++;
@@ -57,7 +62,7 @@ void main() {
               expect(dp.beatCount, beatCount);
 
               expectedTimings
-                  .add(t0 + (beat * drumSubBeatsPerBeat + subBeat.index) * 60.0 / (bpm * drumSubBeatsPerBeat));
+                  .add(t0 + (beat.index * drumSubBeatsPerBeat + subBeat.index) * 60.0 / (bpm * drumSubBeatsPerBeat));
               expect(dp.timings(t0, bpm), expectedTimings);
             }
           }
@@ -66,11 +71,14 @@ void main() {
           expect(dp.beatCount, beatCount);
           expect(dp.timings(t0, bpm), expectedTimings);
 
-          for (var beat = 0; beat < beats; beat++) {
+          for (var i = 0; i < beats; i++) {
+            var beat = DrumBeat.values[i];
             for (var subBeat in DrumSubBeatEnum.values) {
               dp.removeBeat(beat, subBeat: subBeat);
               logger.log(debugLog, 'dp.timings: ${dp.timings(t0, bpm)}');
-              beatCount--;
+              if (beatCount > 0) {
+                beatCount--;
+              }
               expect(dp.beatCount, beatCount);
               expectedTimings.removeAt(0);
               expect(dp.timings(t0, bpm), expectedTimings);
@@ -87,28 +95,28 @@ void main() {
         expect(dp1.compareTo(dp3), 0);
         expect(dp3.compareTo(dp1), 0);
         expect(dp2.compareTo(dp1), 1);
-        dp3.addBeat(1, subBeat: DrumSubBeatEnum.subBeatE);
+        dp3.addBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeatE);
         expect(dp1.compareTo(dp3), 1);
         expect(dp3.compareTo(dp1), -1);
-        dp1.addBeat(1, subBeat: DrumSubBeatEnum.subBeatE);
+        dp1.addBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeatE);
         expect(dp1.compareTo(dp3), 0);
-        dp1.removeBeat(1, subBeat: DrumSubBeatEnum.subBeatE);
-        dp1.addBeat(1, subBeat: DrumSubBeatEnum.subBeat);
+        dp1.removeBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeatE);
+        dp1.addBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeat);
         expect(dp1.compareTo(dp3), -1);
-        dp1.addBeat(1, subBeat: DrumSubBeatEnum.subBeatE);
+        dp1.addBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeatE);
         expect(dp1.compareTo(dp3), -1);
         expect(dp3.compareTo(dp1), 1);
 
         //  see 1 stay first when 1 is emptied
-        dp3.addBeat(2, subBeat: DrumSubBeatEnum.subBeat);
+        dp3.addBeat(DrumBeat.beat3, subBeat: DrumSubBeatEnum.subBeat);
         expect(dp1.compareTo(dp3), -1);
-        dp1.removeBeat(1, subBeat: DrumSubBeatEnum.subBeatE);
+        dp1.removeBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeatE);
         expect(dp1.compareTo(dp3), -1);
-        dp1.removeBeat(1, subBeat: DrumSubBeatEnum.subBeat);
+        dp1.removeBeat(DrumBeat.beat2, subBeat: DrumSubBeatEnum.subBeat);
         expect(dp1.compareTo(dp3), 1);
 
         //  see 3 go first if 1 is filled with a late beat
-        dp1.addBeat(3, subBeat: DrumSubBeatEnum.subBeat);
+        dp1.addBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeat);
         logger.log(debugLog, 'dp1: $dp1, dp3: $dp3');
         expect(dp1.compareTo(dp3), 1);
       }
@@ -119,18 +127,18 @@ void main() {
         expect(dp1.isEmpty, true);
         dp1 = DrumPart(DrumTypeEnum.kick, beats: beats);
         expect(dp1.isEmpty, true);
-        dp1.addBeat(1);
-        dp1.addBeat(3);
+        dp1.addBeat(DrumBeat.beat2);
+        dp1.addBeat(DrumBeat.beat4);
         expect(dp1.isEmpty, false);
         var dp2 = DrumPart(DrumTypeEnum.kick, beats: beats)
-          ..addBeat(1)
-          ..addBeat(3);
+          ..addBeat(DrumBeat.beat2)
+          ..addBeat(DrumBeat.beat4);
         expect(dp1.compareTo(dp2), 0);
-        dp2.removeBeat(3);
-        dp2.addBeat(3, subBeat: DrumSubBeatEnum.subBeatAnd);
+        dp2.removeBeat(DrumBeat.beat4);
+        dp2.addBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAnd);
         expect(dp1.compareTo(dp2), -1);
-        dp2.removeBeat(3, subBeat: DrumSubBeatEnum.subBeatAnd);
-        dp2.addBeat(2, subBeat: DrumSubBeatEnum.subBeatAndA);
+        dp2.removeBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAnd);
+        dp2.addBeat(DrumBeat.beat3, subBeat: DrumSubBeatEnum.subBeatAndA);
         expect(dp1.compareTo(dp2), 1);
         logger.log(debugLog, 'dp1: $dp1, dp2: $dp2');
       }
@@ -141,16 +149,16 @@ void main() {
           {
             DrumPart dp = DrumPart(drumType, beats: beats);
 
-            for (var beat = 0; beat < beats; beat++) {
-              dp.addBeat(beat);
+            for (var i = 0; i < beats; i++) {
+              dp.addBeat(DrumBeat.values[i]);
             }
             logger.log(debugLog, 'drumPart: $dp');
             expect(dp.beatCount, beats);
 
             int pass = 1;
             for (var subBeat in DrumSubBeatEnum.values) {
-              for (var beat = 0; beat < beats; beat++) {
-                dp.addBeat(beat, subBeat: subBeat);
+              for (var i = 0; i < beats; i++) {
+                dp.addBeat(DrumBeat.values[i], subBeat: subBeat);
               }
               logger.log(debugLog, 'drumPart: $dp');
               expect(dp.beatCount, pass * beats);
@@ -177,13 +185,13 @@ void main() {
       expect(drumPart, isNotNull);
       expect(drumPart.beats, 4);
       expect(drumPart.isEmpty, true);
-      drumPart.setBeatSelection(0, DrumSubBeatEnum.subBeat, true);
+      drumPart.setBeatSelection(DrumBeat.beat1, DrumSubBeatEnum.subBeat, true);
       expect(drumPart.isEmpty, false);
-      drumPart.setBeatSelection(0, DrumSubBeatEnum.subBeatAndA, true);
+      drumPart.setBeatSelection(DrumBeat.beat1, DrumSubBeatEnum.subBeatAndA, true);
       expect(drumPart.isEmpty, false);
-      drumPart.setBeatSelection(0, DrumSubBeatEnum.subBeat, false);
+      drumPart.setBeatSelection(DrumBeat.beat1, DrumSubBeatEnum.subBeat, false);
       expect(drumPart.isEmpty, false);
-      drumPart.setBeatSelection(0, DrumSubBeatEnum.subBeatAndA, false);
+      drumPart.setBeatSelection(DrumBeat.beat1, DrumSubBeatEnum.subBeatAndA, false);
       expect(drumPart.isEmpty, true);
     }
     {
@@ -215,8 +223,8 @@ void main() {
 
       expect(dm.isSilent(), true);
       var closedHighHat = DrumPart(DrumTypeEnum.closedHighHat, beats: 4)
-        ..addBeat(1)
-        ..addBeat(3);
+        ..addBeat(DrumBeat.beat2)
+        ..addBeat(DrumBeat.beat4);
 
       dm.addPart(closedHighHat);
       expect(dm.isSilent(), false);
@@ -229,21 +237,21 @@ void main() {
         }
       }
 
-      closedHighHat.addBeat(0, subBeat: DrumSubBeatEnum.subBeatAnd);
+      closedHighHat.addBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeatAnd);
       expect(closedHighHat.timings(t0, bpm), [0.25, 0.5, 1.5]);
-      closedHighHat.addBeat(3, subBeat: DrumSubBeatEnum.subBeatAndA);
+      closedHighHat.addBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAndA);
       expect(closedHighHat.timings(t0, bpm), [0.25, 0.5, 1.5, 1.875]);
-      closedHighHat.addBeat(0, subBeat: DrumSubBeatEnum.subBeatE);
+      closedHighHat.addBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeatE);
       expect(closedHighHat.timings(t0, bpm), [0.125, 0.25, 0.5, 1.5, 1.875]);
-      closedHighHat.addBeat(0, subBeat: DrumSubBeatEnum.subBeat);
+      closedHighHat.addBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeat);
       expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5, 1.875]);
-      closedHighHat.addBeat(3, subBeat: DrumSubBeatEnum.subBeatAndA);
+      closedHighHat.addBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAndA);
       expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5, 1.875]);
-      closedHighHat.removeBeat(3, subBeat: DrumSubBeatEnum.subBeatAndA);
+      closedHighHat.removeBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAndA);
       expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5]);
-      closedHighHat.removeBeat(2, subBeat: DrumSubBeatEnum.subBeatAnd);
+      closedHighHat.removeBeat(DrumBeat.beat3, subBeat: DrumSubBeatEnum.subBeatAnd);
       expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5]);
-      closedHighHat.removeBeat(0, subBeat: DrumSubBeatEnum.subBeatE);
+      closedHighHat.removeBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeatE);
       expect(closedHighHat.timings(t0, bpm), [0.0, 0.25, 0.5, 1.5]);
     }
   });
@@ -255,15 +263,16 @@ void main() {
       logger.i(drumParts.toJson());
 
       DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
-      int beats = 4;
-
       drumParts.name = 'bob stuff';
 
       DrumPart dp = drumParts.at(drumType);
-      for (var beat = 1; beat < beats; beat += 2) {
+      for (var beat in DrumBeat.values) {
+        if (beat.index & 1 == 0) {
+          continue;
+        }
         dp.addBeat(beat);
       }
-      drumParts.at(DrumTypeEnum.kick).setBeatSelection(1, DrumSubBeatEnum.subBeat, true);
+      drumParts.at(DrumTypeEnum.kick).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeat, true);
       //  logger.i(drumParts.toString());
       expect(drumParts == drumParts, true);
 
@@ -274,16 +283,16 @@ void main() {
       logger.i(drumPartFromJson?.toJson());
       expect(drumPart == drumPartFromJson, isTrue);
 
-      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeat, true);
-      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatE, true);
-      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatAnd, true);
-      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatAndA, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeat, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatE, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatAnd, true);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatAndA, true);
 
       var drumPartsFromJson = DrumParts.fromJson(drumParts.toJson());
       logger.i(drumParts.toJson());
       logger.i(drumPartsFromJson?.toJson());
       expect(drumParts == drumPartsFromJson, isTrue);
-      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(1, DrumSubBeatEnum.subBeatAndA, false);
+      drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatAndA, false);
       expect(drumParts == drumPartsFromJson, isFalse);
     }
     {
@@ -292,7 +301,7 @@ void main() {
         DrumParts drumParts = DrumParts();
         drumParts.name = 'bob stuff for $beats beats';
         logger.i('beats: $beats');
-        for (var beat = 0; beat < beats; beat++) {
+        for (var beat in DrumBeat.values) {
           logger.i('  beat: $beat');
           for (var drumSubBeat in DrumSubBeatEnum.values) {
             logger.i('    drumSubBeat: $drumSubBeat');
@@ -324,7 +333,10 @@ void main() {
     DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
 
     DrumPart dp = drumParts.at(drumType);
-    for (var beat = 1; beat < drumParts.beats; beat += 2) {
+    for (var beat in DrumBeat.values) {
+      if (beat.index & 1 == 0) {
+        continue;
+      }
       dp.addBeat(beat, subBeat: DrumSubBeatEnum.subBeatAnd);
       logger.i(drumParts.toString());
       expect(drumParts.copyWith(), drumParts);
@@ -335,7 +347,7 @@ void main() {
         DrumParts drumParts = DrumParts();
         drumParts.name = 'bob stuff for $beats beats';
         logger.v('beats: $beats');
-        for (var beat = 0; beat < beats; beat++) {
+        for (var beat in DrumBeat.values) {
           logger.v('  beat: $beat');
           for (var drumSubBeat in DrumSubBeatEnum.values) {
             logger.v('    drumSubBeat: $drumSubBeat');
@@ -358,19 +370,30 @@ void main() {
   test('drumParts DrumPartsList', () {
     DrumPartsList drumPartsList = DrumPartsList();
     logger.i(drumPartsList.toJson());
-    expect(drumPartsList.length, 0);
-    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [],"matchesList" : {} }''');
+    expect(drumPartsList.length, 1); //  built in default!
+    expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
+ "name": "Default", "beats": 6, "subBeats": 4, "volume": 1.0,
+ "parts": [{ "drumType": "closedHighHat", "beats": 6, "selection": [ 0, 8, 16 ]},
+   { "drumType": "snare", "beats": 6, "selection": [ 4, 12, 20 ]}]
+}],"matchesList" : {} }''');
     DrumParts drumParts = DrumParts(name: 'bob stuff', beats: 4);
 
     int beats = 4;
-    var test1 =
-        DrumParts(name: 'test1', beats: beats, parts: [DrumPart(DrumTypeEnum.closedHighHat, beats: beats)..addBeat(0)]);
+    var test1 = DrumParts(
+        name: 'test1',
+        beats: beats,
+        parts: [DrumPart(DrumTypeEnum.closedHighHat, beats: beats)..addBeat(DrumBeat.beat1)]);
     expect(drumParts.compareTo(test1), -1);
 
     drumPartsList.add(drumParts);
 
     logger.i(drumPartsList.toJson());
     expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
+ "name": "Default", "beats": 6, "subBeats": 4, "volume": 1.0,
+ "parts": [{ "drumType": "closedHighHat", "beats": 6, "selection": [ 0, 8, 16 ]},
+   { "drumType": "snare", "beats": 6, "selection": [ 4, 12, 20 ]}]
+},
+{
  "name": "bob stuff", "beats": 4, "subBeats": 4, "volume": 1.0,
  "parts": []
 }],"matchesList" : {} }''');
@@ -378,32 +401,38 @@ void main() {
     drumPartsList.add(drumParts);
     //  no change
     expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
+ "name": "Default", "beats": 6, "subBeats": 4, "volume": 1.0,
+ "parts": [{ "drumType": "closedHighHat", "beats": 6, "selection": [ 0, 8, 16 ]},
+   { "drumType": "snare", "beats": 6, "selection": [ 4, 12, 20 ]}]
+},
+{
  "name": "bob stuff", "beats": 4, "subBeats": 4, "volume": 1.0,
  "parts": []
 }],"matchesList" : {} }''');
-    expect(drumPartsList.length, 1);
+    expect(drumPartsList.length, 2); //  includes the default
     logger.i(drumPartsList.toJson());
 
     logger.i('bob stuff: $drumPartsList');
 
     drumPartsList.add(test1);
-    expect(drumPartsList.length, 2);
+    expect(drumPartsList.length, 3);
     drumPartsList.add(test1);
-    expect(drumPartsList.length, 2);
+    expect(drumPartsList.length, 3);
 
-    var test2 = DrumParts(name: 'test2', beats: beats, parts: [DrumPart(DrumTypeEnum.bass, beats: beats)..addBeat(1)]);
+    var test2 = DrumParts(
+        name: 'test2', beats: beats, parts: [DrumPart(DrumTypeEnum.bass, beats: beats)..addBeat(DrumBeat.beat2)]);
     drumPartsList.add(test2);
 
     var test3 = test1.copyWith();
-    test3.at(DrumTypeEnum.closedHighHat).addBeat(2);
+    test3.at(DrumTypeEnum.closedHighHat).addBeat(DrumBeat.beat3);
     logger.i('$test3');
     drumPartsList.add(test3);
     logger.i('bob+test1+test3: $drumPartsList');
-    expect(drumPartsList.length, 3);
+    expect(drumPartsList.length, 4);
     drumPartsList.add(test3);
-    expect(drumPartsList.length, 3);
+    expect(drumPartsList.length, 4);
     drumPartsList.add(test2);
-    expect(drumPartsList.length, 3);
+    expect(drumPartsList.length, 4);
 
     var original = drumPartsList.toJson();
     drumPartsList.fromJson(drumPartsList.toJson());
@@ -413,7 +442,10 @@ void main() {
     DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
 
     DrumPart dp = drumParts.at(drumType);
-    for (var beat = 1; beat < drumParts.beats; beat += 2) {
+    for (var beat in DrumBeat.values) {
+      if (beat.index & 1 == 0) {
+        continue;
+      }
       dp.addBeat(beat, subBeat: DrumSubBeatEnum.subBeatAnd);
       var original = drumPartsList.toJson();
       drumPartsList.fromJson(drumPartsList.toJson());
@@ -426,7 +458,7 @@ void main() {
         DrumParts drumParts = DrumParts();
         drumParts.name = 'bob stuff for $beats beats';
         logger.v('beats: $beats');
-        for (var beat = 0; beat < beats; beat++) {
+        for (var beat in DrumBeat.values) {
           logger.v('  beat: $beat');
           for (var drumSubBeat in DrumSubBeatEnum.values) {
             logger.v('    drumSubBeat: $drumSubBeat');
@@ -464,23 +496,23 @@ void main() {
     int beats = 4;
     var simplisticDrumParts = DrumParts(name: 'simplistic', beats: beats, parts: [
       DrumPart(DrumTypeEnum.closedHighHat, beats: beats)
-        ..addBeat(0)
-        ..addBeat(2),
+        ..addBeat(DrumBeat.beat1)
+        ..addBeat(DrumBeat.beat3),
       DrumPart(DrumTypeEnum.snare, beats: beats)
-        ..addBeat(1)
-        ..addBeat(3)
+        ..addBeat(DrumBeat.beat2)
+        ..addBeat(DrumBeat.beat4)
     ]);
     var rockDrumParts = DrumParts(name: 'rock', beats: beats, parts: [
       DrumPart(DrumTypeEnum.closedHighHat, beats: beats)
-        ..addBeat(0)
-        ..addBeat(1)
-        ..addBeat(2)
-        ..addBeat(3),
+        ..addBeat(DrumBeat.beat1)
+        ..addBeat(DrumBeat.beat2)
+        ..addBeat(DrumBeat.beat3)
+        ..addBeat(DrumBeat.beat4),
       DrumPart(DrumTypeEnum.snare, beats: beats)
-        ..addBeat(0)
-        ..addBeat(1)
-        ..addBeat(2)
-        ..addBeat(3),
+        ..addBeat(DrumBeat.beat1)
+        ..addBeat(DrumBeat.beat2)
+        ..addBeat(DrumBeat.beat3)
+        ..addBeat(DrumBeat.beat4),
     ]);
     drumPartsList.add(simplisticDrumParts);
     drumPartsList.add(rockDrumParts);
