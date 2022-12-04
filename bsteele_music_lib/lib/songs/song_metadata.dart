@@ -151,7 +151,7 @@ class NameValueFilter {
   late final Map<String, SplayTreeSet<NameValue>> filterMap;
 }
 
-/// name value pairs attached to an id
+/// name value pairs attached to a song id
 class SongIdMetadata implements Comparable<SongIdMetadata> {
   SongIdMetadata(this._id, {List<NameValue>? metadata}) {
     if (metadata != null) {

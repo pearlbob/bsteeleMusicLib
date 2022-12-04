@@ -51,37 +51,37 @@ void main() {
           int beatCount = 0;
           List<double> expectedTimings = [];
           expect(dp.beatCount, beatCount);
-          expect(dp.timings(t0, bpm), expectedTimings);
+          expect(dp.timings(t0, bpm, beats), expectedTimings);
 
           for (var i = 0; i < beats; i++) {
             var beat = DrumBeat.values[i];
             for (var subBeat in DrumSubBeatEnum.values) {
               dp.addBeat(beat, subBeat: subBeat);
               beatCount++;
-              logger.log(debugLog, 'dp.timings: ${dp.timings(t0, bpm)}');
+              logger.log(debugLog, 'dp.timings: ${dp.timings(t0, bpm, beats)}');
               expect(dp.beatCount, beatCount);
 
               expectedTimings
                   .add(t0 + (beat.index * drumSubBeatsPerBeat + subBeat.index) * 60.0 / (bpm * drumSubBeatsPerBeat));
-              expect(dp.timings(t0, bpm), expectedTimings);
+              expect(dp.timings(t0, bpm, beats), expectedTimings);
             }
           }
 
           beatCount = beats * drumSubBeatsPerBeat;
           expect(dp.beatCount, beatCount);
-          expect(dp.timings(t0, bpm), expectedTimings);
+          expect(dp.timings(t0, bpm, beats), expectedTimings);
 
           for (var i = 0; i < beats; i++) {
             var beat = DrumBeat.values[i];
             for (var subBeat in DrumSubBeatEnum.values) {
               dp.removeBeat(beat, subBeat: subBeat);
-              logger.log(debugLog, 'dp.timings: ${dp.timings(t0, bpm)}');
+              logger.log(debugLog, 'dp.timings: ${dp.timings(t0, bpm, beats)}');
               if (beatCount > 0) {
                 beatCount--;
               }
               expect(dp.beatCount, beatCount);
               expectedTimings.removeAt(0);
-              expect(dp.timings(t0, bpm), expectedTimings);
+              expect(dp.timings(t0, bpm, beats), expectedTimings);
             }
           }
         }
@@ -218,7 +218,8 @@ void main() {
     }
     {
       DrumParts dm = DrumParts();
-      int bpm = 120;
+      const int bpm = 120;
+      const int beats = 4;
       double t0 = 0;
 
       expect(dm.isSilent(), true);
@@ -232,27 +233,27 @@ void main() {
       expect(dm.length, 1);
       for (var part in dm.parts) {
         if (part.drumType == DrumTypeEnum.closedHighHat) {
-          logger.log(debugLog, 'timings: ${part.timings(t0, bpm)}');
-          expect(part.timings(t0, bpm), [0.5, 1.5]);
+          logger.log(debugLog, 'timings: ${part.timings(t0, bpm, beats)}');
+          expect(part.timings(t0, bpm, beats), [0.5, 1.5]);
         }
       }
 
       closedHighHat.addBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeatAnd);
-      expect(closedHighHat.timings(t0, bpm), [0.25, 0.5, 1.5]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.25, 0.5, 1.5]);
       closedHighHat.addBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAndA);
-      expect(closedHighHat.timings(t0, bpm), [0.25, 0.5, 1.5, 1.875]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.25, 0.5, 1.5, 1.875]);
       closedHighHat.addBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeatE);
-      expect(closedHighHat.timings(t0, bpm), [0.125, 0.25, 0.5, 1.5, 1.875]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.125, 0.25, 0.5, 1.5, 1.875]);
       closedHighHat.addBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeat);
-      expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5, 1.875]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.0, 0.125, 0.25, 0.5, 1.5, 1.875]);
       closedHighHat.addBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAndA);
-      expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5, 1.875]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.0, 0.125, 0.25, 0.5, 1.5, 1.875]);
       closedHighHat.removeBeat(DrumBeat.beat4, subBeat: DrumSubBeatEnum.subBeatAndA);
-      expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.0, 0.125, 0.25, 0.5, 1.5]);
       closedHighHat.removeBeat(DrumBeat.beat3, subBeat: DrumSubBeatEnum.subBeatAnd);
-      expect(closedHighHat.timings(t0, bpm), [0.0, 0.125, 0.25, 0.5, 1.5]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.0, 0.125, 0.25, 0.5, 1.5]);
       closedHighHat.removeBeat(DrumBeat.beat1, subBeat: DrumSubBeatEnum.subBeatE);
-      expect(closedHighHat.timings(t0, bpm), [0.0, 0.25, 0.5, 1.5]);
+      expect(closedHighHat.timings(t0, bpm, beats), [0.0, 0.25, 0.5, 1.5]);
     }
   });
 

@@ -73,11 +73,12 @@ class DrumPart implements Comparable<DrumPart> {
     }
   }
 
-  List<double> timings(double t0, int bpm) {
+  List<double> timings(final double t0, final int bpm, final int beats) {
     List<double> ret = [];
     double offsetPeriod = 60.0 / (bpm * drumSubBeatsPerBeat);
     if (bpm > 0) {
-      for (var beat in DrumBeat.values) {
+      for (var i = 0; i < beats; i++) {
+        var beat = DrumBeat.values[i];
         for (var subBeat in DrumSubBeatEnum.values) {
           if (beatSelection(beat, subBeat)) {
             ret.add(t0 + _offset(beat.index, subBeat) * offsetPeriod);
@@ -507,6 +508,7 @@ class DrumPartsList {
   DrumPartsList._internal();
 
   static const defaultName = 'Default';
+  static const fileExtension = '.songdrums';
 
   void add(DrumParts drumParts) {
     _drumPartsMap[drumParts.name] = drumParts;
@@ -521,7 +523,7 @@ class DrumPartsList {
   }
 
   DrumParts? songMatch(final Song song) {
-    logger.i('songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
+    logger.v('songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
         '${_drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]]}');
     return _drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]];
   }
@@ -636,6 +638,7 @@ class DrumPartsList {
 
   final HashMap<String, DrumParts> _drumPartsMap = HashMap()
     ..addAll({
+      //  minimum default entry
       DrumPartsList.defaultName: DrumParts(name: DrumPartsList.defaultName, beats: 6, parts: [
         DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
           ..addBeat(DrumBeat.beat1)

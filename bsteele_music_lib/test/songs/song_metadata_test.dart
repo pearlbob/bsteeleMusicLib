@@ -132,8 +132,8 @@ void main() {
 
       //  list all
       logger.d('');
-      for (SongIdMetadata idMetadata in SongMetadata.idMetadata) {
-        logger.d(idMetadata.toString());
+      for (SongIdMetadata songIdMetadata in SongMetadata.idMetadata) {
+        logger.d(songIdMetadata.toString());
       }
     }
   });
