@@ -3120,9 +3120,9 @@ class SongBase {
     _songId = SongId.computeSongId(title, artist, coverArtist);
   }
 
-  double getDefaultTimePerBar() {
+  double get secondsPerMeasure {
     if (beatsPerMinute == 0) {
-      return 1;
+      return 1.0;
     }
     return timeSignature.beatsPerBar * 60.0 / beatsPerMinute;
   }

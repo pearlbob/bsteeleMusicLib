@@ -177,31 +177,37 @@ class RollingAverage {
   }
 
   double average(double value) {
-    if (list.length < windowSize) {
+    if (_list.length < windowSize) {
       //  fill the initial values
-      list.add(value);
-      sum += value;
-      index = 0;
+      _list.add(value);
+      _sum += value;
+      _index = 0;
     } else {
       //  roll the values over the old ones
-      sum -= list[index];
-      list[index] = value;
-      sum += value;
-      index++;
-      if (index >= windowSize) {
-        index = 0;
+      _sum -= _list[_index];
+      _list[_index] = value;
+      _sum += value;
+      _index++;
+      if (_index >= windowSize) {
+        _index = 0;
       }
     }
-    assert((sum - list.reduce((value, element) => value += element)).abs() < 1e-6);
+    assert((_sum - _list.reduce((value, element) => value += element)).abs() < 1e-6);
 
     //  average
-    return sum / list.length;
+    return _sum / _list.length;
+  }
+
+  void reset() {
+    _list.clear();
+    _index = 0;
+    _sum = 0;
   }
 
   final int windowSize;
-  int index = 0;
-  double sum = 0;
-  final List<double> list = [];
+  int _index = 0;
+  double _sum = 0;
+  final List<double> _list = [];
 }
 
 /// A String with a marked location to be used in parsing.
