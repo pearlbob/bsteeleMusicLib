@@ -370,6 +370,17 @@ void main() {
 
   test('drumParts DrumPartsList', () {
     DrumPartsList drumPartsList = DrumPartsList();
+    drumPartsList.clear();
+    drumPartsList.add(DrumParts(name: DrumPartsList.defaultName, beats: 6, parts: [
+      DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
+        ..addBeat(DrumBeat.beat1)
+        ..addBeat(DrumBeat.beat3)
+        ..addBeat(DrumBeat.beat5),
+      DrumPart(DrumTypeEnum.snare, beats: 6)
+        ..addBeat(DrumBeat.beat2)
+        ..addBeat(DrumBeat.beat4)
+        ..addBeat(DrumBeat.beat6),
+    ]));
     logger.i(drumPartsList.toJson());
     expect(drumPartsList.length, 1); //  built in default!
     expect(drumPartsList.toJson(), '''{ "drumPartsList" : [{
@@ -481,6 +492,22 @@ void main() {
     }
   });
 
+  test('drumParts DrumPartsList default song matches', () {
+    DrumPartsList drumPartsList = DrumPartsList();
+    drumPartsList.addDefaults();
+
+    Song a4 = Song.createSong('a song', 'bob', 'bob', Key.C, 104, 4, 4, 'pearl bob', 'v: A A A A',
+        'v: Ain\'t you going to play something else?');
+    Song b2 = Song.createSong('b song', 'bob', 'bob', Key.C, 104, 2, 4, 'pearl bob', 'v: B B B Bb', 'v: Be flat.');
+    Song c6 =
+        Song.createSong('c never sung song', 'bob', 'bob', Key.G, 104, 6, 8, 'pearl bob', 'v: G D C G', 'v: Gee baby');
+    Song d3 = Song.createSong('D3', 'bob', 'bob', Key.G, 104, 3, 4, 'pearl bob', 'v: G D C G', 'v: Gee baby');
+    expect(drumPartsList[a4]?.name, 'Default4');
+    expect(drumPartsList[b2]?.name, 'Default2');
+    expect(drumPartsList[c6]?.name, 'Default6');
+    expect(drumPartsList[d3]?.name, 'Default3');
+  });
+
   test('drumParts DrumPartsList song matches', () {
     DrumPartsList drumPartsList = DrumPartsList();
     drumPartsList.clear();
@@ -567,5 +594,73 @@ void main() {
     expect(drumPartsList[a], simplisticDrumParts);
     expect(drumPartsList[b], rockDrumParts);
     expect(drumPartsList[c], null);
+  });
+
+  test('drumParts is dirty', () {
+    int beats = 4;
+    var closed = DrumPart(DrumTypeEnum.closedHighHat, beats: beats)
+      ..addBeat(DrumBeat.beat1)
+      ..addBeat(DrumBeat.beat3);
+    var parts = DrumParts(name: 'simplistic', beats: beats, parts: [
+      closed,
+      DrumPart(DrumTypeEnum.snare, beats: beats)
+        ..addBeat(DrumBeat.beat2)
+        ..addBeat(DrumBeat.beat4)
+    ]);
+
+    //  add an existing part means no change
+    expect(parts.hasChanged, false);
+    parts.addPart(closed);
+    expect(parts.hasChanged, false);
+
+    //  change a part
+    var part = closed.copyWith();
+    part.addBeat(DrumBeat.beat2);
+    parts.addPart(part);
+    expect(parts.hasChanged, true);
+    parts.hasChanged = false;
+    expect(parts.hasChanged, false);
+
+    //  put the original part back:
+    parts.addPart(closed);
+    expect(parts.hasChanged, true);
+    parts.hasChanged = false;
+    expect(parts.hasChanged, false);
+
+    //  changing beats makes the parts dirty
+    parts.beats = 6;
+    expect(parts.hasChanged, true);
+    parts.hasChanged = false;
+
+    //  remove
+    parts.removePart(closed);
+    expect(parts.hasChanged, true);
+    parts.hasChanged = false;
+
+    //  add empty part
+    var open = DrumPart(DrumTypeEnum.openHighHat, beats: beats);
+    parts.addPart(open);
+    expect(parts.hasChanged, true);
+    parts.hasChanged = false;
+
+    //  remove empty part
+    parts.removePart(open);
+    expect(parts.hasChanged, true);
+    parts.hasChanged = false;
+  });
+
+  test('drumParts an empty part should match a null part', () {
+    int beats = 4;
+    var emptyParts = DrumParts(name: 'simplistic', beats: beats, parts: [
+      DrumPart(DrumTypeEnum.closedHighHat, beats: beats),
+      DrumPart(DrumTypeEnum.snare, beats: beats),
+    ]);
+    var nullParts = DrumParts(
+      name: 'simplistic',
+      beats: beats,
+    );
+
+    expect(emptyParts, nullParts);
+    expect(emptyParts.compareTo(nullParts), 0);
   });
 }

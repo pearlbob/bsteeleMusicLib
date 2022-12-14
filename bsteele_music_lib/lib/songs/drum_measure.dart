@@ -264,6 +264,7 @@ class DrumParts implements Comparable<DrumParts> {
     for (var part in parts ?? []) {
       addPart(part);
     }
+    hasChanged = false; //  initialization does not count as a change
   }
 
   DrumParts copyWith() {
@@ -275,19 +276,28 @@ class DrumParts implements Comparable<DrumParts> {
   }
 
   clear() {
-    for (var part in parts) {
-      part.clear();
+    if (parts.isNotEmpty) {
+      hasChanged = true;
+      for (var part in parts) {
+        part.clear();
+      }
     }
   }
 
   /// Set an individual drum's part.
   DrumPart addPart(DrumPart part) {
-    _parts[part.drumType] = part;
+    if (_parts[part.drumType] != part) {
+      hasChanged = true;
+      _parts[part.drumType] = part;
+    }
     return part;
   }
 
   void removePart(DrumPart part) {
-    _parts.remove(part.drumType);
+    if (_parts.keys.contains(part.drumType)) {
+      hasChanged = true;
+      _parts.remove(part.drumType);
+    }
   }
 
   DrumPart at(DrumTypeEnum drumType) {
@@ -427,11 +437,13 @@ class DrumParts implements Comparable<DrumParts> {
     }
     for (var type in _parts.keys) {
       var thisPart = _parts[type];
-      assert(thisPart != null);
       var otherPart = other._parts[type];
-      if (otherPart == null) {
-        return -1;
+
+      //  empty and null parts match
+      if (otherPart == null || otherPart.isEmpty) {
+        return (thisPart?.isEmpty ?? true) ? 0 : -1;
       }
+
       int ret = thisPart!.compareTo(otherPart);
       if (ret != 0) {
         return ret;
@@ -450,17 +462,24 @@ class DrumParts implements Comparable<DrumParts> {
       return true;
     }
     if (!(other is DrumParts &&
-        runtimeType == other.runtimeType &&
-        name == other.name &&
-        _beats == other._beats &&
-        _volume == other._volume &&
-        deepUnorderedCollectionEquality.equals(_parts.keys, other._parts.keys))) {
+            runtimeType == other.runtimeType &&
+            name == other.name &&
+            _beats == other._beats &&
+            _volume == other._volume
+        //  doesn't cope with matching empty part with a null part
+        //&& deepUnorderedCollectionEquality.equals(_parts.keys, other._parts.keys)
+        )) {
       return false;
     }
 
-    //  fixme: why do empty parts kill deepUnorderedCollectionEquality.equals() test for empty maps?
+    //  see that the parts match.  Note: a null part should match an empty part
     for (var key in _parts.keys) {
-      if (_parts[key] != other._parts[key]) {
+      var part = _parts[key];
+      var otherPart = other._parts[key];
+      if ((part == null || part.isEmpty) && (otherPart == null || otherPart.isEmpty)) {
+        continue;
+      }
+      if (part != otherPart) {
         return false;
       }
     }
@@ -472,9 +491,13 @@ class DrumParts implements Comparable<DrumParts> {
   int get hashCode => name.hashCode ^ _beats.hashCode ^ _volume.hashCode ^ _parts.hashCode;
 
   set beats(int value) {
-    _beats = Util.intLimit(value, 2, maxDrumBeatsPerBar);
-    for (var key in _parts.keys) {
-      _parts[key]!.beats = beats;
+    var beats = Util.intLimit(value, 2, maxDrumBeatsPerBar);
+    if (_beats != beats) {
+      _beats = beats;
+      hasChanged = true;
+      for (var key in _parts.keys) {
+        _parts[key]!.beats = beats;
+      }
     }
   }
 
@@ -494,6 +517,8 @@ class DrumParts implements Comparable<DrumParts> {
   double get volume => _volume;
   double _volume = 1.0;
 
+  bool hasChanged = false;
+
   final HashMap<DrumTypeEnum, DrumPart> _parts = HashMap();
 }
 
@@ -512,6 +537,54 @@ class DrumPartsList {
 
   void add(DrumParts drumParts) {
     _drumPartsMap[drumParts.name] = drumParts;
+  }
+
+  addDefaults() {
+    for (var drumPart in [
+      //  minimum default entries
+      DrumParts(name: DrumPartsList.defaultName, beats: 6, parts: [
+        DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
+          ..addBeat(DrumBeat.beat1)
+          ..addBeat(DrumBeat.beat3)
+          ..addBeat(DrumBeat.beat5),
+        DrumPart(DrumTypeEnum.snare, beats: 6)
+          ..addBeat(DrumBeat.beat2)
+          ..addBeat(DrumBeat.beat4)
+          ..addBeat(DrumBeat.beat6),
+      ]),
+      DrumParts(name: '${DrumPartsList.defaultName}2', beats: 2, parts: [
+        DrumPart(DrumTypeEnum.closedHighHat, beats: 2)..addBeat(DrumBeat.beat1),
+        DrumPart(DrumTypeEnum.snare, beats: 2)..addBeat(DrumBeat.beat2),
+      ]),
+      DrumParts(name: '${DrumPartsList.defaultName}3', beats: 3, parts: [
+        DrumPart(DrumTypeEnum.closedHighHat, beats: 3)
+          ..addBeat(DrumBeat.beat2)
+          ..addBeat(DrumBeat.beat3),
+        DrumPart(DrumTypeEnum.snare, beats: 3)..addBeat(DrumBeat.beat1),
+      ]),
+      DrumParts(name: '${DrumPartsList.defaultName}4', beats: 4, parts: [
+        DrumPart(DrumTypeEnum.closedHighHat, beats: 4)
+          ..addBeat(DrumBeat.beat1)
+          ..addBeat(DrumBeat.beat3),
+        DrumPart(DrumTypeEnum.snare, beats: 4)
+          ..addBeat(DrumBeat.beat2)
+          ..addBeat(DrumBeat.beat4),
+      ]),
+      DrumParts(name: '${DrumPartsList.defaultName}6', beats: 6, parts: [
+        DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
+          ..addBeat(DrumBeat.beat1)
+          ..addBeat(DrumBeat.beat3)
+          ..addBeat(DrumBeat.beat5),
+        DrumPart(DrumTypeEnum.snare, beats: 6)
+          ..addBeat(DrumBeat.beat2)
+          ..addBeat(DrumBeat.beat4)
+          ..addBeat(DrumBeat.beat6),
+      ]),
+    ]) {
+      if (!_drumPartsMap.keys.contains(drumPart.name)) {
+        _drumPartsMap[drumPart.name] = drumPart;
+      }
+    }
   }
 
   DrumParts? findByName(final String name) {
@@ -544,7 +617,8 @@ class DrumPartsList {
     if (name != null) {
       return _drumPartsMap[name];
     }
-    return null;
+    //  map to default based on beats
+    return _drumPartsMap['$defaultName${song.timeSignature.beatsPerBar}'];
   }
 
   /// clear all drum parts
@@ -636,18 +710,5 @@ class DrumPartsList {
 
   SplayTreeSet<DrumParts> get drumParts => SplayTreeSet<DrumParts>()..addAll(_drumPartsMap.values);
 
-  final HashMap<String, DrumParts> _drumPartsMap = HashMap()
-    ..addAll({
-      //  minimum default entry
-      DrumPartsList.defaultName: DrumParts(name: DrumPartsList.defaultName, beats: 6, parts: [
-        DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
-          ..addBeat(DrumBeat.beat1)
-          ..addBeat(DrumBeat.beat3)
-          ..addBeat(DrumBeat.beat5),
-        DrumPart(DrumTypeEnum.snare, beats: 6)
-          ..addBeat(DrumBeat.beat2)
-          ..addBeat(DrumBeat.beat4)
-          ..addBeat(DrumBeat.beat6),
-      ])
-    });
+  final HashMap<String, DrumParts> _drumPartsMap = HashMap();
 }
