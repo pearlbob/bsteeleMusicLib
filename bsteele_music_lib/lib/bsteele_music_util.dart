@@ -777,6 +777,7 @@ coerced to reflect the songlist's last modification for that song.
             lastSungDateTime = DateTime(lastSungDateTime.year, lastSungDateTime.month, lastSungDateTime.day);
             logger.i('lastSungDateTime: $lastSungDateTime');
 
+            //  collect all the files to be read
             var dir = Directory('${Util.homePath()}/$_allSongPerformancesDirectoryLocation');
             SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
             for (var file in dir.listSync()) {
@@ -784,9 +785,11 @@ coerced to reflect the songlist's last modification for that song.
                 files.add(file);
               }
             }
+
             //  update from the all local files
             for (var file in files) {
               var name = file.path.split('/').last;
+              logger.i('name: $name');
               var m = _allSongPerformancesRegExp.firstMatch(name);
               if (m != null) {
                 logger.i(name);
