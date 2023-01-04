@@ -23,6 +23,7 @@ dependencies:
   dotenv:
   tuple:
   collection:
+  worker_manager:
 
 dev_dependencies:
   lints:

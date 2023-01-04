@@ -405,7 +405,7 @@ void main() {
   test('song performances json extraneous fields', () async {
     var allSongPerformances = AllSongPerformances()..clear();
     expect(allSongPerformances.length, 0);
-    allSongPerformances.updateFromJsonString('''{
+    await allSongPerformances.updateFromJsonString('''{
         "participants":["Foo U."],
         "requests":[
         {"songId":"Song_All_Along_the_Watchtower_cover_by_Jimi_Hendrix_by_Bob_Dylan","requester":"Bob S.","lastSung":1643253035702}],
@@ -504,7 +504,7 @@ void main() {
   test('song performance requests', () async {
     var allSongPerformances = AllSongPerformances()..clear();
     expect(allSongPerformances.length, 0);
-    allSongPerformances.updateFromJsonString('''{
+    await allSongPerformances.updateFromJsonString('''{
         "participants":["Foo U."],
         "allSongPerformanceRequests":[
         {"songId":"Song_All_Along_the_Watchtower_cover_by_Jimi_Hendrix_by_Bob_Dylan","requester":"Bob S."}],

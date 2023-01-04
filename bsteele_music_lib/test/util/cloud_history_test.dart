@@ -23,15 +23,16 @@ bool _verbose = false;
 SplayTreeSet<Song> allSongs = SplayTreeSet();
 
 void main() {
-  test('test cloud history', () {
+  test('test cloud history', () async {
     Logger.level = Level.info;
 
     //  see how well the singer performance history from the website matches the current song list
     logger.i('test cloud history:');
     _addAllSongsFromFile(_allSongsFile);
     //  add the github version
-    allSongPerformances
-        .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+    await allSongPerformances.updateFromJsonString(
+        File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation')
+            .readAsStringSync());
     allSongPerformances.loadSongs(allSongs);
     logger.i('allSongs.length: ${allSongs.length}');
     logger.i('allSongPerformances.allSongPerformanceHistory.length:'

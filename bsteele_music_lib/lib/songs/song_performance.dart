@@ -445,30 +445,47 @@ class AllSongPerformances {
   }
 
   static const String allSongPerformancesName = 'allSongPerformances';
-  static const String allSongPerformanceHistoryName = 'allSongPerformanceHistory';
-  static const String allSongPerformanceRequestsName = 'allSongPerformanceRequests';
+  static const String allSongPerformanceHistoryName =
+      'allSongPerformanceHistory';
+  static const String allSongPerformanceRequestsName =
+      'allSongPerformanceRequests';
 
-  int updateFromJsonString(String jsonString) {
+  Future<int> updateFromJsonString(String jsonString) async {
     int count = 0;
+    const yieldCount = 512;
+    const waitDuration = Duration(milliseconds: 30);
     var decoded = jsonDecode(jsonString);
+    var i = 0;
     if (decoded is Map<String, dynamic>) {
       //  assume the items are song performances
       for (var item in decoded[allSongPerformancesName] ?? []) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
+          if ((++i % yieldCount) == 0) {
+            await Future.delayed(waitDuration);
+          }
         }
       }
       for (var item in decoded[allSongPerformanceHistoryName] ?? []) {
         _allSongPerformanceHistory.add(SongPerformance._fromJson(item));
+        if ((++i % yieldCount) == 0) {
+          await Future.delayed(waitDuration);
+        }
       }
       for (var item in decoded[allSongPerformanceRequestsName] ?? []) {
         _allSongPerformanceRequests.add(SongRequest._fromJson(item));
+        if ((++i % yieldCount) == 0) {
+          await Future.delayed(waitDuration);
+        }
       }
     } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
       for (var item in decoded) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
+          if ((++i % yieldCount) == 0) {
+            await Future.delayed(waitDuration);
+          }
         }
       }
     } else {
