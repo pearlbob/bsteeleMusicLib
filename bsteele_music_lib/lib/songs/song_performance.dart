@@ -271,27 +271,34 @@ class AllSongPerformances {
   AllSongPerformances._internal();
 
   /// Populate song performance references with current songs
-  void loadSongs(Iterable<Song> songs) {
+  Future<void> loadSongs(Iterable<Song> songs) async {
+    var i = 0;
     for (var song in songs) {
       songMap[song.songId.toString().toLowerCase()] = song;
+      if ((++i % yieldCount) == 0) {
+        await Future.delayed(waitDuration);
+      }
     }
 
     final List<String> allLowerCaseIds = songMap.keys.toList(growable: false);
 
     //  fixme: a failed match can choose a wrong-ish "best match" if the song id has been changed too much
 
+    //  find performance matches
     for (var songPerformance in _allSongPerformances) {
       songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString] ??
           songMap[allLowerCaseIds[
               StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds).bestMatchIndex]];
     }
 
+    //  find history matches
     for (var songPerformance in _allSongPerformanceHistory) {
       songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString] ??
           songMap[allLowerCaseIds[
               StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds).bestMatchIndex]];
     }
 
+    //  find request matches
     for (var songRequest in _allSongPerformanceRequests) {
       songRequest.song = songMap[songRequest._lowerCaseSongIdAsString] ??
           songMap[allLowerCaseIds[
@@ -445,15 +452,11 @@ class AllSongPerformances {
   }
 
   static const String allSongPerformancesName = 'allSongPerformances';
-  static const String allSongPerformanceHistoryName =
-      'allSongPerformanceHistory';
-  static const String allSongPerformanceRequestsName =
-      'allSongPerformanceRequests';
+  static const String allSongPerformanceHistoryName = 'allSongPerformanceHistory';
+  static const String allSongPerformanceRequestsName = 'allSongPerformanceRequests';
 
   Future<int> updateFromJsonString(String jsonString) async {
     int count = 0;
-    const yieldCount = 512;
-    const waitDuration = Duration(milliseconds: 30);
     var decoded = jsonDecode(jsonString);
     var i = 0;
     if (decoded is Map<String, dynamic>) {
@@ -577,5 +580,7 @@ class AllSongPerformances {
   Iterable<SongRequest> get allSongPerformanceRequests => _allSongPerformanceRequests;
   final SplayTreeSet<SongRequest> _allSongPerformanceRequests = SplayTreeSet<SongRequest>();
 
+  static const yieldCount = 1 << 7;
+  static const waitDuration = Duration(milliseconds: 60);
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }

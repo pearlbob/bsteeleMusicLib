@@ -728,7 +728,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-o':
-        //  assert there is another arg
+          //  assert there is another arg
           if (argCount < args.length - 1) {
             argCount++;
             _outputDirectory = Directory(args[argCount]);
@@ -767,26 +767,19 @@ coerced to reflect the songlist's last modification for that song.
             assert(allSongPerformances.allSongPerformanceRequests.isEmpty);
 
             //  add the github version
-            await allSongPerformances.updateFromJsonString(File(
-                    '${Util.homePath()}/$_allSongPerformancesGithubFileLocation')
-                .readAsStringSync());
+            await allSongPerformances.updateFromJsonString(
+                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
             logger.i('preload: usTimer: ${usTimer.seconds} s');
-            allSongPerformances.loadSongs(Song.songListFromJson(
-                File('${Util.homePath()}/$_allSongsFileLocation')
-                    .readAsStringSync()));
-            logger.i('postload: usTimer: ${usTimer.seconds} s');
+            await allSongPerformances
+                .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
+            logger.i('postload: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}');
 
-            logger
-                .i('allSongPerformances.length: ${allSongPerformances.length}');
-            logger.i(
-                'allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
-            logger.i(
-                'last sung: ${allSongPerformances.allSongPerformanceHistory.last.lastSungDateString}');
-            var lastSungDateTime = allSongPerformances
-                .allSongPerformanceHistory.last.lastSungDateTime;
+            logger.i('allSongPerformances.length: ${allSongPerformances.length}');
+            logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
+            logger.i('last sung: ${allSongPerformances.allSongPerformanceHistory.last.lastSungDateString}');
+            var lastSungDateTime = allSongPerformances.allSongPerformanceHistory.last.lastSungDateTime;
             // truncate date time to day
-            lastSungDateTime = DateTime(lastSungDateTime.year,
-                lastSungDateTime.month, lastSungDateTime.day);
+            lastSungDateTime = DateTime(lastSungDateTime.year, lastSungDateTime.month, lastSungDateTime.day);
             logger.i('lastSungDateTime: $lastSungDateTime');
 
             //  collect all the files to be read
@@ -815,12 +808,9 @@ coerced to reflect the songlist's last modification for that song.
                   //  clear all the requests so only the most current set is used
                   allSongPerformances.clearAllSongPerformanceRequests();
 
-                  await allSongPerformances
-                      .updateFromJsonString(file.readAsStringSync());
-                  logger.i(
-                      'allSongPerformances.length: ${allSongPerformances.length}');
-                  logger.i(
-                      'allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
+                  await allSongPerformances.updateFromJsonString(file.readAsStringSync());
+                  logger.i('allSongPerformances.length: ${allSongPerformances.length}');
+                  logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
                 } else {
                   if (_verbose) {
                     logger.i('ignore:  file: $name');
@@ -835,7 +825,7 @@ coerced to reflect the songlist's last modification for that song.
               //  most recent performances, less than a year
               final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
               SplayTreeSet<SongPerformance> performanceDelete =
-              SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+                  SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
               for (var songPerformance in allSongPerformances.allSongPerformances) {
                 if ((!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger) ||
                     songPerformance.lastSung < lastSungLimit ||
@@ -901,8 +891,7 @@ coerced to reflect the songlist's last modification for that song.
               logger.i('\'${file.path}\' exists.');
 
               logger.i('allSongPerformances: ${allSongPerformances.length}');
-              await allSongPerformances
-                  .updateFromJsonString(file.readAsStringSync());
+              await allSongPerformances.updateFromJsonString(file.readAsStringSync());
               logger.i('allSongPerformances: ${allSongPerformances.length}');
             } else {
               logger.e('\'${file.path}\' does not exist.');
@@ -939,12 +928,11 @@ coerced to reflect the songlist's last modification for that song.
             AllSongPerformances allSongPerformances = AllSongPerformances();
 
             //  add the github version
-            await allSongPerformances.updateFromJsonString(File(
-                    '${Util.homePath()}/$_allSongPerformancesGithubFileLocation')
-                .readAsStringSync());
+            await allSongPerformances.updateFromJsonString(
+                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
 
             //  load local songs
-            allSongPerformances
+            await allSongPerformances
                 .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
 
             {
