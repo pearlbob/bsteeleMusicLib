@@ -21,55 +21,6 @@ class SongMoment implements Comparable<SongMoment> {
       this.sectionCount,
       this.chordSectionSongMomentNumber);
 
-  int getMomentNumber() {
-    return momentNumber;
-  }
-
-  int getBeatNumber() {
-    return beatNumber;
-  }
-
-  int getSectionBeatNumber() {
-    return sectionBeatNumber;
-  }
-
-  LyricSection getLyricSection() {
-    return lyricSection;
-  }
-
-  ChordSection getChordSection() {
-    return chordSection;
-  }
-
-  // @Deprecated('Try to avoid the phrase level internal abstraction')
-  // MeasureNode getPhrase() {
-  //   return phrase;
-  // }
-
-  int getPhraseIndex() {
-    return phraseIndex;
-  }
-
-  int getMeasureIndex() {
-    return measureIndex;
-  }
-
-  Measure getMeasure() {
-    return measure;
-  }
-
-  int getRepeatCycleBeats() {
-    return repeatCycleBeats;
-  }
-
-  int getRepeatMax() {
-    return repeatMax;
-  }
-
-  int getSectionCount() {
-    return sectionCount;
-  }
-
   ChordSectionLocation getChordSectionLocation() {
     chordSectionLocation ??=
         ChordSectionLocation(chordSection.sectionVersion, phraseIndex: phraseIndex, measureIndex: measureIndex);
@@ -81,7 +32,7 @@ class SongMoment implements Comparable<SongMoment> {
   @override
   String toString() {
     return '$momentNumber: $momentLocation  ${measure.toMarkup()}'
-        ' beat  ${getBeatNumber()}'
+        ' beat  ${beatNumber}'
         '${(repeatMax > 1 ? ' $repeat/$repeatMax' : '')}'
         ' ${chordSection.sectionVersion} #$sectionCount';
   }

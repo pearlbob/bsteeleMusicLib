@@ -144,14 +144,6 @@ class SongUpdate {
     return song;
   }
 
-  /// Moment index from start of song starts at zero.
-  /// The moment number will be negative in play prior to the song start.
-  ///
-  /// @return the index of the current moment number in time
-  int getMomentNumber() {
-    return momentNumber;
-  }
-
   /// Return the typical, default duration for the default beats per bar and the beats per minute.
   /// Due to variation in measureNumber beats, this should not be used anywhere but pre-roll!
   ///
@@ -238,19 +230,19 @@ class SongUpdate {
   String toString() {
     var sb = StringBuffer('SongUpdate: "${song.title}" by "${song.artist}" '
         '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}"' : ''}: ');
-    sb.write(getMomentNumber());
+    sb.write(momentNumber);
     if (songMoment != null) {
       sb.write(' ');
-      sb.write(songMoment!.getMomentNumber().toString());
+      sb.write(songMoment!.momentNumber.toString());
       sb.write(' ');
-      sb.write(songMoment!.getBeatNumber());
+      sb.write(songMoment!.beatNumber);
       sb.write(' ');
-      sb.write(songMoment!.getMeasure().toString());
-      if (songMoment!.getRepeatMax() > 0) {
+      sb.write(songMoment!.measure.toString());
+      if (songMoment!.repeatMax > 0) {
         sb.write(' ');
         sb.write((songMoment!.repeat + 1));
         sb.write('/');
-        sb.write(songMoment!.getRepeatMax());
+        sb.write(songMoment!.repeatMax);
       }
       sb.write(', key: $currentKey');
     }
@@ -345,7 +337,7 @@ class SongUpdate {
 
     //  momentNumber sequencing details should be found by local processing
     sb.write('"momentNumber": ');
-    sb.write(getMomentNumber());
+    sb.write(momentNumber);
     sb.write(',\n');
     sb.write('"beat": ');
     sb.write(getBeat());

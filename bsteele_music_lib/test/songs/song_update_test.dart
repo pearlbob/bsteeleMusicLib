@@ -13,7 +13,7 @@ void main() {
       logger.d('getMomentNumber');
       SongUpdate instance = SongUpdate();
       int expResult = 0;
-      int result = instance.getMomentNumber();
+      int result = instance.momentNumber;
       expect(result, expResult);
     }
     {
@@ -51,7 +51,7 @@ void main() {
       int momentNumber = 0;
       SongUpdate instance = SongUpdate();
       instance.setMomentNumber(momentNumber);
-      expect(instance.getMomentNumber(), momentNumber);
+      expect(instance.momentNumber, momentNumber);
     }
     {
       logger.d('setBeat');
@@ -132,19 +132,19 @@ void main() {
       instance.song = a;
       int expResult = 10;
       instance.setMomentNumber(expResult);
-      expect(instance.getMomentNumber(), expResult);
+      expect(instance.momentNumber, expResult);
       expResult = 19;
       instance.setMomentNumber(expResult);
-      expect(instance.getMomentNumber(), expResult);
+      expect(instance.momentNumber, expResult);
       expResult = 20;
       instance.setMomentNumber(expResult);
-      expect(instance.getMomentNumber(), expResult);
+      expect(instance.momentNumber, expResult);
       expResult = 25;
       instance.setMomentNumber(expResult);
-      expect(instance.getMomentNumber(), 20);
+      expect(instance.momentNumber, 20);
       expResult = 0;
       instance.setMomentNumber(expResult);
-      expect(instance.getMomentNumber(), expResult);
+      expect(instance.momentNumber, expResult);
 
       instance.song.lastModifiedTime = 0; //  for testing only
 

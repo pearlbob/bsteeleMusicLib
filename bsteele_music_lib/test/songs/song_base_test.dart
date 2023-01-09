@@ -1259,7 +1259,7 @@ c2:
       SongMoment? songMoment = a.getSongMoment(momentNumber);
       if (songMoment == null) break;
 //      logger.d(songMoment.toString());
-//      expect(count, songMoment.getMomentNumber());
+//      expect(count, songMoment.momentNumber);
 //      GridCoordinate momentGridCoordinate =
 //          a.getMomentGridCoordinate(songMoment);
 //      expect(momentGridCoordinate, isNotNull);
@@ -1338,8 +1338,8 @@ c2:
       for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
         SongMoment? songMoment = a.getSongMoment(momentNumber);
         if (songMoment == null) break;
-        expect(beats, songMoment.getBeatNumber());
-        beats += songMoment.getMeasure().beatCount;
+        expect(beats, songMoment.beatNumber);
+        beats += songMoment.measure.beatCount;
       }
     }
     {
@@ -1349,7 +1349,7 @@ c2:
         if (songMoment == null) break;
         logger.d(' ');
         logger.d(songMoment.toString());
-        expect(count, songMoment.getMomentNumber());
+        expect(count, songMoment.momentNumber);
         GridCoordinate? momentGridCoordinate = a.getMomentGridCoordinate(songMoment);
         if (momentGridCoordinate == null) throw 'momentGridCoordinate == null';
         logger.d(momentGridCoordinate.toString());

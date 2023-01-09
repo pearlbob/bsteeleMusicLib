@@ -154,7 +154,7 @@ class MusicXml {
         }
 
         {
-          for (Chord chord in songMoment.getMeasure().chords) {
+          for (Chord chord in songMoment.measure.chords) {
             sb.write('''
   <!--   $chord for ${chord.beats} beats  -->
 ''');
@@ -165,7 +165,7 @@ class MusicXml {
         //  bass
         sb.write('\t<backup> <duration>16</duration> </backup>');
 
-        for (Chord chord in songMoment.getMeasure().chords) {
+        for (Chord chord in songMoment.measure.chords) {
           Pitch? p = Pitch.findPitch(chord.slashScaleNote ?? chord.scaleChord.scaleNote, lowRoot);
           Pitch pitch = key.mappedPitch(p);
           sb.write('''

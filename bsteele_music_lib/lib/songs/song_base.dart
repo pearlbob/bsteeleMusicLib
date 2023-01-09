@@ -283,7 +283,7 @@ class SongBase {
       //  install the beats to moment lookup entries
       int beat = 0;
       for (SongMoment songMoment in _songMoments) {
-        int limit = songMoment.getMeasure().beatCount;
+        int limit = songMoment.measure.beatCount;
         for (int b = 0; b < limit; b++) {
           _beatsToMoment[beat++] = songMoment;
         }
@@ -456,10 +456,9 @@ class SongBase {
     _computeSongMoments();
 
     for (SongMoment songMoment in _songMoments) {
-      GridCoordinate? momentGridCoordinate = getMomentGridCoordinateFromMomentNumber(songMoment.getMomentNumber());
-      logger.d(
-          '${songMoment.getMomentNumber()}: ${songMoment.getChordSectionLocation()}#${songMoment.getSectionCount()}'
-          ' m:${momentGridCoordinate?.toString() ?? ''} ${songMoment.getMeasure().toMarkup()}${songMoment.getRepeatMax() > 1 ? ' ${songMoment.repeat + 1}/${songMoment.repeatMax}' : ''}');
+      GridCoordinate? momentGridCoordinate = getMomentGridCoordinateFromMomentNumber(songMoment.momentNumber);
+      logger.d('${songMoment.momentNumber}: ${songMoment.getChordSectionLocation()}#${songMoment.sectionCount}'
+          ' m:${momentGridCoordinate?.toString() ?? ''} ${songMoment.measure.toMarkup()}${songMoment.repeatMax > 1 ? ' ${songMoment.repeat + 1}/${songMoment.repeatMax}' : ''}');
     }
   }
 
@@ -468,7 +467,7 @@ class SongBase {
     if (momentNumber < 0 || _songMoments.isEmpty || momentNumber >= _songMoments.length) {
       return '';
     }
-    return _songMoments[momentNumber].getMeasure().transpose(key, halfStepOffset);
+    return _songMoments[momentNumber].measure.transpose(key, halfStepOffset);
   }
 
   String songNextMomentMeasure(int momentNumber, Key key, int halfStepOffset) {
@@ -478,7 +477,7 @@ class SongBase {
         ) {
       return '';
     }
-    return _songMoments[momentNumber + 1].getMeasure().transpose(key, halfStepOffset);
+    return _songMoments[momentNumber + 1].measure.transpose(key, halfStepOffset);
   }
 
   String songMomentStatus(int beatNumber, int momentNumber) {
@@ -499,7 +498,7 @@ class SongBase {
       return '';
     }
 
-    Measure measure = songMoment.getMeasure();
+    Measure measure = songMoment.measure;
 
     beatNumber %= measure.beatCount;
     if (beatNumber < 0) {
@@ -507,20 +506,20 @@ class SongBase {
     }
     beatNumber++;
 
-    String ret = songMoment.getChordSection().sectionVersion.toString() +
-        (songMoment.getRepeatMax() > 1 ? ' ${songMoment.repeat + 1}/${songMoment.getRepeatMax()}' : '');
+    String ret = songMoment.chordSection.sectionVersion.toString() +
+        (songMoment.repeatMax > 1 ? ' ${songMoment.repeat + 1}/${songMoment.repeatMax}' : '');
 
-//      ret = songMoment.getMomentNumber().toString() +
+//      ret = songMoment.momentNumber.toString() +
 //          ": " +
 //          songMoment.getChordSectionLocation().toString() +
 //          "#" +
-//          songMoment.getSectionCount().toString() +
+//          songMoment.sectionCount.toString() +
 //          " " +
 //          ret.toString() +
 //          " b: " +
-//          (beatNumber + songMoment.getBeatNumber()).toString() +
+//          (beatNumber + songMoment.beatNumber).toString() +
 //          " = " +
-//          (beatNumber + songMoment.getSectionBeatNumber()).toString() +
+//          (beatNumber + songMoment.sectionBeatNumber).toString() +
 //          "/" +
 //          getChordSectionBeats(
 //                  songMoment.getChordSectionLocation().sectionVersion)
@@ -555,7 +554,7 @@ class SongBase {
     }
 
     for (SongMoment moment in moments) {
-      totalBeats += moment.getMeasure().beatCount;
+      totalBeats += moment.measure.beatCount;
     }
     _duration = totalBeats * 60.0 / beatsPerMinute;
   }
@@ -3249,10 +3248,10 @@ class SongBase {
     }
 
     SongMoment firstSongMoment = songMoment;
-    int id = songMoment.getChordSection().id;
+    int id = songMoment.chordSection.id;
     for (int m = momentNumber - 1; m >= 0; m--) {
       SongMoment sm = _songMoments[m];
-      if (id != sm.getChordSection().id || sm.getSectionCount() != firstSongMoment.getSectionCount()) {
+      if (id != sm.chordSection.id || sm.sectionCount != firstSongMoment.sectionCount) {
         return firstSongMoment;
       }
       firstSongMoment = sm;
@@ -3267,11 +3266,11 @@ class SongBase {
     }
 
     SongMoment lastSongMoment = songMoment;
-    int id = songMoment.getChordSection().id;
+    int id = songMoment.chordSection.id;
     int limit = _songMoments.length;
     for (int m = momentNumber + 1; m < limit; m++) {
       SongMoment sm = _songMoments[m];
-      if (id != sm.getChordSection().id || sm.getSectionCount() != lastSongMoment.getSectionCount()) {
+      if (id != sm.chordSection.id || sm.sectionCount != lastSongMoment.sectionCount) {
         return lastSongMoment;
       }
       lastSongMoment = sm;
@@ -3284,7 +3283,7 @@ class SongBase {
     if (songMoment == null) {
       return 0;
     }
-    return songMoment.getBeatNumber() * 60.0 / beatsPerMinute;
+    return songMoment.beatNumber * 60.0 / beatsPerMinute;
   }
 
   static int? getBeatNumberAtTime(int bpm, double songTime) {
@@ -3315,7 +3314,7 @@ class SongBase {
       return null;
     } //  we're done with the last measure of this song play
 
-    return _beatsToMoment[songBeat]?.getMomentNumber();
+    return _beatsToMoment[songBeat]?.momentNumber;
   }
 
   /// Return the first moment on the given row
@@ -3346,7 +3345,7 @@ class SongBase {
     int ret = 0;
     SongMoment? songMoment = getFirstSongMomentAtRow(rowIndex);
     if (songMoment != null) {
-      for (int i = songMoment.getMomentNumber(); i < _songMoments.length; i++) {
+      for (int i = songMoment.momentNumber; i < _songMoments.length; i++) {
         try {
           songMoment = _songMoments[i];
           if (songMoment.row != rowIndex) {
