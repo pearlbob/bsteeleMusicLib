@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 void main() {
   Logger.level = Level.debug;
 
-  test('song performance', () {
+  test('song performance', () async {
     var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
         'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
     var b = Song.createSong('B', 'bob', 'bsteele.com', Key.G, 120, 4, 4, 'pearlbob', 'i: B B B B V: [ A B C D ]x2 ',
@@ -30,7 +30,7 @@ void main() {
     var allSongPerformances = AllSongPerformances()..clear();
     var songs = [a, b];
     const int lastSung = 1639852279322;
-    allSongPerformances.loadSongs(songs);
+    await allSongPerformances.loadSongs(songs);
     for (var song in [a, b]) {
       for (var key in Key.values.toList().reversed) {
         if (key == Key.Fs) {
@@ -70,7 +70,7 @@ void main() {
       allSongPerformances.fromJsonString(allSongPerformances.toJsonString());
       logger.d('allSongPerformancesFromJson: ${allSongPerformances.toJsonString()}');
       expect(asJsonString, allSongPerformances.toJsonString());
-      allSongPerformances.loadSongs(songs);
+      await allSongPerformances.loadSongs(songs);
       expect(
           allSongPerformances.bySinger(singer1).toString(),
           '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', _key: G♭, _bpm: 100, sung: 12/18/2021}'
@@ -170,7 +170,7 @@ void main() {
     allSongPerformances.addSongPerformance(songPerformance);
     expect(allSongPerformances.length, 1);
 
-    allSongPerformances.loadSongs([a]);
+    await allSongPerformances.loadSongs([a]);
     expect(
         allSongPerformances.bySong(a).toString(),
         '[SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
@@ -201,7 +201,7 @@ void main() {
     var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
         'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
     performance = SongPerformance(a.songId.toString(), singer);
-    allSongPerformances.loadSongs([a]);
+    await allSongPerformances.loadSongs([a]);
     allSongPerformances.addSongPerformance(performance);
     expect(allSongPerformances.length, 6);
     for (var p in allSongPerformances.allSongPerformances) {
@@ -623,13 +623,13 @@ void main() {
         var songIdAsString = a.songId.toString();
         allSongPerformances
             .addSongPerformance(SongPerformance(songIdAsString, singer, key: keySung, bpm: bpm, lastSung: lastSung));
-        allSongPerformances.loadSongs([a]);
+        await allSongPerformances.loadSongs([a]);
         expect(allSongPerformances.length, 1);
 
         //  encode/decode to/from json
         logger.v(allSongPerformances.toJsonString(prettyPrint: true));
         allSongPerformances.fromJsonString(allSongPerformances.toJsonString());
-        allSongPerformances.loadSongs([a]);
+        await allSongPerformances.loadSongs([a]);
 
         var performance = allSongPerformances.findBySingerSongId(songIdAsString: songIdAsString, singer: singer);
         expect(performance, isNotNull);
@@ -639,7 +639,7 @@ void main() {
     }
   });
 
-  test('song performance matches', () {
+  test('song performance matches', () async {
     int beatsPerBar = 4;
     int bpm = 106;
     var singer = 'Bob S.';
@@ -651,7 +651,7 @@ void main() {
 
     var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
     allSongPerformances.addSongPerformance(performance1);
-    allSongPerformances.loadSongs([a]);
+    await allSongPerformances.loadSongs([a]);
 
     var b = Song.createSong('Ive Got The Blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
         'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');

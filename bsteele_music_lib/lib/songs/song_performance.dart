@@ -3,12 +3,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/util/usTimer.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:string_similarity/string_similarity.dart';
 
+import '../app_logger.dart';
 import 'key.dart';
 import 'music_constants.dart';
+
+const Level _logPerformance = Level.debug;
 
 final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
@@ -272,12 +277,10 @@ class AllSongPerformances {
 
   /// Populate song performance references with current songs
   Future<void> loadSongs(Iterable<Song> songs) async {
-    var i = 0;
+    var usTimer = UsTimer();
     for (var song in songs) {
       songMap[song.songId.toString().toLowerCase()] = song;
-      if ((++i % yieldCount) == 0) {
-        await Future.delayed(waitDuration);
-      }
+      await Future.delayed(Duration.zero);
     }
 
     final List<String> allLowerCaseIds = songMap.keys.toList(growable: false);
@@ -305,6 +308,8 @@ class AllSongPerformances {
               StringSimilarity.findBestMatch(songRequest.song?.songId.toString().toLowerCase(), allLowerCaseIds)
                   .bestMatchIndex]];
     }
+
+    logger.log(_logPerformance, 'loadSongs: $usTimer');
   }
 
   /// add a song performance to the song history and add it if it was sung more recently than the current entry
@@ -456,44 +461,41 @@ class AllSongPerformances {
   static const String allSongPerformanceRequestsName = 'allSongPerformanceRequests';
 
   Future<int> updateFromJsonString(String jsonString) async {
+    var usTimer = UsTimer();
     int count = 0;
     var decoded = jsonDecode(jsonString);
-    var i = 0;
     if (decoded is Map<String, dynamic>) {
       //  assume the items are song performances
       for (var item in decoded[allSongPerformancesName] ?? []) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
-          if ((++i % yieldCount) == 0) {
-            await Future.delayed(waitDuration);
-          }
+
+          await Future.delayed(Duration.zero);
         }
       }
       for (var item in decoded[allSongPerformanceHistoryName] ?? []) {
         _allSongPerformanceHistory.add(SongPerformance._fromJson(item));
-        if ((++i % yieldCount) == 0) {
-          await Future.delayed(waitDuration);
-        }
+
+        await Future.delayed(Duration.zero);
       }
       for (var item in decoded[allSongPerformanceRequestsName] ?? []) {
         _allSongPerformanceRequests.add(SongRequest._fromJson(item));
-        if ((++i % yieldCount) == 0) {
-          await Future.delayed(waitDuration);
-        }
+
+        await Future.delayed(Duration.zero);
       }
     } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
       for (var item in decoded) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
-          if ((++i % yieldCount) == 0) {
-            await Future.delayed(waitDuration);
-          }
+
+          await Future.delayed(Duration.zero);
         }
       }
     } else {
       throw 'updateFromJsonString wrong json decode: ${decoded.runtimeType}';
     }
+    logger.log(_logPerformance, 'updateFromJsonString: $usTimer');
     return count;
   }
 
@@ -580,7 +582,5 @@ class AllSongPerformances {
   Iterable<SongRequest> get allSongPerformanceRequests => _allSongPerformanceRequests;
   final SplayTreeSet<SongRequest> _allSongPerformanceRequests = SplayTreeSet<SongRequest>();
 
-  static const yieldCount = 1 << 7;
-  static const waitDuration = Duration(milliseconds: 60);
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }

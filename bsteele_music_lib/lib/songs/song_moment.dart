@@ -32,7 +32,7 @@ class SongMoment implements Comparable<SongMoment> {
   @override
   String toString() {
     return '$momentNumber: $momentLocation  ${measure.toMarkup()}'
-        ' beat  ${beatNumber}'
+        ' beat $beatNumber'
         '${(repeatMax > 1 ? ' $repeat/$repeatMax' : '')}'
         ' ${chordSection.sectionVersion} #$sectionCount';
   }
