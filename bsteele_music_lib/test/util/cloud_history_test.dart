@@ -30,7 +30,7 @@ void main() {
     logger.i('test cloud history:');
     _addAllSongsFromFile(_allSongsFile);
     //  add the github version
-    await allSongPerformances
+     allSongPerformances
         .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
     await allSongPerformances.loadSongs(allSongs);
     logger.i('allSongs.length: ${allSongs.length}');

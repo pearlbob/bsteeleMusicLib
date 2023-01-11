@@ -107,9 +107,8 @@ class CjLog {
     processedLogs.createSync();
 
     //  add the github version
-   await allSongPerformances.updateFromJsonString(
-        File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation')
-            .readAsStringSync());
+    allSongPerformances
+        .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
 
     //  process the logs
     var list = logs.listSync();

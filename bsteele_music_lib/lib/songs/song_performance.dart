@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/songs/song_id.dart';
 import 'package:bsteeleMusicLib/util/usTimer.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:intl/intl.dart';
@@ -163,10 +164,18 @@ class SongPerformance implements Comparable<SongPerformance> {
     return 0;
   }
 
+  String _prepIdAsTitle() {
+    return Util.underScoresToSpaceUpperCase(_songIdAsString.replaceAll(_songIdRegExp, ''))
+        .replaceAll(' Cover By ', ' cover by ')
+        .replaceAll(' By ', ' by ');
+  }
+
+  static final _songIdRegExp = RegExp('^${SongId.prefix}');
+
   @override
   int get hashCode => _songIdAsString.hashCode ^ _singer.hashCode ^ _key.hashCode ^ _bpm.hashCode;
 
-  Song get performedSong => song ?? (Song.theEmptySong.copySong()..title = _songIdAsString);
+  Song get performedSong => song ?? (Song.theEmptySong.copySong()..title = _prepIdAsTitle());
   Song? song;
 
   String get songIdAsString => _songIdAsString;
@@ -276,11 +285,10 @@ class AllSongPerformances {
   AllSongPerformances._internal();
 
   /// Populate song performance references with current songs
-  Future<void> loadSongs(Iterable<Song> songs) async {
+  loadSongs(Iterable<Song> songs) {
     var usTimer = UsTimer();
     for (var song in songs) {
       songMap[song.songId.toString().toLowerCase()] = song;
-      await Future.delayed(Duration.zero);
     }
 
     final List<String> allLowerCaseIds = songMap.keys.toList(growable: false);
@@ -460,36 +468,29 @@ class AllSongPerformances {
   static const String allSongPerformanceHistoryName = 'allSongPerformanceHistory';
   static const String allSongPerformanceRequestsName = 'allSongPerformanceRequests';
 
-  Future<int> updateFromJsonString(String jsonString) async {
+  int updateFromJsonString(String jsonString) {
     var usTimer = UsTimer();
     int count = 0;
+
     var decoded = jsonDecode(jsonString);
     if (decoded is Map<String, dynamic>) {
       //  assume the items are song performances
       for (var item in decoded[allSongPerformancesName] ?? []) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
-
-          await Future.delayed(Duration.zero);
         }
       }
       for (var item in decoded[allSongPerformanceHistoryName] ?? []) {
         _allSongPerformanceHistory.add(SongPerformance._fromJson(item));
-
-        await Future.delayed(Duration.zero);
       }
       for (var item in decoded[allSongPerformanceRequestsName] ?? []) {
         _allSongPerformanceRequests.add(SongRequest._fromJson(item));
-
-        await Future.delayed(Duration.zero);
       }
     } else if (decoded is List<dynamic>) {
       //  assume the items are song performances
       for (var item in decoded) {
         if (updateSongPerformance(SongPerformance._fromJson(item))) {
           count++;
-
-          await Future.delayed(Duration.zero);
         }
       }
     } else {

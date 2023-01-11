@@ -767,10 +767,10 @@ coerced to reflect the songlist's last modification for that song.
             assert(allSongPerformances.allSongPerformanceRequests.isEmpty);
 
             //  add the github version
-            await allSongPerformances.updateFromJsonString(
+            allSongPerformances.updateFromJsonString(
                 File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
             logger.i('preload: usTimer: ${usTimer.seconds} s');
-            await allSongPerformances
+            allSongPerformances
                 .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
             logger.i('postload: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}');
 
@@ -808,7 +808,7 @@ coerced to reflect the songlist's last modification for that song.
                   //  clear all the requests so only the most current set is used
                   allSongPerformances.clearAllSongPerformanceRequests();
 
-                  await allSongPerformances.updateFromJsonString(file.readAsStringSync());
+                  allSongPerformances.updateFromJsonString(file.readAsStringSync());
                   logger.i('allSongPerformances.length: ${allSongPerformances.length}');
                   logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
                 } else {
@@ -891,7 +891,7 @@ coerced to reflect the songlist's last modification for that song.
               logger.i('\'${file.path}\' exists.');
 
               logger.i('allSongPerformances: ${allSongPerformances.length}');
-              await allSongPerformances.updateFromJsonString(file.readAsStringSync());
+              allSongPerformances.updateFromJsonString(file.readAsStringSync());
               logger.i('allSongPerformances: ${allSongPerformances.length}');
             } else {
               logger.e('\'${file.path}\' does not exist.');
@@ -928,11 +928,11 @@ coerced to reflect the songlist's last modification for that song.
             AllSongPerformances allSongPerformances = AllSongPerformances();
 
             //  add the github version
-            await allSongPerformances.updateFromJsonString(
+            allSongPerformances.updateFromJsonString(
                 File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
 
             //  load local songs
-            await allSongPerformances
+            allSongPerformances
                 .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
 
             {

@@ -8,7 +8,7 @@ class SongId implements Comparable<SongId> {
 
   SongId.computeSongId(String? title, String? artist, String? coverArtist)
       : _songId = _findSongId(
-            '$_prefix${_toSongId(title)}_by_${_toSongId(artist)}${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
+            '$prefix${_toSongId(title)}_by_${_toSongId(artist)}${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
 
   static String _toSongId(String? s) {
     if (s == null) {
@@ -21,10 +21,10 @@ class SongId implements Comparable<SongId> {
   }
 
   String toUnderScorelessString() =>
-      _underScorelessId ??= _songId.replaceFirst(_prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
+      _underScorelessId ??= _songId.replaceFirst(prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
 
   static String asReadableString(String songIdAsString) {
-    return songIdAsString.replaceFirst(_prefix, '').replaceAll('_', ' ').replaceAll(' The', ', The');
+    return songIdAsString.replaceFirst(prefix, '').replaceAll('_', ' ').replaceAll(' The', ', The');
   }
 
   @override
@@ -52,7 +52,7 @@ class SongId implements Comparable<SongId> {
   @override
   int get hashCode => _songId.hashCode;
 
-  static const _prefix = 'Song_';
+  static const prefix = 'Song_';
 
   String get songId => _songId;
   final String _songId;

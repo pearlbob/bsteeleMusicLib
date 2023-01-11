@@ -161,6 +161,12 @@ class Util {
     }).trimLeft();
   }
 
+  static String underScoresToSpaceUpperCase(String s) {
+    return firstToUpper(s.replaceAllMapped(_underScoreRegExp, (Match match) {
+      return ' ${match.group(1)!.toUpperCase()}';
+    }).trimLeft());
+  }
+
   static String jsonEncodeNewLines(String s) {
     return '${s.replaceAll(_jsonEncodeNewLineRegexp, '},\n{')}\n';
   }
