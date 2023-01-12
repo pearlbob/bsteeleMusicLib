@@ -112,7 +112,7 @@ class ChordPro {
         }
         logger.d(cs.toString());
       }
-      _song.setChords(sb.toString());
+      _song.chords = sb.toString();
     }
     _song.rawLyrics = lyrics.toString();
     return _song;

@@ -54,8 +54,8 @@ class SongEditManager {
           }
           //  create new measure if one doesn't exist
           if (measureNode == null || measureNode.isEmpty) {
-            measureNode = Measure(_song.getBeatsPerBar(), [
-              Chord(_song.key.getMajorScaleChord(), _song.getBeatsPerBar(), _song.getBeatsPerBar(), null,
+            measureNode = Measure(_song.beatsPerBar, [
+              Chord(_song.key.getMajorScaleChord(), _song.beatsPerBar, _song.beatsPerBar, null,
                   ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none), true)
             ]);
           }

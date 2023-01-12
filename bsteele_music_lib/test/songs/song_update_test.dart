@@ -20,11 +20,11 @@ void main() {
       logger.d('getBeat');
       SongUpdate instance = SongUpdate();
       int expResult = 0;
-      int result = instance.getBeat();
+      int result = instance.beat;
       expect(result, expResult);
       expResult = 14;
       instance.setBeat(expResult);
-      expect(instance.getBeat(), expResult);
+      expect(instance.beat, expResult);
     }
     {
       logger.d('getBeatsPerMeasure');

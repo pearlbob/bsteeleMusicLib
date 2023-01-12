@@ -43,7 +43,7 @@ class MusicXml {
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="3.1">
   <work>
-    <work-title>${_song.getTitle()}</work-title>
+    <work-title>${_song.title}</work-title>
     </work>
 <identification>
     <creator type="composer">Composer</creator>

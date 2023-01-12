@@ -59,7 +59,7 @@ class SongUpdate {
         currentKey = currentKey ?? Key.getDefault() {
     //  notice assignSong() is not used to keep currentKey and currentBeatsPerMinute correct
     //  that is, the update versions
-    this.song = song ?? Song.createEmptySong(currentBeatsPerMinute: song?.beatsPerMinute, currentKey: song?.getKey());
+    this.song = song ?? Song.createEmptySong(currentBeatsPerMinute: song?.beatsPerMinute, currentKey: song?.key);
   }
 
   SongUpdate copyWith(
@@ -97,7 +97,7 @@ class SongUpdate {
   void assignSong(Song song) {
     this.song = song;
     currentBeatsPerMinute = song.beatsPerMinute;
-    currentKey = song.getKey();
+    currentKey = song.key;
   }
 
   SongMoment? getSongMoment() {
@@ -149,15 +149,7 @@ class SongUpdate {
   ///
   /// @return the typical, default duration
   double getDefaultMeasureDuration() {
-    return song.getBeatsPerBar() * 60.0 / (currentBeatsPerMinute == 0 ? 30 : currentBeatsPerMinute);
-  }
-
-  /// Beat number from start of the current measureNumber. Starts at zero and goes to
-  /// beatsPerBar - 1
-  ///
-  /// @return the current beat
-  int getBeat() {
-    return beat;
+    return song.beatsPerBar * 60.0 / (currentBeatsPerMinute == 0 ? 30 : currentBeatsPerMinute);
   }
 
   double getBeatDuration() {
@@ -212,7 +204,7 @@ class SongUpdate {
 
   String diff(SongUpdate other) {
     if (!song.songBaseSameContent(other.song)) {
-      return 'new song: ${other.song.getTitle()}, ${other.song.getArtist()}';
+      return 'new song: ${other.song.title}, ${other.song.artist}';
     }
     if (currentKey != other.currentKey) {
       return 'new key: ${other.currentKey}';
@@ -340,7 +332,7 @@ class SongUpdate {
     sb.write(momentNumber);
     sb.write(',\n');
     sb.write('"beat": ');
-    sb.write(getBeat());
+    sb.write(beat);
     sb.write(',\n');
     sb.write('"user": ');
     sb.write(jsonEncode(user));
@@ -382,6 +374,8 @@ class SongUpdate {
   SongMoment? songMoment;
 
   //  play values
+
+  // Beat number from start of the current measureNumber. Starts at zero and goes to beatsPerBar - 1
   int beat;
   int beatsPerMeasure;
   int currentBeatsPerMinute;

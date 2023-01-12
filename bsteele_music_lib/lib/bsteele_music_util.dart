@@ -506,7 +506,7 @@ coerced to reflect the songlist's last modification for that song.
               //  per directory limit in github.com
               Directory songDir;
               {
-                String s = song.getTitle().replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
+                String s = song.title.replaceAll(notWordOrSpaceRegExp, '').trim().substring(0, 1).toUpperCase();
                 songDir = Directory('${_outputDirectory.path}/$s');
               }
               songDir.createSync();
@@ -519,20 +519,19 @@ coerced to reflect the songlist's last modification for that song.
                 if (fileAsJson != fileAsRead) {
                   writeTo.writeAsStringSync(fileAsJson, flush: true);
                   if (_verbose) {
-                    logger.i(
-                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                    logger
+                        .i('${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
                   }
                 } else {
                   if (_veryVerbose) {
-                    logger.i(
-                        '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                    logger
+                        .i('${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
                     logger.i('\tidentical');
                   }
                 }
               } else {
                 if (_verbose) {
-                  logger.i(
-                      '${song.getTitle()} by ${song.getArtist()}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                  logger.i('${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
                 }
                 writeTo.writeAsStringSync(fileAsJson, flush: true);
               }

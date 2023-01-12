@@ -87,22 +87,24 @@ class SongBase {
     key = Key.C;
     timeSignature = TimeSignature.defaultTimeSignature;
     rawLyrics = '';
-    setChords('');
+    chords = '';
     setBeatsPerMinute(100);
   }
 
   /// Constructor from a set of named arguments.
-  SongBase.from(
-      {String title = 'unknown',
-      String artist = 'unknown',
-      String coverArtist = '',
-      String copyright = 'unknown',
-      Key? key,
-      int beatsPerMinute = MusicConstants.defaultBpm,
-      int beatsPerBar = 4,
-      int unitsPerMeasure = 4,
-      String chords = '',
-      String rawLyrics = ''}) {
+  SongBase.from({
+    String title = 'unknown',
+    String artist = 'unknown',
+    String coverArtist = '',
+    String copyright = 'unknown',
+    Key? key,
+    int beatsPerMinute = MusicConstants.defaultBpm,
+    int beatsPerBar = 4,
+    int unitsPerMeasure = 4,
+    String chords = '',
+    String rawLyrics = '',
+    String user = defaultUser,
+  }) {
     this.title = title;
     this.artist = artist;
     this.coverArtist = coverArtist;
@@ -110,8 +112,9 @@ class SongBase {
     this.key = key ?? Key.getDefault();
     this.beatsPerMinute = beatsPerMinute;
     timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
-    setChords(chords);
+    this.chords = chords;
     this.rawLyrics = rawLyrics;
+    _user = user;
   }
 
   /// A convenience constructor used to enforce the minimum requirements for a song.
@@ -119,17 +122,19 @@ class SongBase {
   /// Note that this is the base class for a song object.
   /// The split from Song was done for testability reasons.
   static SongBase createSongBase(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
-      int unitsPerMeasure, String chords, String rawLyrics) {
+      int unitsPerMeasure, String chords, String rawLyrics,
+      {String user = defaultUser}) {
     SongBase song = SongBase();
     song.title = title;
     song.artist = artist;
     song.copyright = copyright;
     song.key = key;
     song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
-    song.setChords(chords);
+    song.chords = chords;
     song.rawLyrics = rawLyrics;
     song.setBeatsPerMinute(bpm);
     song.resetLastModifiedDateToNow();
+    song._user = user;
 
     return song;
   }
@@ -487,8 +492,8 @@ class SongBase {
     }
 
     if (momentNumber < 0) {
-//            beatNumber %= getBeatsPerBar();
-//            if (beatNumber < 0)  {beatNumber += getBeatsPerBar();}
+//            beatNumber %= beatsPerBar;
+//            if (beatNumber < 0)  {beatNumber += beatsPerBar;}
 //            beatNumber++;
       return 'count in ${-momentNumber}';
     }
@@ -546,7 +551,7 @@ class SongBase {
     }
 
     _duration = 0;
-    totalBeats = 0;
+    _totalBeats = 0;
 
     List<SongMoment>? moments = getSongMoments();
     if (timeSignature.beatsPerBar == 0 || beatsPerMinute == 0 || moments.isEmpty) {
@@ -554,9 +559,9 @@ class SongBase {
     }
 
     for (SongMoment moment in moments) {
-      totalBeats += moment.measure.beatCount;
+      _totalBeats += moment.measure.beatCount;
     }
-    _duration = totalBeats * 60.0 / beatsPerMinute;
+    _duration = _totalBeats * 60.0 / beatsPerMinute;
   }
 
   /// Find the chord section for the given section version.
@@ -573,14 +578,6 @@ class SongBase {
     }
     ChordSection? ret = _getChordSectionMap()[chordSectionLocation.sectionVersion];
     return ret;
-  }
-
-  String getUser() {
-    return user;
-  }
-
-  void setUser(String user) {
-    this.user = user.isEmpty ? defaultUser : user;
   }
 
   HashMap<SectionVersion, ChordSection> _getChordSectionMap() {
@@ -805,7 +802,7 @@ class SongBase {
     _clearCachedValues(); //  force lazy eval
 
     if (_chords.isNotEmpty) {
-      logger.d('parseChords for: ${getTitle()}');
+      logger.d('parseChords for: $title');
       SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
       MarkedString markedString = MarkedString(_chords);
       ChordSection chordSection;
@@ -1419,7 +1416,7 @@ class SongBase {
     _songMomentGrid = null;
     _songMoments = [];
     _duration = 0;
-    totalBeats = 0;
+    _totalBeats = 0;
   }
 
   String chordsToJsonTransportString() {
@@ -2835,8 +2832,8 @@ class SongBase {
 
   /// Checks a song for completeness.
   Song checkSong() {
-    return checkSongBase(getTitle(), getArtist(), getCopyright(), getKey(), getDefaultBpm().toString(),
-        getBeatsPerBar().toString(), getUnitsPerMeasure().toString(), getUser(), toMarkup(), rawLyrics);
+    return checkSongBase(title, artist, copyright, key, getDefaultBpm().toString(), beatsPerBar.toString(),
+        unitsPerMeasure.toString(), user, toMarkup(), rawLyrics);
   }
 
   /// Validate a song entry argument set
@@ -2937,8 +2934,8 @@ class SongBase {
         throw 'Units per measure has to be 2, 4, or 8';
     }
 
-    if (user.isEmpty || user == Song.unknownUser) {
-      throw 'Please enter your user name.';
+    if (user.isEmpty || user == SongBase.defaultUser) {
+      throw 'Please enter a user name.';
     }
 
     Song newSong = Song.createSong(
@@ -3013,12 +3010,12 @@ class SongBase {
   static List<StringTriple> diff(SongBase a, SongBase b) {
     List<StringTriple> ret = [];
 
-    if (a.getTitle().compareTo(b.getTitle()) != 0) {
-      ret.add(StringTriple('title:', a.getTitle(), b.getTitle()));
+    if (a.title.compareTo(b.title) != 0) {
+      ret.add(StringTriple('title:', a.title, b.title));
     }
 
-    if (a.getArtist().compareTo(b.getArtist()) != 0) {
-      ret.add(StringTriple('artist:', a.getArtist(), b.getArtist()));
+    if (a.artist.compareTo(b.artist) != 0) {
+      ret.add(StringTriple('artist:', a.artist, b.artist));
     }
     {
       var aCoverArtist = a.coverArtist;
@@ -3027,20 +3024,20 @@ class SongBase {
         ret.add(StringTriple('cover:', aCoverArtist, bCoverArtist));
       }
     }
-    if (a.getCopyright().compareTo(b.getCopyright()) != 0) {
-      ret.add(StringTriple('copyright:', a.getCopyright(), b.getCopyright()));
+    if (a.copyright.compareTo(b.copyright) != 0) {
+      ret.add(StringTriple('copyright:', a.copyright, b.copyright));
     }
-    if (a.getKey().compareTo(b.getKey()) != 0) {
-      ret.add(StringTriple('key:', a.getKey().toString(), b.getKey().toString()));
+    if (a.key.compareTo(b.key) != 0) {
+      ret.add(StringTriple('key:', a.key.toString(), b.key.toString()));
     }
     if (a.beatsPerMinute != b.beatsPerMinute) {
       ret.add(StringTriple('BPM:', a.beatsPerMinute.toString(), b.beatsPerMinute.toString()));
     }
-    if (a.getBeatsPerBar() != b.getBeatsPerBar()) {
-      ret.add(StringTriple('per bar:', a.getBeatsPerBar().toString(), b.getBeatsPerBar().toString()));
+    if (a.beatsPerBar != b.beatsPerBar) {
+      ret.add(StringTriple('per bar:', a.beatsPerBar.toString(), b.beatsPerBar.toString()));
     }
-    if (a.getUnitsPerMeasure() != b.getUnitsPerMeasure()) {
-      ret.add(StringTriple('units/measure:', a.getUnitsPerMeasure().toString(), b.getUnitsPerMeasure().toString()));
+    if (a.unitsPerMeasure != b.unitsPerMeasure) {
+      ret.add(StringTriple('units/measure:', a.unitsPerMeasure.toString(), b.unitsPerMeasure.toString()));
     }
 
 //  chords
@@ -3145,39 +3142,19 @@ class SongBase {
   }
 
   /// Return the song's number of beats per bar
-  int getBeatsPerBar() {
+  int get beatsPerBar {
     return timeSignature.beatsPerBar;
   }
 
   /// Return an integer that represents the number of notes per measure
   /// represented in the sheet music.  Typically this is 4; meaning quarter notes.
-  int getUnitsPerMeasure() {
+  int get unitsPerMeasure {
     return timeSignature.unitsPerMeasure;
-  }
-
-  /// Return the song's copyright
-  String getCopyright() {
-    return copyright;
-  }
-
-  /// Return the song's key
-  Key getKey() {
-    return key;
   }
 
   /// Return the song's identification string largely consisting of the title and artist name.
   String getSongId() {
     return _songId.songId;
-  }
-
-  /// Return the song's title
-  String getTitle() {
-    return title;
-  }
-
-  /// Return the song's artist.
-  String getArtist() {
-    return artist;
   }
 
   /// Return the default beats per minute.
@@ -3209,9 +3186,13 @@ class SongBase {
     //logger.info("setFileName(): "+fileVersionNumber);
   }
 
-  int getTotalBeats() {
+  set totalBeats(int totalBeats) {
+    _totalBeats = totalBeats; //  will likely be overwritten by computeDuration()
+  }
+
+  int get totalBeats {
     computeDuration();
-    return totalBeats;
+    return _totalBeats;
   }
 
   int getSongMomentsSize() {
@@ -3424,14 +3405,10 @@ class SongBase {
   static const int defaultYear = 0;
   static final RegExp _yearRegexp = RegExp(r'(?:\D|^)(\d{4})(?:\D|$)');
 
-  void setChords(String chords) {
+  set chords(String chords) {
     _clearCachedValues();
     _chords = chords;
     _chordSectionMap = HashMap(); //  clear chord sections, will be parsed when required
-  }
-
-  void setTotalBeats(int totalBeats) {
-    this.totalBeats = totalBeats;
   }
 
   void setCurrentMeasureEditType(MeasureEditType measureEditType) {
@@ -3869,6 +3846,9 @@ class SongBase {
     if (_rawLyrics != (o._rawLyrics)) {
       return false;
     }
+    if (_user != (o._user)) {
+      return false;
+    }
 
     //  notice that a modification date is not sufficient to declare a change in content.
 
@@ -3949,7 +3929,7 @@ class SongBase {
 
   set user(String s) {
     if (_user != s) {
-      _user = s; //  fixme: this is currently meaningless
+      _user = s.isEmpty ? defaultUser : s; //  fixme: this is currently meaningless
     }
   }
 
@@ -4048,7 +4028,7 @@ class SongBase {
   bool _isLyricsParseRequired = true;
 
   double? _duration; //  units of seconds
-  int totalBeats = 0;
+  int _totalBeats = 0;
 
   List<LyricSection> get lyricSections {
     _parseLyrics();

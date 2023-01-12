@@ -130,36 +130,36 @@ void main() {
     expect(MeasureEditType.append, a.currentMeasureEditType);
     logger.d(a.getCurrentChordSectionLocation().toString());
 
-    expect(a.getCurrentMeasureNode(), Measure.parseString('D', a.getBeatsPerBar()));
+    expect(a.getCurrentMeasureNode(), Measure.parseString('D', a.beatsPerBar));
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('i:0:0'));
-    expect(a.getCurrentMeasureNode(), Measure.parseString('A', a.getBeatsPerBar()));
+    expect(a.getCurrentMeasureNode(), Measure.parseString('A', a.beatsPerBar));
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('i:0:1'));
-    expect(Measure.parseString('BCm7/ADE', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('BCm7/ADE', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('i:0:3')); //  move to end
-    expect(Measure.parseString('D', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('D', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:0'));
-    expect(Measure.parseString('A', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('A', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:5')); //  refuse to move past end
-    expect(Measure.parseString('D', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('D', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:3')); //  move to end
-    expect(Measure.parseString('D', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('D', a.beatsPerBar), a.getCurrentMeasureNode());
 
     a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8,
         'I:v: A B C D ch3: [ E F G A ] x4 A# C D# F', 'I:v: bob, bob, bob berand');
     expect(a.currentMeasureEditType, MeasureEditType.append);
     a.setDefaultCurrentChordLocation();
-    expect(a.getCurrentMeasureNode(), Measure.parseString('F', a.getBeatsPerBar()));
+    expect(a.getCurrentMeasureNode(), Measure.parseString('F', a.beatsPerBar));
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('i:0:0'));
-    expect(Measure.parseString('A', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('A', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('i:0:3234234')); //  move to end
-    expect(Measure.parseString('D', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('D', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:0'));
-    expect(Measure.parseString('A', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('A', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('c3:1:0'));
-    expect(Measure.parseString('A#', a.getBeatsPerBar()), a.getCurrentMeasureNode());
+    expect(Measure.parseString('A#', a.beatsPerBar), a.getCurrentMeasureNode());
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('c3:1:3')); //  move to end
-    expect(Measure.parseString('F', a.getBeatsPerBar()), a.getCurrentMeasureNode());
-    ChordSection cs = ChordSection.parseString('c3:', a.getBeatsPerBar());
+    expect(Measure.parseString('F', a.beatsPerBar), a.getCurrentMeasureNode());
+    ChordSection cs = ChordSection.parseString('c3:', a.beatsPerBar);
     ChordSection? chordSection = a.findChordSectionBySectionVersion(cs.sectionVersion);
     expect(chordSection, isNotNull);
     expect(cs.sectionVersion, chordSection!.sectionVersion);
@@ -698,49 +698,49 @@ void main() {
     chordSectionLocation = ChordSectionLocation.parseString('v:0:0');
 
     MeasureNode? m = a.findMeasureNodeByLocation(chordSectionLocation);
-    expect(Measure.parseString('D', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('D', a.beatsPerBar), m);
     expect(m, a.findMeasureNodeByLocation(chordSectionLocation));
 
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v:0:3'));
-    expect(Measure.parseString('F#', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('F#', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v:0:4'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:2:0'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:1:1'));
-    expect(Measure.parseString('D', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('D', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:0:0'));
-    expect(Measure.parseString('Em7', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('Em7', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:0:4'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:0:3'));
-    expect(m, Measure.parseString('G', a.getBeatsPerBar())); //  default measures per row
+    expect(m, Measure.parseString('G', a.beatsPerBar)); //  default measures per row
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:1:0'));
-    expect(Measure.parseString('C', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('C', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:1:1'));
-    expect(Measure.parseString('D', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('D', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v1:0:9')); //    repeats don't count here
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:0:0'));
-    expect(Measure.parseString('A', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('A', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:0:3'));
-    expect(m, Measure.parseString('D,', a.getBeatsPerBar()));
+    expect(m, Measure.parseString('D,', a.beatsPerBar));
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:0:4'));
-    expect(Measure.parseString('E', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('E', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:1:3'));
-    expect(m, Measure.parseString('GbB', a.getBeatsPerBar()));
+    expect(m, Measure.parseString('GbB', a.beatsPerBar));
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('v2:1:4'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('o:0:4'));
-    expect(Measure.parseString('B', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('B', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('o:0:5'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('c:0:5'));
-    expect(Measure.parseString('A', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('A', a.beatsPerBar), m);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('c:0:6'));
     expect(m, isNull);
     m = a.findMeasureNodeByLocation(ChordSectionLocation.parseString('i:0:0'));
-    expect(Measure.parseString('A', a.getBeatsPerBar()), m);
+    expect(Measure.parseString('A', a.beatsPerBar), m);
 
     chordSectionLocation = ChordSectionLocation.parseString('v:0');
     MeasureNode? mn = a.findMeasureNodeByLocation(chordSectionLocation);
@@ -996,12 +996,12 @@ c2:
             'C5D5 C5D5 C5D5 C5D#',
         'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
-    Measure? m = Measure.parseString('X', a.getBeatsPerBar());
+    Measure? m = Measure.parseString('X', a.beatsPerBar);
     expect(a.findMeasureNodeByGrid(const GridCoordinate(1, 2)), m);
-    expect(Measure.parseString('C5D5', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(5, 4)));
-    m = Measure.parseString('DC', a.getBeatsPerBar());
+    expect(Measure.parseString('C5D5', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(5, 4)));
+    m = Measure.parseString('DC', a.beatsPerBar);
     expect(a.findMeasureNodeByGrid(const GridCoordinate(18, 2)), m);
-    expect(Measure.parseString('C5D#', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(20, 4)));
+    expect(Measure.parseString('C5D#', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(20, 4)));
 
     //  not what's intended, but what's declared
     a = SongBase.createSongBase(
@@ -1022,9 +1022,9 @@ c2:
             'O:V:\n',
         'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
-    expect(Measure.parseString('Gm7', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(0, 3)));
-    expect(Measure.parseString('Cm', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(2, 1)));
-    expect(Measure.parseString('F', a.getBeatsPerBar()), a.findMeasureNodeByGrid(const GridCoordinate(2, 2)));
+    expect(Measure.parseString('Gm7', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(0, 3)));
+    expect(Measure.parseString('Cm', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(2, 1)));
+    expect(Measure.parseString('F', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(2, 2)));
 
     //  leading blank lines
     a = SongBase.createSongBase(
@@ -3148,7 +3148,7 @@ v:
           'i: A B C D  v: G G G G, C C G G o: C C G G',
           'i: (instrumental)\nv: line 1\no:\n');
 
-      var totalBeats = a.getTotalBeats();
+      var totalBeats = a.totalBeats;
       var beatDuration = 60.0 / bpm;
       expect(totalBeats, 64); //  sanity only
 
@@ -3957,6 +3957,37 @@ Grid{
       expect(a.firstMomentInLyricSection(a.lyricSections[3]).momentNumber, 28);
       expect(a.firstMomentInLyricSection(a.lyricSections[4]).momentNumber, 36);
       expect(a.firstMomentInLyricSection(a.lyricSections[5]).momentNumber, 52);
+    }
+  });
+
+  test('test songBaseSameContent', () {
+    int beatsPerBar = 4;
+    {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+      var b = a.copyWith();
+      expect(a, b);
+      expect(a.compareBySongId(b), 0);
+      expect(a.songBaseSameContent(b), isTrue);
+
+      b = a.copyWith(title: 'bob test');
+      expect(a == b, isFalse);
+      expect(a.compareBySongId(b), 1);
+      expect(a.songBaseSameContent(b), isFalse);
+
+      b = a.copyWith(user: 'pillyweed');
+      expect(a == b, isFalse);
+      expect(a.compareBySongId(b), 0);
+      expect(a.songBaseSameContent(b), isFalse);
     }
   });
 }
