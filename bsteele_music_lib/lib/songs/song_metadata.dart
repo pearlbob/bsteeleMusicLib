@@ -153,7 +153,7 @@ class NameValueFilter {
 
 /// name value pairs attached to a song id
 class SongIdMetadata implements Comparable<SongIdMetadata> {
-  SongIdMetadata(this._id, {List<NameValue>? metadata}) {
+  SongIdMetadata(this._id, {Iterable<NameValue>? metadata}) {
     if (metadata != null) {
       for (NameValue nameValue in metadata) {
         add(nameValue);
@@ -314,6 +314,10 @@ class SongMetadata {
     return _singleton._idMetadata.lookup(SongIdMetadata(song.songId.toString()));
   }
 
+  static SongIdMetadata? byId(final String id) {
+    return _singleton._idMetadata.lookup(SongIdMetadata(id));
+  }
+
   //  convenience method
   static void addSong(Song song, NameValue nameValue) {
     SongIdMetadata songIdMetadata = SongIdMetadata(song.songId.toString(), metadata: [nameValue]);
@@ -338,6 +342,20 @@ class SongMetadata {
       //  remove this id metadata if it was the last one
       _singleton._idMetadata.remove(songIdMetadata);
       //  fixme: generate generated values?
+    }
+  }
+
+  static void removeSongIdMetadata(final SongIdMetadata songIdMetadata) {
+    if (_singleton._idMetadata.contains(songIdMetadata)) {
+      isDirty = true;
+      _singleton._idMetadata.remove(songIdMetadata);
+    }
+  }
+
+  static void addSongIdMetadata(final SongIdMetadata songIdMetadata) {
+    if (!_singleton._idMetadata.contains(songIdMetadata)) {
+      isDirty = true;
+      _singleton._idMetadata.add(songIdMetadata);
     }
   }
 

@@ -899,29 +899,51 @@ coerced to reflect the songlist's last modification for that song.
             }
             await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
 
-            //  process the metadata to the new songs
-
+            //  process the metadata to the new song ids
             {
               // for ( var song in songs ){
               //   logger.i(song.songId.toString().toLowerCase());
               // }
+              HashMap<String, Song> repairs = HashMap();
               var songRepair = SongRepair(songs);
               SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
               for (var songIdMetadata in SongMetadata.idMetadata) {
+                //  find the repairs
                 var song = songRepair.findBestSong(songIdMetadata.id);
-                if (song == null || songIdMetadata.id != song.songId.toString()) {
+                if (song == null) {
+                  //  alert the broken repair
+                  logger.e('${songIdMetadata.id}: $song');
+                  assert(false);
+                } else if (songIdMetadata.id != song.songId.toString()) {
+                  //  remember the required repairs
+                  repairs[songIdMetadata.id] = song;
                   logger.log(_logSongIdMetadata, '${songIdMetadata.id}: $song');
                 }
               }
+              logger.i('metadata repair misses: ${songRepair.misses}');
+
+              //  perform the repairs
+              for (var id in repairs.keys) {
+                logger.i('repair: "$id" to "${repairs[id]?.songId.toString()}');
+                var songIdMetadata = SongMetadata.byId(id);
+                assert(songIdMetadata != null);
+                songIdMetadata = songIdMetadata!;
+                var newSongIdMetadata =
+                    SongIdMetadata(repairs[id]!.songId.toString(), metadata: songIdMetadata.nameValues);
+                logger.d(songIdMetadata.toString());
+                logger.d(newSongIdMetadata.toString());
+                SongMetadata.removeSongIdMetadata(songIdMetadata);
+                SongMetadata.addSongIdMetadata(newSongIdMetadata);
+              }
             }
-            // outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songmetadata');
-            // try {
-            //   outputFile.deleteSync();
-            // } catch (e) {
-            //   logger.e(e.toString());
-            //   //assert(false);
-            // }
-            // await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
+            outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songmetadata');
+            try {
+              outputFile.deleteSync();
+            } catch (e) {
+              logger.e(e.toString());
+              //assert(false);
+            }
+            await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
 
             if (_verbose) {
               logger.i('allSongPerformances location: ${outputFile.path}');
@@ -980,22 +1002,14 @@ coerced to reflect the songlist's last modification for that song.
                 File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
 
             //  load local songs
-            allSongPerformances
-                .loadSongs(Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()));
+            var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
+            allSongPerformances.loadSongs(songs);
 
-            {
-              var missingSongs = SplayTreeSet<String>();
-              for (var performance in allSongPerformances.allSongPerformanceHistory) {
-                if (performance.song == null) {
-                  missingSongs.add(performance.songIdAsString);
-                  var lowerId = performance.songIdAsString.toLowerCase();
-                  BestMatch bestMatch =
-                      StringSimilarity.findBestMatch(lowerId, allSongPerformances.songMap.keys.toList(growable: false));
-                  logger.i('$lowerId:  ${bestMatch.bestMatch.target}: ${bestMatch.bestMatch.rating}');
-                }
-              }
-              for (var s in missingSongs) {
-                logger.i('missing song: $s');
+            //  assure all songs are present
+            for (var performance in allSongPerformances.allSongPerformanceHistory) {
+              if (performance.song == null) {
+                logger.e('missing song: ${performance.songIdAsString}');
+                assert(false);
               }
             }
 
