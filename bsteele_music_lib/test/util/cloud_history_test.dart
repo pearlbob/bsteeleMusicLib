@@ -30,9 +30,9 @@ void main() {
     logger.i('test cloud history:');
     _addAllSongsFromFile(_allSongsFile);
     //  add the github version
-     allSongPerformances
+    allSongPerformances
         .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
-    await allSongPerformances.loadSongs(allSongs);
+    allSongPerformances.loadSongs(allSongs);
     logger.i('allSongs.length: ${allSongs.length}');
     logger.i('allSongPerformances.allSongPerformanceHistory.length:'
         ' ${allSongPerformances.allSongPerformanceHistory.length}');
@@ -41,10 +41,10 @@ void main() {
     for (var perf in allSongPerformances.allSongPerformanceHistory) {
       logger.d('perf: ${perf.lowerCaseSongIdAsString}');
       if (perf.song == null) {
+        //  not all songs will get a match
         logger.i('${perf.songIdAsString}: singer: ${perf.singer}, ${perf.lastSungDateTime}');
         BestMatch bestMatch = StringSimilarity.findBestMatch(perf.songIdAsString, allSongIdList);
         logger.i('       ${allSongList[bestMatch.bestMatchIndex]}, ${bestMatch.ratings.first.rating}');
-        assert(false); //  all songs should get at least some match
       } else if (perf.lowerCaseSongIdAsString != perf.song?.songId.toString().toLowerCase()) {
         logger.i('Matched: $perf =>\n              ${perf.song}');
       }

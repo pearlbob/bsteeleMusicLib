@@ -148,6 +148,8 @@ void main() {
 
     var next = SongPerformance.fromSong(a, singer1, key: Key.A);
     await Future.delayed(const Duration(seconds: 5));
+    logger.i('songPerformance: $songPerformance');
+    logger.i('next: $next');
     expect(next.lastSung > songPerformance.lastSung, true);
 
     songPerformance = SongPerformance.fromJsonString(
@@ -201,12 +203,14 @@ void main() {
     var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
         'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
     performance = SongPerformance(a.songId.toString(), singer);
-    allSongPerformances.loadSongs([a]);
     allSongPerformances.addSongPerformance(performance);
-    expect(allSongPerformances.length, 6);
+    allSongPerformances.loadSongs([a]);
+
     for (var p in allSongPerformances.allSongPerformances) {
-      logger.d('${p.singer} sings ${p.songIdAsString}');
+      logger.i('${p.singer} sings ${p.songIdAsString}');
     }
+    expect(allSongPerformances.length, 6);
+
     expect(allSongPerformances.bySinger(singer).length, 2);
     expect(allSongPerformances.find(singer: singer, song: a), performance);
     expect(allSongPerformances.find(singer: 'bub', song: a), isNull);
@@ -656,7 +660,8 @@ void main() {
     var b = Song.createSong('Ive Got The Blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
         'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
 
-    var performance2 = SongPerformance(b.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung + 30000);
+    var performance2 = SongPerformance(b.songId.toString(), singer,
+        key: Key.D, bpm: bpm, lastSung: lastSung + Duration.millisecondsPerDay);
     allSongPerformances.addSongPerformance(performance2);
     expect(allSongPerformances.allSongPerformances.length, 2);
     expect(allSongPerformances.allSongPerformanceHistory.length, 2);
@@ -664,13 +669,18 @@ void main() {
       logger.i('$h');
     }
     logger.i('performance1 ${performance1.songIdAsString} vs performance2 ${performance2.songIdAsString}');
+    logger.i('performance1.lastSung ${performance1.lastSung} vs ${performance2.lastSung}');
     logger.i('performance1.compareTo(performance2): ${performance1.compareTo(performance2)}');
-    expect(performance1.compareTo(performance2), isNonZero);
+    expect(performance1.compareTo(performance2), isZero);
 
+    logger.i('allSongPerformances:');
+    for (var performance in allSongPerformances.allSongPerformances) {
+      logger.i('  $performance');
+    }
     expect(allSongPerformances.allSongPerformances.length, 2);
     expect(allSongPerformances.allSongPerformanceHistory.length, 2);
     allSongPerformances.removeSingerSong(singer, a.songId.toString());
-    expect(allSongPerformances.allSongPerformances.length, 1);
+    expect(allSongPerformances.allSongPerformances.length, 0);
     expect(allSongPerformances.allSongPerformanceHistory.length, 2);
   });
 

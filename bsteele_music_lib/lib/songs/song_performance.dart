@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/song_id.dart';
-import 'package:bsteeleMusicLib/util/usTimer.dart';
+import 'package:bsteeleMusicLib/util/us_timer.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -15,6 +15,8 @@ import 'key.dart';
 import 'music_constants.dart';
 
 const Level _logPerformance = Level.debug;
+const Level _logMatchDetails = Level.debug;
+const Level _logLostSongs = Level.debug;
 
 final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
@@ -26,15 +28,17 @@ String _cleanPerformer(final String? value) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung, this.song})
-      : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
+  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung, Song? song})
+      : _song = song,
+        _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _singer = _cleanPerformer(singer),
         _key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song this.song, final String singer, {Key? key, int? bpm, int? lastSung})
-      : _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
+  SongPerformance.fromSong(Song song, final String singer, {Key? key, int? bpm, int? lastSung})
+      : _song = song,
+        _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
         _singer = _cleanPerformer(singer),
         _songIdAsString = song.songId.toString(),
         _key = key ?? song.key,
@@ -175,14 +179,24 @@ class SongPerformance implements Comparable<SongPerformance> {
   @override
   int get hashCode => _songIdAsString.hashCode ^ _singer.hashCode ^ _key.hashCode ^ _bpm.hashCode;
 
-  Song get performedSong => song ?? (Song.theEmptySong.copySong()..title = _prepIdAsTitle());
-  Song? song;
+  set song(Song? song) {
+    if (_song?.songId != song?.songId) {
+      _song = song;
+      _songIdAsString = song?.songId.toString() ?? '';
+      _lowerCaseSongIdAsString = _songIdAsString.toLowerCase();
+    }
+  }
+
+  Song? get song => _song;
+  Song? _song;
+
+  Song get performedSong => _song ?? (Song.theEmptySong.copySong()..title = _prepIdAsTitle());
 
   String get songIdAsString => _songIdAsString;
-  final String _songIdAsString;
+  String _songIdAsString;
 
   String get lowerCaseSongIdAsString => _lowerCaseSongIdAsString;
-  final String _lowerCaseSongIdAsString;
+  String _lowerCaseSongIdAsString;
 
   String get singer => _singer;
   final String _singer;
@@ -207,6 +221,10 @@ class SongRequest implements Comparable<SongRequest> {
   SongRequest(this._songIdAsString, String requester)
       : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _requester = _cleanPerformer(requester);
+
+  SongRequest copyWith({String? songIdAsString, String? requester}) {
+    return SongRequest(songIdAsString ?? _songIdAsString, requester ?? _requester);
+  }
 
   @override
   String toString() {
@@ -275,6 +293,70 @@ class SongRequest implements Comparable<SongRequest> {
   final String _requester;
 }
 
+/// Find the best match against the current songs to replace songs where the song id has been changed.
+class SongRepair {
+  SongRepair(final Iterable<Song> songs) {
+    for (var song in songs) {
+      var key = song.songId.toString().toLowerCase();
+      _songMap[key] = song;
+
+      //  repair some old song names
+      var key2 = repairMap[key];
+      if (key2 != null) {
+        _songMap[key2] = song;
+      }
+    }
+    _allLowerCaseIds = _songMap.keys.toList(growable: false);
+  }
+
+  Song? findBestSong(final String id) {
+    var lowerCaseId = id.toLowerCase();
+    var song = _songMap[lowerCaseId];
+    if (song != null) {
+      return song; //  no guessing required
+    }
+
+    //  find a soft match the expensive way
+    misses++;
+    BestMatch bestMatch = StringSimilarity.findBestMatch(lowerCaseId, _allLowerCaseIds);
+    logger.log(
+        _logMatchDetails,
+        'match: "$id" to "${_allLowerCaseIds[bestMatch.bestMatchIndex]}"'
+        ', rating: ${bestMatch.ratings[bestMatch.bestMatchIndex]}');
+    song = _songMap[_allLowerCaseIds[bestMatch.bestMatchIndex]];
+    if ((bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0) > _matchRatingMinimum) {
+      assert(song != null);
+      return song;
+    }
+    logger.i('lost song: $lowerCaseId, ${bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0}'
+        ', best: ${song?.songId.toString().toLowerCase()}'
+        '\n     $song');
+    return null;
+  }
+
+  static final HashMap<String, String> repairMap = HashMap()
+    ..addAll({
+      //  new song id: old song id
+      'song_all_of_me_by_ruth_etting_coverby_frank_sinatra': 'song_all_of_me_by_sinatra',
+      'song_for_no_one_by_beatles_the': 'song_for_no_one_by_emmy_lou_harris_orig_beatles',
+      'song_lookin_out_my_back_door_by_creedence_clearwater_revival': 'song_lookin_out_my_back_door_by_john_fogerty',
+      'song_spooky_by_classic_iv': 'song_spooky_by_atlanta_rhythm_section',
+      'song_working_on_a_building_by_traditional_folk_song': 'song_working_on_a_building_by_african_american_spiritual',
+      'song_blue_christmas_cover_by_elvis_presley_by_billy_hayes_and_jay_johnson':
+          'song_blue_christmas_by_elvis_presley',
+      'song_parting_glass_the_by_traditional_folk_song_coverby_ed_sheeran':
+          'song_parting_glass_the_by_wailin_jeenys_lyrics',
+      'song_winter_wonderland_by_guy_lombardo_johnny_mathis_et_al_at_christmas': 'song_winter_wonderland_by_christmas',
+      'song_let_it_snow_by_vaughn_monroe_and_everybody_at_christmas': 'song_let_it_snow_by_christmas',
+      'song_feliz_navidad_by_jos_feliciano': 'song_feliz_navidad_by_christmas',
+    });
+
+  int misses = 0;
+  static const _matchRatingMinimum = 0.70;
+  late List<String> _allLowerCaseIds;
+  final HashMap<String, Song> _songMap = HashMap();
+}
+
 class AllSongPerformances {
   static final AllSongPerformances _singleton = AllSongPerformances._internal();
 
@@ -284,40 +366,139 @@ class AllSongPerformances {
 
   AllSongPerformances._internal();
 
+  static final HashMap<String, String> repairMap = HashMap()
+    ..addAll({
+      //  new song id: old song id
+      'song_all_of_me_by_ruth_etting_coverby_frank_sinatra': 'song_all_of_me_by_sinatra',
+      'song_for_no_one_by_beatles_the': 'song_for_no_one_by_emmy_lou_harris_orig_beatles',
+      'song_lookin_out_my_back_door_by_creedence_clearwater_revival': 'song_lookin_out_my_back_door_by_john_fogerty',
+      'song_spooky_by_classic_iv': 'song_spooky_by_atlanta_rhythm_section',
+      'song_working_on_a_building_by_traditional_folk_song': 'song_working_on_a_building_by_african_american_spiritual',
+    });
+
   /// Populate song performance references with current songs
-  loadSongs(Iterable<Song> songs) {
+  int loadSongs(Iterable<Song> songs) {
     var usTimer = UsTimer();
+    var misses = 0;
+
     for (var song in songs) {
-      songMap[song.songId.toString().toLowerCase()] = song;
+      var key = song.songId.toString().toLowerCase();
+      songMap[key] = song;
+
+      //  repair some old song names
+      var key2 = repairMap[key];
+      if (key2 != null) {
+        songMap[key2] = song;
+      }
     }
+    logger.log(_logPerformance, '  lowerCase: ${usTimer.deltaToString()}');
 
     final List<String> allLowerCaseIds = songMap.keys.toList(growable: false);
+
+    for (var s in allLowerCaseIds) {
+      logger.log(_logMatchDetails, s);
+    }
 
     //  fixme: a failed match can choose a wrong-ish "best match" if the song id has been changed too much
 
     //  find performance matches
-    for (var songPerformance in _allSongPerformances) {
-      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString] ??
-          songMap[allLowerCaseIds[
-              StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds).bestMatchIndex]];
+
+    {
+      List<SongPerformance> removals = [];
+      List<SongPerformance> additions = [];
+      for (var songPerformance in _allSongPerformances) {
+        var song = songMap[songPerformance._lowerCaseSongIdAsString];
+        if (song != null) {
+          songPerformance.song = song;
+        } else {
+          //  find a soft match the expensive way
+          misses++;
+          BestMatch bestMatch =
+              StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds);
+          logger.log(
+              _logMatchDetails,
+              'match: "${songPerformance.lowerCaseSongIdAsString}" to "${allLowerCaseIds[bestMatch.bestMatchIndex]}"'
+              ', rating: ${bestMatch.ratings[bestMatch.bestMatchIndex]}');
+          if ((bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0) > _matchRatingMinimum) {
+            song = songMap[allLowerCaseIds[bestMatch.bestMatchIndex]];
+            assert(song != null);
+            removals.add(songPerformance);
+            additions.add(songPerformance.copy()..song = song);
+          } else {
+            logger.log(_logLostSongs, 'lost _allSongPerformances: ${songPerformance.lowerCaseSongIdAsString}');
+          }
+        }
+      }
+      _allSongPerformances.removeAll(removals);
+      _allSongPerformances.addAll(additions);
     }
+    logger.log(_logPerformance, '  matches: ${usTimer.deltaToString()}');
 
     //  find history matches
-    for (var songPerformance in _allSongPerformanceHistory) {
-      songPerformance.song = songMap[songPerformance._lowerCaseSongIdAsString] ??
-          songMap[allLowerCaseIds[
-              StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds).bestMatchIndex]];
+    {
+      List<SongPerformance> removals = [];
+      List<SongPerformance> additions = [];
+      for (var songPerformance in _allSongPerformanceHistory) {
+        var song = songMap[songPerformance._lowerCaseSongIdAsString];
+        if (song != null) {
+          songPerformance.song = song;
+        } else {
+          //  find a soft match the expensive way
+          misses++;
+          BestMatch bestMatch =
+              StringSimilarity.findBestMatch(songPerformance.lowerCaseSongIdAsString, allLowerCaseIds);
+          logger.log(
+              _logMatchDetails,
+              'match: "${songPerformance.lowerCaseSongIdAsString}" to "${allLowerCaseIds[bestMatch.bestMatchIndex]}"'
+              ', rating: ${bestMatch.ratings[bestMatch.bestMatchIndex]}');
+          if ((bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0) > _matchRatingMinimum) {
+            song = songMap[allLowerCaseIds[bestMatch.bestMatchIndex]];
+            assert(song != null);
+            removals.add(songPerformance);
+            additions.add(songPerformance.copy()..song = song);
+          } else {
+            logger.log(_logLostSongs, 'lost _allSongPerformanceHistory: ${songPerformance.lowerCaseSongIdAsString}');
+          }
+        }
+      }
+      _allSongPerformanceHistory.removeAll(removals);
+      _allSongPerformanceHistory.addAll(additions);
     }
+    logger.log(_logPerformance, '  history: ${usTimer.deltaToString()} for ${_allSongPerformanceHistory.length}');
 
     //  find request matches
-    for (var songRequest in _allSongPerformanceRequests) {
-      songRequest.song = songMap[songRequest._lowerCaseSongIdAsString] ??
-          songMap[allLowerCaseIds[
-              StringSimilarity.findBestMatch(songRequest.song?.songId.toString().toLowerCase(), allLowerCaseIds)
-                  .bestMatchIndex]];
+    {
+      List<SongRequest> removals = [];
+      List<SongRequest> additions = [];
+      for (var songRequest in _allSongPerformanceRequests) {
+        var song = songMap[songRequest._lowerCaseSongIdAsString];
+        if (song != null) {
+          songRequest.song = song;
+        } else {
+          //  find a soft match the expensive way
+          misses++;
+          BestMatch bestMatch = StringSimilarity.findBestMatch(songRequest.lowerCaseSongIdAsString, allLowerCaseIds);
+          logger.log(
+              _logMatchDetails,
+              'match: "${songRequest.lowerCaseSongIdAsString}" to "${allLowerCaseIds[bestMatch.bestMatchIndex]}"'
+              ', rating: ${bestMatch.ratings[bestMatch.bestMatchIndex]}');
+          if ((bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0) > _matchRatingMinimum) {
+            song = songMap[allLowerCaseIds[bestMatch.bestMatchIndex]];
+            assert(song != null);
+            removals.add(songRequest);
+            additions.add(songRequest.copyWith(songIdAsString: song!.songId.toString()));
+          } else {
+            logger.log(_logLostSongs, 'lost _allSongPerformanceRequests: ${songRequest.lowerCaseSongIdAsString}');
+          }
+        }
+      }
+      _allSongPerformanceRequests.removeAll(removals);
+      _allSongPerformanceRequests.addAll(additions);
     }
+    logger.log(_logPerformance, '  requests: ${usTimer.deltaToString()}');
 
     logger.log(_logPerformance, 'loadSongs: $usTimer');
+    return misses;
   }
 
   /// add a song performance to the song history and add it if it was sung more recently than the current entry
@@ -570,7 +751,7 @@ class AllSongPerformances {
   @override
   int get hashCode => Object.hash(_allSongPerformances, _allSongPerformanceHistory);
 
-  Map<String, Song> songMap = {};
+  HashMap<String, Song> songMap = HashMap();
 
   Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
   final SplayTreeSet<SongPerformance> _allSongPerformances =
@@ -582,6 +763,8 @@ class AllSongPerformances {
 
   Iterable<SongRequest> get allSongPerformanceRequests => _allSongPerformanceRequests;
   final SplayTreeSet<SongRequest> _allSongPerformanceRequests = SplayTreeSet<SongRequest>();
+
+  static const _matchRatingMinimum = 0.70;
 
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }
