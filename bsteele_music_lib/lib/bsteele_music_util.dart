@@ -27,7 +27,7 @@ import 'package:string_similarity/string_similarity.dart';
 
 import 'app_logger.dart';
 
-const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
+//const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
 const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
@@ -36,15 +36,10 @@ final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
 final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 AllSongPerformances allSongPerformances = AllSongPerformances();
 
-const _logFiles = Level.debug;
-const _logSongIdMetadata = Level.debug;
-const _logPerformanceDetails = Level.debug;
-
-void main(List<String> args) {
+void main(List<String> args) async {
   Logger.level = Level.info;
 
-  var util = BsteeleMusicUtil();
-  util.runMain(args);
+  exit(await BsteeleMusicUtil().runMain(args));
 }
 
 /// a command line utility to help manage song list maintenance
@@ -117,11 +112,11 @@ coerced to reflect the songlist's last modification for that song.
   }
 
   /// A workaround method to get the async on main()
-  void runMain(List<String> args) async {
+  Future<int> runMain(List<String> args) async {
     //  help if nothing to do
     if (args.isEmpty) {
       _help();
-      return;
+      return -1;
     }
 
     Logger.level = Level.info;
@@ -747,7 +742,7 @@ coerced to reflect the songlist's last modification for that song.
               if (!(await parent.exists())) {
                 logger.d('parent path: ${parent.toString()}'
                     ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
-                return;
+                return -2;
               }
               _outputDirectory.createSync();
             }
@@ -774,10 +769,10 @@ coerced to reflect the songlist's last modification for that song.
                 ', allSongPerformances.length: ${allSongPerformances.length}');
             var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
 
-            var misses = allSongPerformances.loadSongs(songs);
+            var corrections = allSongPerformances.loadSongs(songs);
             logger.i(
                 'postload: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
-            logger.i('misses: $misses');
+            logger.i('corrections: $corrections');
 
             //  count the sloppy matched songs in history
             {
@@ -785,17 +780,20 @@ coerced to reflect the songlist's last modification for that song.
               for (var performance in allSongPerformances.allSongPerformanceHistory) {
                 if (performance.song == null) {
                   logger.i('missing song: ${performance.lowerCaseSongIdAsString}');
+                  assert(false);
                 } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
                   logger.i('${performance.lowerCaseSongIdAsString}'
                       ' vs ${performance.song!.songId.toString().toLowerCase()}');
+                  assert(false);
                 } else {
                   matches++;
                 }
               }
               logger.i('matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
-                  ', misses: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
+                  ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
             }
 
+            //  read from server logs............... not used now!
             // logger.i('allSongPerformances.length: ${allSongPerformances.length}');
             // logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
             // logger.i('last sung: ${allSongPerformances.allSongPerformanceHistory.last.lastSungDateString}');
@@ -910,61 +908,52 @@ coerced to reflect the songlist's last modification for that song.
             //     // }
             //     HashMap<String, Song> repairs = HashMap();
             //     var songRepair = SongRepair(songs);
-            //     SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
-            //     for (var songIdMetadata in SongMetadata.idMetadata) {
-            //       //  find the repairs
-            //       var song = songRepair.findBestSong(songIdMetadata.id);
-            //       if (song == null) {
-            //         //  alert the broken repair
-            //         logger.e('${songIdMetadata.id}: $song');
-            //         assert(false);
-            //       } else if (songIdMetadata.id != song.songId.toString()) {
-            //         //  remember the required repairs
-            //         repairs[songIdMetadata.id] = song;
-            //         logger.log(_logSongIdMetadata, '${songIdMetadata.id}: $song');
-            //       }
-            //     }
-            //     logger.i('metadata repair misses: ${songRepair.misses}');
-            //
-            //     //  perform the repairs
-            //     for (var id in repairs.keys) {
-            //       logger.i('repair: "$id" to "${repairs[id]?.songId.toString()}');
-            //       var songIdMetadata = SongMetadata.byId(id);
-            //       assert(songIdMetadata != null);
-            //       songIdMetadata = songIdMetadata!;
-            //       var newSongIdMetadata =
-            //           SongIdMetadata(repairs[id]!.songId.toString(), metadata: songIdMetadata.nameValues);
-            //       logger.d(songIdMetadata.toString());
-            //       logger.d(newSongIdMetadata.toString());
-            //       SongMetadata.removeSongIdMetadata(songIdMetadata);
-            //       SongMetadata.addSongIdMetadata(newSongIdMetadata);
-            //     }
-            //   }
-            // }
-            //   {
-            //     File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songmetadata');
-            //     try {
-            //       outputFile.deleteSync();
-            //     } catch (e) {
-            //       logger.e(e.toString());
-            //       //assert(false);
-            //     }
-            //     await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
-            //
-            //     if (_verbose) {
-            //       logger.i('allSongPerformances location: ${outputFile.path}');
-            //     }
-            //   }
-          }
-          {
-            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
-            try {
-              outputFile.deleteSync();
-            } catch (e) {
-              logger.e(e.toString());
-              //assert(false);
+            SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
+            File localSongMetadata = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songmetadata');
+            {
+              SongMetadata.repairSongs(allSongPerformances.songRepair);
+              try {
+                localSongMetadata.deleteSync();
+              } catch (e) {
+                logger.e(e.toString());
+                //assert(false);
+              }
+              await localSongMetadata.writeAsString(SongMetadata.toJson(), flush: true);
+
+              if (_verbose) {
+                logger.i('allSongPerformances location: ${localSongMetadata.path}');
+              }
             }
-            await outputFile.writeAsString(allSongPerformances.toJsonString(), flush: true);
+
+            File localSongperformances =
+                File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
+            {
+              try {
+                localSongperformances.deleteSync();
+              } catch (e) {
+                logger.e(e.toString());
+                //assert(false);
+              }
+              await localSongperformances.writeAsString(allSongPerformances.toJsonString(), flush: true);
+            }
+
+            //  time the reload
+            {
+              allSongPerformances.clear();
+              SongMetadata.clear();
+
+              var usTimer = UsTimer();
+              allSongPerformances.updateFromJsonString(localSongperformances.readAsStringSync());
+              var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
+              var corrections = allSongPerformances.loadSongs(songs);
+              SongMetadata.fromJson(localSongMetadata.readAsStringSync());
+
+              double seconds = usTimer.seconds;
+              logger.i('reload: usTimer: $seconds s'
+                  ', allSongPerformances.length: ${allSongPerformances.length}'
+                  ', corrections: $corrections');
+              assert(seconds < 0.25);
+            }
           }
           break;
 
@@ -1500,7 +1489,7 @@ coerced to reflect the songlist's last modification for that song.
       }
     }
 
-    exit(0);
+    return 0;
   }
 
   void _addAllSongsFromDir(dynamic inputFile) {
@@ -1635,6 +1624,6 @@ coerced to reflect the songlist's last modification for that song.
   static RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
 }
 
-final RegExp _allSongPerformancesRegExp = RegExp(r'^allSongPerformances_(\d{8}_\d{6}).songperformances$');
+//final RegExp _allSongPerformancesRegExp = RegExp(r'^allSongPerformances_(\d{8}_\d{6}).songperformances$');
 final RegExp _csvLineSplit = RegExp(r'[,\r]');
 final RegExp _spaceRegexp = RegExp(r'\W');

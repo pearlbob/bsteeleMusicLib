@@ -4,8 +4,12 @@ import 'dart:convert';
 import 'package:bsteeleMusicLib/app_logger.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/song_base.dart';
+import 'package:bsteeleMusicLib/songs/song_performance.dart';
+import 'package:logger/logger.dart';
 
 import '../util/util.dart';
+
+const _logRepair = Level.debug;
 
 enum SongMetadataGeneratedValue {
   decade,
@@ -290,6 +294,35 @@ class SongMetadata {
   }
 
   SongMetadata._internal();
+
+  static repairSongs(SongRepair songRepair) {
+    HashMap<String, Song> repairs = HashMap();
+    for (var songIdMetadata in _singleton._idMetadata) {
+      var newSong = songRepair.findBestSong(songIdMetadata.id);
+      if (newSong == null) {
+        logger.i('SongMetadata.repairSongs: missing: ${songIdMetadata.id}');
+        assert(false);
+      }
+
+      if (songIdMetadata.id != newSong!.songId.toString()) {
+        repairs[songIdMetadata.id] = newSong;
+        // logger.i('repair: ${songIdMetadata.id}  vs  ${newSong.songId}');
+      }
+    }
+
+    //  perform the repairs
+    for (var id in repairs.keys) {
+      logger.log(_logRepair, 'SongMetadata.repair: "$id" to "${repairs[id]?.songId.toString()}');
+      var songIdMetadata = SongMetadata.byId(id);
+      assert(songIdMetadata != null);
+      songIdMetadata = songIdMetadata!;
+      var newSongIdMetadata = SongIdMetadata(repairs[id]!.songId.toString(), metadata: songIdMetadata.nameValues);
+      logger.d(songIdMetadata.toString());
+      logger.d(newSongIdMetadata.toString());
+      SongMetadata.removeSongIdMetadata(songIdMetadata);
+      SongMetadata.addSongIdMetadata(newSongIdMetadata);
+    }
+  }
 
   static void set(SongIdMetadata songIdMetadata) {
     if (!_singleton._idMetadata.add(songIdMetadata)) {

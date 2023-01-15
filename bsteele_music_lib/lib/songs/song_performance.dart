@@ -389,7 +389,7 @@ class AllSongPerformances {
   /// Populate song performance references with current songs
   int loadSongs(Iterable<Song> songs) {
     var usTimer = UsTimer();
-    var misses = 0;
+    var corrections = 0;
 
     _songRepair = SongRepair(songs);
 
@@ -403,6 +403,7 @@ class AllSongPerformances {
       for (var songPerformance in _allSongPerformances) {
         var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
         if (newSong != null) {
+          corrections += songPerformance.song != null && newSong.songId != songPerformance.song?.songId ? 1 : 0;
           if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
             removals.add(songPerformance);
             additions.add(songPerformance.copy()..song = newSong);
@@ -424,6 +425,7 @@ class AllSongPerformances {
       for (var songPerformance in _allSongPerformanceHistory) {
         var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
         if (newSong != null) {
+          corrections += songPerformance.song != null && newSong.songId != songPerformance.song?.songId ? 1 : 0;
           if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
             removals.add(songPerformance);
             additions.add(songPerformance.copy()..song = newSong);
@@ -445,8 +447,11 @@ class AllSongPerformances {
       for (var songRequest in _allSongPerformanceRequests) {
         var newSong = _songRepair.findBestSong(songRequest._lowerCaseSongIdAsString);
         if (newSong != null) {
-          removals.add(songRequest);
-          additions.add(songRequest.copyWith(songIdAsString: newSong.songId.toString()));
+          if (songRequest._songIdAsString != newSong.songId.toString()) {
+            corrections += songRequest.song != null && newSong.songId != songRequest.song?.songId ? 1 : 0;
+            removals.add(songRequest);
+            additions.add(songRequest.copyWith(songIdAsString: newSong.songId.toString()));
+          }
         } else {
           logger.log(_logLostSongs, 'lost _allSongPerformanceRequests: ${songRequest.lowerCaseSongIdAsString}');
           assert(false);
@@ -458,7 +463,7 @@ class AllSongPerformances {
     logger.log(_logPerformance, '  requests: ${usTimer.deltaToString()}');
 
     logger.log(_logPerformance, 'loadSongs: $usTimer');
-    return misses;
+    return corrections;
   }
 
   /// add a song performance to the song history and add it if it was sung more recently than the current entry
@@ -711,6 +716,7 @@ class AllSongPerformances {
   @override
   int get hashCode => Object.hash(_allSongPerformances, _allSongPerformanceHistory);
 
+  SongRepair get songRepair => _songRepair;
   SongRepair _songRepair = SongRepair([]);
 
   Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
