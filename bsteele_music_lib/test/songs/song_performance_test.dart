@@ -27,7 +27,7 @@ void main() {
         expect(songPerformanceFromJson, songPerformance);
       }
     }
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     var songs = [a, b];
     const int lastSung = 1639852279322;
     allSongPerformances.loadSongs(songs);
@@ -160,7 +160,7 @@ void main() {
         '{"songId":"Song_A_by_bob","singer":"bodhi","key":0,"bpm":100,"lastSung":1548296878134}');
     expect(songPerformance.lastSungDateString, '1/23/2019');
 
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     expect(allSongPerformances.length, 0);
     allSongPerformances.addSongPerformance(songPerformance);
     expect(allSongPerformances.length, 1);
@@ -180,7 +180,7 @@ void main() {
   });
 
   test('song all performances', () async {
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     expect(allSongPerformances.length, 0);
     var singer = 'bob';
     allSongPerformances.addFromJsonString(
@@ -204,7 +204,28 @@ void main() {
         'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
     performance = SongPerformance(a.songId.toString(), singer);
     allSongPerformances.addSongPerformance(performance);
-    allSongPerformances.loadSongs([a]);
+    allSongPerformances.loadSongs([
+      a,
+      Song.createSong(
+          'All I Have to Do Is Dream',
+          'Everly Brothers',
+          'bsteele.com',
+          Key.getDefault(),
+          100,
+          4,
+          4,
+          'pearlbob',
+          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song.createSong('All You Need is Love', 'The Beatles', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song.createSong('back in the USSR', 'The Beatles', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song.createSong('don\'t let me down', 'The Beatles', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song.createSong('Angie', 'The Stones', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
+          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+    ]);
 
     for (var p in allSongPerformances.allSongPerformances) {
       logger.i('${p.singer} sings ${p.songIdAsString}');
@@ -217,7 +238,7 @@ void main() {
   });
 
   test('song performance updates', () async {
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
 
     var singer = 'Jill';
     allSongPerformances.addFromJsonString(
@@ -392,7 +413,7 @@ void main() {
   });
 
   test('song performances name trimming', () async {
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     expect(allSongPerformances.length, 0);
     allSongPerformances.addFromJsonString(
         '''[{"songId":"Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers","singer":"Jill Z. ","key":3,"bpm":106,"lastSung":1639854884818},
@@ -407,7 +428,7 @@ void main() {
   });
 
   test('song performances json extraneous fields', () async {
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     expect(allSongPerformances.length, 0);
     allSongPerformances.updateFromJsonString('''{
         "participants":["Foo U."],
@@ -506,7 +527,7 @@ void main() {
   });
 
   test('song performance requests', () async {
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     expect(allSongPerformances.length, 0);
     allSongPerformances.updateFromJsonString('''{
         "participants":["Foo U."],
@@ -621,7 +642,7 @@ void main() {
       logger.i('keySung: ${keySung.toString()}');
 
       for (var key in Key.values) {
-        var allSongPerformances = AllSongPerformances()..clear();
+        var allSongPerformances = AllSongPerformances.test();
         var a = Song.createSong('ive go the blanks', 'bob', '2022', key, bpm, beatsPerBar, 4, 'pearl bob',
             'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
         var songIdAsString = a.songId.toString();
@@ -649,7 +670,7 @@ void main() {
     var singer = 'Bob S.';
     var lastSung = DateTime.now().millisecondsSinceEpoch;
 
-    var allSongPerformances = AllSongPerformances()..clear();
+    var allSongPerformances = AllSongPerformances.test();
     var a = Song.createSong('ive got the blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
         'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
 

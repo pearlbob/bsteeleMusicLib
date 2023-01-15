@@ -17,6 +17,7 @@ import 'music_constants.dart';
 const Level _logPerformance = Level.debug;
 const Level _logMatchDetails = Level.debug;
 const Level _logLostSongs = Level.debug;
+const Level _logListAllSongs = Level.debug;
 
 final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
@@ -180,10 +181,13 @@ class SongPerformance implements Comparable<SongPerformance> {
   int get hashCode => _songIdAsString.hashCode ^ _singer.hashCode ^ _key.hashCode ^ _bpm.hashCode;
 
   set song(Song? song) {
-    if (_song?.songId != song?.songId) {
-      _song = song;
-      _songIdAsString = song?.songId.toString() ?? '';
-      _lowerCaseSongIdAsString = _songIdAsString.toLowerCase();
+    if (song != null) {
+      if (_song?.songId != song.songId) {
+        _song = song;
+
+        _songIdAsString = song.songId.toString();
+        _lowerCaseSongIdAsString = _songIdAsString.toLowerCase();
+      }
     }
   }
 
@@ -306,6 +310,13 @@ class SongRepair {
         _songMap[key2] = song;
       }
     }
+
+    //  list the song map
+    if (_logListAllSongs.index >= Level.info.index) {
+      for (var key in _songMap.keys) {
+        logger.log(_logListAllSongs, '$key: ${_songMap[key]?.songId.toString()}');
+      }
+    }
     _allLowerCaseIds = _songMap.keys.toList(growable: false);
   }
 
@@ -353,6 +364,8 @@ class SongRepair {
       'song_winter_wonderland_by_guy_lombardo_johnny_mathis_et_al_at_christmas': 'song_winter_wonderland_by_christmas',
       'song_let_it_snow_by_vaughn_monroe_and_everybody_at_christmas': 'song_let_it_snow_by_christmas',
       'song_feliz_navidad_by_jos_feliciano': 'song_feliz_navidad_by_christmas',
+      'Song_Blue_Bayou_by_Roy_Orbison_coverBy_Linda_Rondstadt'.toLowerCase():
+          'Song_Blue_Bayou_by_Roy_Orbison'.toLowerCase(),
     });
 
   int misses = 0;
@@ -368,6 +381,9 @@ class AllSongPerformances {
     return _singleton;
   }
 
+  //  only used for testing to avoid collisions of async use of the singleton
+  AllSongPerformances.test();
+
   AllSongPerformances._internal();
 
   /// Populate song performance references with current songs
@@ -376,10 +392,6 @@ class AllSongPerformances {
     var misses = 0;
 
     _songRepair = SongRepair(songs);
-
-    for (var s in _songRepair._allLowerCaseIds) {
-      logger.log(_logMatchDetails, s);
-    }
 
     //  fixme: a failed match can choose a wrong-ish "best match" if the song id has been changed too much
 
@@ -391,7 +403,7 @@ class AllSongPerformances {
       for (var songPerformance in _allSongPerformances) {
         var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
         if (newSong != null) {
-          if (newSong != songPerformance.song) {
+          if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
             removals.add(songPerformance);
             additions.add(songPerformance.copy()..song = newSong);
           }
@@ -412,8 +424,10 @@ class AllSongPerformances {
       for (var songPerformance in _allSongPerformanceHistory) {
         var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
         if (newSong != null) {
-          removals.add(songPerformance);
-          additions.add(songPerformance.copy()..song = newSong);
+          if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
+            removals.add(songPerformance);
+            additions.add(songPerformance.copy()..song = newSong);
+          }
         } else {
           logger.log(_logLostSongs, 'lost _allSongPerformanceHistory: ${songPerformance.lowerCaseSongIdAsString}');
           assert(false);
@@ -567,7 +581,7 @@ class AllSongPerformances {
 
   void fromJsonString(String jsonString) {
     _allSongPerformances.clear();
-    _singleton._fromJson(jsonDecode(jsonString));
+    _fromJson(jsonDecode(jsonString));
   }
 
   void addFromJsonString(String jsonString) {

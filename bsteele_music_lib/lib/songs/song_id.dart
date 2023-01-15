@@ -42,7 +42,7 @@ class SongId implements Comparable<SongId> {
     if (identical(_songId, o._songId)) {
       return 0;
     }
-    return songId.compareTo(o.songId);
+    return _songId.compareTo(o._songId);
   }
 
   @override

@@ -3784,7 +3784,7 @@ class SongBase {
 
   @override
   String toString() {
-    return '$title${fileVersionNumber > 0 ? ':($fileVersionNumber)' : ''} by $artist${coverArtist.isNotEmpty ? ', cover by $coverArtist' : ''}';
+    return '$title by $artist${coverArtist.isNotEmpty ? ', cover by $coverArtist' : ''}';
   }
 
   static bool containsSongTitleAndArtist(Iterable<SongBase> iterable, SongBase song) {
