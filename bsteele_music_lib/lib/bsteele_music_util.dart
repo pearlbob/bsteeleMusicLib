@@ -939,18 +939,30 @@ coerced to reflect the songlist's last modification for that song.
 
             //  time the reload
             {
-              allSongPerformances.clear();
-              SongMetadata.clear();
+              // allSongPerformances.clear();
+              // SongMetadata.clear();
 
+              logger.i('\nreload:');
               var usTimer = UsTimer();
+
               allSongPerformances.updateFromJsonString(localSongperformances.readAsStringSync());
-              var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
+              logger.i('performances: ${usTimer.deltaToString()}');
+
+              var json = File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync();
+              logger.i('song data read: ${usTimer.deltaToString()}');
+              var songs = Song.songListFromJson(json);
+              logger.i('song data parsed: ${usTimer.deltaToString()}');
               var corrections = allSongPerformances.loadSongs(songs);
+              logger.i('loadSongs: ${usTimer.deltaToString()}');
+
               SongMetadata.fromJson(localSongMetadata.readAsStringSync());
+              logger.i('localSongMetadata: ${usTimer.deltaToString()}');
 
               double seconds = usTimer.seconds;
               logger.i('reload: usTimer: $seconds s'
                   ', allSongPerformances.length: ${allSongPerformances.length}'
+                  ', songs.length: ${songs.length}'
+                  ', idMetadata.length: ${SongMetadata.idMetadata.length}'
                   ', corrections: $corrections');
               assert(seconds < 0.25);
             }

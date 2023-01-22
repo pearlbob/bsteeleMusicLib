@@ -425,7 +425,7 @@ class AllSongPerformances {
       for (var songPerformance in _allSongPerformanceHistory) {
         var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
         if (newSong != null) {
-          corrections += songPerformance.song != null && newSong.songId != songPerformance.song?.songId ? 1 : 0;
+          corrections += (songPerformance.song != null && newSong.songId != songPerformance.song?.songId) ? 1 : 0;
           if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
             removals.add(songPerformance);
             additions.add(songPerformance.copy()..song = newSong);
@@ -435,6 +435,8 @@ class AllSongPerformances {
           assert(false);
         }
       }
+      logger.d('history: ${usTimer.deltaToString()} ${_allSongPerformanceHistory.length}'
+          ', removals: ${removals.length}, additions: ${additions.length}');
       _allSongPerformanceHistory.removeAll(removals);
       _allSongPerformanceHistory.addAll(additions);
     }
@@ -462,7 +464,7 @@ class AllSongPerformances {
     }
     logger.log(_logPerformance, '  requests: ${usTimer.deltaToString()}');
 
-    logger.log(_logPerformance, 'loadSongs: $usTimer');
+    logger.log(_logPerformance, 'loadSongs: $usTimer, corrections: $corrections');
     return corrections;
   }
 
@@ -642,7 +644,7 @@ class AllSongPerformances {
     } else {
       throw 'updateFromJsonString wrong json decode: ${decoded.runtimeType}';
     }
-    logger.log(_logPerformance, 'updateFromJsonString: $usTimer');
+    logger.log(_logPerformance, 'updateFromJsonString: $usTimer, count: $count');
     return count;
   }
 
