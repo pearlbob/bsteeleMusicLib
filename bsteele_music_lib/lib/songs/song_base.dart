@@ -3901,8 +3901,6 @@ class SongBase {
 
   String get title => _title;
 
-  String get titleWithCover => _title + (coverArtist.isNotEmpty ? ', cover by $coverArtist' : '');
-
   set title(String s) {
     s = _theToTheEnd(s);
     if (_title != s) {

@@ -79,6 +79,7 @@ arguments:
 -perfupdate {file}  update the song performances with a file
 -perfwrite {file}   update the song performances to a file
 -popSongs           list the most popular songs
+-similar            list similar titled/artist/coverArtist songs
 -stat               statistics
 -tomcat {catalina_base}  read the tomcat logs
 -url {url}          read the given url into the utility's allSongs list
@@ -97,8 +98,6 @@ note: the modification date and time of the songlyrics file will be
 coerced to reflect the songlist's last modification for that song.
 ''');
   }
-
-  //-similar            list similar titled/artist songs
 
   /// A workaround to call the unix touch command to modify the
   /// read song's file to reflect it's last modification date in the song list.
@@ -1062,8 +1061,10 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-similar':
-          logger.e('fix -similar');
           {
+            if (allSongs.isEmpty) {
+              _addAllSongsFromFile(_allSongsFile);
+            }
             Map<String, Song> map = {};
             for (Song song in allSongs) {
               map[song.songId.songId] = song;
@@ -1093,11 +1094,13 @@ coerced to reflect the songlist's last modification for that song.
                 if (r >= 1.0) {
                   continue;
                 }
-                if (r >= 0.8) {
-                  logger.i('"${song.title.toString()}" by ${song.artist.toString()}');
+                const minSimilarRating = 0.8;
+                if (r >= minSimilarRating) {
+                  logger.i('$song');
                   Song? similar = map[rating.target];
                   if (similar != null) {
-                    logger.i('"${similar.title.toString()}" by ${similar.artist.toString()}');
+                    //logger.i('"${similar.title.toString()}" by ${similar.artist.toString()}');
+                    logger.i('$similar');
                     logger.i(' ');
                   }
                   listed.add(rating.target ?? 'null');
@@ -1298,7 +1301,7 @@ coerced to reflect the songlist's last modification for that song.
             for (Song song in allSongs) {
               var newUser = userCorrections[song.user];
               if (newUser != null) {
-                logger.i('${song.titleWithCover} from ${song.user} to $newUser');
+                logger.i('$song from ${song.user} to $newUser');
                 song.user = newUser;
               }
             }
