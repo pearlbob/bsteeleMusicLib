@@ -222,17 +222,18 @@ class SongPerformance implements Comparable<SongPerformance> {
 }
 
 class SongRequest implements Comparable<SongRequest> {
-  SongRequest(this._songIdAsString, String requester)
-      : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
+  SongRequest(this._songIdAsString, String requester, {Song? song = null})
+      : this.song = song,
+        _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _requester = _cleanPerformer(requester);
 
-  SongRequest copyWith({String? songIdAsString, String? requester}) {
-    return SongRequest(songIdAsString ?? _songIdAsString, requester ?? _requester);
+  SongRequest copyWith({String? songIdAsString, String? requester, Song? song}) {
+    return SongRequest(songIdAsString ?? _songIdAsString, requester ?? _requester, song: song);
   }
 
   @override
   String toString() {
-    return 'SongPerformance{song: $song, _songId: $_songIdAsString, _requester: \'$_requester\''
+    return 'SongRequest{song: $song, _songId: $_songIdAsString, _requester: \'$_requester\''
         '}';
   }
 
@@ -449,11 +450,9 @@ class AllSongPerformances {
       for (var songRequest in _allSongPerformanceRequests) {
         var newSong = _songRepair.findBestSong(songRequest._lowerCaseSongIdAsString);
         if (newSong != null) {
-          if (songRequest._songIdAsString != newSong.songId.toString()) {
-            corrections += songRequest.song != null && newSong.songId != songRequest.song?.songId ? 1 : 0;
-            removals.add(songRequest);
-            additions.add(songRequest.copyWith(songIdAsString: newSong.songId.toString()));
-          }
+          corrections += songRequest.song != null && newSong.songId != songRequest.song?.songId ? 1 : 0;
+          removals.add(songRequest);
+          additions.add(songRequest.copyWith(song: newSong));
         } else {
           logger.log(_logLostSongs, 'lost _allSongPerformanceRequests: ${songRequest.lowerCaseSongIdAsString}');
           assert(false);

@@ -553,6 +553,49 @@ void main() {
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari, NameValue('foo', 'bar')])), true);
     expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi, NameValue('foo', 'bar')])), false);
   });
+
+  test('test NameValueTypes', () {
+    final userBob = NameValue('User', 'bob');
+    final userShari = NameValue('User', 'Shari');
+    final userBodhi = NameValue('User', 'Bodhi');
+    final rock = NameValue('Genre', 'Rock');
+    final blues = NameValue('Genre', 'Blues');
+
+    var filter = NameValueFilter([userBob, userShari], nameValueType: NameValueType.anyValue);
+    expect(filter.test(userBob), true);
+    expect(filter.test(userShari), true);
+    expect(filter.test(userBodhi), true);
+    expect(filter.test(rock), false);
+    expect(filter.test(blues), false);
+
+    filter = NameValueFilter([rock], nameValueType: NameValueType.anyValue);
+    expect(filter.test(userBob), false);
+    expect(filter.test(userShari), false);
+    expect(filter.test(userBodhi), false);
+    expect(filter.test(rock), true);
+    expect(filter.test(blues), true);
+
+    filter = NameValueFilter([rock], nameValueType: NameValueType.noValue);
+    expect(filter.test(userBob), true);
+    expect(filter.test(userShari), true);
+    expect(filter.test(userBodhi), true);
+    expect(filter.test(rock), false);
+    expect(filter.test(blues), false);
+
+    filter = NameValueFilter([rock, userBob], nameValueType: NameValueType.noValue);
+    expect(filter.test(userBob), false);
+    expect(filter.test(userShari), false);
+    expect(filter.test(userBodhi), false);
+    expect(filter.test(rock), false);
+    expect(filter.test(blues), false);
+
+    filter = NameValueFilter([userShari, userBob, userBodhi], nameValueType: NameValueType.noValue);
+    expect(filter.test(userBob), false);
+    expect(filter.test(userShari), false);
+    expect(filter.test(userBodhi), false);
+    expect(filter.test(rock), true);
+    expect(filter.test(blues), true);
+  });
 }
 
 final RegExp christmasRegExp = RegExp(r'.*christmas.*', caseSensitive: false);

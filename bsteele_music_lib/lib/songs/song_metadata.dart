@@ -85,8 +85,15 @@ class NameValue implements Comparable<NameValue> {
   final String _value;
 }
 
+enum NameValueType {
+  value,
+  noValue,
+  anyValue;
+}
+
+//  a filter for name values that match the initial given values
 class NameValueFilter {
-  NameValueFilter(final Iterable<NameValue> nameValues) {
+  NameValueFilter(final Iterable<NameValue> nameValues, {this.nameValueType = NameValueType.value}) {
     Map<String, SplayTreeSet<NameValue>> map = {};
     for (var nv in nameValues) {
       var mappedList = map[nv.name];
@@ -102,6 +109,7 @@ class NameValueFilter {
     return values != null && values.contains(nameValue) && values.length > 1;
   }
 
+  //  sort all the given name value pairs
   SplayTreeSet<NameValue> nameValues() {
     SplayTreeSet<NameValue> ret = SplayTreeSet();
     for (var key in SplayTreeSet<String>()..addAll(filterMap.keys)) {
@@ -135,24 +143,35 @@ class NameValueFilter {
   }
 
   bool test(final NameValue nameValue) {
-    var values = filterMap[nameValue.name];
-    if (values == null || values.isEmpty) {
-      return false;
-    }
-    //  an AND term
-    if (values.length == 1) {
-      return nameValue.value == values.first.value;
-    }
-    //  an OR term
-    for (var key in filterMap.keys) {
-      if (filterMap[key]?.contains(nameValue) ?? false) {
-        return true;
-      }
+    switch (nameValueType) {
+      case NameValueType.value:
+        var values = filterMap[nameValue.name];
+        if (values == null || values.isEmpty) {
+          return false;
+        }
+        //  an AND term
+        if (values.length == 1) {
+          return nameValue.value == values.first.value;
+        }
+        //  an OR term
+        for (var key in filterMap.keys) {
+          if (filterMap[key]?.contains(nameValue) ?? false) {
+            return true;
+          }
+        }
+        break;
+      case NameValueType.noValue:
+        var values = filterMap[nameValue.name];
+        return values == null;
+      case NameValueType.anyValue:
+        var values = filterMap[nameValue.name];
+        return values != null;
     }
     return false;
   }
 
   late final Map<String, SplayTreeSet<NameValue>> filterMap;
+  final NameValueType nameValueType;
 }
 
 /// name value pairs attached to a song id
