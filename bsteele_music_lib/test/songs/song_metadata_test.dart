@@ -437,7 +437,8 @@ void main() {
     expect(SongMetadata.where(idIs: a.songId.toString()).length, 0);
     expect(SongMetadata.where(idIs: b.songId.toString()).length, 1);
     logger.i(SongMetadata.where(idIs: b.songId.toString()).first.toString());
-    expect(SongMetadata.where(idIs: b.songId.toString()).first.toString(), //
+    expect(
+        SongMetadata.where(idIs: b.songId.toString()).first.toString(), //
         '''{ "id": "Song_b_song_by_bob", "metadata": [
 	{"Test":"First"}
 	] }''');
@@ -493,65 +494,75 @@ void main() {
     expect(idmB.contains(NameValue('Decade', '60\'s')), isTrue);
   });
 
-  test('test NameValueFilter', () {
+  test('test isOr', () {
+    NameValueFilter filter;
     final userBob = NameValue('user', 'bob');
     final userShari = NameValue('user', 'Shari');
     final userBodhi = NameValue('user', 'Bodhi');
 
-    var filter = NameValueFilter([]);
+    filter = NameValueFilter([]);
     expect(filter.test(userBob), false);
     expect(filter.test(userShari), false);
     expect(filter.test(userBodhi), false);
     expect(filter.isOr(userBob), false);
     expect(filter.isOr(userShari), false);
     expect(filter.isOr(userBodhi), false);
-    expect(filter.nameValues().toList().toString(), '[]');
+    expect(filter.matchers().toList().toString(), '[]');
 
-    filter = NameValueFilter([userBob]);
+    filter = NameValueFilter([NameValueMatcher.value(userBob)]);
     expect(filter.test(userBob), true);
     expect(filter.test(userShari), false);
     expect(filter.test(userBodhi), false);
     expect(filter.isOr(userBob), false);
     expect(filter.isOr(userShari), false);
     expect(filter.isOr(userBodhi), false);
-    logger.i(filter.nameValues().toList().toString());
-    expect(filter.nameValues().toList().toString(), '[{"User":"Bob"}]');
+    logger.i(filter.matchers().toList().toString());
+    expect(filter.matchers().toList().toString(), '[{"User":"Bob"}]');
 
-    filter = NameValueFilter([userBob, userShari]);
+    filter = NameValueFilter([NameValueMatcher.value(userBob), NameValueMatcher.value(userShari)]);
     expect(filter.test(userBob), true);
     expect(filter.test(userShari), true);
     expect(filter.test(userBodhi), false);
     expect(filter.isOr(userBob), true);
     expect(filter.isOr(userShari), true);
     expect(filter.isOr(userBodhi), false);
-    logger.i(filter.nameValues().toList().toString());
-    expect(filter.nameValues().toList().toString(), '[{"User":"Bob"}, {"User":"Shari"}]');
+    logger.i(filter.matchers().toList().toString());
+    expect(filter.matchers().toList().toString(), '[{"User":"Bob"}, {"User":"Shari"}]');
   });
 
   test('test NameValueFilter testAll', () {
+    NameValueFilter filter;
     final userBob = NameValue('User', 'bob');
     final userShari = NameValue('User', 'Shari');
     final userBodhi = NameValue('User', 'Bodhi');
 
-    var filter = NameValueFilter([userBob, userShari]);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), true);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), true);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
+    filter = NameValueFilter([
+      NameValueMatcher.value(userBob),
+      NameValueMatcher.value(userShari),
+      NameValueMatcher.value(NameValue('foo', 'bar'))
+    ]);
+    expect(filter.testAll([userBob]), false);
+    expect(filter.testAll([userShari]), false);
+    expect(filter.testAll([userBodhi]), false);
 
-    filter = NameValueFilter([userBob, userShari, NameValue('foo', 'bar')]);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), false);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), false);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
+    filter = NameValueFilter([NameValueMatcher.value(NameValue('foo', 'bar'))]);
+    expect(filter.testAll([userBob]), false);
+    expect(filter.testAll([userShari]), false);
+    expect(filter.testAll([userBodhi]), false);
 
-    filter = NameValueFilter([NameValue('foo', 'bar')]);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob])), false);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari])), false);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi])), false);
+    filter = NameValueFilter([NameValueMatcher.value(userBob), NameValueMatcher.value(userShari)]);
+    expect(filter.testAll([userBob]), true);
+    expect(filter.testAll([userShari]), true);
+    expect(filter.testAll([userBodhi]), false);
 
-    filter = NameValueFilter([userBob, userShari, NameValue('foo', 'bar')]);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBob, NameValue('foo', 'bar')])), true);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userShari, NameValue('foo', 'bar')])), true);
-    expect(filter.testAll(SplayTreeSet<NameValue>()..addAll([userBodhi, NameValue('foo', 'bar')])), false);
+    filter = NameValueFilter([
+      NameValueMatcher.value(userBob),
+      NameValueMatcher.value(userShari),
+      NameValueMatcher.value(NameValue('foo', 'bar'))
+    ]);
+    expect(filter.testAll([userBob, NameValue('foo', 'bar')]), true);
+    expect(filter.testAll([userShari, NameValue('foo', 'bar')]), true);
+    expect(filter.testAll([userBodhi, NameValue('foo', 'bar')]), false);
   });
 
   test('test NameValueTypes', () {
@@ -561,40 +572,101 @@ void main() {
     final rock = NameValue('Genre', 'Rock');
     final blues = NameValue('Genre', 'Blues');
 
-    var filter = NameValueFilter([userBob, userShari], nameValueType: NameValueType.anyValue);
+    expect(blues.name, 'Genre');
+    expect(blues.value, 'Blues');
+
+    NameValueFilter filter;
+
+    filter = NameValueFilter([NameValueMatcher.value(userBob), NameValueMatcher.value(userShari)]);
     expect(filter.test(userBob), true);
     expect(filter.test(userShari), true);
-    expect(filter.test(userBodhi), true);
+    expect(filter.test(userBodhi), false);
     expect(filter.test(rock), false);
     expect(filter.test(blues), false);
 
-    filter = NameValueFilter([rock], nameValueType: NameValueType.anyValue);
+    filter = NameValueFilter([NameValueMatcher.value(rock)]);
     expect(filter.test(userBob), false);
     expect(filter.test(userShari), false);
     expect(filter.test(userBodhi), false);
     expect(filter.test(rock), true);
-    expect(filter.test(blues), true);
-
-    filter = NameValueFilter([rock], nameValueType: NameValueType.noValue);
-    expect(filter.test(userBob), true);
-    expect(filter.test(userShari), true);
-    expect(filter.test(userBodhi), true);
-    expect(filter.test(rock), false);
     expect(filter.test(blues), false);
 
-    filter = NameValueFilter([rock, userBob], nameValueType: NameValueType.noValue);
-    expect(filter.test(userBob), false);
-    expect(filter.test(userShari), false);
-    expect(filter.test(userBodhi), false);
-    expect(filter.test(rock), false);
-    expect(filter.test(blues), false);
+    filter = NameValueFilter([NameValueMatcher.noValue(blues.name)]);
+    expect(filter.testAll([userBob]), true);
+    expect(filter.testAll([userShari]), true);
+    expect(filter.testAll([userBodhi]), true);
+    expect(filter.testAll([rock]), false);
+    expect(filter.testAll([blues]), false);
 
-    filter = NameValueFilter([userShari, userBob, userBodhi], nameValueType: NameValueType.noValue);
-    expect(filter.test(userBob), false);
-    expect(filter.test(userShari), false);
-    expect(filter.test(userBodhi), false);
-    expect(filter.test(rock), true);
-    expect(filter.test(blues), true);
+    filter = NameValueFilter([NameValueMatcher.value(rock), NameValueMatcher.value(userBob)]);
+    expect(filter.testAll([userBob]), false);
+    expect(filter.testAll([userShari]), false);
+    expect(filter.testAll([userBodhi]), false);
+    expect(filter.testAll([userBob, rock]), true);
+    expect(filter.testAll([userShari, rock]), false);
+    expect(filter.testAll([userBodhi, rock]), false);
+    expect(filter.testAll([userBob, blues]), false);
+    expect(filter.testAll([userShari, blues]), false);
+    expect(filter.testAll([userBodhi, blues]), false);
+    expect(filter.testAll([rock]), false);
+    expect(filter.testAll([blues]), false);
+
+    filter = NameValueFilter(
+        [NameValueMatcher.value(userShari), NameValueMatcher.value(rock), NameValueMatcher.value(userBob)]);
+    expect(filter.testAll([userBob]), false);
+    expect(filter.testAll([userShari]), false);
+    expect(filter.testAll([userBodhi]), false);
+    expect(filter.testAll([userBob, rock]), true);
+    expect(filter.testAll([userShari, rock]), true);
+    expect(filter.testAll([userBodhi, rock]), false);
+    expect(filter.testAll([userBob, blues]), false);
+    expect(filter.testAll([userShari, blues]), false);
+    expect(filter.testAll([userBodhi, blues]), false);
+    expect(filter.testAll([rock]), false);
+    expect(filter.testAll([blues]), false);
+
+    filter = NameValueFilter(
+        //  user intentionally out of order
+        [NameValueMatcher.value(userShari), NameValueMatcher.value(userBodhi), NameValueMatcher.value(userBob)]);
+    expect(filter.testAll([userBob]), true);
+    expect(filter.testAll([userShari]), true);
+    expect(filter.testAll([userBodhi]), true);
+    expect(filter.testAll([userBob, rock]), true);
+    expect(filter.testAll([userShari, rock]), true);
+    expect(filter.testAll([userBodhi, rock]), true);
+    expect(filter.testAll([userBob, blues]), true);
+    expect(filter.testAll([userShari, blues]), true);
+    expect(filter.testAll([userBodhi, blues]), true);
+    expect(filter.testAll([rock]), false);
+    expect(filter.testAll([blues]), false);
+
+    filter = NameValueFilter(
+        [NameValueMatcher.value(userShari), NameValueMatcher.anyValue(rock.name), NameValueMatcher.value(userBob)]);
+    expect(filter.testAll([userBob]), false);
+    expect(filter.testAll([userShari]), false);
+    expect(filter.testAll([userBodhi]), false);
+    expect(filter.testAll([userBob, rock]), true);
+    expect(filter.testAll([userShari, rock]), true);
+    expect(filter.testAll([userBodhi, rock]), false);
+    expect(filter.testAll([userBob, blues]), true);
+    expect(filter.testAll([userShari, blues]), true);
+    expect(filter.testAll([userBodhi, blues]), false);
+    expect(filter.testAll([rock]), false);
+    expect(filter.testAll([blues]), false);
+
+    filter = NameValueFilter(
+        [NameValueMatcher.value(userShari), NameValueMatcher.noValue(rock.name), NameValueMatcher.value(userBob)]);
+    expect(filter.testAll([userBob]), true);
+    expect(filter.testAll([userShari]), true);
+    expect(filter.testAll([userBodhi]), false);
+    expect(filter.testAll([userBob, rock]), false);
+    expect(filter.testAll([userShari, rock]), false);
+    expect(filter.testAll([userBodhi, rock]), false);
+    expect(filter.testAll([userBob, blues]), false);
+    expect(filter.testAll([userShari, blues]), false);
+    expect(filter.testAll([userBodhi, blues]), false);
+    expect(filter.testAll([rock]), false);
+    expect(filter.testAll([blues]), false);
   });
 }
 

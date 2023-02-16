@@ -91,11 +91,70 @@ enum NameValueType {
   anyValue;
 }
 
+class NameValueMatcher extends NameValue {
+  NameValueMatcher(String name, String value, {NameValueType type = NameValueType.value})
+      : _type = type,
+        super(name, value);
+
+  NameValueMatcher.value(NameValue nameValue) : this(nameValue.name, nameValue.value, type: NameValueType.value);
+
+  NameValueMatcher.noValue(String name) : this(name, '', type: NameValueType.noValue);
+
+  NameValueMatcher.anyValue(String name) : this(name, '', type: NameValueType.anyValue);
+
+  bool testAll(final Iterable<NameValue> nameValues) {
+    switch (type) {
+      case NameValueType.value:
+        //  name and value match required
+        for (var nv in nameValues) {
+          if (nv.compareTo(this) == 0) {
+            return true;
+          }
+        }
+        break;
+      case NameValueType.noValue:
+        //  name cannot match
+        for (var nv in nameValues) {
+          if (nv.name == name) {
+            return false;
+          }
+        }
+        return true;
+      case NameValueType.anyValue:
+        //  any name match
+        for (var nv in nameValues) {
+          if (nv.name == name) {
+            return true;
+          }
+        }
+        break;
+    }
+    return false;
+  }
+
+  bool test(final NameValue nameValue) {
+    switch (type) {
+      case NameValueType.value:
+        //  name and value match required
+        return nameValue.compareTo(this) == 0;
+      case NameValueType.noValue:
+        //  name cannot match
+        return nameValue.name != name;
+      case NameValueType.anyValue:
+        //  any name match
+        return nameValue.name == name;
+    }
+  }
+
+  NameValueType get type => _type;
+  final NameValueType _type;
+}
+
 //  a filter for name values that match the initial given values
 class NameValueFilter {
-  NameValueFilter(final Iterable<NameValue> nameValues, {this.nameValueType = NameValueType.value}) {
-    Map<String, SplayTreeSet<NameValue>> map = {};
-    for (var nv in nameValues) {
+  NameValueFilter(final Iterable<NameValueMatcher> nameValueMatchers) {
+    Map<String, SplayTreeSet<NameValueMatcher>> map = {};
+    for (var nv in nameValueMatchers) {
       var mappedList = map[nv.name];
       mappedList ??= SplayTreeSet();
       mappedList.add(nv); //  fixme: deal with nameValue changes?
@@ -106,36 +165,34 @@ class NameValueFilter {
 
   bool isOr(final NameValue nameValue) {
     var values = filterMap[nameValue.name];
-    return values != null && values.contains(nameValue) && values.length > 1;
+    return values != null && values.length > 1 && test(nameValue);
   }
 
   //  sort all the given name value pairs
-  SplayTreeSet<NameValue> nameValues() {
-    SplayTreeSet<NameValue> ret = SplayTreeSet();
-    for (var key in SplayTreeSet<String>()..addAll(filterMap.keys)) {
-      ret.addAll(filterMap[key] ?? []);
+  SplayTreeSet<NameValueMatcher> matchers() {
+    SplayTreeSet<NameValueMatcher> ret = SplayTreeSet();
+    for (var matchers in filterMap.values) {
+      ret.addAll(matchers);
     }
     return ret;
   }
 
-  bool testAll(final SplayTreeSet<NameValue>? nameValues) {
-    if (nameValues == null) {
+  bool testAll(final Iterable<NameValue>? nameValues) {
+    if (nameValues == null || nameValues.isEmpty) {
       return false;
     }
 
-    Map<String, SplayTreeSet<NameValue>> map = {};
-    for (var nv in nameValues) {
-      var mappedSet = map[nv.name];
-      mappedSet ??= SplayTreeSet<NameValue>();
-      mappedSet.add(nv); //  fixme: deal with nameValue changes?
-      map[nv.name] = mappedSet;
-    }
-
     for (var key in filterMap.keys) {
-      SplayTreeSet<NameValue>? mappedSet = map[key];
-      //  set intersection is the equivalent of the or function for name values with the same name
-      if (mappedSet == null || mappedSet.intersection(filterMap[key]!.toSet()).isEmpty) {
-        return false;
+      SplayTreeSet<NameValueMatcher>? matchers = filterMap[key];
+      if (matchers != null) {
+        var ret = false;
+        for (var matcher in matchers) {
+          ret |= matcher.testAll(nameValues);
+        }
+        //  or matchers with same name
+        if (ret == false) {
+          return false;
+        }
       }
     }
 
@@ -143,35 +200,27 @@ class NameValueFilter {
   }
 
   bool test(final NameValue nameValue) {
-    switch (nameValueType) {
-      case NameValueType.value:
-        var values = filterMap[nameValue.name];
-        if (values == null || values.isEmpty) {
-          return false;
-        }
-        //  an AND term
-        if (values.length == 1) {
-          return nameValue.value == values.first.value;
-        }
-        //  an OR term
-        for (var key in filterMap.keys) {
-          if (filterMap[key]?.contains(nameValue) ?? false) {
-            return true;
-          }
-        }
-        break;
-      case NameValueType.noValue:
-        var values = filterMap[nameValue.name];
-        return values == null;
-      case NameValueType.anyValue:
-        var values = filterMap[nameValue.name];
-        return values != null;
+    SplayTreeSet<NameValueMatcher>? matchers = filterMap[nameValue.name];
+    if (matchers == null) {
+      return false;
     }
+
+    if (matchers.length == 1) {
+      //  an AND term
+      return matchers.first.test(nameValue);
+    }
+
+    //  an OR term
+    for (var matcher in matchers) {
+      if (matcher.test(nameValue)) {
+        return true;
+      }
+    }
+
     return false;
   }
 
-  late final Map<String, SplayTreeSet<NameValue>> filterMap;
-  final NameValueType nameValueType;
+  late final Map<String, SplayTreeSet<NameValueMatcher>> filterMap;
 }
 
 /// name value pairs attached to a song id
