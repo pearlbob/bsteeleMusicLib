@@ -4,7 +4,7 @@ description: backend Dart library for the bsteeleMusicApp, see bsteele.com
 # homepage: https://pub.dev/packages?q=
 
 environment:
-  sdk: ^2.19.2
+  sdk: ^2.19.3
 
 dependencies:
   logger:
