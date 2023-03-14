@@ -792,7 +792,7 @@ coerced to reflect the songlist's last modification for that song.
 
               logger.i('files: ${files.length}');
 
-              //  update from the all local files
+              //  update from the all local server song performance log files
               for (var file in files) {
                 var name = file.path.split('/').last;
 
@@ -879,7 +879,7 @@ coerced to reflect the songlist's last modification for that song.
 
             var corrections = allSongPerformances.loadSongs(songs);
             logger.i(
-                'postload: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
+                'postLoad: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
             logger.i('corrections: $corrections');
 
             //  count the sloppy matched songs in history
