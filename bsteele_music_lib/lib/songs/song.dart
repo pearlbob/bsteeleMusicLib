@@ -106,17 +106,19 @@ class Song extends SongBase implements Comparable<Song> {
     jsonString = jsonString.replaceAll('": null', '": ""');
 
     List<Song> songList = [];
-    dynamic json = _jsonDecoder.convert(jsonString);
-    if (json is List) {
-      //  a list of songs
-      for (Map jsonMap in json) {
-        Song song = songFromJson(jsonMap);
+    if (jsonString.isNotEmpty) {
+      dynamic json = _jsonDecoder.convert(jsonString);
+      if (json is List) {
+        //  a list of songs
+        for (Map jsonMap in json) {
+          Song song = songFromJson(jsonMap);
+          songList.add(song);
+        }
+      } else if (json is Map) {
+        //  a single song
+        Song song = songFromJson(json);
         songList.add(song);
       }
-    } else if (json is Map) {
-      //  a single song
-      Song song = songFromJson(json);
-      songList.add(song);
     }
     return songList;
   }
@@ -153,7 +155,7 @@ class Song extends SongBase implements Comparable<Song> {
           song.beatsPerMinute = (jsonSong[name] as int);
           break;
         case 'timeSignature':
-          //  most of this is coping with real old events with poor formatting
+        //  most of this is coping with real old events with poor formatting
           String timeSignatureString = jsonSong[name];
           RegExpMatch? mr = _timeSignatureExp.firstMatch(timeSignatureString);
           if (mr != null) {
