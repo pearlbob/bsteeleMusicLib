@@ -171,6 +171,28 @@ class Util {
     return '${s.replaceAll(_jsonEncodeNewLineRegexp, '},\n{')}\n';
   }
 
+  static String limitLineLength(String s, int limit, {bool ellipsis = false}) {
+    StringBuffer sb = StringBuffer();
+    limit = max(0, limit);
+    var list = s.split('\n');
+    var lastIndex = list.length - 1;
+    for (int i = 0; i < list.length; i++) {
+      var line = list[i];
+      if (line.length > limit) {
+        sb.write(line.substring(0, min(line.length, limit + (ellipsis ? -3 : 0))));
+        if (ellipsis) {
+          sb.write('...');
+        }
+      } else {
+        sb.write(line);
+      }
+      if (i < lastIndex) {
+        sb.write('\n');
+      }
+    }
+    return sb.toString();
+  }
+
   static final RegExp _jsonEncodeNewLineRegexp = RegExp(r'\},\{');
 
   static final _singleCapRegExp = RegExp(r'([A-Z])');

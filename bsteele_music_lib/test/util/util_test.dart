@@ -160,4 +160,50 @@ void main() {
   //     }
   //   }
   // });
+
+  test('test limitLineLength', () async {
+    int limit = 5;
+    String s = '123456789';
+
+    logger.i('$limit: <${Util.limitLineLength(s, limit)}>');
+    expect(Util.limitLineLength(s, limit), '12345');
+    limit = -1;
+    logger.i('$limit: <${Util.limitLineLength(s, limit)}>');
+    expect(Util.limitLineLength(s, limit), '');
+
+    s = '123456\n789';
+    limit = 15;
+    expect(Util.limitLineLength(s, limit), '123456\n789');
+
+    limit = 5;
+    expect(Util.limitLineLength(s, limit), '12345\n789');
+
+    s = '\n123456\n789';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit), '\n12345\n789');
+
+    s = '\n123456\n56789012';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit), '\n12345\n56789');
+
+    s = '\n123456\n56789012\n';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit), '\n12345\n56789\n');
+
+    s = '';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit), '');
+
+    s = '\n123456\n56789012\n';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit, ellipsis: true), '\n12...\n56...\n');
+
+    s = '\n12345\n56789\n';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit, ellipsis: true), '\n12345\n56789\n');
+
+    s = '';
+    limit = 5;
+    expect(Util.limitLineLength(s, limit, ellipsis: true), '');
+  });
 }
