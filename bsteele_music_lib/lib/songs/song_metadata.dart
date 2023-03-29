@@ -37,10 +37,6 @@ class NameValue implements Comparable<NameValue> {
 
   @override
   String toString() {
-    return '{"$name":"$value"}';
-  }
-
-  String toShortString() {
     return '$name:$value';
   }
 
@@ -105,7 +101,7 @@ class NameValueMatcher extends NameValue {
   bool testAll(final Iterable<NameValue> nameValues) {
     switch (type) {
       case NameValueType.value:
-        //  name and value match required
+      //  name and value match required
         for (var nv in nameValues) {
           if (nv.compareTo(this) == 0) {
             return true;
@@ -113,7 +109,7 @@ class NameValueMatcher extends NameValue {
         }
         break;
       case NameValueType.noValue:
-        //  name cannot match
+      //  name cannot match
         for (var nv in nameValues) {
           if (nv.name == name) {
             return false;
@@ -121,7 +117,7 @@ class NameValueMatcher extends NameValue {
         }
         return true;
       case NameValueType.anyValue:
-        //  any name match
+      //  any name match
         for (var nv in nameValues) {
           if (nv.name == name) {
             return true;
@@ -135,7 +131,7 @@ class NameValueMatcher extends NameValue {
   bool test(final NameValue nameValue) {
     switch (type) {
       case NameValueType.value:
-        //  name and value match required
+      //  name and value match required
         return nameValue.compareTo(this) == 0;
       case NameValueType.noValue:
         //  name cannot match
@@ -143,6 +139,18 @@ class NameValueMatcher extends NameValue {
       case NameValueType.anyValue:
         //  any name match
         return nameValue.name == name;
+    }
+  }
+
+  @override
+  String toString() {
+    switch (_type) {
+      case NameValueType.noValue:
+        return 'no $name';
+      case NameValueType.anyValue:
+        return 'any $name';
+      default:
+        return super.toString();
     }
   }
 
@@ -559,7 +567,7 @@ class SongMetadata {
 
       switch (genValue) {
         case SongMetadataGeneratedValue.decade:
-          //  add the decade metadata
+        //  add the decade metadata
           int year = song.getCopyrightYear();
           if (year != SongBase.defaultYear) {
             addSong(song, NameValue(name, mapYearToDecade(year)));

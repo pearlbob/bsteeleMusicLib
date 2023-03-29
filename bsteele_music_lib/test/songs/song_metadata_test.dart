@@ -81,8 +81,8 @@ void main() {
     var idn = SongMetadata.where(idIs: 'id1').first;
     logger.i('idn: $idn');
     expect(idn.toString(), '''{ "id": "id1", "metadata": [
-	{"Genre":"Rock"},
-	{"Jam":"Advanced"}
+	Genre:Rock,
+	Jam:Advanced
 	] }''');
 
     //  get them all
@@ -440,7 +440,7 @@ void main() {
     expect(
         SongMetadata.where(idIs: b.songId.toString()).first.toString(), //
         '''{ "id": "Song_b_song_by_bob", "metadata": [
-	{"Test":"First"}
+	Test:First
 	] }''');
     expect(SongMetadata.where().length, 1);
   });
@@ -517,7 +517,7 @@ void main() {
     expect(filter.isOr(userShari), false);
     expect(filter.isOr(userBodhi), false);
     logger.i(filter.matchers().toList().toString());
-    expect(filter.matchers().toList().toString(), '[{"User":"Bob"}]');
+    expect(filter.matchers().toList().toString(), '[User:Bob]');
 
     filter = NameValueFilter([NameValueMatcher.value(userBob), NameValueMatcher.value(userShari)]);
     expect(filter.test(userBob), true);
@@ -527,7 +527,7 @@ void main() {
     expect(filter.isOr(userShari), true);
     expect(filter.isOr(userBodhi), false);
     logger.i(filter.matchers().toList().toString());
-    expect(filter.matchers().toList().toString(), '[{"User":"Bob"}, {"User":"Shari"}]');
+    expect(filter.matchers().toList().toString(), '[User:Bob, User:Shari]');
   });
 
   test('test NameValueFilter testAll', () {
