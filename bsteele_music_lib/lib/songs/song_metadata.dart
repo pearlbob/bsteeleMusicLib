@@ -13,6 +13,7 @@ const _logRepair = Level.debug;
 
 enum SongMetadataGeneratedValue {
   decade,
+  year,
   beats,
   user,
   key,
@@ -567,10 +568,16 @@ class SongMetadata {
 
       switch (genValue) {
         case SongMetadataGeneratedValue.decade:
-        //  add the decade metadata
+          //  add the decade metadata
           int year = song.getCopyrightYear();
           if (year != SongBase.defaultYear) {
             addSong(song, NameValue(name, mapYearToDecade(year)));
+          }
+          break;
+        case SongMetadataGeneratedValue.year:
+          int year = song.getCopyrightYear();
+          if (year != SongBase.defaultYear) {
+            addSong(song, NameValue(name, year.toString()));
           }
           break;
         case SongMetadataGeneratedValue.beats:

@@ -3306,6 +3306,23 @@ v:
       var songYear = a.getCopyrightYear();
       expect(songYear, SongBase.defaultYear);
     }
+
+    for (var year in [2002, 1960]) {
+      var a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          '℗© $year Hollywood Records, Inc.',
+          music_key.Key.get(music_key.KeyEnum.C),
+          bpm,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+
+      var songYear = a.getCopyrightYear();
+      expect(songYear, year);
+    }
   });
 
   test('test songBase read dos files', () {
