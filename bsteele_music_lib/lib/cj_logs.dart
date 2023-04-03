@@ -1,17 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteeleMusicLib/songs/song_metadata.dart';
 import 'package:bsteeleMusicLib/songs/song_performance.dart';
 import 'package:bsteeleMusicLib/songs/song_update.dart';
+import 'package:bsteeleMusicLib/util/us_timer.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
-import 'package:dotenv/dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 import 'app_logger.dart';
 
+// ignore_for_file: avoid_print
+
 const String _allSongDirectory = 'github/allSongs.songlyrics';
+final _allSonglyricsGithubFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songlyrics');
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
+final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
+late final String downloadsDirString;
 
 final _firstValidDate = DateTime(2022, 7, 26);
 final _now = DateTime.now();
@@ -19,7 +26,8 @@ final _oldestValidDate = DateTime(_now.year - 1, _now.month, _now.day);
 
 const _cjLogFiles = Level.info;
 const _cjLogLines = Level.debug;
-const _cjLogPerformances = Level.info;
+const _cjLogPerformances = Level.debug;
+const _cjLogDups = Level.debug;
 
 const songPerformanceExtension = '.songperformances';
 
@@ -33,7 +41,7 @@ void main(List<String> args) {
 
 class CjLog {
   void _help() {
-    logger.i('cjlogs {-f} {-v} {-V} --host=hostname --tomcat=tomcatCatalinaBase');
+    print('cjlogs {-v} {-V} --host=hostname --tomcat=tomcatCatalinaBase');
   }
 
   /// Process the augmented tomcat logs to a performance history JSON file
@@ -42,7 +50,6 @@ class CjLog {
     var gZipDecoder = GZipCodec().decoder;
     Utf8Decoder utf8Decoder = const Utf8Decoder();
     var dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS'); //  20-Aug-2022 06:08:20.127
-    var dotEnv = DotEnv(includePlatformEnvironment: true)..load();
 
     _catalinaBase = null;
     _host = 'cj';
@@ -59,9 +66,6 @@ class CjLog {
         _catalinaBase = arg.substring(arg.indexOf('=') + 1);
       } else {
         switch (arg) {
-          case '-f':
-            _force = true;
-            break;
           case '-v':
             _verbose = 1;
             break;
@@ -69,7 +73,7 @@ class CjLog {
             _verbose = 2;
             break;
           default:
-            logger.i('bad arg: $arg');
+            print('bad arg: $arg');
             _help();
             exit(-1);
         }
@@ -77,7 +81,7 @@ class CjLog {
     }
 
     if (_verbose > 0) {
-      logger.i('CjLogs:');
+      print('CjLogs:');
     }
 
     //  prepare the file stuff
@@ -86,12 +90,14 @@ class CjLog {
       exit(-1);
     }
     logger.log(_cjLogFiles, 'host: $_host');
+    downloadsDirString = '${Util.homePath()}/communityJams/$_host/Downloads';
 
+    var usTimer = UsTimer();
     Directory logs;
-    var processedLogs = Directory('${dotEnv['HOME']}/communityJams/$_host/Downloads');
+    var processedLogs = Directory('${Util.homePath()}/communityJams/$_host/Downloads');
     if (_catalinaBase != null) {
       if (_catalinaBase!.isEmpty) {
-        logger.i('Empty CATALINA_BASE environment variable: "$_catalinaBase"');
+        print('Empty CATALINA_BASE environment variable: "$_catalinaBase"');
         exit(-1);
       }
       logger.log(_cjLogFiles, 'CATALINA_BASE: $_catalinaBase');
@@ -131,13 +137,13 @@ class CjLog {
       }
 
       if (_verbose > 1) {
-        logger.i('$file:  $date');
+        print('$file:  $date');
       }
 
       //  don't go too far back in time... the file format is wrong!
       if (date.isBefore(_firstValidDate)) {
         if (_verbose > 1) {
-          logger.i('\ttoo early: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
+          print('\ttoo early: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
         }
         continue;
       }
@@ -145,25 +151,12 @@ class CjLog {
         //  don't go too far back in time...
         if (date.isBefore(_oldestValidDate)) {
           if (_verbose > 0) {
-            logger.i('\ttoo old: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
+            print('\ttoo old: ${file.path.substring(file.path.lastIndexOf('/') + 1)}');
           }
           continue;
         }
       }
 
-      // var jsonOutputFile = File('${processedLogs.path}'
-      //     '/${file.path.substring(file.path.lastIndexOf('/') + 1).replaceFirst('.log', songPerformanceExtension)}');
-      // logger.log(_cjLogFiles, 'jsonOutputFile: ${jsonOutputFile.path}');
-      //
-      // if (!_force &&
-      //     jsonOutputFile.existsSync() &&
-      //     jsonOutputFile.lastModifiedSync().microsecondsSinceEpoch > file.lastModifiedSync().microsecondsSinceEpoch) {
-      //   fileList.add(jsonOutputFile);
-      //   if (_verbose > 0) {
-      //     logger.i('\texisting: ${jsonOutputFile.path}');
-      //   }
-      //   continue;
-      // }
       logger.log(_cjLogFiles, '');
       logger.log(_cjLogFiles, '${file.path}:  $date');
       var log = utf8Decoder
@@ -177,8 +170,20 @@ class CjLog {
           continue;
         }
         dateTime = dateFormat.parse(m.group(1)!);
-        logger.log(_cjLogLines, '$dateTime: string: ${m.group(2)}');
-        SongUpdate songUpdate = lastSongUpdate.updateFromJson(m.group(2)!);
+        var msg = m.group(2);
+        if (msg == null || msg.isEmpty || msg == 't:' //  a time request can show up when a client starts!
+            ) {
+          continue;
+        }
+        logger.log(_cjLogLines, '$dateTime: string: $msg');
+        SongUpdate songUpdate;
+        try {
+          songUpdate = lastSongUpdate.updateFromJson(msg);
+        } catch (e) {
+          print('error thrown for file $file: $e');
+          print('   line: <$line>');
+          continue;
+        }
         logger.log(_cjLogLines,
             '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}');
 
@@ -201,11 +206,117 @@ class CjLog {
       // }
     }
 
-    //  build the net output file
-    //  allSongPerformances.clear();
-    //   for (var file in fileList) {
-    //     allSongPerformances.readFileSync(file);
-    //   }
+    //  clean duplicates generated by having allSongPerformances and catalina logs cover the same date
+    {
+      SongPerformance? lastPerformance;
+      List<SongPerformance> deleteList = [];
+      for (SongPerformance performance in allSongPerformances.allSongPerformanceHistory) {
+        if (lastPerformance != null) {
+          if (performance.compareTo(lastPerformance) == 0 &&
+              (performance.lastSung - lastPerformance.lastSung).abs() < Duration.millisecondsPerDay) {
+            //  same performance
+            logger.log(_cjLogDups, 'dup: $performance');
+            deleteList.add(performance);
+          }
+        }
+        lastPerformance = performance;
+      }
+      for (SongPerformance performance in deleteList) {
+        allSongPerformances.removeSingerSongHistory(performance);
+      }
+    }
+
+    //  Note:  intentionally leave in unknown singers.
+    //  These are songs sung from outside the singers screen.
+
+    //  read the new songs as source for song corrections
+    var songs = Song.songListFromJson(_allSonglyricsGithubFile.readAsStringSync());
+    var corrections = allSongPerformances.loadSongs(songs);
+    print('postLoad: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
+    print('corrections: $corrections');
+
+    // clean up the near misses in the history and performances due to song title, artist and cover artist changes
+    //  count the sloppy matched songs in history
+    {
+      var matches = 0;
+      for (var performance in allSongPerformances.allSongPerformanceHistory) {
+        if (performance.song == null) {
+          print('missing song: ${performance.lowerCaseSongIdAsString}');
+          assert(false);
+        } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
+          logger.i('${performance.lowerCaseSongIdAsString}'
+              ' vs ${performance.song!.songId.toString().toLowerCase()}');
+          assert(false);
+        } else {
+          matches++;
+        }
+      }
+      print('matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
+          ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
+    }
+
+    //  repair metadata song changes
+    SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
+    File localSongMetadata = File('$downloadsDirString/allSongs.songmetadata');
+    logger.i('localSongMetadata: ${localSongMetadata.path}');
+    {
+      SongMetadata.repairSongs(allSongPerformances.songRepair);
+      try {
+        localSongMetadata.deleteSync();
+      } catch (e) {
+        logger.e(e.toString());
+        //assert(false);
+      }
+      localSongMetadata.writeAsStringSync(SongMetadata.toJson(), flush: true);
+
+      if (_verbose > 0) {
+        logger.i('allSongPerformances location: ${localSongMetadata.path}');
+      }
+    }
+
+    //  write the corrected performances
+    File localSongperformances = File('$downloadsDirString/allSongPerformances.songperformances');
+    {
+      try {
+        localSongperformances.deleteSync();
+      } catch (e) {
+        logger.e(e.toString());
+        //assert(false);
+      }
+      localSongperformances.writeAsStringSync(allSongPerformances.toJsonString(), flush: true);
+    }
+
+    //  time the reload
+    {
+      // allSongPerformances.clear();
+      // SongMetadata.clear();
+
+      print('\nreload:');
+      var usTimer = UsTimer();
+
+      allSongPerformances.updateFromJsonString(localSongperformances.readAsStringSync());
+      print('performances: ${usTimer.deltaToString()}');
+
+      var json = _allSonglyricsGithubFile.readAsStringSync();
+      print('song data read: ${usTimer.deltaToString()}');
+      var songs = Song.songListFromJson(json);
+      print('song data parsed: ${usTimer.deltaToString()}');
+      var corrections = allSongPerformances.loadSongs(songs);
+      print('loadSongs: ${usTimer.deltaToString()}');
+
+      SongMetadata.fromJson(localSongMetadata.readAsStringSync());
+      print('localSongMetadata: ${usTimer.deltaToString()}');
+
+      double seconds = usTimer.seconds;
+      print('reload: usTimer: $seconds s'
+          ', allSongPerformances.length: ${allSongPerformances.length}'
+          ', songs.length: ${songs.length}'
+          ', idMetadata.length: ${SongMetadata.idMetadata.length}'
+          ', corrections: $corrections');
+      assert(seconds < 0.25);
+    }
+
+    //  write the output file
     _writeSongPerformances(File('${processedLogs.path}/allSongPerformances.songperformances'), prettyPrint: false);
     logger.log(_cjLogPerformances, allSongPerformances.toJsonString(prettyPrint: false));
   }
@@ -242,7 +353,6 @@ class CjLog {
   String? _catalinaBase;
   String _host = 'cj';
   var _verbose = 0;
-  var _force = false;
 
   final RegExp catalinaLogRegExp =
       RegExp(r'.*/catalina\.(\d{4})-(\d{2})-(\d{2})\.log'); //  note: no end to allow for both .log and .log.gz

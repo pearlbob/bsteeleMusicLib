@@ -222,9 +222,8 @@ class SongPerformance implements Comparable<SongPerformance> {
 }
 
 class SongRequest implements Comparable<SongRequest> {
-  SongRequest(this._songIdAsString, String requester, {Song? song = null})
-      : this.song = song,
-        _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
+  SongRequest(this._songIdAsString, String requester, {this.song})
+      : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _requester = _cleanPerformer(requester);
 
   SongRequest copyWith({String? songIdAsString, String? requester, Song? song}) {

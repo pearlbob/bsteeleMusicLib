@@ -10,6 +10,7 @@ const DeepCollectionEquality deepUnorderedCollectionEquality = DeepCollectionEqu
 
 final DateFormat _dateFormat = DateFormat('yyyyMMdd_HHmmss');
 final RegExp _dateRegExp = RegExp(r'(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})');
+final RegExp _yyyyMMddRegExp = RegExp(r'(\d{4})[-_](\d{2})[-_](\d{2})');
 
 class Util {
   static String homePath() {
@@ -146,6 +147,18 @@ class Util {
       int.parse(m?.group(4) ?? firstDateTime.hour.toString()), //  hour
       int.parse(m?.group(5) ?? firstDateTime.minute.toString()), //  minute
       int.parse(m?.group(6) ?? firstDateTime.second.toString()), //  second
+    );
+  }
+
+  static DateTime? yyyyMMddStringToDate(String s) {
+    var m = _yyyyMMddRegExp.firstMatch(s);
+    if (m == null) {
+      return null;
+    }
+    return DateTime(
+      int.parse(m.group(1) ?? firstDateTime.year.toString()), //  year
+      int.parse(m.group(2) ?? firstDateTime.month.toString()), //  month
+      int.parse(m.group(3) ?? firstDateTime.day.toString()),
     );
   }
 
