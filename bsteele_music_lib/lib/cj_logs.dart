@@ -22,7 +22,7 @@ late final String downloadsDirString;
 
 final _firstValidDate = DateTime(2022, 7, 26);
 final _now = DateTime.now();
-final _oldestValidDate = DateTime(_now.year - 1, _now.month, _now.day);
+final _oldestValidDate = DateTime(_now.year - 2, _now.month, _now.day);
 
 const _cjLogFiles = Level.info;
 const _cjLogLines = Level.debug;
