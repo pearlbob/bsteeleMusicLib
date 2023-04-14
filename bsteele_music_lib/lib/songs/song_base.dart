@@ -694,7 +694,7 @@ class SongBase {
           continue toNormal; //  fall through
         toNormal:
         case UpperCaseState.normal:
-        //  reset on sequential reset characters
+          //  reset on sequential reset characters
           if (c == ' ' ||
               c == '\n' ||
               c == '\r' ||
@@ -789,7 +789,10 @@ class SongBase {
         sectionVersions.remove(lyricSection.sectionVersion);
       }
       if (sectionVersions.isNotEmpty) {
-        return LyricParseException('Chord section unused:', MarkedString(sectionVersions.first.toString()));
+        return LyricParseException(
+            'Chord section ${sectionVersions.first}: is missing from the lyrics,'
+            ' add at least one use or remove it from the chords.',
+            MarkedString(sectionVersions.first.toString()));
       }
     }
 
