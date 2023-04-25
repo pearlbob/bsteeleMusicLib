@@ -11,6 +11,9 @@ import 'dart:math';
 import 'package:archive/archive.dart';
 import 'package:bsteeleMusicLib/songs/chord_descriptor.dart';
 import 'package:bsteeleMusicLib/songs/chord_section.dart';
+import 'package:bsteeleMusicLib/songs/key.dart';
+import 'package:bsteeleMusicLib/songs/music_constants.dart';
+import 'package:bsteeleMusicLib/songs/scale_chord.dart';
 import 'package:bsteeleMusicLib/songs/section.dart';
 import 'package:bsteeleMusicLib/songs/song.dart';
 import 'package:bsteeleMusicLib/songs/song_id.dart';
@@ -831,17 +834,17 @@ coerced to reflect the songlist's last modification for that song.
                 //  most recent performances, less than the limit
                 final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
                 SplayTreeSet<SongPerformance> performanceDelete =
-                SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+                    SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
                 for (var songPerformance in allSongPerformances.allSongPerformances) {
                   if (songPerformance.lastSung < lastSungLimit
-                      //  workaround for early bad singer entries
-                      ||
-                      (!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger)
-                  // ||
-                  // songPerformance.singer.contains('Vikki') ||
-                  // songPerformance.singer.contains('Alicia C.') ||
-                  // songPerformance.singer.contains('Bob S.')
-                  ) {
+                          //  workaround for early bad singer entries
+                          ||
+                          (!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger)
+                      // ||
+                      // songPerformance.singer.contains('Vikki') ||
+                      // songPerformance.singer.contains('Alicia C.') ||
+                      // songPerformance.singer.contains('Bob S.')
+                      ) {
                     performanceDelete.add(songPerformance);
                   }
                   assert(!songPerformance.singer.contains('Vikki'));
@@ -893,7 +896,7 @@ coerced to reflect the songlist's last modification for that song.
             logger.i('corrections: $corrections');
 
             //  count the sloppy matched songs in history
-                {
+            {
               var matches = 0;
               for (var performance in allSongPerformances.allSongPerformanceHistory) {
                 if (performance.song == null) {
@@ -929,7 +932,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             File localSongperformances =
-            File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
+                File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
             {
               try {
                 localSongperformances.deleteSync();
@@ -941,7 +944,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             //  time the reload
-                {
+            {
               // allSongPerformances.clear();
               // SongMetadata.clear();
 
@@ -973,7 +976,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-perfupdate':
-        //  assert there is another arg
+          //  assert there is another arg
           if (argCount < args.length - 1) {
             argCount++;
             var file = File(args[argCount]);
@@ -1235,7 +1238,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-url':
-        //  assert there is another arg
+          //  assert there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing file path for -url');
             _help();
@@ -1295,17 +1298,129 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-x':
-          var song = allSongs.firstWhere((song) => song.title.contains('25'));
-          logger.i('${song.title}, ${song.artist}');
-          {
-            var sb = StringBuffer('Sections: ');
-            for (var section in song.lyricSections) {
-              sb.write('${section.sectionVersion.toString().replaceFirst(':', '')}, ');
+          //  https://musictheorysite.com/namethatkey/
+        int diffCount =0;
+          for (var song in allSongs) {
+            Map<ScaleChord, int> scaleChordUseMap = {};
+            for (var lyricSection in song.lyricSections) {
+              // logger.i('${lyricSection.sectionVersion.toString().replaceFirst(':', ':')} ');
+              var chordSection = song.getChordSection(lyricSection.sectionVersion);
+              if (chordSection != null) {
+                // logger.i('$chordSection: ');
+                for (var phrase in chordSection.phrases) {
+                  // if (phrase.repeats > 0) {
+                  //   logger.i('   repeats: ${phrase.repeats}');
+                  // }
+                  for (var measure in phrase.measures) {
+                    for (var chord in measure.chords) {
+                      var scaleChord = chord.scaleChord;
+                      if ( !scaleChord.scaleNote.isSilent) {
+                        scaleChordUseMap[scaleChord] =
+                          ((scaleChordUseMap[scaleChord]) ?? 0) + phrase.repeats * chord.beats;
+                      }
+                    }
+                  }
+                }
+              } else {
+                assert(false);
+              }
             }
-            logger.i(sb.toString());
-          }
+            {
+              //  weigh the diatonic weights
+              List<int> weights = List<int>.filled(MusicConstants.notesPerScale, 1);
+              weights[MajorDiatonic.I.index] = 5;
+              weights[MajorDiatonic.IV.index] = 2;
+              weights[MajorDiatonic.V.index] = 2;
 
-          logger.i(song.chordsToJsonTransportString());
+              Key bestKey = Key.A;
+              int max = 0;
+              for (var key in Key.keysByHalfStep()) {
+                //logger.i('$key: ${notes[key.halfStep]} ${key.getMajorScaleChord()}');
+                int score = 0;
+                for (int degree = 0; degree < MusicConstants.notesPerScale; degree++) {
+                  var scaleChord = key.getMajorDiatonicByDegree(degree);
+                  score += weights[degree] * ((scaleChordUseMap[scaleChord]) ?? 0);
+                  // logger.i( '    major key chord note: $note $score $weight');
+                }
+                // logger.i( '    $key score: $score');
+                if (score > max) {
+                  max = score;
+                  bestKey = key;
+                }
+              }
+              if (bestKey.halfStep != song.key.halfStep) {
+                diffCount++;
+                logger.i('${song.title}, ${song.artist}, key: ${song.key}');
+                logger.i('    bestKey: $bestKey,  chords used: ${scaleChordUseMap.keys.toString()}');
+              }
+            }
+          }
+          logger.i('diffCount: $diffCount');
+          // for (var song in allSongs) {
+          //   SplayTreeSet<ScaleChord> scaleChords = SplayTreeSet();
+          //   List<int> notes = List.filled(MusicConstants.halfStepsPerOctave, 0);
+          //   for (var lyricSection in song.lyricSections) {
+          //     // logger.i('${lyricSection.sectionVersion.toString().replaceFirst(':', ':')} ');
+          //     var chordSection = song.getChordSection(lyricSection.sectionVersion);
+          //     if (chordSection != null) {
+          //       // logger.i('$chordSection: ');
+          //       for (var phrase in chordSection.phrases) {
+          //         // if (phrase.repeats > 0) {
+          //         //   logger.i('   repeats: ${phrase.repeats}');
+          //         // }
+          //         for (var measure in phrase.measures) {
+          //           for (var chord in measure.chords) {
+          //             var scaleChord = chord.scaleChord;
+          //             scaleChords.add(scaleChord);
+          //             // logger.i('     ${scaleChord.scaleNote} ${scaleChord.chordDescriptor}'
+          //             //     ' x ${chord.beats} ${chord.slashScaleNote ?? ''}');
+          //
+          //             for (var note in scaleChord.chordNotes(song.key)) {
+          //               if (note.isSilent) {
+          //                 continue;
+          //               }
+          //               // logger.i('         $note  ${note.halfStep}: ${phrase.repeats} x ${chord.beats}');
+          //               notes[note.halfStep] += phrase.repeats * chord.beats;
+          //             }
+          //             // if (chord.slashScaleNote != null) {
+          //             //   notes[chord.slashScaleNote!.halfStep] += phrase.repeats * chord.beats;
+          //             // }
+          //           }
+          //         }
+          //       }
+          //     } else {
+          //       assert(false);
+          //     }
+          //   }
+          //   {
+          //     //  weight the diatonics
+          //     List<int> weights = List<int>.filled(MusicConstants.notesPerScale, 1);
+          //     weights[MajorDiatonic.I.index] = 5;
+          //     weights[MajorDiatonic.IV.index] = 2;
+          //     weights[MajorDiatonic.V.index] = 2;
+          //
+          //     Key bestKey = Key.A;
+          //     int max = 0;
+          //     for (var key in Key.keysByHalfStep()) {
+          //       //logger.i('$key: ${notes[key.halfStep]} ${key.getMajorScaleChord()}');
+          //       int score = 0;
+          //       for (int degree = 0; degree < MusicConstants.notesPerScale; degree++) {
+          //         var scaleChord = key.getMajorDiatonicByDegree(degree);
+          //         score += weights[degree] * notes[scaleChord.scaleNote.halfStep];
+          //         // logger.i( '    major key chord note: $note $score $weight');
+          //       }
+          //       //  logger.i( '    $key score: $score');
+          //       if (score > max) {
+          //         max = score;
+          //         bestKey = key;
+          //       }
+          //     }
+          //     if (bestKey.halfStep != song.key.halfStep) {
+          //       logger.i('${song.title}, ${song.artist}, key: ${song.key}');
+          //       logger.i('    bestKey: $bestKey,  chords used: ${scaleChords.toString()}');
+          //     }
+          //   }
+          // }
           break;
 
         case '-xmas':

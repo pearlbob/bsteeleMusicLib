@@ -2728,7 +2728,8 @@ v:
       //  unused chord section
       lyrics = 'i: no\n bar bar';
       expect(a.validateLyrics(lyrics).runtimeType, LyricParseException);
-      expect(a.validateLyrics(lyrics)?.message, 'Chord section unused:');
+      expect(a.validateLyrics(lyrics)?.message,
+          'Chord section V: is missing from the lyrics, add at least one use or remove it from the chords.');
       expect(a.validateLyrics(lyrics)?.markedString.toString(), 'V:');
     }
   });
@@ -3560,7 +3561,7 @@ Grid{
               'bob, bob, bob berand\n'
               'You got me');
       for (var expanded in [false, true]) //  shouldn't matter
-          {
+      {
         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
         logger.i(grid.toString());
         expect(grid.toString(), '''
@@ -3609,7 +3610,7 @@ Grid{
               'bar bar\no:  yo yo yo\n yeah');
 
       for (var expanded in [false, true]) //  shouldn't matter
-          {
+      {
         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
         logger.i(grid.toString());
         expect(grid.toString(), '''
@@ -4007,7 +4008,41 @@ Grid{
       expect(a.songBaseSameContent(b), isFalse);
     }
   });
+
+  test('test scaleChordsUsed', () {
+    int beatsPerBar = 4;
+    Song a;
+    a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: A B C D  v: G G G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+      logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
+      expect(a.scaleChordsUsed().toString(), '[A, B, C, D, G]');
+
+      a = Song.createSong(
+          'ive go the blanks',
+          'bob',
+          'bob',
+          music_key.Key.get(music_key.KeyEnum.C),
+          106,
+          beatsPerBar,
+          4,
+          'pearl bob',
+          'i: AbBbmaj7 Bsus4 Cm/G D  v: G5 G7b5G7#9 G G, C C G G o: C C G G',
+          'i: (instrumental)\nv: line 1\no:\n');
+    logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
+    expect(a.scaleChordsUsed().toString(), '[A♭, B♭maj7, Bsus4, C, Cm, D, G, G5, G7b5, G7#9]');
+  });
 }
+
+
 
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {
   for (var expanded in [false, true]) {
