@@ -302,7 +302,7 @@ class SongBase {
   ///   and filler to an even, minimum right grid boundary.
   Grid<SongMoment> get songMomentGrid {
     //  lazy eval
-    if (_songMomentGrid != null) {
+    if (_songMomentGrid != null && _songMomentGrid!.isNotEmpty) {
       return _songMomentGrid!;
     }
 
@@ -312,7 +312,7 @@ class SongBase {
 
     //  find the maximum number of cols in the rows
     int maxCol = 0;
-    for (SongMoment songMoment in songMoments) {
+    for (SongMoment songMoment in _songMoments) {
       GridCoordinate? momentGridCoordinate = getMomentGridCoordinate(songMoment);
       if (momentGridCoordinate == null) {
         continue;
@@ -347,7 +347,7 @@ class SongBase {
         {
           int? lastRow;
           String? rowLyrics;
-          for (SongMoment songMoment in songMoments) {
+          for (SongMoment songMoment in _songMoments) {
             //  compute lyrics for this row, when required
             if (songMoment.row != lastRow) {
               lastRow = songMoment.row;
@@ -359,7 +359,7 @@ class SongBase {
 
             int measureCountInRow = 0;
             {
-              for (SongMoment? sm in songMomentGrid.getRow(songMoment.row ?? -1) ?? []) {
+              for (SongMoment? sm in _songMomentGrid!.getRow(songMoment.row ?? -1) ?? []) {
                 if (sm != null && (sm.col ?? 0) > 0) {
                   measureCountInRow++;
                 }

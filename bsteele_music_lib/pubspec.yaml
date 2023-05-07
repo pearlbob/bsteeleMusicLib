@@ -24,6 +24,7 @@ dependencies:
   tuple:
   collection:
   worker_manager:
+  excel:
 
 dev_dependencies:
   lints:

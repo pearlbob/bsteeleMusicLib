@@ -168,6 +168,12 @@ class Util {
     }).trimLeft();
   }
 
+  static String camelCaseToSpace(String s) {
+    return firstToUpper(s.replaceAllMapped(_singleCapRegExp, (Match match) {
+      return ' ${match.group(1)!}';
+    }).trimLeft());
+  }
+
   static String underScoresToCamelCase(String s) {
     return s.replaceAllMapped(_underScoreRegExp, (Match match) {
       return match.group(1)!.toUpperCase();

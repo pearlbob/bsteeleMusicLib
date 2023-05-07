@@ -24,7 +24,9 @@ import 'package:bsteeleMusicLib/util/us_timer.dart';
 import 'package:bsteeleMusicLib/util/util.dart';
 import 'package:csv/csv.dart';
 import 'package:english_words/english_words.dart';
+import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:quiver/collection.dart';
 import 'package:string_similarity/string_similarity.dart';
@@ -83,6 +85,7 @@ arguments:
 -perfwrite {file}   update the song performances to a file
 -popSongs           list the most popular songs
 -similar            list similar titled/artist/coverArtist songs
+-spreadsheet        generate history spreadsheet in excel
 -stat               statistics
 -tomcat {catalina_base}  read the tomcat logs
 -url {url}          read the given url into the utility's allSongs list
@@ -544,6 +547,144 @@ coerced to reflect the songlist's last modification for that song.
               await setLastModified(writeTo, fileTime.millisecondsSinceEpoch);
             }
           }
+          break;
+
+        case '-spreadsheet':
+          var excel = Excel.createExcel();
+          _addAllSongsFromFile(_allSongsFile);
+
+          allSongPerformances.updateFromJsonString(
+              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+          allSongPerformances.loadSongs(allSongs);
+
+          {
+            List<List<CellData>> data = [];
+
+            //  add all the songs
+            Map<Song, int> singings = {};
+            for (var song in allSongs) {
+              singings[song] = 0;
+            }
+
+            //  sum them up
+            for (var performance in allSongPerformances.allSongPerformanceHistory) {
+              if (performance.song != null) {
+                var v = singings[performance.song!];
+                singings[performance.song!] = (v ?? 0) + 1;
+              }
+            }
+
+            for (var song in allSongs) {
+              List<CellData> rowData = [];
+              rowData.add(CellData.byColumnEnum(ColumnEnum.title, song.title));
+              rowData.add(CellData.byColumnEnum(ColumnEnum.artist, song.artist));
+              rowData.add(CellData.byColumnEnum(ColumnEnum.coverArtist, song.coverArtist));
+              rowData.add(CellData('Performances', 15, singings[song]!));
+              data.add(rowData);
+            }
+            addExcelCellDataSheet(excel, 'By Song Title', data);
+
+            {
+              SplayTreeSet<List<CellData>> sortedData = SplayTreeSet((d1, d2) {
+                bool first = true;
+                for (int c in [3, 0, 1, 2]) {
+                  int ret = d1[c].value.compareTo(d2[c].value);
+                  if (first) {
+                    first = false;
+                    ret = -ret;
+                  }
+                  if (ret != 0) {
+                    return ret;
+                  }
+                }
+                return 0;
+              });
+              sortedData.addAll(data);
+              addExcelCellDataSheet(excel, 'By Performances', sortedData.toList(growable: false));
+            }
+          }
+
+          {
+            List<List<CellData>> data = [];
+
+            //  add all the songs
+            Map<String, int> singings = {};
+
+            //  sum them up
+            for (var performance in allSongPerformances.allSongPerformanceHistory) {
+              var v = singings[performance.singer];
+              singings[performance.singer] = (v ?? 0) + 1;
+            }
+
+            for (var singer in singings.keys) {
+              data.add([CellData('Singer', 40, singer), CellData('Performances', 15, singings[singer]!)]);
+            }
+
+            SplayTreeSet<List<CellData>> sortedData = SplayTreeSet((d1, d2) {
+              bool first = true;
+              for (int c in [1, 0]) {
+                int ret = d1[c].value.compareTo(d2[c].value);
+                if (first) {
+                  first = false;
+                  ret = -ret;
+                }
+                if (ret != 0) {
+                  return ret;
+                }
+              }
+              return 0;
+            });
+            sortedData.addAll(data);
+            addExcelCellDataSheet(excel, 'By Singer Performances', sortedData.toList(growable: false));
+          }
+
+          //  singers per jam
+          {
+            List<List<CellData>> data = [];
+
+            //  add all the jams
+            Map<DateTime, Map<String, int>> jams = {};
+
+            //  sum them up
+            for (var performance in allSongPerformances.allSongPerformanceHistory) {
+              var dateTime = performance.lastSungDateTime;
+              var day = DateTime(dateTime.year, dateTime.month, dateTime.day);
+              // logger.i('performance.lastSungDateTime: ${performance.lastSungDateTime} $day');
+              Map<String, int>? jam = jams[day];
+              if (jam == null) {
+                jam = {};
+                jam[performance.singer] = 1;
+                jams[day] = jam;
+              } else {
+                jam[performance.singer] = (jam[performance.singer] ?? 0) + 1;
+              }
+            }
+            var dayFormat = DateFormat('yyyy/MM/dd');
+            for (var day in SplayTreeSet<DateTime>()..addAll(jams.keys)) {
+              var jam = jams[day]!;
+              var singerSet = SplayTreeSet<String>()..addAll(jam.keys);
+              singerSet.removeWhere((e) => e == 'unknown');
+              String singers = singerSet.toString().replaceAll('{', '').replaceAll('}', '').trim();
+              // logger.i('day: ${dayFormat.format(day)}, ${jam.length}, singers: $singers');
+              data.add([
+                CellData('Date', 15, dayFormat.format(day)),
+                CellData('Count', 8, jam.length),
+                CellData('Singers', 180, singers)
+              ]);
+            }
+            addExcelCellDataSheet(excel, 'Singers per Jam', data.toList(growable: false));
+          }
+
+          //  singers songs sung per jam
+
+          excel.delete('Sheet1');
+          excel.setDefaultSheet('By Song Title');
+
+          var fileBytes = excel.save();
+
+          File('/home/bob/junk/bsteeleMusicAppHistory_${Util.utcNow()}.xlsx')
+            ..createSync(recursive: true)
+            ..writeAsBytesSync(fileBytes!);
           break;
 
         case '-f':
@@ -1299,7 +1440,7 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-x':
           //  https://musictheorysite.com/namethatkey/
-        int diffCount =0;
+          int diffCount = 0;
           for (var song in allSongs) {
             Map<ScaleChord, int> scaleChordUseMap = {};
             for (var lyricSection in song.lyricSections) {
@@ -1314,9 +1455,9 @@ coerced to reflect the songlist's last modification for that song.
                   for (var measure in phrase.measures) {
                     for (var chord in measure.chords) {
                       var scaleChord = chord.scaleChord;
-                      if ( !scaleChord.scaleNote.isSilent) {
+                      if (!scaleChord.scaleNote.isSilent) {
                         scaleChordUseMap[scaleChord] =
-                          ((scaleChordUseMap[scaleChord]) ?? 0) + phrase.repeats * chord.beats;
+                            ((scaleChordUseMap[scaleChord]) ?? 0) + phrase.repeats * chord.beats;
                       }
                     }
                   }
@@ -1934,6 +2075,55 @@ coerced to reflect the songlist's last modification for that song.
     }
   }
 
+  addExcelCellDataSheet(Excel excel, String sheetName, List<List<CellData>> data) {
+    excel.copy(excel.getDefaultSheet() ?? 'Sheet1', sheetName);
+    var sheet = excel.sheets[sheetName];
+    if (sheet == null) {
+      return;
+    }
+    if (data.isEmpty) {
+      return;
+    }
+
+    //  title row
+    CellStyle titleCellStyle = CellStyle(
+      horizontalAlign: HorizontalAlign.Center,
+      leftBorder: Border(borderStyle: BorderStyle.Thin),
+      rightBorder: Border(borderStyle: BorderStyle.Thin),
+      topBorder: Border(borderStyle: BorderStyle.Thin, borderColorHex: 'FFFF0000'),
+      bottomBorder: Border(borderStyle: BorderStyle.Medium, borderColorHex: 'FF0000FF'),
+      textWrapping: TextWrapping.WrapText,
+    );
+    CellStyle songCellStyle = CellStyle(
+      horizontalAlign: HorizontalAlign.Left,
+      textWrapping: TextWrapping.WrapText,
+    );
+    var first = data.first;
+    List<String> colNames = [];
+    for (int c = 0; c < first.length; c++) {
+      var cellData = first[c];
+      var cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: 0));
+      cell.value = cellData.name;
+      cell.cellStyle = titleCellStyle;
+    }
+    sheet.appendRow(colNames);
+    for (int c = 0; c < first.length; c++) {
+      sheet.setColWidth(c, first[c].width);
+    }
+
+    //  add all the data rows
+    for (var r = 0; r < data.length; r++) {
+      var row = data[r];
+      for (var c = 0; c < row.length; c++) {
+        var cellData = row[c];
+        var cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: r + 1));
+
+        cell.value = cellData.value;
+        cell.cellStyle = songCellStyle;
+      }
+    }
+  }
+
 // void _csv() {
 //   StringBuffer sb = StringBuffer();
 //   sb.write('Title, Artist, Cover Artist'
@@ -1974,3 +2164,27 @@ final RegExp _catalinaRegExp = RegExp(r'^catalina\.(\d{8}-\d{2}-\d{2})\.log'); /
 final RegExp _allSongPerformancesRegExp = RegExp(r'^allSongPerformances_(\d{8}_\d{6}).songperformances$');
 final RegExp _csvLineSplit = RegExp(r'[,\r]');
 final RegExp _spaceRegexp = RegExp(r'\W');
+
+enum ColumnEnum {
+  title(50),
+  artist(35),
+  coverArtist(35),
+  singer(35),
+  count(10);
+
+  const ColumnEnum(this.columnWidth);
+
+  final double columnWidth;
+}
+
+class CellData {
+  CellData(this.name, this.width, this.value);
+
+  CellData.byColumnEnum(ColumnEnum columnEnum, this.value)
+      : name = Util.camelCaseToSpace(columnEnum.name),
+        width = columnEnum.columnWidth;
+
+  final String name;
+  final double width;
+  final Comparable value;
+}

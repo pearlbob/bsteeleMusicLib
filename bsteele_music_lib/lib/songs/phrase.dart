@@ -703,6 +703,14 @@ class Phrase extends MeasureNode {
     return chordRowCount;
   }
 
+  int get beatCount {
+    var beats = 0;
+    for (Measure measure in _measures) {
+      beats += measure.beatCount;
+    }
+    return beats;
+  }
+
   int beatsInRow(int row, {bool? expanded}) {
     if (_measures.isEmpty) {
       return 0;

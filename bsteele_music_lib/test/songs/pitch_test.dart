@@ -171,7 +171,12 @@ void main() {
 
   test('test getFromMidiNoteNumber()', () {
     var a0 = Pitch.get(PitchEnum.A0);
+    logger.i('$a0: ${a0.frequency}');
+    var e1 = Pitch.get(PitchEnum.E1);
+    logger.i('$e1: ${e1.frequency}');
     var c8 = Pitch.get(PitchEnum.C8);
+    logger.i('$c8: ${c8.frequency}');
+
     for (var i = -3; i < 21; i++) {
       expect(Pitch.getFromMidiNoteNumber(i), a0);
     }

@@ -471,6 +471,14 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return sb.toString();
   }
 
+  int get beatCount {
+    var beats = 0;
+    for (var phrase in _phrases) {
+      beats += phrase.beatCount * phrase.repeats;
+    }
+    return beats;
+  }
+
   @override
   String toNashville(Key key) {
     var sb = StringBuffer();

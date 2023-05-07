@@ -409,8 +409,8 @@ class AllSongPerformances {
             additions.add(songPerformance.copy()..song = newSong);
           }
         } else {
-          logger.log(_logLostSongs, 'lost _allSongPerformances song: ${songPerformance.lowerCaseSongIdAsString}');
-          assert(false);
+          logger.e('lost _allSongPerformances song: ${songPerformance.lowerCaseSongIdAsString}');
+          //assert(false);
         }
       }
       _allSongPerformances.removeAll(removals);
@@ -431,8 +431,8 @@ class AllSongPerformances {
             additions.add(songPerformance.copy()..song = newSong);
           }
         } else {
-          logger.log(_logLostSongs, 'lost _allSongPerformanceHistory: ${songPerformance.lowerCaseSongIdAsString}');
-          assert(false);
+          logger.e('lost _allSongPerformanceHistory: ${songPerformance.lowerCaseSongIdAsString}');
+          // assert(false);
         }
       }
       logger.d('history: ${usTimer.deltaToString()} ${_allSongPerformanceHistory.length}'
