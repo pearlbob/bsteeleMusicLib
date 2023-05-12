@@ -1,7 +1,8 @@
-import 'package:bsteeleMusicLib/songs/music_constants.dart';
-import 'package:bsteeleMusicLib/songs/pitch.dart';
-import 'package:bsteeleMusicLib/songs/scale_chord.dart';
-import 'package:bsteeleMusicLib/songs/scale_note.dart';
+import 'music_constants.dart';
+import 'scale_chord.dart';
+import 'scale_note.dart';
+
+import 'pitch.dart';
 
 class Bass {
   static int mapPitchToBassFret(Pitch pitch) {

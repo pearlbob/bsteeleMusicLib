@@ -1,13 +1,13 @@
 import 'dart:collection';
 
-import 'package:bsteeleMusicLib/songs/chord_section.dart';
-import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
-import 'package:bsteeleMusicLib/songs/measure.dart';
-import 'package:bsteeleMusicLib/songs/phrase.dart';
-import 'package:bsteeleMusicLib/songs/section.dart';
-import 'package:bsteeleMusicLib/songs/section_version.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/time_signature.dart';
+import 'chord_section.dart';
+import 'key.dart' as music_key;
+import 'measure.dart';
+import 'phrase.dart';
+import 'section.dart';
+import 'section_version.dart';
+import 'song.dart';
+import 'time_signature.dart';
 
 import '../app_logger.dart';
 

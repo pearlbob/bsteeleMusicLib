@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/music_xml.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/music_xml.dart';
+import 'package:bsteele_music_lib/songs/song.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
@@ -130,26 +130,26 @@ void main() {
                 //  process the attributes
                 XmlElement xmlMeasureAttributes = child;
                 for (XmlElement xmlAttribute in xmlMeasureAttributes.findElements('divisions')) {
-                  logger.i('   divisions: ${int.parse(xmlAttribute.text)}');
+                  logger.i('   divisions: ${int.parse(xmlAttribute.value ?? '-1')}');
                 }
                 for (XmlElement xmlAttribute in xmlMeasureAttributes.findElements('key')) {
                   for (XmlElement xmlfifths in xmlAttribute.findElements('fifths')) {
-                    logger.i('   fifths: ${int.parse(xmlfifths.text)}');
+                    logger.i('   fifths: ${int.parse(xmlfifths.value ?? '-1')}');
                   }
                 }
                 for (XmlElement xmlAttribute in xmlMeasureAttributes.findElements('time')) {
                   for (XmlElement xmlbeats in xmlAttribute.findElements('beats')) {
-                    logger.i('   beats: ${int.parse(xmlbeats.text)}');
+                    logger.i('   beats: ${int.parse(xmlbeats.value ?? '-1')}');
                   }
                   for (XmlElement xmlbeatType in xmlAttribute.findElements('beat-type')) {
-                    logger.i('   beatType: ${int.parse(xmlbeatType.text)}');
+                    logger.i('   beatType: ${int.parse(xmlbeatType.value ?? '-1')}');
                   }
                 }
                 for (XmlElement e in xmlMeasureAttributes.findElements('staves')) {
-                  logger.i('   staves: ${int.parse(e.text)}');
+                  logger.i('   staves: ${int.parse(e.value ?? '-1')}');
                 }
                 for (XmlElement e in xmlMeasureAttributes.findElements('staves')) {
-                  logger.i('   staves: ${int.parse(e.text)}');
+                  logger.i('   staves: ${int.parse(e.value ?? '-1')}');
                 }
                 for (XmlElement xmlClef in xmlMeasureAttributes.findElements('clef')) {
                   var numberAttr = xmlMeasure.getAttribute('number');
@@ -159,10 +159,10 @@ void main() {
                   int clefNumber = int.parse(numberAttr);
                   logger.i('   clef: $clefNumber');
                   for (XmlElement xmlSign in xmlClef.findElements('sign')) {
-                    logger.i('     sign: ${xmlSign.text}');
+                    logger.i('     sign: ${xmlSign.value ?? '-1'}');
                   }
                   for (XmlElement e in xmlClef.findElements('line')) {
-                    logger.i('     line: ${int.parse(e.text)}');
+                    logger.i('     line: ${int.parse(e.value ?? '-1')}');
                   }
                 }
                 break;
@@ -172,30 +172,30 @@ void main() {
                 for (XmlElement xmlPitch in xmlNote.findElements('pitch')) {
                   logger.i('     pitch:');
                   for (XmlElement e in xmlPitch.findElements('step')) {
-                    logger.i('       step: "${e.text}"');
+                    logger.i('       step: "${e.value ?? '-1'}"');
                   }
                   for (XmlElement e in xmlPitch.findElements('octave')) {
-                    logger.i('       octave: ${int.parse(e.text)}');
+                    logger.i('       octave: ${int.parse(e.value ?? '-1')}');
                   }
-                  // logger.i('     pitch: ${int.parse(xmlPitch.text)}');
+                  // logger.i('     pitch: ${int.parse(xmlPitch.value??'-1')}');
                 }
                 for (XmlElement e in xmlNote.findElements('duration')) {
-                  logger.i('     duration: ${int.parse(e.text)}');
+                  logger.i('     duration: ${int.parse(e.value ?? '-1')}');
                 }
                 for (XmlElement e in xmlNote.findElements('voice')) {
-                  logger.i('     voice: ${int.parse(e.text)}');
+                  logger.i('     voice: ${int.parse(e.value ?? '-1')}');
                 }
                 for (XmlElement e in xmlNote.findElements('type')) {
-                  logger.i('     type: "${e.text}"');
+                  logger.i('     type: "${e.value ?? '-1'}"');
                 }
                 for (XmlElement e in xmlNote.findElements('staff')) {
-                  logger.i('     staff: ${int.parse(e.text)}');
+                  logger.i('     staff: ${int.parse(e.value ?? '-1')}');
                 }
                 break;
               case 'backup':
                 logger.i('   backup:');
                 for (XmlElement e in child.findElements('duration')) {
-                  logger.i('     duration: ${int.parse(e.text)}');
+                  logger.i('     duration: ${int.parse(e.value ?? '-1')}');
                 }
                 break;
               default:
@@ -211,7 +211,6 @@ void main() {
   });
 
   test('musicxml generation test', () {
-
     List<Song> list = Song.songListFromJson(sampleSongString);
     Song song = list[0];
 
@@ -254,17 +253,14 @@ void main() {
   });
 
   test('musicxml round trip test', () {
-
     List<Song> list = Song.songListFromJson(sampleSongString);
     Song a = list[0];
 
     MusicXml musicXml = MusicXml();
     String songAsMusicXml = musicXml.songAsMusicXml(a);
 
-    Song b = MusicXml.songFromMusicXml( songAsMusicXml);
-    logger.i(b.toJson());// fixme: complete this test
-
-
+    Song b = MusicXml.songFromMusicXml(songAsMusicXml);
+    logger.i(b.toJson()); // fixme: complete this test
   });
 }
 

@@ -1,6 +1,6 @@
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/ninjam.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteele_music_lib/songs/key.dart';
+import 'package:bsteele_music_lib/songs/ninjam.dart';
+import 'package:bsteele_music_lib/songs/song.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

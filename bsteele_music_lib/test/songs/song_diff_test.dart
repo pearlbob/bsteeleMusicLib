@@ -1,7 +1,7 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/song_base.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/key.dart';
+import 'package:bsteele_music_lib/songs/song_base.dart';
+import 'package:bsteele_music_lib/util/util.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -10,8 +10,8 @@ void main() {
 
   test('testEquals', () {
     {
-      SongBase a = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
-          100, 4, 4, 'i1: D D D D v: A B C D', 'v: bob, bob, bob berand');
+      SongBase a = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(), 100, 4, 4,
+          'i1: D D D D v: A B C D', 'v: bob, bob, bob berand');
       SongBase b = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
           100, 4, 4, 'i1: D D D D D D D D v: A B C D', 'v: bob, bob, bob berand');
 

@@ -2,9 +2,9 @@
 
 import 'dart:collection';
 
-import 'package:bsteeleMusicLib/songs/pitch.dart';
-import 'package:bsteeleMusicLib/songs/scale_chord.dart';
-import 'package:bsteeleMusicLib/songs/scale_note.dart';
+import 'pitch.dart';
+import 'scale_chord.dart';
+import 'scale_note.dart';
 
 import 'music_constants.dart';
 

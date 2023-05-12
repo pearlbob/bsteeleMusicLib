@@ -1,10 +1,10 @@
 // Copyright (c) 2017, filiph. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-// import 'package:bsteeleMusicLib/src/syllables/disyllabic.dart';
-// import 'package:bsteeleMusicLib/src/syllables/monosyllabic.dart';
-// import 'package:bsteeleMusicLib/src/syllables/problematic.dart';
-// import 'package:bsteeleMusicLib/src/syllables/trisyllabic.dart';
+// import 'src/syllables/disyllabic.dart';
+// import 'src/syllables/monosyllabic.dart';
+// import 'src/syllables/problematic.dart';
+// import 'src/syllables/trisyllabic.dart';
 import 'package:english_words/english_words.dart' as en;
 import 'package:logger/logger.dart';
 import 'package:string_scanner/string_scanner.dart';

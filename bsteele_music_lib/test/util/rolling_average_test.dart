@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/util/util.dart';
+import 'package:bsteele_music_lib/util/util.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -1,8 +1,8 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/grid.dart';
-import 'package:bsteeleMusicLib/songs/measure.dart';
-import 'package:bsteeleMusicLib/songs/measure_node.dart';
-import 'package:bsteeleMusicLib/songs/phrase.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/grid.dart';
+import 'package:bsteele_music_lib/songs/measure.dart';
+import 'package:bsteele_music_lib/songs/measure_node.dart';
+import 'package:bsteele_music_lib/songs/phrase.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

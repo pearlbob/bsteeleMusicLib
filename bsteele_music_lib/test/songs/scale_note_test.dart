@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/music_constants.dart';
-import 'package:bsteeleMusicLib/songs/scale_note.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/music_constants.dart';
+import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

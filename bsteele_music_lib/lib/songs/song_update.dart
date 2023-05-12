@@ -5,10 +5,10 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/song_moment.dart';
+import '../app_logger.dart';
+import 'key.dart';
+import 'song.dart';
+import 'song_moment.dart';
 
 enum SongUpdateState {
   none,

@@ -1,6 +1,6 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/bass.dart';
-import 'package:bsteeleMusicLib/songs/pitch.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/bass.dart';
+import 'package:bsteele_music_lib/songs/pitch.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

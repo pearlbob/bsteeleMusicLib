@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/grid.dart';
+import '../grid.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 

@@ -1,13 +1,13 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/song_base.dart';
-import 'package:bsteeleMusicLib/songs/song_performance.dart';
 import 'package:logger/logger.dart';
 
+import '../app_logger.dart';
 import '../util/util.dart';
+import 'song.dart';
+import 'song_base.dart';
+import 'song_performance.dart';
 
 const _logRepair = Level.debug;
 

@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/util/us_timer.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/util/us_timer.dart';
 import 'package:test/test.dart';
 
 void main() {

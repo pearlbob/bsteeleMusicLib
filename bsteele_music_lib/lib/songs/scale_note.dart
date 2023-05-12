@@ -1,12 +1,11 @@
 //
 
-// ignore_for_file: constant_identifier_names
-
-import 'package:bsteeleMusicLib/songs/nashville_note.dart';
-
 import '../util/util.dart';
 import 'key.dart';
 import 'music_constants.dart';
+// ignore_for_file: constant_identifier_names
+
+import 'nashville_note.dart';
 
 /// Musical accidentals
 enum Accidental {

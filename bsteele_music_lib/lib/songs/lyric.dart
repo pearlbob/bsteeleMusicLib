@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bsteeleMusicLib/songs/key.dart';
+import 'key.dart';
 
 import 'measure_node.dart';
 

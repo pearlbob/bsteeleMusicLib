@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/songs/chord_section.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/measure_node.dart';
+import 'chord_section.dart';
+import 'key.dart';
+import 'measure_node.dart';
 import 'package:quiver/collection.dart';
 
 import '../app_logger.dart';

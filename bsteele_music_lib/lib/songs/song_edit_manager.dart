@@ -1,7 +1,7 @@
-import 'package:bsteeleMusicLib/songs/phrase.dart';
-import 'package:bsteeleMusicLib/songs/section.dart';
-import 'package:bsteeleMusicLib/songs/section_version.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
+import 'phrase.dart';
+import 'section.dart';
+import 'section_version.dart';
+import 'song.dart';
 
 import 'chord.dart';
 import 'chord_anticipation_or_delay.dart';

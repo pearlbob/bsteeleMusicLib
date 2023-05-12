@@ -1,12 +1,12 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/chord.dart';
-import 'package:bsteeleMusicLib/songs/chord_section.dart';
-import 'package:bsteeleMusicLib/songs/chord_section_location.dart';
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/measure.dart';
-import 'package:bsteeleMusicLib/songs/measure_node.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/song_edit_manager.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/chord.dart';
+import 'package:bsteele_music_lib/songs/chord_section.dart';
+import 'package:bsteele_music_lib/songs/chord_section_location.dart';
+import 'package:bsteele_music_lib/songs/key.dart';
+import 'package:bsteele_music_lib/songs/measure.dart';
+import 'package:bsteele_music_lib/songs/measure_node.dart';
+import 'package:bsteele_music_lib/songs/song.dart';
+import 'package:bsteele_music_lib/songs/song_edit_manager.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

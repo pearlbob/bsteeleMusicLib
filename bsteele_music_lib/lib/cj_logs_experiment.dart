@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/song_metadata.dart';
-import 'package:bsteeleMusicLib/songs/song_performance.dart';
-import 'package:bsteeleMusicLib/songs/song_update.dart';
-import 'package:bsteeleMusicLib/util/us_timer.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
+import 'songs/song.dart';
+import 'songs/song_performance.dart';
+import 'songs/song_update.dart';
+
+// import 'util/us_timer.dart';
+import 'util/util.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -15,9 +15,9 @@ import 'app_logger.dart';
 // ignore_for_file: avoid_print
 
 const String _allSongDirectory = 'github/allSongs.songlyrics';
-final _allSonglyricsGithubFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songlyrics');
+// final _allSonglyricsGithubFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songlyrics');
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
-final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
+// final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 late final String downloadsDirString;
 
 final _firstValidDate = DateTime(2022, 7, 26);
@@ -91,7 +91,7 @@ class CjLog {
     logger.log(_cjLogFiles, 'host: $_host');
     downloadsDirString = '${Util.homePath()}/communityJams/$_host/Downloads';
 
-    var usTimer = UsTimer();
+    // var usTimer = UsTimer();
     Directory logs;
     var processedLogs = Directory('${Util.homePath()}/communityJams/$_host/Downloads');
     if (_catalinaBase != null) {
@@ -163,8 +163,11 @@ class CjLog {
       SongUpdate lastSongUpdate = SongUpdate();
       //allSongPerformances.clear();
       var dateTime = DateTime(1970);
+      Song? lastSong;
       var hasStarted = false;
       int beatCount = 0;
+      int songMomentsLength = 0;
+      int lastSectionCount = -1;
       for (var line in log.split('\n')) {
         //  look for the bsteeleMusicApp log messages
         RegExpMatch? m = messageRegExp.firstMatch(line);
@@ -191,30 +194,48 @@ class CjLog {
           print('   line: <$line>');
           continue;
         }
-        //  optimization
-        if (!hasStarted && songUpdate.momentNumber != 0) {
+        if (lastSong == null || lastSong.songId != songUpdate.song.songId) {
+          hasStarted = false;
+          lastSong = songUpdate.song;
+          songMomentsLength = songUpdate.song.songMoments.length;
+        }
+        var songMoment = songUpdate.song.getSongMoment(songUpdate.momentNumber);
+        var sectionCount = songMoment?.lyricSection.index ?? -1;
+
+        if (sectionCount < 2 // too early to look at BPM
+                ||
+                sectionCount < lastSectionCount //  going backwards?
+            ) {
+          lastSectionCount = sectionCount;
+          hasStarted = false;
+          //logger.i('      ignore backwards: $sectionCount');
           lastSongUpdate = songUpdate; //  don't lose the update!
           continue;
         }
-        hasStarted = true;
+        lastSectionCount = sectionCount;
 
-        logger.i('$dateTime: momentNumber: ${songUpdate.momentNumber}/${songUpdate.song.songMoments.length}'
-            ': $beatCount in $duration => ${Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds} b/s = '
-            '${60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds} BPM');
-
-        //  output the update if the song has changed
-        if (!songUpdate.song.songBaseSameContent(lastSongUpdate.song) && lastSongUpdate.song.title.isNotEmpty) {
-          //  convert last song update to a performance
-          allSongPerformances.addSongPerformance(toSongPerformance(lastSongUpdate, dateTime));
+        if (sectionCount == 0) {
+          hasStarted = true;
         }
-        lastSongUpdate = songUpdate;
-        beatCount = songUpdate.song.getSongMoment(songUpdate.momentNumber)?.chordSection.beatCount ?? 0;
-      }
 
-      //  output the last update
-      if (lastSongUpdate.song.title.isNotEmpty) {
-        //  convert last song update to a performance
-        allSongPerformances.addSongPerformance(toSongPerformance(lastSongUpdate, dateTime));
+        logger.i('$dateTime: ${songUpdate.song}: $hasStarted'
+            ' momentNumber: ${songUpdate.momentNumber}/$songMomentsLength'
+            ': $beatCount in $duration => '
+            '${(Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} b/s = '
+            '${(60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} BPM'
+            // ', lyricSection: ${songMoment?.lyricSection.index}'
+            ', currentSectionCount: $sectionCount');
+
+        if (songUpdate.momentNumber + (songMoment?.chordSection.getTotalMoments() ?? 0) == songMomentsLength) {
+          if (!hasStarted) {
+            lastSongUpdate = songUpdate;
+            continue;
+          }
+          logger.i('   performance finished: average BPM: ');
+        }
+
+        lastSongUpdate = songUpdate;
+        beatCount = songMoment?.chordSection.beatCount ?? 0;
       }
 
       break; //fixme: only one file at the moment

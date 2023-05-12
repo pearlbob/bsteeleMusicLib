@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/songs/measure_repeat_extension.dart';
+import 'measure_repeat_extension.dart';
 
 import '../app_logger.dart';
 import '../grid.dart';

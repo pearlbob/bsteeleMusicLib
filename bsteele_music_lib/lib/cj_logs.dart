@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/song_metadata.dart';
-import 'package:bsteeleMusicLib/songs/song_performance.dart';
-import 'package:bsteeleMusicLib/songs/song_update.dart';
-import 'package:bsteeleMusicLib/util/us_timer.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
+import 'songs/song.dart';
+import 'songs/song_metadata.dart';
+import 'songs/song_performance.dart';
+import 'songs/song_update.dart';
+import 'util/us_timer.dart';
+import 'util/util.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 

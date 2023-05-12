@@ -4,8 +4,8 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/songs/lyric.dart';
-import 'package:bsteeleMusicLib/songs/time_signature.dart';
+import 'lyric.dart';
+import 'time_signature.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:quiver/collection.dart';

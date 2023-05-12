@@ -1,9 +1,9 @@
 import 'dart:collection';
 
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/section.dart';
-import 'package:bsteeleMusicLib/songs/section_version.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/section.dart';
+import 'package:bsteele_music_lib/songs/section_version.dart';
+import 'package:bsteele_music_lib/util/util.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

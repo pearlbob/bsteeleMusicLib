@@ -1,6 +1,6 @@
-import 'package:bsteeleMusicLib/songs/phrase.dart';
-import 'package:bsteeleMusicLib/songs/section.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
+import 'phrase.dart';
+import 'section.dart';
+import 'song.dart';
 import 'package:quiver/collection.dart';
 
 import 'chord_section.dart';

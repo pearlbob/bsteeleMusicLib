@@ -2,10 +2,10 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/songs/song_id.dart';
-import 'package:bsteeleMusicLib/util/us_timer.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
+import '../util/us_timer.dart';
+import '../util/util.dart';
+import 'song.dart';
+import 'song_id.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:string_similarity/string_similarity.dart';

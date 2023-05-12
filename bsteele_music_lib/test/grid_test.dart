@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/grid.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/grid.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

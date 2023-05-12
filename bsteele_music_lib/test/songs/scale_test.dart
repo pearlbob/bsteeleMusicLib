@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/scale.dart';
+import 'package:bsteele_music_lib/songs/key.dart';
+import 'package:bsteele_music_lib/songs/scale.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

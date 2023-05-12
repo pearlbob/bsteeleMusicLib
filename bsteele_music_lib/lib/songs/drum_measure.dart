@@ -1,10 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:bsteeleMusicLib/songs/song.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
-
 import '../app_logger.dart';
+import '../util/util.dart';
+import 'song.dart';
 
 enum DrumSubBeatEnum {
   subBeat,

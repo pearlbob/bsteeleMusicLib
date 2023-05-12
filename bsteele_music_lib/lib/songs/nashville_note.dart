@@ -1,4 +1,4 @@
-import 'package:bsteeleMusicLib/songs/music_constants.dart';
+import 'music_constants.dart';
 
 enum NashvilleNote {
   nashville1('1', '1'),

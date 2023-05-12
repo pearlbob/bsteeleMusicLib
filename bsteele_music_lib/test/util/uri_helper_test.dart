@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/util/uri_helper.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/util/uri_helper.dart';
 import 'package:test/test.dart';
 
 //  test the dart Uri class properties

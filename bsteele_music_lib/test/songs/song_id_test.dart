@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:bsteeleMusicLib/songs/key.dart' as music_key;
-import 'package:bsteeleMusicLib/songs/key.dart';
-import 'package:bsteeleMusicLib/songs/song.dart';
+import 'package:bsteele_music_lib/songs/key.dart' as music_key;
+import 'package:bsteele_music_lib/songs/key.dart';
+import 'package:bsteele_music_lib/songs/song.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

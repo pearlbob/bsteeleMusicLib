@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:bsteeleMusicLib/songs/time_signature.dart';
-
 import '../app_logger.dart';
 import '../util/util.dart';
 import 'chord_section_location.dart';
 import 'key.dart';
 import 'song_base.dart';
+import 'time_signature.dart';
 
 enum SongComparatorType {
   title,

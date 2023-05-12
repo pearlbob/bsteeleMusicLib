@@ -1,9 +1,8 @@
-import 'package:bsteeleMusicLib/songs/scale_note.dart';
-
 import '../util/util.dart';
 import 'chord_component.dart';
 import 'chord_descriptor.dart';
 import 'key.dart';
+import 'scale_note.dart';
 
 ///  A chord with a scale note and an optional chord descriptor and tension.
 class ScaleChord implements Comparable<ScaleChord> {

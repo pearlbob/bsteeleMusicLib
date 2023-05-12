@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/util/split_by_syllables.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/util/split_by_syllables.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 

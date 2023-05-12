@@ -1,5 +1,5 @@
-import 'package:bsteeleMusicLib/songs/chord_section_location.dart';
 import '../util/util.dart';
+import 'chord_section_location.dart';
 
 class SongMomentLocation {
   SongMomentLocation(this._chordSectionLocation, this._index);

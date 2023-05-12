@@ -1,6 +1,6 @@
-import 'package:bsteeleMusicLib/app_logger.dart';
-import 'package:bsteeleMusicLib/songs/chord_descriptor.dart';
-import 'package:bsteeleMusicLib/songs/music_constants.dart';
+import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/chord_descriptor.dart';
+import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:test/test.dart';
 
 void main() {

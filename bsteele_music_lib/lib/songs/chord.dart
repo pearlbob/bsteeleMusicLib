@@ -1,9 +1,9 @@
 import 'dart:collection';
 
-import 'package:bsteeleMusicLib/songs/pitch.dart';
-import 'package:bsteeleMusicLib/songs/scale_chord.dart';
-import 'package:bsteeleMusicLib/songs/scale_note.dart';
-import 'package:bsteeleMusicLib/util/util.dart';
+import 'pitch.dart';
+import 'scale_chord.dart';
+import 'scale_note.dart';
+import '../util/util.dart';
 
 import 'chord_anticipation_or_delay.dart';
 import 'key.dart';

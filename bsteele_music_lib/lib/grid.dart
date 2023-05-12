@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bsteeleMusicLib/grid_coordinate.dart';
+import 'grid_coordinate.dart';
 
 /// A generic grid used to store data presentations to the user.
 /// Grid locations are logically assigned without the details of the UI mapping.

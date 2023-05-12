@@ -1,8 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:bsteeleMusicLib/songs/scale_note.dart';
-
 import 'key.dart';
+import 'scale_note.dart';
 
 const whole = 2;
 const half = 1;
