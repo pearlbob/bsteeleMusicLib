@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:archive/archive.dart';
+import 'package:bsteele_music_lib/songs/pitch.dart';
 import 'songs/chord_descriptor.dart';
 import 'songs/chord_section.dart';
 import 'songs/key.dart';
@@ -73,6 +74,7 @@ arguments:
 -cjgenre {file}     read the csv version of the CJ web genre file
 -cjgenrewrite {file}     write the csv version of the CJ web genre file
 -expand {file}      expand a songlyrics list file to the output directory
+-floatnotes         list bass notes by float frequency
 -f                  force file writes over existing files
 -h                  this help message
 -html               HTML song list
@@ -689,6 +691,16 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-f':
           _force = true;
+          break;
+
+        case '-floatnotes':
+          for (var pitch in Pitch.sharps) {
+            logger.i(' ${pitch.frequency.toStringAsFixed(9).padLeft(4 + 1 + 9)}'
+                ', // ${pitch.number.toString().padLeft(2)} $pitch ');
+          }
+          for (var pitch in Pitch.sharps) {
+            logger.i('"$pitch", // ${pitch.number.toString().padLeft(2)}  ');
+          }
           break;
 
         case '-h':
