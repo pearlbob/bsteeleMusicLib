@@ -46,6 +46,8 @@ AllSongPerformances allSongPerformances = AllSongPerformances();
 const _logFiles = Level.debug;
 const _logPerformanceDetails = Level.debug;
 
+final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - 2 * Duration.millisecondsPerDay * 365;
+
 void main(List<String> args) async {
   Logger.level = Level.info;
 
@@ -223,6 +225,7 @@ coerced to reflect the songlist's last modification for that song.
             await outputFile.writeAsString(SongMetadata.toJson(), flush: true);
           }
           break;
+
         case '-cjwritesongs': // {file)
           //  assert there is another arg
           if (argCount >= args.length - 1) {
@@ -251,6 +254,7 @@ coerced to reflect the songlist's last modification for that song.
             await outputFile.writeAsString(Song.listToJson(cjSongs.toList()), flush: true);
           }
           break;
+
         case '-cjcsvwrite': // {file}  format the song data as a CSV version of the CJ ranking metadata
           //  assert there is another arg
           if (argCount >= args.length - 1) {
@@ -985,7 +989,6 @@ coerced to reflect the songlist's last modification for that song.
 
               {
                 //  most recent performances, less than the limit
-                final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
                 SplayTreeSet<SongPerformance> performanceDelete =
                     SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
                 for (var songPerformance in allSongPerformances.allSongPerformances) {
@@ -1054,7 +1057,6 @@ coerced to reflect the songlist's last modification for that song.
               for (var performance in allSongPerformances.allSongPerformanceHistory) {
                 if (performance.song == null) {
                   logger.i('missing song: ${performance.lowerCaseSongIdAsString}');
-                  assert(false);
                 } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
                   logger.i('${performance.lowerCaseSongIdAsString}'
                       ' vs ${performance.song!.songId.toString().toLowerCase()}');
@@ -1871,7 +1873,6 @@ coerced to reflect the songlist's last modification for that song.
       return f1.path.compareTo(f2.path);
     });
     //  most recent performances, less than the limit
-    final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - Duration.millisecondsPerDay * 365;
     final DateTime lastSungLimitDate = DateTime.fromMillisecondsSinceEpoch(lastSungLimit);
     {
       for (var e in logs.listSync()) {
