@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'songs/song.dart';
 import 'songs/song_performance.dart';
@@ -167,7 +168,10 @@ class CjLog {
       var hasStarted = false;
       int beatCount = 0;
       int songMomentsLength = 0;
-      int lastSectionCount = -1;
+      DateTime? baseTime;
+      int? baseBeat;
+      int? beatsSinceBase = 0;
+
       for (var line in log.split('\n')) {
         //  look for the bsteeleMusicApp log messages
         RegExpMatch? m = messageRegExp.firstMatch(line);
@@ -198,48 +202,62 @@ class CjLog {
           hasStarted = false;
           lastSong = songUpdate.song;
           songMomentsLength = songUpdate.song.songMoments.length;
+          baseTime = null;
+          baseBeat = null;
+          beatsSinceBase = null;
         }
+
         var songMoment = songUpdate.song.getSongMoment(songUpdate.momentNumber);
         var sectionCount = songMoment?.lyricSection.index ?? -1;
 
-        if (sectionCount < 2 // too early to look at BPM
-                ||
-                sectionCount < lastSectionCount //  going backwards?
-            ) {
-          lastSectionCount = sectionCount;
-          hasStarted = false;
-          //logger.i('      ignore backwards: $sectionCount');
-          lastSongUpdate = songUpdate; //  don't lose the update!
-          continue;
-        }
-        lastSectionCount = sectionCount;
-
-        if (sectionCount == 0) {
-          hasStarted = true;
-        }
-
-        logger.i('$dateTime: ${songUpdate.song}: $hasStarted'
-            ' momentNumber: ${songUpdate.momentNumber}/$songMomentsLength'
-            ': $beatCount in $duration => '
-            '${(Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} b/s = '
-            '${(60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} BPM'
-            // ', lyricSection: ${songMoment?.lyricSection.index}'
-            ', currentSectionCount: $sectionCount');
-
-        if (songUpdate.momentNumber + (songMoment?.chordSection.getTotalMoments() ?? 0) == songMomentsLength) {
-          if (!hasStarted) {
-            lastSongUpdate = songUpdate;
-            continue;
+        if (songUpdate.state == SongUpdateState.manualPlay) {
+          if (sectionCount >= 0) {
+            hasStarted = true;
+            baseTime ??= dateTime;
+            baseBeat ??= 0;
+            beatsSinceBase ??= 0;
           }
-          logger.i('   performance finished: average BPM: ');
+
+          if (sectionCount >= 2) {
+            logger.i('$dateTime: ${_shortString(songUpdate.song.toString())}: $hasStarted'
+                ', ${songUpdate.state.name}'
+                ', momentNumber: ${songUpdate.momentNumber}/$songMomentsLength'
+                ': $beatCount in $duration => '
+                '${(Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} b/s = '
+                '${(60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} BPM'
+                // ', lyricSection: ${songMoment?.lyricSection.index}'
+                ', section: $sectionCount');
+            var b = (beatsSinceBase ?? 0) - (baseBeat ?? 0);
+            var d = dateTime.difference(baseTime ?? dateTime);
+            logger.i('   $b beats in 0:00:15.954000 =>'
+                ' ${(Duration.millisecondsPerSecond * b / d.inMilliseconds).toStringAsFixed(2)} b/s ='
+                ' ${(60 * Duration.millisecondsPerSecond * b / d.inMilliseconds).toStringAsFixed(2)}'
+                ', section: $sectionCount');
+          }
+
+          if (songUpdate.momentNumber + (songMoment?.chordSection.getTotalMoments() ?? 0) >= songMomentsLength) {
+            if (!hasStarted) {
+              lastSongUpdate = songUpdate;
+              continue;
+            }
+            logger.i('   performance finished: average BPM: ');
+          }
         }
 
         lastSongUpdate = songUpdate;
         beatCount = songMoment?.chordSection.beatCount ?? 0;
+        if (beatsSinceBase != null) {
+          beatsSinceBase += beatCount;
+        }
       }
 
       break; //fixme: only one file at the moment
     }
+  }
+
+  String _shortString(final String s) {
+    var len = s.length;
+    return s.substring(0, min(35, len));
   }
 
   SongPerformance toSongPerformance(SongUpdate songUpdate, DateTime dateTime) {

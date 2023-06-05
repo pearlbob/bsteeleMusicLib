@@ -7,8 +7,8 @@ class SongId implements Comparable<SongId> {
   SongId(this._songId);
 
   SongId.computeSongId(String? title, String? artist, String? coverArtist)
-      : _songId = _findSongId(
-            '$prefix${_toSongId(title)}_by_${_toSongId(artist)}${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
+      : _songId = _findSongId('$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
+            '${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
 
   static String _toSongId(String? s) {
     if (s == null) {
