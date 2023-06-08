@@ -36,8 +36,6 @@ class MusicConstants {
   static const int halfStepsFromMajorToAssociatedMinorKey = 3;
   static const int halfStepsToFifth = 7;
 
-  static const int measuresPerDisplayRow = 4;
-
   static const int minBpm = 50;
   static const int maxBpm = 400;
   static const int defaultBpm = 106;

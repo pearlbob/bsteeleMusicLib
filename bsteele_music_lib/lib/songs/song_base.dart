@@ -72,6 +72,7 @@ enum BannerColumn {
 
 const Level _logGrid = Level.debug;
 const Level _logGridDetails = Level.debug;
+const Level _logLyricsTableItems = Level.debug;
 
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
@@ -3262,12 +3263,12 @@ class SongBase {
     return lastSongMoment;
   }
 
-  double getSongTimeAtMoment(int momentNumber) {
+  double getSongTimeAtMoment(int momentNumber, {int? beatsPerMinute}) {
     SongMoment? songMoment = getSongMoment(momentNumber);
     if (songMoment == null) {
       return 0;
     }
-    return songMoment.beatNumber * 60.0 / beatsPerMinute;
+    return songMoment.beatNumber * 60.0 / (beatsPerMinute ?? _beatsPerMinute);
   }
 
   static int? getBeatNumberAtTime(int bpm, double songTime) {
@@ -3299,6 +3300,10 @@ class SongBase {
     } //  we're done with the last measure of this song play
 
     return _beatsToMoment[songBeat]?.momentNumber;
+  }
+
+  SongMoment? songMomentAtBeatNumber(final int beatNumber) {
+    return _beatsToMoment[beatNumber];
   }
 
   /// Return the first moment on the given row
@@ -3643,11 +3648,10 @@ class SongBase {
     _measureNodeIdToGridCoordinate = {};
     expanded = expanded ?? false;
 
+    var grid = Grid<MeasureNode>();
     switch (userDisplayStyle) {
       case UserDisplayStyle.proPlayer:
         {
-          var grid = Grid<MeasureNode>();
-
           //  row of chord sections
           var c = 0;
           for (var lyricSection in lyricSections) {
@@ -3677,12 +3681,11 @@ class SongBase {
           for (var m in songMoments) {
             _songMomentToGridCoordinate.add(GridCoordinate(1 + chordSectionsList.indexOf(m.chordSection), 0));
           }
-          return grid;
         }
+        break;
 
       case UserDisplayStyle.singer:
         {
-          var grid = Grid<MeasureNode>();
           var r = 0;
           Map<LyricSection, GridCoordinate> lyricSectionMap = {};
           for (var lyricSection in lyricSections) {
@@ -3705,12 +3708,11 @@ class SongBase {
             assert(gc != null);
             _songMomentToGridCoordinate.add(gc!);
           }
-          return grid;
         }
+        break;
 
       case UserDisplayStyle.banner:
         {
-          var grid = Grid<MeasureNode>();
           ChordSection? lastChordSection;
           MeasureRepeatMarker? lastMarker;
           for (var m in songMoments) {
@@ -3736,13 +3738,15 @@ class SongBase {
             grid.setAt(gc, m.measure);
             _songMomentToGridCoordinate.add(gc); //  only row likely to always have an entry
           }
-          return grid;
         }
-
+        break;
       case UserDisplayStyle.player:
       case UserDisplayStyle.both:
-        return _toBothGrid(expanded: expanded);
+        grid = _toBothGrid(expanded: expanded);
+        break;
     }
+
+    return grid;
   }
 
   //  preferred sections by order of priority
@@ -3752,9 +3756,11 @@ class SongBase {
     SectionVersion.bySection(Section.get(SectionEnum.intro)),
     SectionVersion.bySection(Section.get(SectionEnum.bridge)),
     SectionVersion.bySection(Section.get(SectionEnum.outro)),
+    SectionVersion.bySection(Section.get(SectionEnum.preChorus)),
     SectionVersion.bySection(Section.get(SectionEnum.tag)),
     SectionVersion.bySection(Section.get(SectionEnum.a)),
     SectionVersion.bySection(Section.get(SectionEnum.b)),
+    SectionVersion.bySection(Section.get(SectionEnum.coda)),
   ];
 
   /// suggest a new chord section (that doesn't currently exist

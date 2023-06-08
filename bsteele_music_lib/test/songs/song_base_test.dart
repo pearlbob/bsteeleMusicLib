@@ -4042,8 +4042,6 @@ Grid{
   });
 }
 
-
-
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {
   for (var expanded in [false, true]) {
     var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
