@@ -9,7 +9,7 @@ import 'util/util.dart';
 
 const _cjLogManualBumps = Level.debug;
 
-enum _ManualPlayerScrollAssistantState {
+enum ManualPlayerScrollAssistantState {
   noClue,
   tooEarly,
   forward,
@@ -75,7 +75,7 @@ class ManualPlayerScrollAssistant {
   int? rowSuggestion(final DateTime dateTime) {
     int? ret;
     switch (_state) {
-      case _ManualPlayerScrollAssistantState.forward:
+      case ManualPlayerScrollAssistantState.forward:
         var beatNumber = beatNumberAt(dateTime);
         ret = rowAtBeatNumber(beatNumber.round());
         // logger.i('beatNumber: $beatNumber, row: $ret');
@@ -100,27 +100,28 @@ class ManualPlayerScrollAssistant {
           ', row: ${songMomentsToMinRowIndex[newSongMomentIndex]}, beat: $beatNumber');
     } else {
       //  going backwards?
-      _state = _ManualPlayerScrollAssistantState.noClue;
+      _state = ManualPlayerScrollAssistantState.noClue;
     }
     _lastSectionIndex = sectionIndex;
+    rowSuggestion(dateTime);
 
     //  compute the bpm going forward
     error = null;
     switch (_state) {
-      case _ManualPlayerScrollAssistantState.noClue:
+      case ManualPlayerScrollAssistantState.noClue:
         //  skip the first beat number
         if (beatNumber > 0) {
           _refBeatNumber = beatNumber;
           _refDateTime = dateTime;
-          _state = _ManualPlayerScrollAssistantState.tooEarly;
+          _state = ManualPlayerScrollAssistantState.tooEarly;
         }
         break;
-      case _ManualPlayerScrollAssistantState.tooEarly:
+      case ManualPlayerScrollAssistantState.tooEarly:
         //  delay to get two points of reference
-        _state = _ManualPlayerScrollAssistantState.forward;
+        _state = ManualPlayerScrollAssistantState.forward;
         _bpm = _computeBpmAt(dateTime, beatNumber);
         break;
-      case _ManualPlayerScrollAssistantState.forward:
+      case ManualPlayerScrollAssistantState.forward:
         var estimatedBeatNumber = beatNumberAt(dateTime);
         _bpm = _computeBpmAt(dateTime, beatNumber);
         error = estimatedBeatNumber - beatNumber;
@@ -167,12 +168,17 @@ class ManualPlayerScrollAssistant {
   double? error;
 
   int _lastSectionIndex = 0;
+
+  int get lastRowSuggestion => _lastRowSuggestion;
   int _lastRowSuggestion = 0;
   int _refBeatNumber = 0;
+
+  DateTime? get refDateTime => _refDateTime;
   DateTime? _refDateTime;
 
   final Song song;
 
-  _ManualPlayerScrollAssistantState _state = _ManualPlayerScrollAssistantState.noClue;
+  ManualPlayerScrollAssistantState get state => _state;
+  ManualPlayerScrollAssistantState _state = ManualPlayerScrollAssistantState.noClue;
   List<int> songMomentsToMinRowIndex = [];
 }
