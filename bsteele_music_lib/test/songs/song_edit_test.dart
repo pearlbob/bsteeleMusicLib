@@ -16,8 +16,16 @@ SongBase _a = SongBase();
 
 class TestSong {
   void startingChords(String chords) {
-    _a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, chords,
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: chords,
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
     _myA = _a;
   }
 
@@ -378,7 +386,16 @@ void main() {
     ts.resultChords('V: C Dm C C, F F C C, G F C G  '); //
     ts.post(MeasureEditType.append, 'V:0:1', 'Dm'); //
 
-    _a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, '', '');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: '',
+        rawLyrics: '');
     logger.d(_a.toMarkup());
     newPhrase = Phrase.parseString('A B C D', 0, beatsPerBar, null);
     logger.d(newPhrase.toMarkup());
@@ -387,7 +404,16 @@ void main() {
     expect('V: A B C D', _a.toMarkup().trim());
     expect('V:0:3', _a.getCurrentChordSectionLocation().toString());
 
-    _a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, '', '');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: '',
+        rawLyrics: '');
     logger.d(_a.toMarkup());
     newSection = ChordSection.parseString('v:', beatsPerBar);
     expect(_a.editMeasureNode(newSection), isTrue);
@@ -414,14 +440,23 @@ void main() {
     expect('V: A B C D E F', _a.toMarkup().trim());
     expect('V:0:5', _a.getCurrentChordSectionLocation().toString());
 
-    _a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-        'i: A B C D V: D E F F# c: D C G G', 'i:\nv: bob, bob, bob berand\nc: nope nope');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: nope nope');
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('i:0:3');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newPhrase = Phrase.parseString('Db C B A', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newPhrase), isTrue);
     logger.d(_a.toMarkup());
@@ -430,14 +465,23 @@ void main() {
     expect('I:0:7', _a.getCurrentChordSectionLocation().toString());
     expect('A', _a.getCurrentMeasureNode()!.toMarkup());
 
-    _a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-        'V: C F C C [GB F C Dm7 ] x4 G F C G  ', 'v: bob, bob, bob berand');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'V: C F C C [GB F C Dm7 ] x4 G F C G  ',
+        rawLyrics: 'v: bob, bob, bob berand');
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:1');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.i(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .i('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[]x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -452,22 +496,23 @@ void main() {
 
     //   current type	current edit loc	entry	replace entry	 edit type	 edit loc	result
     logger.d('section	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newSection = ChordSection.parseString('v: A D C D', beatsPerBar);
     expect(_a.editMeasureNode(newSection), isTrue);
     logger.d(_a.toMarkup());
@@ -477,23 +522,25 @@ void main() {
     expect(newSection, _a.getCurrentMeasureNode());
 
     logger.d('repeat	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 1);
     logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -501,8 +548,9 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
     location = ChordSectionLocation.parseString('i:0:3');
     _a.setCurrentChordSectionLocation(location);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newMeasure = Measure.parseString('F', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.d(_a.toMarkup());
@@ -512,21 +560,23 @@ void main() {
     expect(newMeasure.toMarkup(), _a.getCurrentChordSectionLocationMeasureNode()!.toMarkup());
 
     logger.d('phrase	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -534,21 +584,23 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	append	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -556,22 +608,24 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('section	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -579,23 +633,25 @@ void main() {
     expect(location, _a.getCurrentChordSectionLocation());
 
     logger.d('repeat	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 1);
     logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -603,21 +659,23 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -625,21 +683,23 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	insert	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -647,22 +707,24 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('section	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(iSection);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -670,21 +732,23 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('repeat	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 1));
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -692,21 +756,23 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0));
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -714,21 +780,23 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	replace	section(s)		replace	section(s)	add or replace section(s), de-dup');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     _a.setCurrentChordSectionLocation(ChordSectionLocation(v, phraseIndex: 0, measureIndex: 2));
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  V: A D C D  C: D C G G', _a.toMarkup().trim());
@@ -736,43 +804,47 @@ void main() {
     expect(ChordSectionLocation(v), _a.getCurrentChordSectionLocation());
 
     logger.d('section	delete	section(s)	yes	append	measure	delete section');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(iSection);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('V: D E F F♯  C: D C G G'));
     logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.getCurrentChordSectionLocation(), ChordSectionLocation(v));
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v: A D C D', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  C: D C G G', _a.toMarkup().trim());
@@ -780,21 +852,23 @@ void main() {
     expect(ChordSectionLocation(iSection), _a.getCurrentChordSectionLocation());
 
     logger.d('repeat  delete  section(s)  yes  append  measure  delete repeat');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D   V: D E F F# [ D C B A ]x2  c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D   V: D E F F# [ D C B A ]x2  c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 1);
     _a.setCurrentChordSectionLocation(location);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
@@ -803,22 +877,24 @@ void main() {
     expect(ChordSectionLocation.parseString('V:0:3'), _a.getCurrentChordSectionLocation());
 
     logger.d('phrase	delete	section(s)	yes	append	measure	delete phrase');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D   V: D E F F# [ D C B A ]x2  c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D   V: D E F F# [ D C B A ]x2  c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.editMeasureNode(ChordSection.parseString('v:', beatsPerBar)), isTrue);
     logger.d(_a.toMarkup());
     expect('I: A B C D  C: D C G G', _a.toMarkup().trim());
@@ -826,22 +902,24 @@ void main() {
     expect(ChordSectionLocation.parseString('I:'), _a.getCurrentChordSectionLocation());
 
     logger.d('measure	delete	section(s)	yes	append	measure	delete measure');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D   V: D E F F# [ D C B A ]x2  c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D   V: D E F F# [ D C B A ]x2  c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 0, measureIndex: 1);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D F F♯ [D C B A ] x2  C: D C G G'));
@@ -849,22 +927,24 @@ void main() {
     expect(ChordSectionLocation.parseString('V:0:1'), _a.getCurrentChordSectionLocation());
 
     logger.d('section  append  repeat    replace  repeat  add to start of section');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -875,22 +955,24 @@ void main() {
     //   current type	current edit loc	entry	replace entry	 edit type	 edit loc	result
     logger.d('repeat  append  repeat    replace  repeat  replace repeat');
     //  x1 repeat should be converted to phrase
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: [D E F F#]x3 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: [D E F F#]x3 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 0);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -899,22 +981,24 @@ void main() {
     expect(ChordSectionLocation.parseString('V:0'), _a.getCurrentChordSectionLocation());
 
     //  empty x1 repeat appended should be convert repeat to phrase
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: [D E F F#]x3 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: [D E F F#]x3 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 0);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[] x1', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -922,22 +1006,24 @@ void main() {
     logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('V:0:3'), _a.getCurrentChordSectionLocation());
 
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: [D E F F#]x3 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: [D E F F#]x3 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation(v, phraseIndex: 0);
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.replace);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ A D C D ] x4', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -949,22 +1035,24 @@ void main() {
 
     logger.d('measure  append  repeat    replace  repeat  append repeat');
     //  empty repeat replaces current phrase
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:0:3');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ ] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -972,22 +1060,24 @@ void main() {
     logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(ChordSectionLocation.parseString('v:0'), _a.getCurrentChordSectionLocation());
     //  non-empty repeat appends to current section
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:0:3');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.append);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newRepeat = MeasureRepeat.parseString('[ D C G G] x3', 0, beatsPerBar, null);
     expect(_a.editMeasureNode(newRepeat), isTrue);
     logger.d(_a.toMarkup());
@@ -1032,22 +1122,24 @@ void main() {
     logger.d('phrase  insert  measure    append  measure  insert to start of phrase');
 
     logger.d('measure  insert  measure    append  measure  insert to start of measure');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ A D C D ] x3 c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ A D C D ] x3 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.insert);
-    logger.i(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .i('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newMeasure = Measure.parseString('Gm', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.i(_a.toMarkup());
@@ -1062,22 +1154,24 @@ void main() {
     logger.d('section  delete  measure  yes  append  measure  delete section');
     logger.d('repeat  delete  measure  yes  append  measure  delete repeat');
     logger.d('phrase  delete  measure  yes  append  measure  delete phrase');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
@@ -1085,43 +1179,47 @@ void main() {
     expect(location, _a.getCurrentChordSectionLocation());
 
     logger.d('measure  delete  measure  yes  append  measure  delete measure');
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(_a.deleteCurrentSelection(), isTrue);
     logger.d(_a.toMarkup());
     expect(_a.toMarkup().trim(), TestSong.deMusic('I: A B C D  V: D E F♯  C: D C G G'));
     logger.d('${_a.getCurrentChordSectionLocation()} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     expect(location, _a.getCurrentChordSectionLocation());
-    _a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# c: D C G G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    _a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     logger.d(_a.toMarkup());
     location = ChordSectionLocation.parseString('v:0:2');
     _a.setCurrentChordSectionLocation(location);
     _a.setCurrentMeasureEditType(MeasureEditType.delete);
-    logger.d(
-        '${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())} ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
+    logger
+        .d('${_a.getCurrentChordSectionLocation()} ${_a.findMeasureNodeByLocation(_a.getCurrentChordSectionLocation())}'
+            ' ${_a.currentMeasureEditType} ${_a.getCurrentChordSectionLocationMeasureNode()}');
     newMeasure = Measure.parseString('F', beatsPerBar);
     expect(_a.editMeasureNode(newMeasure), isTrue);
     logger.d(_a.toMarkup());
@@ -1137,8 +1235,17 @@ void main() {
     int beatsPerBar = 4;
 
     //  assure that the song can end on an empty section
-    _a = SongBase.createSongBase(
-        '12 Bar Blues', 'All', 'Unknown', Key.C, 106, beatsPerBar, 4, 'V: C F C C,F F C C,  G F C G', 'v:');
+    _a = SongBase(
+        title: '12 Bar Blues',
+        artist: 'All',
+        copyright: 'Unknown',
+        key: Key.C,
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'V: C F C C,F F C C,  G F C G',
+        rawLyrics: 'v:');
+
     logger.d('a.lastModifiedTime: ${_a.lastModifiedTime}');
     int t0 = _a.lastModifiedTime;
     expect(now <= _a.lastModifiedTime, isTrue);

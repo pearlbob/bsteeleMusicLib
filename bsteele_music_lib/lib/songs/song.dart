@@ -27,35 +27,63 @@ enum SongComparatorType {
 /// All the musical functions happen in SongBase.
 
 class Song extends SongBase implements Comparable<Song> {
+  Song({
+    required String title,
+    required String artist,
+    String? coverArtist,
+    required String copyright,
+    required Key key,
+    required int beatsPerMinute,
+    required int beatsPerBar, //  beats per bar, i.e. timeSignature numerator
+    required int unitsPerMeasure,
+    String? user,
+    required String chords,
+    required String rawLyrics,
+  }) : super(
+            title: title,
+            artist: artist,
+            coverArtist: coverArtist ?? '',
+            copyright: copyright,
+            key: key,
+            beatsPerMinute: beatsPerMinute,
+            beatsPerBar: beatsPerBar,
+            unitsPerMeasure: unitsPerMeasure,
+            user: user ?? defaultUser,
+            chords: chords,
+            rawLyrics: rawLyrics);
+
   /// Create a minimal song to be used internally as a place holder.
   static Song createEmptySong({int? currentBeatsPerMinute, Key? currentKey}) {
-    return createSong('', '', '', currentKey ?? Key.C, currentBeatsPerMinute ?? 100, 4, 4, '', '', '');
-  }
-
-  /// A convenience constructor used to enforce the minimum requirements for a song.
-  static Song createSong(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
-      int unitsPerMeasure, String user, String chords, String lyrics,
-      {String coverArtist = ''}) {
-    Song song = Song();
-    song.setSongId(title, artist, coverArtist);
-    song.copyright = copyright;
-    song.key = key;
-    song.setBeatsPerMinute(bpm);
-    song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
-    song.user = user;
-    song.chords = chords;
-    song.rawLyrics = lyrics;
-    song.resetLastModifiedDateToNow();
-
-    return song;
+    //  note: this is not a valid song!
+    return Song(
+        title: '',
+        artist: '',
+        copyright: '',
+        key: currentKey ?? Key.getDefault(),
+        beatsPerMinute: currentBeatsPerMinute ?? 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: '',
+        chords: '',
+        rawLyrics: '');
   }
 
   /// Copy the song to a new instance.
   Song copySong() {
     //  note: assure all arguments are immutable, or at least unique to the copy
-    Song ret = Song.createSong(
-        title, artist, copyright, key, beatsPerMinute, beatsPerBar, unitsPerMeasure, user, toMarkup(), rawLyrics,
-        coverArtist: coverArtist);
+    Song ret = Song(
+      title: title,
+      artist: artist,
+      coverArtist: coverArtist,
+      copyright: copyright,
+      key: key,
+      beatsPerMinute: beatsPerMinute,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: unitsPerMeasure,
+      user: user,
+      chords: toMarkup(),
+      rawLyrics: rawLyrics,
+    );
     ret.setFileName(getFileName());
     ret.lastModifiedTime = lastModifiedTime;
     ret.totalBeats = totalBeats;
@@ -79,18 +107,19 @@ class Song extends SongBase implements Comparable<Song> {
     String? rawLyrics,
   }) {
     //  note: assure all arguments are immutable, or at least unique to the copy
-    Song ret = Song.createSong(
-        title ?? this.title,
-        artist ?? this.artist,
-        copyright ?? this.copyright,
-        key ?? this.key,
-        beatsPerMinute ?? this.beatsPerMinute,
-        beatsPerBar ?? this.beatsPerBar,
-        unitsPerMeasure ?? this.unitsPerMeasure,
-        user ?? this.user,
-        markup ?? toMarkup(),
-        rawLyrics ?? this.rawLyrics,
-        coverArtist: coverArtist ?? this.coverArtist);
+    Song ret = Song(
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      coverArtist: coverArtist ?? this.coverArtist,
+      copyright: copyright ?? this.copyright,
+      key: key ?? this.key,
+      beatsPerMinute: beatsPerMinute ?? this.beatsPerMinute,
+      beatsPerBar: beatsPerBar ?? this.beatsPerBar,
+      unitsPerMeasure: unitsPerMeasure ?? this.unitsPerMeasure,
+      user: user ?? this.user,
+      chords: markup ?? toMarkup(),
+      rawLyrics: rawLyrics ?? this.rawLyrics,
+    );
     ret.setFileName(getFileName());
     ret.lastModifiedTime = lastModifiedTime;
     ret.totalBeats = totalBeats;

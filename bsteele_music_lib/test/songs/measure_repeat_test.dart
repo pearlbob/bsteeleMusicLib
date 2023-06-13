@@ -127,8 +127,16 @@ void main() {
     MeasureNode? measureNode;
     ChordSectionLocation? chordSectionLocation;
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'V: [G Bm F♯m G, GBm ] x3', 'v: bob, bob, bob berand\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'V: [G Bm F♯m G, GBm ] x3',
+        rawLyrics: 'v: bob, bob, bob berand\n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -181,8 +189,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'v: [A B , Ab Bb Eb, D C G G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: [A B , Ab Bb Eb, D C G G# ] x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -239,18 +255,19 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'v: E F F# G [A B C D Ab Bb Eb Db, D C G Gb D C G# A#] x3 T: A',
-        //  1 2 3  4  1 2 3 4 5  6  7  8  1 2 3 4  5 6 7  8
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: E F F# G [A B C D Ab Bb Eb Db, D C G Gb D C G# A#] x3 T: A',
+        //          1 2 3  4  1 2 3 4 5  6  7  8  1 2 3 4  5 6 7  8
         //                                       9 101112 131415 16
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -297,8 +314,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'v: A B C D x3 T: A',
-        'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -328,8 +353,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'v: [A B C D] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: [A B C D] x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -359,8 +392,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -401,8 +442,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'v: [A B C D, Ab Bb Eb Db, D C G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: [A B C D, Ab Bb Eb Db, D C G# ] x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -447,8 +496,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 E F F# G T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 E F F# G T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -494,8 +551,16 @@ void main() {
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(), 100, beatsPerBar, 4,
-        'v: E F F# Gb [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A', 'i:\nv: bob, bob, bob berand\nt: last line \n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: E F F# Gb [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);

@@ -44,6 +44,7 @@ class SongUpdate {
       String? user,
       String? singer,
       int? momentNumber,
+      int? rowNumber,
       this.songMoment,
       int? beat,
       int? beatsPerMeasure,
@@ -53,6 +54,7 @@ class SongUpdate {
         user = user ?? 'unknown',
         singer = singer ?? unknownSinger,
         momentNumber = momentNumber ?? 0,
+        rowNumber = rowNumber ?? 0,
         beat = beat ?? 0,
         beatsPerMeasure = beatsPerMeasure ?? 4,
         currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
@@ -287,6 +289,9 @@ class SongUpdate {
           case 'momentNumber':
             momentNumber = jv;
             break;
+          case 'rowNumber':
+            rowNumber = jv;
+            break;
           case 'beat':
             beat = jv;
             break;
@@ -331,6 +336,9 @@ class SongUpdate {
     sb.write('"momentNumber": ');
     sb.write(momentNumber);
     sb.write(',\n');
+    sb.write('"rowNumber": ');
+    sb.write(rowNumber);
+    sb.write(',\n');
     sb.write('"beat": ');
     sb.write(beat);
     sb.write(',\n');
@@ -371,6 +379,7 @@ class SongUpdate {
   String user;
   String singer;
   int momentNumber;
+  int rowNumber;
   SongMoment? songMoment;
 
   //  play values

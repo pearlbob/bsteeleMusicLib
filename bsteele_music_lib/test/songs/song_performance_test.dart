@@ -9,10 +9,29 @@ void main() {
   Logger.level = Level.debug;
 
   test('song performance', () async {
-    var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
-    var b = Song.createSong('B', 'bob', 'bsteele.com', Key.G, 120, 4, 4, 'pearlbob', 'i: B B B B V: [ A B C D ]x2 ',
-        'i:\nv: bob, bob, bob berand\nV: sing verse here');
+    var a = Song(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+
+    var b = Song(
+        title: 'B',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.G,
+        beatsPerMinute: 120,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: B B B B V: [ A B C D ]x2 ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nV: sing verse here');
 
     var singer1 = 'bodhi';
     for (var song in [a, b]) {
@@ -138,8 +157,17 @@ void main() {
   });
 
   test('song performance dates', () async {
-    var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+    var a = Song(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
 
     var singer1 = 'bodhi';
     SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.A);
@@ -200,31 +228,77 @@ void main() {
     expect(performance.songIdAsString, 'Song_Back_in_the_USSR_by_Beatles_The');
     expect(allSongPerformances.length, 5);
 
-    var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-        'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+    var a = Song(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+
     performance = SongPerformance(a.songId.toString(), singer);
     allSongPerformances.addSongPerformance(performance);
     allSongPerformances.loadSongs([
       a,
-      Song.createSong(
-          'All I Have to Do Is Dream',
-          'Everly Brothers',
-          'bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'pearlbob',
-          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-          'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
-      Song.createSong('All You Need is Love', 'The Beatles', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
-      Song.createSong('back in the USSR', 'The Beatles', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
-      Song.createSong('don\'t let me down', 'The Beatles', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
-      Song.createSong('Angie', 'The Stones', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song(
+          title: 'All I Have to Do Is Dream',
+          artist: 'Everly Brothers',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song(
+          title: 'All You Need is Love',
+          artist: 'The Beatles',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song(
+          title: 'back in the USSR',
+          artist: 'The Beatles',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song(
+          title: 'don\'t let me down',
+          artist: 'The Beatles',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
+      Song(
+          title: 'Angie',
+          artist: 'The Stones',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
     ]);
 
     for (var p in allSongPerformances.allSongPerformances) {
@@ -385,8 +459,18 @@ void main() {
     }
 
     {
-      var a = Song.createSong('A', 'bob', 'bsteele.com', Key.getDefault(), 100, 4, 4, 'pearlbob',
-          'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G', 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+
       var singer1 = 'bodhi';
       var performance = SongPerformance.fromSong(a, singer1, key: Key.A);
       expect(allSongPerformances.updateSongPerformance(performance), true);
@@ -643,8 +727,18 @@ void main() {
 
       for (var key in Key.values) {
         var allSongPerformances = AllSongPerformances.test();
-        var a = Song.createSong('ive go the blanks', 'bob', '2022', key, bpm, beatsPerBar, 4, 'pearl bob',
-            'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+        var a = Song(
+            title: 'ive go the blanks',
+            artist: 'bob',
+            copyright: '2022 bsteele.com',
+            key: key,
+            beatsPerMinute: bpm,
+            beatsPerBar: beatsPerBar,
+            unitsPerMeasure: 4,
+            user: 'pearl bob',
+            chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+            rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
         var songIdAsString = a.songId.toString();
         allSongPerformances
             .addSongPerformance(SongPerformance(songIdAsString, singer, key: keySung, bpm: bpm, lastSung: lastSung));
@@ -671,15 +765,33 @@ void main() {
     var lastSung = DateTime.now().millisecondsSinceEpoch;
 
     var allSongPerformances = AllSongPerformances.test();
-    var a = Song.createSong('ive got the blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
-        'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+    var a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: '2022 bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
     var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
     allSongPerformances.addSongPerformance(performance1);
     allSongPerformances.loadSongs([a]);
 
-    var b = Song.createSong('Ive Got The Blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
-        'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+    var b = Song(
+        title: 'Ive Got The Blanks',
+        artist: 'bob',
+        copyright: '2022 bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
     var performance2 = SongPerformance(b.songId.toString(), singer,
         key: Key.D, bpm: bpm, lastSung: lastSung + Duration.millisecondsPerDay);
@@ -713,14 +825,34 @@ void main() {
 
     Logger.level = Level.info;
 
-    var a = Song.createSong('ive got the blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
-        'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+    var a = Song(
+        title: 'ive got the blanks',
+        artist: 'bob',
+        copyright: '2022 bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
     var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
     logger.i('performedSong: "${performance1.performedSong.title}"');
     expect(performance1.performedSong.title, 'Ive Got The Blanks by Bob');
 
-    var b = Song.createSong('Ive Got The Blanks', 'bob', '2022', Key.C, bpm, beatsPerBar, 4, 'pearl bob',
-        'i: A B C D  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+    var b = Song(
+        title: 'Ive Got The Blanks',
+        artist: 'bob',
+        copyright: '2022 bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
     var performance2 = SongPerformance(b.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung + 30000);
     logger.i('performedSong: "${performance2.performedSong.title}"');
     expect(performance1.performedSong.title, 'Ive Got The Blanks by Bob');

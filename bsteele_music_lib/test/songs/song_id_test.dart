@@ -13,33 +13,33 @@ void main() {
     const int beatsPerBar = 4;
     int bpm = 106;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
       expect(a.songId.toString(), 'Song_ive_go_the_blanks_by_bob');
       expect(a.songId.toUnderScorelessString(), 'ive go the blanks by bob');
     }
     {
-      var a = Song.createSong(
-          'I\'ve got the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song(
+          title: 'I\'ve got the blanks',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: Key.C,
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
       expect(a.songId.toString(), 'Song_Ive_got_the_blanks_by_bob');
       expect(a.songId.toUnderScorelessString(), 'Ive got the blanks by bob');
@@ -52,31 +52,33 @@ void main() {
 
     final SplayTreeSet<Song> allSongs = SplayTreeSet();
 
-    var song1 = Song.createSong(
-        'A song',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        bpm,
-        beatsPerBar,
-        4,
-        'bob',
-        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    var song1 = Song(
+        title: 'A song',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     allSongs.add(song1);
     expect(allSongs.length, 1);
-    var song2 = Song.createSong(
-        'A Song',
+    var song2 = Song(
+        title: 'A Song',
         //  capitalization change!
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        bpm,
-        beatsPerBar,
-        4,
-        'bob',
-        'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
     allSongs.add(song2);
     expect(allSongs.length, 2);
 

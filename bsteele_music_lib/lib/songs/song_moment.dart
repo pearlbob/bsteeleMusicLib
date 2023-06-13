@@ -101,6 +101,6 @@ class SongMoment implements Comparable<SongMoment> {
   final int chordSectionSongMomentNumber;
 
   String? lyrics;
-  int? row;
+  int? row; //  fixme: this is likely useless.  Only valid if display is expanded.
   int? col;
 }

@@ -12,17 +12,17 @@ void main() {
     const int beatsPerBar = 4;
     int bpm = 106;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
       var beatDur = a.getSecondsPerBeat();
 

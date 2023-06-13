@@ -67,66 +67,164 @@ void main() {
   Logger.level = Level.info;
 
   test('testEquals', () {
-    SongBase a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
-    SongBase b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
+    SongBase b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
 
     expect(a == a, isTrue);
     expect(a.hashCode == a.hashCode, isTrue);
     expect(a == b, isTrue);
     expect(a.hashCode == b.hashCode, isTrue);
-    b = SongBase.createSongBase(
-        'B', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'B',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
+
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
-    b = SongBase.createSongBase(
-        'A', 'bobby', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bobby',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
-    b = SongBase.createSongBase('A', 'bob', 'photos.bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D',
-        'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'photos.bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     logger.d('a.getSongId(): ${a.getSongId().hashCode}');
     logger.d('b.getSongId(): ${b.getSongId().hashCode}');
     expect(a.getSongId().compareTo(b.getSongId()), 0);
     expect(a.getSongId(), b.getSongId());
     expect(a.hashCode != b.hashCode, isTrue);
 
-    b = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.get(music_key.KeyEnum.Ab), 100, 4, 4,
-        'v: A B C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.get(music_key.KeyEnum.Ab),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
-    b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 102, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 102,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
-    b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 3, 8, 'v: A B C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 3,
+        unitsPerMeasure: 8,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     //top
     expect(a.hashCode != b.hashCode, isTrue);
 
-    b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8, 'v: A B C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 8,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
-    b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A A C D', 'v: bob, bob, bob berand');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A A C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
 
-    b = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand.');
+    b = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C DD',
+        rawLyrics: 'v: bob, bob, bob berand.');
     expect(a != b, isTrue);
     expect(a.hashCode != b.hashCode, isTrue);
   });
 
   test('testCurrentLocation', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8,
-        'I:v: A BCm7/ADE C D', 'I:v: bob, bob, bob berand');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'I:v: A BCm7/ADE C D',
+        rawLyrics: 'I:v: bob, bob, bob berand');
+
     expect(MeasureEditType.append, a.currentMeasureEditType);
     logger.d(a.getCurrentChordSectionLocation().toString());
 
@@ -144,8 +242,16 @@ void main() {
     a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('v:0:3')); //  move to end
     expect(Measure.parseString('D', a.beatsPerBar), a.getCurrentMeasureNode());
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8,
-        'I:v: A B C D ch3: [ E F G A ] x4 A# C D# F', 'I:v: bob, bob, bob berand');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 8,
+        chords: 'I:v: A B C D ch3: [ E F G A ] x4 A# C D# F',
+        rawLyrics: 'I:v: bob, bob, bob berand');
     expect(a.currentMeasureEditType, MeasureEditType.append);
     a.setDefaultCurrentChordLocation();
     expect(a.getCurrentMeasureNode(), Measure.parseString('F', a.beatsPerBar));
@@ -168,23 +274,38 @@ void main() {
   test('test basics', () {
     SongBase a;
 
-    // {
-    //   //  trivial first!
-    //   a = SongBase.createSongBase(
-    //       'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8, 'I: A B C D v: D C G G', 'v: bob, bob, bob berand');
-    //
-    //   SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>.of(a.getChordSections());
-    //   ChordSection chordSection = chordSections.first;
-    //   Phrase phrase = chordSection.phrases[0];
-    //
-    //   Measure measure = phrase.measures[1];
-    //   expect(phrase.measures.length, 4);
-    //   expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.B;
-    // }
     {
-      a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 8, 'I:v: A B C D',
-          'I:v: bob, bob, bob berand');
+      //  trivial first!
+      a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 8,
+          chords: 'I: A B C D v: D C G G',
+          rawLyrics: 'I:v: bob, bob, bob berand');
 
+      SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>.of(a.getChordSections());
+      ChordSection chordSection = chordSections.first;
+      Phrase phrase = chordSection.phrases[0];
+
+      Measure measure = phrase.measures[1];
+      expect(phrase.measures.length, 4);
+      expect(measure.chords[0].scaleChord.scaleNote, ScaleNote.B);
+    }
+    {
+      a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 8,
+          chords: 'I:v: A B C D',
+          rawLyrics: 'I:v: bob, bob, bob berand');
       SplayTreeSet<ChordSection> chordSections = SplayTreeSet<ChordSection>.of(a.getChordSections());
       ChordSection chordSection = chordSections.first;
       Phrase phrase = chordSection.phrases[0];
@@ -203,8 +324,16 @@ void main() {
   test('testChordSectionEntry', () {
     {
       //  empty sections
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
-          'i: dude v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: v: t:',
+          rawLyrics: 'i: dude v: bob, bob, bob berand');
 
       expect(
         a.toMarkup().trim(),
@@ -229,8 +358,16 @@ void main() {
       expect(a.findChordSectionByString('T:')!.toMarkup().trim(), 'T: G G C G');
 
       //  auto rows of 4 when 8 or more measures entered at once
-      a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
-          'i: dude v: bob, bob, bob berand');
+      a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: v: t:',
+          rawLyrics: 'i: dude v: bob, bob, bob berand');
 
       expect(a.editList(a.parseChordEntry('I: A B C D A B C D')), isTrue);
 
@@ -241,8 +378,16 @@ void main() {
     }
     {
       //  empty sections
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'i: v: t:',
-          'i: dude v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: v: t:',
+          rawLyrics: 'i: dude v: bob, bob, bob berand');
 
       expect(
         a.toMarkup().trim(),
@@ -257,8 +402,16 @@ void main() {
 
     {
       //  multiple sections
-      SongBase a = SongBase.createSongBase(
-          'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v:', 'v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'v:',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       expect(a.toMarkup().trim(), 'V: []');
       var e = SongBase.entryToUppercase('i:v: a b c d, e e e e/a');
@@ -271,8 +424,16 @@ void main() {
 
     {
       //  multiple sections
-      SongBase a = SongBase.createSongBase(
-          'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v:', 'v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'v:',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       expect(a.toMarkup().trim(), 'V: []');
       var e = SongBase.entryToUppercase('i:v: a b c d, e e e e/a  c: D c g a/g');
@@ -302,8 +463,16 @@ void main() {
   });
 
   test('testFind', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-        'i: A B C D v: E F G A# t: Gm Gm', 'i: dude v: bob, bob, bob berand');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D v: E F G A# t: Gm Gm',
+        rawLyrics: 'i: dude v: bob, bob, bob berand');
 
     expect(a.findChordSectionByString('ch:'), isNull);
     ChordSection? chordSection = a.findChordSectionByString('i:');
@@ -327,8 +496,16 @@ void main() {
   test('testSetRepeats', () {
     {
       //  set first row as a repeat
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: A B C D v: E F G A#',
+          rawLyrics: 'i: v: bob, bob, bob berand');
 
       var gridCoordinate = const GridCoordinate(0, 4);
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
@@ -347,8 +524,16 @@ void main() {
     }
 
     {
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: A B C D v: E F G A#',
+          rawLyrics: 'i: v: bob, bob, bob berand');
 
       logger.d(a.logGrid());
       Grid<ChordSectionGridData> grid;
@@ -356,8 +541,17 @@ void main() {
       grid = a.getChordSectionGrid();
       //  set first row as a repeat from any measure
       for (int row = 0; row < grid.getRowCount(); row++) {
-        a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-            'i: A B C D v: E F G A#', 'i: v: bob, bob, bob berand');
+        a = SongBase(
+            title: 'A',
+            artist: 'bob',
+            copyright: 'bsteele.com',
+            key: music_key.Key.getDefault(),
+            beatsPerMinute: 100,
+            beatsPerBar: 4,
+            unitsPerMeasure: 4,
+            chords: 'i: A B C D v: E F G A#',
+            rawLyrics: 'i: v: bob, bob, bob berand');
+
         grid = a.getChordSectionGrid();
         List<ChordSectionGridData?>? cols = grid.getRow(row);
         if (cols != null) {
@@ -385,8 +579,16 @@ void main() {
 
     for (var measureIndex = 0; measureIndex < 4; measureIndex++) {
       //  repeat a row at the start of a phrase
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G',
+          rawLyrics: 'i: v: bob, bob, bob berand');
 
       var gridCoordinate = GridCoordinate(1, 1 + measureIndex);
       ChordSectionLocation? chordSectionLocation = a.findChordSectionLocationByGrid(gridCoordinate);
@@ -411,8 +613,16 @@ void main() {
 
     for (var measureIndex = 4; measureIndex < 8; measureIndex++) {
       //  repeat a row in the middle of a phrase
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G',
+          rawLyrics: 'i: v: bob, bob, bob berand');
       logger.i(a.toMarkup());
 
       var gridCoordinate = GridCoordinate(2, 1 + measureIndex % 4);
@@ -440,8 +650,16 @@ void main() {
 
     for (var measureIndex = 9; measureIndex < 12; measureIndex++) {
       //  repeat a row in the end of a phrase
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#, B C C# D, D# E F F# o: D E F G', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: A B C D v: E F G A#, B C C# D, D# E F F# o: D E F G',
+          rawLyrics: 'i: v: bob, bob, bob berand');
       logger.i(a.toMarkup());
 
       SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
@@ -467,8 +685,16 @@ void main() {
 
     for (var measureIndex = 12; measureIndex < 13; measureIndex++) {
       //  repeat a row in the end of a phrase
-      SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-          'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G',
+          rawLyrics: 'i: v: bob, bob, bob berand');
       logger.i(a.toMarkup());
 
       SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
@@ -503,8 +729,16 @@ void main() {
             ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: currentIndex);
         for (var measureIndex = 0; measureIndex <= size; measureIndex++) {
           //  repeat a row in the end of a phrase
-          SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-              'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G', 'i: v: bob, bob, bob berand');
+          SongBase a = SongBase(
+              title: 'A',
+              artist: 'bob',
+              copyright: 'bsteele.com',
+              key: music_key.Key.getDefault(),
+              beatsPerMinute: 100,
+              beatsPerBar: 4,
+              unitsPerMeasure: 4,
+              chords: 'i: A B C D v: E F G A#, B C C# D, D# E F F#, G o: D E F G',
+              rawLyrics: 'i: v: bob, bob, bob berand');
           logger.d('');
           logger.i(a.toMarkup());
 
@@ -531,8 +765,16 @@ void main() {
   });
 
   test('test findChordSectionLocation()', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-        'i: A B C D v: E B C D', 'i: v: bob, bob, bob berand');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D v: E B C D',
+        rawLyrics: 'i: v: bob, bob, bob berand');
 
     logger.d(a.logGrid());
     logger.d('moment count: ${a.getSongMoments().length}');
@@ -553,16 +795,32 @@ void main() {
     ChordSection chordSection;
     List<Measure> measures;
 
-    a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D',
+        rawLyrics: 'v: bob, bob, bob berand');
     chordSections.addAll(a.getChordSections());
     expect(1, chordSections.length);
     chordSection = chordSections.first;
     measures = chordSection.phrases[0].measures;
     expect(4, measures.length);
 
-    a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4, 'v: A B C D (yo)', 'v: bob, bob, bob berand');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D (yo)',
+        rawLyrics: 'v: bob, bob, bob berand');
     chordSections.clear();
     chordSections.addAll(a.getChordSections());
     expect(1, chordSections.length);
@@ -576,18 +834,18 @@ void main() {
     SongBase a;
     Measure? measure;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        4,
-        4,
-        'v: A B C D, E F G A C: D D GD E\n'
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'v: A B C D, E F G A C: D D GD E\n'
             'A B C D x3\n'
             'Ab G Gb F',
-        'v: bob, bob, bob berand');
+        rawLyrics: 'v: bob, bob, bob berand');
     logger.d(a.logGrid());
     Grid<ChordSectionGridData> grid = a.getChordSectionGrid();
 
@@ -673,22 +931,22 @@ void main() {
 
   test('testFindChordSectionLocation', () {
     int beatsPerBar = 4;
-    SongBase a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'i: A B C D V: D E F F# '
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# '
             'v1:    Em7 E E G \n'
             '       C D E Eb7 x2\n'
             'v2:    A B C D |\n'
             '       E F G7 G#m | x2\n'
             '       D C GB GbB \n'
             'C: F F# G G# Ab A O: C C C C B',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no:');
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no:');
     logger.d(a.getSongId().toString());
     logger.d('\t${a.toMarkup()}');
     logger.d(a.rawLyrics);
@@ -758,8 +1016,16 @@ void main() {
 
   test('testMeasureDelete', () {
     int beatsPerBar = 4;
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'i: A B C D V: D E F F# ', 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
 
     ChordSectionLocation loc;
 
@@ -801,39 +1067,54 @@ void main() {
   });
 
   test('testLastLineWithoutNewline', () {
-    SongBase a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-        'i: A B C D V: D E F F# ', 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
     String lyrics = 'i:\n'
         'v: bob, bob, bob berand\n'
         'c: sing chorus here \n'
         'o: last line of outro';
     //logger.d(    a.getRawLyrics());
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, 4, 4,
-        'i: A B C D V: D E F F# ', 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
     expect(lyrics, a.rawLyrics);
   });
 
   test('testSongWithoutStartingSection', () {
 //  fixme: doesn't test much, not very well
 
-    SongBase a = SongBase.createSongBase(
-        'Rio',
-        'Duran Duran',
-        'Sony/ATV Music Publishing LLC',
-        music_key.Key.getDefault(),
-        100,
-        4,
-        4,
-        //  not much of this chord chart is correct!
-        'Verse\n'
+    SongBase a = SongBase(
+        title: 'Rio',
+        artist: 'Duran Duran',
+        copyright: 'Sony/ATV Music Publishing LLC',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: //  not much of this chord chart is correct!
+            'Verse\n'
             'C#m A♭ FE A♭  x4\n'
             'Prechorus\n'
             'C C/\n'
             'chorus\n'
             'C G B♭ F  x4\n'
             'Tag Chorus\n',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
-
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n');
     logger.d(a.logGrid());
     Grid<ChordSectionGridData> grid = a.getChordSectionGrid();
     expect(10, grid.getRowCount()); //  comments on their own line add a bunch
@@ -854,8 +1135,16 @@ void main() {
     SongBase a;
     int beatsPerBar = 4;
 
-    a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4, 'v: D D C G x4 c: C C C C x 2', '''
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'v: D D C G x4 c: C C C C x 2',
+        rawLyrics: '''
 v:     
   
 
@@ -921,17 +1210,17 @@ c2:
     int beatsPerBar = 4;
     ChordSectionLocation location;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'O:'
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'O:'
             'D..Dm7 Dm7 C..B♭maj7 B♭maj7  x12',
-        'o: nothing');
+        rawLyrics: 'o: nothing');
     logger.v('grid: ${a.logGrid()}');
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
     MeasureNode? measureNode = a.findMeasureNodeByLocation(location);
@@ -950,15 +1239,15 @@ c2:
     logger.d(measureNode.toMarkup());
     expect(measureNode, a.findMeasureNodeByGrid(const GridCoordinate(row, lastCol + 1)));
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        4,
-        4,
-        'I1:\n'
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'I1:\n'
             'CD CD CD A\n' //  toss the dot as a comment
             'D X\n'
             '\n'
@@ -994,7 +1283,8 @@ c2:
             'O:\n'
             'C5D5 C5D5 C5D5 C5D5\n'
             'C5D5 C5D5 C5D5 C5D#',
-        'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
+        rawLyrics: 'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\n'
+            'o: last line of outro');
     logger.d(a.logGrid());
     Measure? m = Measure.parseString('X', a.beatsPerBar);
     expect(a.findMeasureNodeByGrid(const GridCoordinate(1, 2)), m);
@@ -1004,15 +1294,15 @@ c2:
     expect(Measure.parseString('C5D#', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(20, 4)));
 
     //  not what's intended, but what's declared
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        4,
-        4,
-        'V:I:O:\n'
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'V:I:O:\n'
             'Ebsus2 Bb Gm7 C\n'
             '\n'
             'C:\n'
@@ -1020,22 +1310,23 @@ c2:
             'Cm F\n'
             '\n'
             'O:V:\n',
-        'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
+        rawLyrics: 'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \n'
+            'i4: mo chorus here\no: last line of outro');
     logger.d(a.logGrid());
     expect(Measure.parseString('Gm7', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(0, 3)));
     expect(Measure.parseString('Cm', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(2, 1)));
     expect(Measure.parseString('F', a.beatsPerBar), a.findMeasureNodeByGrid(const GridCoordinate(2, 2)));
 
     //  leading blank lines
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        4,
-        4,
-        '\n'
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: '\n'
             '   \n'
             '\n'
             'I1:\n'
@@ -1074,7 +1365,8 @@ c2:
             'O:\n'
             'C5D5 C5D5 C5D5 C5D5\n'
             'C5D5 C5D5 C5D5 C5D#',
-        'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \ni3: chorus here \ni4: mo chorus here\no: last line of outro');
+        rawLyrics: 'i1:\nv: bob, bob, bob berand\ni2: nope\nc1: sing \n'
+            'i3: chorus here \ni4: mo chorus here\no: last line of outro');
 
     //  assure parse was successful
     expect(a.lyricSections.first.sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 1));
@@ -1089,17 +1381,16 @@ c2:
     GridCoordinate gridCoordinate;
 
     //  see that section identifiers are on first phrase row
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
-
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     logger.v(a.toMarkup());
     logger.d('testing: ${ChordSectionLocation.parseString('I:0:0')}');
     logger.d('testing2: ${a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0'))}');
@@ -1110,17 +1401,16 @@ c2:
     expect(const GridCoordinate(2, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
 
     //  see that section identifiers are on first phrase row
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: Am Am/G Am/F♯ FE, A B C D, v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
-
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: Am Am/G Am/F♯ FE, A B C D, v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     logger.d(a.logGrid());
 
     expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
@@ -1129,17 +1419,16 @@ c2:
     expect(const GridCoordinate(2, 0), a.getGridCoordinate(ChordSectionLocation.parseString('V:')));
     expect(const GridCoordinate(3, 0), a.getGridCoordinate(ChordSectionLocation.parseString('C:')));
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
-
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
     logger.i(a.toMarkup());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:')), const GridCoordinate(0, 0));
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('V:0:0')), const GridCoordinate(0, 1));
@@ -1147,9 +1436,16 @@ c2:
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:')), const GridCoordinate(0, 0));
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('C:')), const GridCoordinate(2, 0));
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: V: c: G D G D ', 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
-
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: V: c: G D G D ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here');
     logger.i(a.toMarkup());
 
     expect(const GridCoordinate(0, 0), a.getGridCoordinate(ChordSectionLocation.parseString('I:')));
@@ -1176,17 +1472,16 @@ c2:
     expect(gridCoordinate, a.getGridCoordinate(location));
     expect('I: V: C: ', location.toString());
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'verse: A B C D prechorus: D E F F# chorus: G D C G x3',
-        'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
-
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'verse: A B C D prechorus: D E F F# chorus: G D C G x3',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
     logger.i(a.toMarkup());
 
     grid = a.getChordSectionGrid();
@@ -1215,27 +1510,28 @@ c2:
   test('testComputeMarkup', () {
     int beatsPerBar = 4;
     SongBase a;
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'verse: C2: V2: A B C D prechorus: D E F F# chorus: G D C G x3',
-        'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'verse: C2: V2: A B C D prechorus: D E F F# chorus: G D C G x3',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
+
     expect(a.toMarkup().trim(), 'V: V2: C2: A B C D  PC: D E F F#  C: [G D C G ] x3');
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'verse: A B C D prechorus: D E F F# chorus: G D C G x3',
-        'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'verse: A B C D prechorus: D E F F# chorus: G D C G x3',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \no: last line of outro');
     expect(a.toMarkup().trim(), 'V: A B C D  PC: D E F F#  C: [G D C G ] x3');
   });
 
@@ -1243,26 +1539,28 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'verse: C2: V2: A B C D Ab Bb Eb Db prechorus: D E F F# o:chorus: G D C G x3 T: A',
-        'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \nv: nope\nc: yes\nv: nope\nt:\no: last line of outro\n');
-//    a.debugSongMoments();
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'verse: C2: V2: A B C D Ab Bb Eb Db prechorus: D E F F# o:chorus: G D C G x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \nv: nope\nc: yes\n'
+            'v: nope\nt:\no: last line of outro\n');
+    a.debugSongMoments();
 
     for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
       SongMoment? songMoment = a.getSongMoment(momentNumber);
-      if (songMoment == null) break;
-//      logger.d(songMoment.toString());
-//      expect(count, songMoment.momentNumber);
-//      GridCoordinate momentGridCoordinate =
-//          a.getMomentGridCoordinate(songMoment);
-//      expect(momentGridCoordinate, isNotNull);
+      if (songMoment == null) {
+        break;
+      }
+      logger.d(songMoment.toString());
+      expect(momentNumber, songMoment.momentNumber);
+      GridCoordinate? momentGridCoordinate = a.getMomentGridCoordinateFromMomentNumber(momentNumber);
+      expect(momentGridCoordinate, isNotNull);
     }
   });
 
@@ -1270,16 +1568,18 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'verse: C2: V2: A B C D Ab Bb Eb Db prechorus: D E F F# o:chorus: G D C G x3 T: A',
-        'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \nv: nope\nc: yes\nv: nope\nt:\no: last line of outro\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'verse: C2: V2: A B C D Ab Bb Eb Db prechorus: D E F F# o:chorus: G D C G x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \nv: nope\n'
+            'c: yes\nv: nope\nt:\no: last line of outro\n');
+
     expect(8 * 4, a.getChordSectionBeats(SectionVersion.parseString('v:')));
     expect(8 * 4, a.getChordSectionBeats(SectionVersion.parseString('c2:')));
     expect(8 * 4, a.getChordSectionBeats(SectionVersion.parseString('v2:')));
@@ -1291,8 +1591,16 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase(
-        'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4, 'I: [A B C D, E F]  x2  ', 'i:\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D, E F]  x2  ',
+        rawLyrics: 'i:\n');
     a.debugSongMoments();
     {
       //  verify repeats stay on correct row
@@ -1320,16 +1628,17 @@ c2:
       }
     }
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'verse: C2: V2: A B C D  x2  prechorus: D E F F#, G# A# B C o:chorus: G D C G x3 T: A',
-        'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \nv: nope\nc: yes\nv: nope\nt:\no: last line of outro\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'verse: C2: V2: A B C D  x2  prechorus: D E F F#, G# A# B C o:chorus: G D C G x3 T: A',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\npc: nope\nc: sing chorus here \nv: nope\nc: yes\n'
+            'v: nope\nt:\no: last line of outro\n');
     a.debugSongMoments();
 
     {
@@ -1376,16 +1685,16 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [A B C D, E F]  x2 v: D C G G c: Ab Bb C Db o: G G G G ',
-        'i:\nv: verse\n c: chorus\nv: verse\n c: chorus\no: outro');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D, E F]  x2 v: D C G G c: Ab Bb C Db o: G G G G ',
+        rawLyrics: 'i:\nv: verse\n c: chorus\nv: verse\n c: chorus\no: outro');
     a.debugSongMoments();
     logger.i(a.toMarkup());
     int size = a.getSongMomentsSize();
@@ -1406,32 +1715,64 @@ c2:
     SongBase a;
 
     //  split a long repeat
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: A B C D E F, G G# Ab Bb x2 \nc: D E F', 'i:\nc: sing chorus');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: A B C D E F, G G# Ab Bb x2 \nc: D E F',
+        rawLyrics: 'i:\nc: sing chorus');
     logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
 
     //  don't fix what's not broken
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D, E F G G#, Ab Bb] x2 \nc: D E F', 'i:\nc: sing chorus');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D, E F G G#, Ab Bb] x2 \nc: D E F',
+        rawLyrics: 'i:\nc: sing chorus');
     logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
     logger.i(a.toMarkup());
     expect(a.toMarkup().trim(), 'I: [A B C D, E F G G#, Ab Bb ] x2  C: D E F');
 
     //  take the comma off a repeat
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D, E F G G#, ] x2 \nc: D E F', 'i:\nc: sing chorus');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D, E F G G#, ] x2 \nc: D E F',
+        rawLyrics: 'i:\nc: sing chorus');
     logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isFalse);
     logger.i(a.toMarkup());
     expect(a.toMarkup().trim(), 'I: [A B C D, E F G G# ] x2  C: D E F');
 
     //  not the first section
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D ] x2 \nc: D E F A B C D, E F G G#', 'i:\nc: sing chorus');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D ] x2 \nc: D E F A B C D, E F G G#',
+        rawLyrics: 'i:\nc: sing chorus');
     logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.i(a.toMarkup());
@@ -1440,8 +1781,16 @@ c2:
     expect('I: [A B C D ] x2  C: D E F A, B C D E, F G G#', a.toMarkup().trim());
 
     //  take a last comma off
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D ] x2 \nc: D E F A B C, D E, F G G#,', 'i:\nc: sing chorus');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D ] x2 \nc: D E F A B C, D E, F G G#,',
+        rawLyrics: 'i:\nc: sing chorus');
     logger.i(a.toMarkup());
     expect(a.setMeasuresPerRow(4), isTrue);
     logger.i(a.toMarkup());
@@ -1485,8 +1834,16 @@ c2:
     SongBase a;
 
     for (int bpm = 60; bpm < 132; bpm++) {
-      a = SongBase.createSongBase(
-          'A', 'bob', 'bsteele.com', music_key.Key.getDefault(), bpm, beatsPerBar, 4, 'I: A B C D E F  x2  ', 'i:\n');
+      a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.getDefault(),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          chords: 'I: A B C D E F  x2  ',
+          rawLyrics: 'i:\n');
 
       double dt = 60.0 / (dtDiv * bpm);
 
@@ -1517,24 +1874,64 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: A B C D V: A B C D', 'i:\nv:\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: A B C D V: A B C D',
+        rawLyrics: 'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: V: A B C D  ');
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: A B C D V: [A B C D] x2', 'i:\nv:\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: A B C D V: [A B C D] x2',
+        rawLyrics: 'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: A B C D  V: [A B C D ] x2  ');
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D] x2 V: A B C D ', 'i:\nv:\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D] x2 V: A B C D ',
+        rawLyrics: 'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: [A B C D ] x2  V: A B C D  ');
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D] x2 V: [A B C D] x2', 'i:\nv:\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D] x2 V: [A B C D] x2',
+        rawLyrics: 'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: V: [A B C D ] x2  ');
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [A B C D] x2 V: [A B C D] x4', 'i:\nv:\n');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [A B C D] x2 V: [A B C D] x4',
+        rawLyrics: 'i:\nv:\n');
     logger.i(a.toMarkup());
     expect(a.toMarkup(), 'I: [A B C D ] x2  V: [A B C D ] x4  ');
   });
@@ -1547,16 +1944,16 @@ c2:
 //    GridCoordinate gridCoordinate;
 
     //  see that section identifiers are on first phrase row
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
 
 //    logger.v(a.toMarkup());
 //    logger.d('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
@@ -1597,8 +1994,16 @@ c2:
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase('A', 'bob', 'bsteele.com', music_key.Key.getDefault(), 100, beatsPerBar, 4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G F F  O: Dm C B B♭ A  ', '''
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C, G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: '''
 c: Make me an angel that flies from Montgomery
 	Make me a poster of an old rodeo
 	Just give me one thing that I can hold on to
@@ -1643,6 +2048,7 @@ o: end here''');
     //   }
     // }
 
+    //  fixme: not much testing here!
     // for (int measureRows = 3; measureRows <= 3; measureRows++) {
     //   for (int lyricRows = 2; lyricRows <= 4; lyricRows++) {
     //     for (int words = 1; words <= 5; words++) {
@@ -1680,16 +2086,16 @@ o: end here''');
     SongBase a;
 
     //  see that section identifiers are on first phrase row
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('i:', beatsPerBar)).toString(), 'I:0:3');
     expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c:', beatsPerBar)).toString(), 'C:0:7');
     expect(a.getLastMeasureLocationOfChordSection(ChordSection.parseString('c2:', beatsPerBar)), isNull);
@@ -1701,16 +2107,16 @@ o: end here''');
     SongBase a;
 
     //  see that section identifiers are on first phrase row
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     var lyricSections = a.lyricSections;
     var chordSection = a.getChordSection(lyricSections[1].sectionVersion);
     expect(chordSection?.sectionVersion, SectionVersion.parseString('v:'));
@@ -1734,65 +2140,64 @@ o: end here''');
     int beatsPerBar = 4;
     SongBase a;
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: Am Am/G  v: Am Am/G, Am/F♯ FE   C: F F   O: Dm C\n A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: Am Am/G  v: Am Am/G, Am/F♯ FE   C: F F   O: Dm C\n A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.chordRowMaxLength(), 2);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: Am Am/G Am/F♯ FE   v: Am Am/G, Am/F♯ FE   C: F F   O: Dm C B B♭, A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
-
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: Am Am/G Am/F♯ FE   v: Am Am/G, Am/F♯ FE   C: F F   O: Dm C B B♭, A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.chordRowMaxLength(), 4);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F   O: Dm C B B♭, A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F   O: Dm C B B♭, A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.chordRowMaxLength(), 5);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.chordRowMaxLength(), 7);
 
-    a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        music_key.Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
-        'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
+    a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G, Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
     expect(a.chordRowMaxLength(), 8);
   });
 
@@ -1801,8 +2206,16 @@ o: end here''');
     SongBase a;
 
     //  assure that the song can end on an empty section
-    a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', music_key.Key.get(music_key.KeyEnum.C), 106,
-        beatsPerBar, 4, 'V: C F C C,F F C C,  G F C G', 'v:');
+    a = SongBase(
+        title: '12 Bar Blues',
+        artist: 'All',
+        copyright: 'Unknown',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'V: C F C C,F F C C,  G F C G',
+        rawLyrics: 'v:');
     expect(a.lyricSections.length, 1);
     expect(a.lyricSections.first.lyricsLines.length, 0);
   });
@@ -1815,8 +2228,16 @@ o: end here''');
     SongBase a;
 
     //  assure that the song can end on an empty section
-    a = SongBase.createSongBase('12 Bar Blues', 'All', 'Unknown', music_key.Key.get(music_key.KeyEnum.C), 106,
-        beatsPerBar, 4, 'V: C F C C,F F C C,  G F C G', 'v:');
+    a = SongBase(
+        title: '12 Bar Blues',
+        artist: 'All',
+        copyright: 'Unknown',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'V: C F C C,F F C C,  G F C G',
+        rawLyrics: 'v:');
     logger.d('a.lastModifiedTime: ${a.lastModifiedTime}');
     expect(now <= a.lastModifiedTime, isTrue);
     now = DateTime.now().millisecondsSinceEpoch;
@@ -1829,8 +2250,17 @@ o: end here''');
     Song a;
     String s;
 
-    a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar, 4,
-        'pearlbob', 'i: D C G G V: C F C C,F F C C,  G F C G', 'i: v:');
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: D C G G V: C F C C,F F C C,  G F C G',
+        rawLyrics: 'i: v:');
 
     logger.d('a.rawLyrics: <${a.rawLyrics}>');
 
@@ -1926,11 +2356,29 @@ o: end here''');
     int beatsPerBar = 4;
     Song a, b;
 
-    a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar, 4,
-        'pearlbob', 'i: D C G G V: C F C C,F F C C,  G F C G', someRawLyrics);
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: D C G G V: C F C C,F F C C,  G F C G',
+        rawLyrics: someRawLyrics);
 
-    b = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar, 4,
-        'pearlbob', 'i: D C G G V: C F C C,F F C C,  G F C G', a.rawLyrics);
+    b = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: D C G G V: C F C C,F F C C,  G F C G',
+        rawLyrics: a.rawLyrics);
 
     logger.d('testRawLyricsLoop(  ${someRawLyrics.replaceAll('\n', '\\n')})');
     logger.d('a.lyricsAsString(): ${a.lyricsAsString().replaceAll('\n', '\\n')}');
@@ -1944,11 +2392,30 @@ o: end here''');
     int beatsPerBar = 4;
     Song a, b;
 
-    a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar, 4,
-        'pearlbob', 'i: D C G G V: C F C C,F F C C,  G F C G', 'i: v:');
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: D C G G V: C F C C,F F C C,  G F C G',
+        rawLyrics: 'i: v:');
 
-    b = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar, 4,
-        'pearlbob', 'i: D C G G V: C F C C,F F C C,  G F C G', a.rawLyrics);
+    b = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearlbob',
+        chords: 'i: D C G G V: C F C C,F F C C,  G F C G',
+        rawLyrics: a.rawLyrics);
+
     expect(a.lyricsAsString(), b.lyricsAsString());
     expect(a.songBaseSameContent(b), isTrue);
 
@@ -1989,7 +2456,7 @@ o: end here''');
     SongBase a;
 
     {
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           coverArtist: 'Rolling Stones, The ',
@@ -2001,45 +2468,45 @@ o: end here''');
       expect(a.coverArtist, 'Rolling Stones, The');
     }
 
-    a = SongBase.from();
+    a = SongBase();
     expect(a.title, 'unknown');
-    a = SongBase.from(title: 'bob song');
+    a = SongBase(title: 'bob song');
     expect(a.title, 'bob song');
-    a = SongBase.from(title: 'the bob song');
+    a = SongBase(title: 'the bob song');
     expect(a.title, 'bob song, the');
     expect(a.artist, 'unknown');
     expect(a.coverArtist, isEmpty);
 
-    a = SongBase.from(title: 'bob song', artist: 'bob');
+    a = SongBase(title: 'bob song', artist: 'bob');
     expect(a.title, 'bob song');
     expect(a.artist, 'bob');
-    a = SongBase.from(title: 'bob song', artist: 'the bob');
+    a = SongBase(title: 'bob song', artist: 'the bob');
     expect(a.title, 'bob song');
     expect(a.artist, 'bob, the');
     expect(a.coverArtist, isEmpty);
 
     {
       var coverArtist = 'not really bob';
-      a = SongBase.from(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
+      a = SongBase(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
       expect(a.title, 'bob song');
       expect(a.artist, 'bob, the');
       expect(a.coverArtist, isNotEmpty);
       expect(a.coverArtist, coverArtist);
 
       coverArtist = 'the not real bob';
-      a = SongBase.from(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
+      a = SongBase(title: 'bob song', artist: 'the bob', coverArtist: coverArtist);
       expect(a.title, 'bob song');
       expect(a.artist, 'bob, the');
       expect(a.coverArtist, isNotEmpty);
       expect(a.coverArtist, 'not real bob, the');
     }
 
-    a = SongBase.from(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar);
+    a = SongBase(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar);
     expect(a.title, 'bob song');
     expect(a.artist, 'bob');
     expect(a.timeSignature.beatsPerBar, beatsPerBar);
 
-    a = SongBase.from(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar, unitsPerMeasure: unitsPerMeasure);
+    a = SongBase(title: 'bob song', artist: 'bob', beatsPerBar: beatsPerBar, unitsPerMeasure: unitsPerMeasure);
     expect(a.title, 'bob song');
     expect(a.artist, 'bob');
     expect(a.timeSignature.beatsPerBar, beatsPerBar);
@@ -2049,7 +2516,7 @@ o: end here''');
 
     {
       int beatsPerMinute = MusicConstants.defaultBpm;
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: beatsPerBar,
@@ -2066,7 +2533,7 @@ o: end here''');
     {
       for (var beatsPerMinute = MusicConstants.minBpm; beatsPerMinute <= MusicConstants.maxBpm; beatsPerMinute++) {
         logger.d('bpm: $beatsPerMinute');
-        a = SongBase.from(
+        a = SongBase(
             title: 'bob song',
             artist: 'bob',
             beatsPerBar: beatsPerBar,
@@ -2077,7 +2544,7 @@ o: end here''');
     }
     {
       int beatsPerMinute = MusicConstants.minBpm - 1;
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: beatsPerBar,
@@ -2086,7 +2553,7 @@ o: end here''');
       expect(a.beatsPerMinute, MusicConstants.minBpm);
 
       beatsPerMinute = MusicConstants.maxBpm + 1;
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: beatsPerBar,
@@ -2098,7 +2565,7 @@ o: end here''');
     {
       int beatsPerMinute = MusicConstants.defaultBpm;
       var copyright = '2021 bob';
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: beatsPerBar,
@@ -2108,7 +2575,7 @@ o: end here''');
       expect(a.copyright, copyright);
 
       copyright = 'the copyright from 2021';
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: beatsPerBar,
@@ -2120,7 +2587,7 @@ o: end here''');
 
     {
       for (var timeSignature in knownTimeSignatures) {
-        a = SongBase.from(
+        a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: timeSignature.beatsPerBar,
@@ -2132,7 +2599,7 @@ o: end here''');
 
     {
       var chords = 'i: A B C D v: D C G G';
-      a = SongBase.from(
+      a = SongBase(
           title: 'bob song',
           artist: 'bob',
           beatsPerBar: beatsPerBar,
@@ -2147,7 +2614,7 @@ o: end here''');
       expect(a.lyricSections.first.lyricsLines.last, 'intro');
       expect(a.key, music_key.Key.getDefault());
 
-      a = SongBase.from(
+      a = SongBase(
         title: 'bob song',
         artist: 'bob',
         beatsPerBar: beatsPerBar,
@@ -2180,7 +2647,7 @@ o: end here''');
                   beatsPerMinute <= MusicConstants.maxBpm;
                   beatsPerMinute++) {
                 for (var index = 0; index < chordList.length; index++) {
-                  a = SongBase.from(
+                  a = SongBase(
                     title: title,
                     artist: artist,
                     coverArtist: coverArtist,
@@ -2213,18 +2680,18 @@ o: end here''');
     Logger.level = Level.info;
 
     // if ( false )
-    {
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'v: [ A B C D ] x4',
-          'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
+        {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: [ A B C D ] x4',
+          rawLyrics: 'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
               'bar bar2\n'
               'bob, bob2, bob3 berand\n'
               'You got me');
@@ -2257,18 +2724,18 @@ Grid{
       }
     }
     // if ( false )
-    {
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'v: [ A B C D ] x2 D C G G x2',
-          'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
+        {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: [ A B C D ] x2 D C G G x2',
+          rawLyrics: 'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
               'bar bar2\n'
               'bob, bob2, bob3 berand\n'
               'You got me'
@@ -2303,9 +2770,18 @@ Grid{
     }
 
     // if ( false )
-    {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
+        {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: v: o:');
 
       {
         var grid = a.toDisplayGrid(UserDisplayStyle.both);
@@ -2341,8 +2817,17 @@ Grid{
       }
     }
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C# [ F F C B ] x2,  G F C Gb', 'i: v: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C# [ F F C B ] x2,  G F C Gb',
+          rawLyrics: 'i: v: o:');
 
       {
         var grid = a.toDisplayGrid(UserDisplayStyle.both);
@@ -2380,17 +2865,17 @@ Grid{
     }
 
     {
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
-          'i: intro lyric\n'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          rawLyrics: 'i: intro lyric\n'
               'v: verse lyric 1\nverse lyric 2\no: outro lyric\n');
 
       {
@@ -2429,17 +2914,17 @@ Grid{
       }
     }
     {
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
-          'i: intro lyric\n'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          rawLyrics: 'i: intro lyric\n'
               'v: verse lyric 1\nverse lyric 2\nverse lyric 3\n'
               'o: outro lyric\n');
 
@@ -2480,16 +2965,24 @@ Grid{
     }
   });
 
-  test('test songBase toGrid(expanded:true)', () {
+  test('test song toGrid(expanded:true)', () {
     Logger.level = Level.info;
 
     int beatsPerBar = 4;
     Song a;
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
-
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: v: o:');
       var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
       logger.i(grid.toString());
       expect(grid.toString(), '''
@@ -2506,8 +2999,17 @@ Grid{
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb',
+          rawLyrics: 'i: v: o:');
 
       var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
       logger.i(grid.toString());
@@ -2527,9 +3029,17 @@ Grid{
     }
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb', 'i: v: o:');
-
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          rawLyrics: 'i: v: o:');
       var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
       logger.i(grid.toString());
       expect(grid.toString(), '''
@@ -2556,53 +3066,107 @@ Grid{
     Song a;
 
     {
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
-          'i: intro lyric\n'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: intro lyric\n'
               'v: verse lyric\n'
               'more verse lyrcs\n'
               'o: outro lyric');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i: D C G G# x2', 'i: no lyrics here');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: D C G G# x2',
+          rawLyrics: 'i: no lyrics here');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i: D C G G# x2', 'i: no lyrics here');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i: D C G G# x2',
+          rawLyrics: 'i: no lyrics here');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb', 'i: v: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb',
+          rawLyrics: 'i: v: o:');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'V: [C F C C#, F F C B] x2', 'v: hey!');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'V: [C F C C#, F F C B] x2',
+          rawLyrics: 'v: hey!');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: [C F C C#, F F C B] x2,  G F C Gb', 'i: v: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: [C F C C#, F F C B] x2,  G F C Gb',
+          rawLyrics: 'i: v: o:');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
 
     {
       //  empty lyrics
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'v: G G G G, C C G G, D C G D', 'v:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: G G G G, C C G G, D C G D',
+          rawLyrics: 'v:');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
   });
@@ -2685,8 +3249,17 @@ v:
     int beatsPerBar = 4;
     {
       //  empty lyrics
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'v: G G G G, C C G G, D C G D', 'v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: G G G G, C C G G, D C G D',
+          rawLyrics: 'v: foobar');
       expect(a.validateLyrics(''), null);
       expect(a.validateLyrics('no section here').runtimeType, LyricParseException);
       expect(a.validateLyrics('no section here')?.message, 'Lyrics prior to section version');
@@ -2714,14 +3287,32 @@ v:
       expect(a.validateLyrics('i: lkf')?.message, 'Section version not found');
 
       //  multiple sections
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearl bob', 'i:v: G G G G, C C G G, D C G D', 'v: foobar');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:v: G G G G, C C G G, D C G D',
+          rawLyrics: 'v: foobar');
       lyrics = 'i: no\n  v:\n foo\n';
       expect(a.validateLyrics('i:v: lkf'), null); // no error
 
       //  multiple sections, empty last lyrics
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearl bob', 'i:v: G G G G, C C G G, D C G D', 'v: foobar');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:v: G G G G, C C G G, D C G D',
+          rawLyrics: 'v: foobar');
       lyrics = 'i: no\n  v:\n foo\ni:';
       expect(a.validateLyrics('i:v: lkf'), null); // no error
 
@@ -2737,8 +3328,17 @@ v:
   test('test songBase toMarkup as entry', () {
     int beatsPerBar = 4;
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'v: []', 'v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: []',
+          rawLyrics: 'v: foobar');
       expect(
           a.toMarkup(asEntry: true),
           'V: \n'
@@ -2746,8 +3346,17 @@ v:
           '');
     }
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'v: [] c: []', 'v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: [] c: []',
+          rawLyrics: 'v: foobar');
       expect(
           a.toMarkup(asEntry: true),
           'V: \n'
@@ -2757,8 +3366,17 @@ v:
           '');
     }
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'v: G G G G, C C G G, D C G D', 'v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: G G G G, C C G G, D C G D',
+          rawLyrics: 'v: foobar');
       expect(
           a.toMarkup(asEntry: true),
           'V: \n'
@@ -2769,8 +3387,17 @@ v:
           '');
     }
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'i: v: G G G G, C C G G, D C G D', 'i: (instrumental) v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: v: G G G G, C C G G, D C G D',
+          rawLyrics: 'i: (instrumental) v: foobar');
       expect(
           a.toMarkup(asEntry: true),
           'I: V: \n'
@@ -2781,17 +3408,18 @@ v:
           '');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: [ A B C D ] x2 v: G G G G, [C C G G]x4 D C G D',
-          'i: (instrumental) v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: [ A B C D ] x2 v: G G G G, [C C G G]x4 D C G D',
+          rawLyrics: 'i: (instrumental) v: foobar');
+
       expect(
           a.toMarkup(asEntry: true),
           'I: \n'
@@ -2804,17 +3432,17 @@ v:
           '\n');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
-          'i: (instrumental) v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          rawLyrics: 'i: (instrumental) v: foobar');
       expect(
           a.toMarkup(asEntry: true),
           'I: \n'
@@ -2832,17 +3460,17 @@ v:
     int beatsPerBar = 4;
     {
       //  fixme: force a new line at lyrics entry?
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:');
       expect(
           a.chordMarkupForLyrics(),
           'I:\n A B C D\n'
@@ -2852,17 +3480,17 @@ v:
     }
     {
       //  fixme: force a new line at lyrics entry?
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i:\n(instrumental)\n\nv: line 1\n\no:\n\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i:\n(instrumental)\n\nv: line 1\n\no:\n\n');
       logger.i(a.lyricSectionsAsEntryString);
 
       expect(
@@ -2883,25 +3511,34 @@ v:
           }
           lyrics = sb.toString();
         }
-        var a = Song.createSong(
-            'ive go the blanks',
-            'bob',
-            'bob',
-            music_key.Key.get(music_key.KeyEnum.C),
-            106,
-            beatsPerBar,
-            4,
-            'pearl bob',
-            'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x2',
-            //  no newline at verse lyrics should not matter
-            lyrics);
+        var a = Song(
+            title: 'ive go the blanks',
+            artist: 'bob',
+            copyright: 'bob',
+            key: music_key.Key.get(music_key.KeyEnum.C),
+            beatsPerMinute: 106,
+            beatsPerBar: beatsPerBar,
+            unitsPerMeasure: 4,
+            user: 'pearl bob',
+            chords: 'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x2',
+            rawLyrics: //  no newline at verse lyrics should not matter
+                lyrics);
         logger.i('lines $lines: "${a.chordMarkupForLyrics()}"');
         expect(a.chordMarkupForLyrics().split('\n').length, lines + 3 + 1);
       }
     }
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i:\nv: line 1\no:');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i:\nv: line 1\no:');
       expect(
           a.chordMarkupForLyrics(),
           'I: A B C D\n'
@@ -2910,8 +3547,17 @@ v:
           'O: C C G G\n');
     }
     {
-      var a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106,
-          beatsPerBar, 4, 'pearl bob', 'i: A B C D  v: G G G G, C C G G o: C C G G', 'i:\nv:\nline 1\no:');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i:\nv:\nline 1\no:');
       expect(
           a.chordMarkupForLyrics(),
           'I: A B C D\n'
@@ -2920,17 +3566,17 @@ v:
           'O: C C G G\n');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
-          'i: (instrumental)\n v: foobar');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          rawLyrics: 'i: (instrumental)\n v: foobar');
       expect(
           a.chordMarkupForLyrics(),
           'I:\n[A B C D] x2#1 [A B C D] x2#2\n'
@@ -2938,17 +3584,17 @@ v:
           ' [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
-          'i: (instrumental)\n '
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          rawLyrics: 'i: (instrumental)\n '
               'v:\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
       expect(
           a.chordMarkupForLyrics(),
@@ -2963,18 +3609,18 @@ v:
           ' D C G D] x4#2 [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
-          //  no newline at verse lyrics should not matter
-          'i: (instrumental)\n v: line 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: [ A B C D ] x2 v: [G G G G, C C G G, D C G D]x4',
+          rawLyrics: //  no newline at verse lyrics should not matter
+              'i: (instrumental)\n v: line 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
       expect(
           a.chordMarkupForLyrics(),
           'I:\n'
@@ -2988,17 +3634,17 @@ v:
           ' D C G D] x4#2 [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G',
-          'i: (instrumental)\nyeah\n v: line 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G',
+          rawLyrics: 'i: (instrumental)\nyeah\n v: line 1\nline 2\nline 3\nline 4\nline 5\nline 6\n');
       expect(
           a.chordMarkupForLyrics(),
           'I:\n'
@@ -3013,20 +3659,21 @@ v:
           '\n');
     }
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  V: [Am Am/G Am/F# FE] x4',
-          'i:\nv:\nWaiting for the break of day\n'
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  V: [Am Am/G Am/F# FE] x4',
+          rawLyrics: 'i:\nv:\nWaiting for the break of day\n'
               'Searching for something to say\n'
               'Flashing lights against the sky\n'
               'Giving up I close my eyes\n');
+
       expect(
           a.chordMarkupForLyrics(),
           'I: A B C D\n'
@@ -3042,17 +3689,17 @@ v:
   test('test songBase to/from JSON', () {
     int beatsPerBar = 4;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
       expect(
           a.toJson().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
@@ -3137,18 +3784,17 @@ v:
     int beatsPerBar = 4;
     int bpm = 106;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var totalBeats = a.totalBeats;
       var beatDuration = 60.0 / bpm;
       expect(totalBeats, 64); //  sanity only
@@ -3173,154 +3819,145 @@ v:
     int beatsPerBar = 4;
     int bpm = 106;
     for (var year in [1796, 1900, 2069, 2022]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'copyright $year bob hot music',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'copyright $year bob hot music',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, year);
     }
 
     for (var year in [179, 0, 20609, 2]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'copyright $year bob hot music',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'copyright $year bob hot music',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [1796, 1900, 2069, 2022]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'copyright $year',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'copyright $year',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, year);
     }
 
     for (var year in [179, 0, 20609, 2]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'copyright $year',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'copyright $year',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [1796, 1900, 2069, 2022]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          '$year bob music',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: '$year bob music',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, year);
     }
 
     for (var year in [179, 0, 20609, 2]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          '$year bob music',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: '$year bob music',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [1796, 1900, 2069, 2022]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          '$year',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: '$year',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, year);
     }
 
     for (var year in [179, 0, 20609, 2]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          '$year',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: '$year',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, SongBase.defaultYear);
     }
 
     for (var year in [2002, 1960]) {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          '℗© $year Hollywood Records, Inc.',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: '℗© $year Hollywood Records, Inc.',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
       var songYear = a.getCopyrightYear();
       expect(songYear, year);
     }
@@ -3330,17 +3967,17 @@ v:
     int beatsPerBar = 4;
     int bpm = 106;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
       for (var lyricSection in a.lyricSections) {
         for (var line in lyricSection.lyricsLines) {
           expect(line.trim().isNotEmpty, isTrue);
@@ -3353,17 +3990,17 @@ v:
     int beatsPerBar = 4;
     int bpm = 106;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          bpm,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
 
       var grid = a.chordSectionGrid;
       // for (int r = 0; r < grid.getRowCount(); r++) {
@@ -3422,17 +4059,17 @@ v:
     {
       userDisplayStyle = UserDisplayStyle.both;
 
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          104,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D x3 C D G C v: D C G G',
-          'i: (instrumental)\nmore instrumental\nyet more intro2\nlast line of intro: C D G C\n'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 C D G C v: D C G G',
+          rawLyrics: 'i: (instrumental)\nmore instrumental\nyet more intro2\nlast line of intro: C D G C\n'
               'v: one verse lyric line');
 
       expanded = true;
@@ -3465,17 +4102,17 @@ Grid{
     }
     {
       userDisplayStyle = UserDisplayStyle.proPlayer;
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'v: [ A B C D ] x4',
-          'v: foo foo foo foo baby oh baby yesterday\n'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: [ A B C D ] x4',
+          rawLyrics: 'v: foo foo foo foo baby oh baby yesterday\n'
               'bar bar\n'
               'bob, bob, bob berand\n'
               'You got me');
@@ -3500,8 +4137,17 @@ Grid{
     }
     {
       userDisplayStyle = UserDisplayStyle.proPlayer;
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: v: o:');
 
       for (var expanded in [false, true]) {
         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
@@ -3546,20 +4192,21 @@ Grid{
     }
     {
       userDisplayStyle = UserDisplayStyle.singer;
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'v: [ A B C D ] x4',
-          'v: foo foo foo foo baby oh baby yesterday\n'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: [ A B C D ] x4',
+          rawLyrics: 'v: foo foo foo foo baby oh baby yesterday\n'
               'bar bar\n'
               'bob, bob, bob berand\n'
               'You got me');
+
       for (var expanded in [false, true]) //  shouldn't matter
       {
         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
@@ -3595,17 +4242,17 @@ Grid{
     }
     {
       userDisplayStyle = UserDisplayStyle.singer;
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearlbob',
-          'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
-          'i: (instrumental)\n '
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: (instrumental)\n '
               'v: v: foo foo foo foo baby\n oh baby yesterday\n'
               'bar bar\no:  yo yo yo\n yeah');
 
@@ -3633,17 +4280,17 @@ Grid{
     {
       userDisplayStyle = UserDisplayStyle.both;
       bool expanded = false;
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          104,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          'i: (instrumental)\nmore instrumental'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental'
               'v: line 1\n line 2\n'
               'o:\n'
               'yo1\n'
@@ -3693,17 +4340,17 @@ Grid{
     {
       userDisplayStyle = UserDisplayStyle.both;
       bool expanded = false;
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          104,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          'i: (instrumental)\nmore instrumental'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental'
               'v: line 1\n line 2\n'
               'o:\n'
               'yo1\n'
@@ -3753,17 +4400,17 @@ Grid{
     {
       userDisplayStyle = UserDisplayStyle.both;
       bool expanded = false;
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          104,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          'i: (instrumental)\nmore instrumental'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental\n'
               'v: line 1\n line 2\n'
               'o:\n'
               'yo1\n'
@@ -3777,13 +4424,15 @@ Grid{
 Grid{
 	I:#0
 	A       B       C       D       x4      (1,5)   "(instrumental)"
-	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
-	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
-	O:#1
-	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
+	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumental"
+\tV:#1
+\tG       G       G       G,      (4,4)   (4,5)   "line 1"
+\tC       C       G       G       (5,4)   (5,5)   "line 2"
+	O:#2
+	C       C       G       G,      ⎤       (7,5)   "yo1\\nyo2"
 	E       F       G       E       ⎦       x3      "yo3\\nyo4"
-	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo5\\nyo6"
-	A       B       C       (8,3)   (8,4)   (8,5)   "yo7"
+	(9,0)   (9,1)   (9,2)   (9,3)   (9,4)   (9,5)   "yo5\\nyo6"
+	A       B       C       (10,3)  (10,4)  (10,5)  "yo7"
 }''');
 
       //  validate song moment to grid coordinates
@@ -3794,19 +4443,22 @@ Grid{
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
-	I:#0
-	A       B       C       D       x4#1    (1,5)   "(instrumental)"
-	A       B       C       D       x4#2    (2,5)   "more instrumentalv: line 1"
-	A       B       C       D       x4#3    (3,5)   "line 2"
-	A       B       C       D       x4#4
-	O:#1
-	C       C       G       G,      ⎤       (6,5)   "yo1"
-	E       F       G       E       ⎦       x3#1    "yo2"
-	C       C       G       G,      ⎤       (8,5)   "yo3"
-	E       F       G       E       ⎦       x3#2    "yo4"
-	C       C       G       G,      ⎤       (10,5)  "yo5"
-	E       F       G       E       ⎦       x3#3    "yo6"
-	A       B       C       (12,3)  (12,4)  (12,5)  "yo7"
+\tI:#0
+\tA       B       C       D       x4#1    (1,5)   "(instrumental)"
+\tA       B       C       D       x4#2    (2,5)   "more instrumental"
+\tA       B       C       D       x4#3
+\tA       B       C       D       x4#4
+\tV:#1
+\tG       G       G       G,      (6,4)   (6,5)   "line 1"
+\tC       C       G       G       (7,4)   (7,5)   "line 2"
+\tO:#2
+\tC       C       G       G,      ⎤       (9,5)   "yo1"
+\tE       F       G       E       ⎦       x3#1    "yo2"
+\tC       C       G       G,      ⎤       (11,5)  "yo3"
+\tE       F       G       E       ⎦       x3#2    "yo4"
+\tC       C       G       G,      ⎤       (13,5)  "yo5"
+\tE       F       G       E       ⎦       x3#3    "yo6"
+\tA       B       C       (15,3)  (15,4)  (15,5)  "yo7"
 }''');
       _testSongMomentToGrid(a, userDisplayStyle);
     }
@@ -3823,8 +4475,17 @@ Grid{
     {
       userDisplayStyle = UserDisplayStyle.both;
 
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 104, beatsPerBar,
-          4, 'pearl bob', 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+          rawLyrics: 'v:');
 
       expanded = true;
       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
@@ -3857,8 +4518,17 @@ Grid{
     {
       userDisplayStyle = UserDisplayStyle.both;
 
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 104, beatsPerBar,
-          4, 'pearl bob', 'v: [  B D#m G#m G#m/F#,A C#m G#m,A A. C#m. ] x3, B D#m G#m G#m/F#, A A. C#m. C#m C#m', '''v:
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: [  B D#m G#m G#m/F#,A C#m G#m,A A. C#m. ] x3, B D#m G#m G#m/F#, A A. C#m. C#m C#m',
+          rawLyrics: '''v:
 I hear the drums echoing tonight but she hears only
 Whispers of some quiet conversation
 -
@@ -3919,8 +4589,18 @@ Grid{
     Logger.level = Level.info;
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 104, beatsPerBar,
-          4, 'pearl bob', 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+          rawLyrics: 'v:');
+
       for (var lyricSection in a.lyricSections) {
         logger.v('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
       }
@@ -3928,23 +4608,24 @@ Grid{
     }
 
     {
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          104,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          'i: (instrumental)\nmore instrumental'
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental'
               'v: line 1\n line 2\n'
               'o:\n'
               'yo1\n'
               'yo2\n'
               'yo3\n'
               'yo4\nyo5\nyo6\nyo7');
+
       for (var lyricSection in a.lyricSections) {
         logger.v('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
       }
@@ -3953,8 +4634,18 @@ Grid{
     }
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb', 'i: v: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: v: o:');
+
       for (var lyricSection in a.lyricSections) {
         logger.i('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
       }
@@ -3964,8 +4655,18 @@ Grid{
     }
 
     {
-      a = Song.createSong('ive go the blanks', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.C), 106, beatsPerBar,
-          4, 'pearlbob', 'i:o: D C G G# V: C F C C#,F F C B c: [ A B C D ] x4', 'i: v: c: v: c: o:');
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B c: [ A B C D ] x4',
+          rawLyrics: 'i: v: c: v: c: o:');
+
       for (var lyricSection in a.lyricSections) {
         logger.i('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
       }
@@ -3981,17 +4682,18 @@ Grid{
   test('test songBaseSameContent', () {
     int beatsPerBar = 4;
     {
-      var a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
       var b = a.copyWith();
       expect(a, b);
       expect(a.compareBySongId(b), 0);
@@ -4012,31 +4714,33 @@ Grid{
   test('test scaleChordsUsed', () {
     int beatsPerBar = 4;
     Song a;
-    a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: A B C D  v: G G G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
-      logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
-      expect(a.scaleChordsUsed().toString(), '[A, B, C, D, G]');
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bob',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
-      a = Song.createSong(
-          'ive go the blanks',
-          'bob',
-          'bob',
-          music_key.Key.get(music_key.KeyEnum.C),
-          106,
-          beatsPerBar,
-          4,
-          'pearl bob',
-          'i: AbBbmaj7 Bsus4 Cm/G D  v: G5 G7b5G7#9 G G, C C G G o: C C G G',
-          'i: (instrumental)\nv: line 1\no:\n');
+    logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
+    expect(a.scaleChordsUsed().toString(), '[A, B, C, D, G]');
+
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bob',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: AbBbmaj7 Bsus4 Cm/G D  v: G5 G7b5G7#9 G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
     logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
     expect(a.scaleChordsUsed().toString(), '[A♭, B♭maj7, Bsus4, C, Cm, D, G, G5, G7b5, G7#9]');
   });

@@ -61,16 +61,16 @@ void main() {
   });
 
   test('grid ', () {
-    SongBase a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        4,
-        4,
-        'i: A B C D V: D E F F# [ D C B A ]x2 (comment) c: D C G G A B o: G',
-        'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 (comment) c: D C G G A B o: G',
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
 
     Grid<SongMoment> songMomentGrid = a.songMomentGrid;
 

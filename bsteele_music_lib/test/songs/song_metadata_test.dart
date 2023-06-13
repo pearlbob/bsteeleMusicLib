@@ -420,10 +420,30 @@ void main() {
   });
 
   test('test song metadata', () {
-    Song a = Song.createSong('a song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
-        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
-    Song b = Song.createSong('b song', 'bob', 'bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
-        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    Song a = Song(
+        title: 'a song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+        rawLyrics: 'v:');
+
+    Song b = Song(
+        title: 'b song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+        rawLyrics: 'v:');
+
     var firstNv = NameValue('test', 'first');
     SongMetadata.clear();
     SongMetadata.addSong(a, firstNv);
@@ -463,8 +483,18 @@ void main() {
   });
 
   test('test generateDecade(Song song)', () {
-    Song a = Song.createSong('a song', 'bob', 'Copyright 2022 bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
-        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    Song a = Song(
+        title: 'a song',
+        artist: 'bob',
+        copyright: 'Copyright 2022 bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+        rawLyrics: 'v:');
+
     SongMetadata.clear(); //  eliminate data from other tests
     var idmA = SongMetadata.songIdMetadata(a);
     expect(idmA, isNull);
@@ -475,8 +505,18 @@ void main() {
     expect(idmA.isNotEmpty, true);
     expect(idmA.contains(NameValue('Decade', '20\'s')), isTrue);
 
-    Song b = Song.createSong('b song', 'bob', 'no year bob', Key.get(KeyEnum.C), 104, 4, 4, 'pearl bob',
-        'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7', 'v:');
+    Song b = Song(
+        title: 'b song',
+        artist: 'bob',
+        copyright: 'no year bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+        rawLyrics: 'v:');
+
     SongMetadata.clear(); //  eliminate data from other tests
     var idmB = SongMetadata.songIdMetadata(b);
     expect(idmB, isNull);

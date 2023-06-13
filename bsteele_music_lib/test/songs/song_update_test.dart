@@ -127,8 +127,18 @@ void main() {
       logger.d('setMomentNumber');
       SongUpdate instance = SongUpdate();
 
-      Song a = Song.createSong('A', 'bobby', 'bsteele.com', Key.getDefault(), 106, 4, 4, 'bob',
-          'i1: D D D D v: A B C D x4', 'i1:\nv:\nbob, bob, bob berand\n');
+      Song a = Song(
+          title: 'A',
+          artist: 'bobby',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'i1: D D D D v: A B C D x4',
+          rawLyrics: 'i1:\nv:\nbob, bob, bob berand\n');
+
       instance.song = a;
       int expResult = 10;
       instance.setMomentNumber(expResult);
@@ -176,6 +186,7 @@ void main() {
 }
 ,
 "momentNumber": 0,
+"rowNumber": 0,
 "beat": 0,
 "user": "unknown",
 "singer": "unknown",

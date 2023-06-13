@@ -85,8 +85,17 @@ void main() {
     const int beatsPerBar = 4;
     int bpm = 106;
     {
-      var a = Song.createSong('a simple song', 'bob', 'bob', music_key.Key.get(music_key.KeyEnum.G), bpm, beatsPerBar,
-          4, 'pearl bob', 'i: D C G G x2  v: G G G G, C C G G o: C C G G', 'i: (instrumental)\nv: line 1\no:\n');
+      var a = Song(
+          title: 'a simple song',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.G),
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: D C G G x2  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
       logger.i(a.toNashville());
       expect(a.toNashville(), '''I:  |  5 4 1 1    x2

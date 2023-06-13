@@ -10,13 +10,31 @@ void main() {
 
   test('testEquals', () {
     {
-      SongBase a = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(), 100, 4, 4,
-          'i1: D D D D v: A B C D', 'v: bob, bob, bob berand');
-      SongBase b = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
-          100, 4, 4, 'i1: D D D D D D D D v: A B C D', 'v: bob, bob, bob berand');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i1: D D D D v: A B C D',
+          rawLyrics: 'v: bob, bob, bob berand');
+
+      SongBase b = SongBase(
+          title: 'A',
+          artist: 'bobby',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'i1: D D D D D D D D v: A B C D',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       List<StringTriple> diffs = SongBase.diff(a, b);
-      logger.i(diffs.toString());
+      logger.i('diffs: $diffs');
+      expect(diffs.toString(), '[(artist:: "bob", "bobby"), (chords:: "I1: D D D D ", "I1: D D D D D D D D ")]');
 //      logger.i(SongBase.StringTripleToHtmlTable.toHtmlTable(new StringTriple("fields", "a", "b"), diffs));
 //      diffs = SongBase.diff( b,a);
 //      logger.i(diffs.toString());
@@ -28,13 +46,34 @@ void main() {
 //                    , diffs.toString());
     }
     {
-      SongBase a = SongBase.createSongBase('A', 'bobby', 'bsteele.com', Key.getDefault(),
-          100, 4, 4, 'v: A B C D', 'v: bob, bob, bob berand');
-      SongBase b = SongBase.createSongBase('A', 'bob', 'bsteele.com', Key.getDefault(),
-          100, 4, 4, 'v: A B D D O: D', 'v: bob, bob, Barbara Ann');
+      SongBase a = SongBase(
+          title: 'A',
+          artist: 'bobby',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'v: A B C D',
+          rawLyrics: 'v: bob, bob, bob berand');
+
+      SongBase b = SongBase(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          chords: 'v: A B D D O: D',
+          rawLyrics: 'v: bob, bob, Barbara Ann');
 
       List<StringTriple> diffs = SongBase.diff(a, b);
-      logger.d(diffs.toString());
+      logger.i(diffs.toString());
+      expect(
+          diffs.toString(),
+          '[(artist:: "bobby", "bob"), (chords:: "V: A B C D ", "V: A B D D ")'
+          ', (chords missing:: "", "O: D "), (lyrics V:: "bob, bob, bob berand", "bob, bob, Barbara Ann")]');
 //      logger.i(StringTripleToHtmlTable.toHtmlTable(new StringTriple("fields", "a", "b"), diffs));
 //      expect("[(artist:: \"bobby\", \"bob\")," +
 //          " (chords:: \"V: A B C D \", \"V: A B D D \")," +

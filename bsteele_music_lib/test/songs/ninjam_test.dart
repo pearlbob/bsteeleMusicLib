@@ -9,30 +9,57 @@ void main() {
 
   test('test NinJam', () {
     {
-      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G x2 G A C D c: G C G G x2 G A C D', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A blues classic',
+          artist: 'bob',
+          copyright: 'copyright nobody',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: G C G G x2 G A C D c: G C G G x2 G A C D',
+          rawLyrics: 'v: bob, bob, bob berand');
 
-      var ninJam = NinJam(a, keyOffset:  0 );
+      var ninJam = NinJam(a, keyOffset: 0);
       expect(ninJam.isNinJamReady, true);
       expect(ninJam.bpi, 48);
       expect(ninJam.bpm, 106);
       expect(ninJam.toMarkup(), 'G C G G, G C G G, G A C D ');
     }
     {
-      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G x2 c: G C G G x4', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A blues classic',
+          artist: 'bob',
+          copyright: 'copyright nobody',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: G C G G x2 c: G C G G x4',
+          rawLyrics: 'v: bob, bob, bob berand');
 
-      var ninJam = NinJam(a, keyOffset:  0 );
+      var ninJam = NinJam(a, keyOffset: 0);
       expect(ninJam.isNinJamReady, true);
       expect(ninJam.bpi, 16);
       expect(ninJam.bpm, 106);
       expect(ninJam.toMarkup(), 'G C G G ');
     }
     {
-      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D c: G C G G, C C G G, D C G D', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A blues classic',
+          artist: 'bob',
+          copyright: 'copyright nobody',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: G C G G, C C G G, D C G D c: G C G G, C C G G, D C G D',
+          rawLyrics: 'v: bob, bob, bob berand');
 
-      var ninJam = NinJam(a, keyOffset:  0 );
+      var ninJam = NinJam(a, keyOffset: 0);
       expect(ninJam.isNinJamReady, true);
       expect(ninJam.bpi, 48);
       expect(ninJam.bpm, 106);
@@ -64,8 +91,17 @@ void main() {
     }
 
     {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob', 'v: A B C D',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, true);
@@ -74,8 +110,17 @@ void main() {
       expect(ninJam.toMarkup(), 'A B C D ');
     }
     {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob', 'v: A B C D x4',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D x4',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, true);
@@ -84,8 +129,17 @@ void main() {
       expect(ninJam.toMarkup(), 'A B C D ');
     }
     {
-      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A blues classic',
+          artist: 'bob',
+          copyright: 'copyright nobody',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: G C G G, C C G G, D C G D',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, true);
@@ -94,8 +148,17 @@ void main() {
       expect(ninJam.toMarkup(), 'G C G G, C C G G, D C G D ');
     }
     {
-      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D c: G G G G', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A blues classic',
+          artist: 'bob',
+          copyright: 'copyright nobody',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: G C G G, C C G G, D C G D c: G G G G',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, false);
@@ -104,8 +167,17 @@ void main() {
       expect(ninJam.toMarkup(), '');
     }
     {
-      var a = Song.createSong('A blues classic', 'bob', 'copyright nobody', Key.getDefault(), 106, 4, 4, 'bob',
-          'v: G C G G, C C G G, D C G D c: G C G G, C C G G, D C G D', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A blues classic',
+          artist: 'bob',
+          copyright: 'copyright nobody',
+          key: Key.getDefault(),
+          beatsPerMinute: 106,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: G C G G, C C G G, D C G D c: G C G G, C C G G, D C G D',
+          rawLyrics: 'v: bob, bob, bob berand');
 
       var ninJam = NinJam(a);
       expect(ninJam.isNinJamReady, true);
@@ -113,8 +185,5 @@ void main() {
       expect(ninJam.bpm, 106);
       expect(ninJam.toMarkup(), 'G C G G, C C G G, D C G D ');
     }
-
-
-
   });
 }

@@ -16,17 +16,18 @@ void main() {
   test('test edit manager appends', () {
     {
       ChordSectionLocation? location;
-      Song a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'i: A B C D, D C G G v: E F G G o: G G G G',
-          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      Song a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'i: A B C D, D C G G v: E F G G o: G G G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
       var manager = SongEditManager(a);
       var safeCopySong = a.copySong();
       Song b;
@@ -53,8 +54,18 @@ void main() {
 
     {
       //  basic measure append
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, D C G G ', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, D C G G ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D, D C G G  ');
@@ -83,9 +94,19 @@ void main() {
     }
 
     //  measure append in middle of row, with extension of repeat in the middle of the repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G ] x2  ');
@@ -98,9 +119,19 @@ void main() {
     }
 
     //  measure append in middle of row, with new row of repeat in the middle of the repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G ] x2  ');
@@ -113,9 +144,19 @@ void main() {
     }
 
     //  measure append at end of row, with extension of repeat in the middle of the repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G, G E C D] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G, G E C D] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G, G E C D ] x2  ');
@@ -128,9 +169,19 @@ void main() {
     }
 
     //  measure append at end of row, with new row of repeat in the middle of the repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G, G E C D] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G, G E C D] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G, G E C D ] x2  ');
@@ -143,9 +194,19 @@ void main() {
     }
 
     //  measure append at end of row, with extension of repeat at the end at the end of the repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G, G E C D] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G, G E C D] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G, G E C D ] x2  ');
@@ -158,9 +219,19 @@ void main() {
     }
 
     //  measure append at end of row, with new row of repeat at the end of the repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G, G E C D] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G, G E C D] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G, G E C D ] x2  ');
@@ -173,9 +244,19 @@ void main() {
     }
 
     //  measure append at end of row, with new row after a repeat
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G, G E C D] x2 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G, G E C D] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G, G E C D ] x2  ');
@@ -187,8 +268,18 @@ void main() {
       expect(manager.reset().toMarkup(), safeCopySong.toMarkup());
     }
     {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G, G E C D] x2 ', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G, G E C D] x2 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G, G E C D ] x2  ');
@@ -201,9 +292,19 @@ void main() {
     }
 
     //  measure append at end of row, with new row between repeats
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G] x2 [G E C D] x3 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G] x2 [G E C D] x3 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G ] x2 [G E C D ] x3  ');
@@ -216,9 +317,19 @@ void main() {
     }
 
     //  measure append at end of row, with new row after the last repeat of section
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, [D C G G] x2 [G E C D] x3 ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G] x2 [G E C D] x3 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D [D C G G ] x2 [G E C D ] x3  ');
@@ -233,8 +344,18 @@ void main() {
     //  new section add
     {
       const beatsPerBar = 4;
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'bob',
-          'v: A B C D, [D C G G] x2 [G E C D] x3 ', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, [D C G G] x2 [G E C D] x3 ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.preEditSong.toMarkup(), 'V: A B C D [D C G G ] x2 [G E C D ] x3  ');
@@ -248,17 +369,18 @@ void main() {
     }
 
     {
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: D, Am Am/G Am/F# FE  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.preEditSong.toMarkup(),
@@ -274,9 +396,19 @@ void main() {
     }
 
     //
-    {
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F ', 'v: bob, bob, bob berand');
+        {
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.preEditSong.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  ');
@@ -307,17 +439,18 @@ void main() {
 
     {
       //  new row after a repeat, no new row
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F, F  O: Dm C B Bb, A',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F, F  O: Dm C B Bb, A',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       expect(manager.preEditSong.toMarkup(),
           'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F, F  O: Dm C B Bb, A  ');
@@ -330,17 +463,18 @@ void main() {
     }
     {
       //  new row after a repeat with new row   fixme:???
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F, F  O: Dm C B Bb, A',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F, F  O: Dm C B Bb, A',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       expect(manager.preEditSong.toMarkup(),
           'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F, F  O: Dm C B Bb, A  ');
@@ -356,17 +490,18 @@ void main() {
   test('test edit manager inserts', () {
     {
       ChordSectionLocation? location;
-      Song a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'i: A B C D, D C G G v: E F G G o: G G G G',
-          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      Song a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'i: A B C D, D C G G v: E F G G o: G G G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
       var manager = SongEditManager(a);
       var safeCopySong = a.copySong();
       Song b;
@@ -390,17 +525,18 @@ void main() {
 
     {
       ChordSectionLocation? location;
-      Song a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'i: A B C D, D C G G v: E F G G o: G G G G',
-          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      Song a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'i: A B C D, D C G G v: E F G G o: G G G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
       var manager = SongEditManager(a);
       var safeCopySong = a.copySong();
       Song b;
@@ -418,17 +554,18 @@ void main() {
 
     {
       const beatsPerBar = 4;
-      Song a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          beatsPerBar,
-          4,
-          'bob',
-          'i: A B C D, D C G G v: E F G G o: G G G G',
-          'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+      Song a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'i: A B C D, D C G G v: E F G G o: G G G G',
+          rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro');
+
       var manager = SongEditManager(a);
       var safeCopySong = a.copySong();
       Song b;
@@ -448,8 +585,18 @@ void main() {
   test('test edit manager adding sections', () {
     {
       const beatsPerBar = 4;
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, beatsPerBar, 4, 'bob',
-          'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F ', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a);
       expect(manager.preEditSong.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  ');
       var b = manager.preEdit(EditPoint.byChordSection(ChordSection.parseString('Br:', beatsPerBar),
@@ -475,17 +622,18 @@ void main() {
       expect(b.toMarkup(), 'V: [Am Am/G Am/F# FE ] x4  C: F F C C, G G F F  Br: A  ');
     }
     {
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       var location = ChordSectionLocation.fromString('c:0:7');
       var b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.append, onEndOfRow: true));
@@ -494,17 +642,18 @@ void main() {
       expect(manager.editPoint, EditPoint(ChordSectionLocation.fromString('c:0:8'), onEndOfRow: true));
     }
     {
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       var location = ChordSectionLocation.fromString('c:1');
       var b = manager.preEdit(EditPoint(location, measureEditType: MeasureEditType.append, onEndOfRow: true));
@@ -517,17 +666,18 @@ void main() {
   test('test edit manager start of row', () {
     {
       //  insert a default row in front of a repeat
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(),
           'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: F F C C, G G F F  O: Dm C B Bb, A  ');
@@ -542,17 +692,18 @@ void main() {
     }
     {
       //  insert a default row at the start of an empty section
-      var a = Song.createSong(
-          'A',
-          'bob',
-          'copyright bsteele.com',
-          Key.getDefault(),
-          100,
-          4,
-          4,
-          'bob',
-          'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: []  O: Dm C B Bb, A',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: []  O: Dm C B Bb, A',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(),
           'I: V: [Am Am/G Am/F# FE ] x4  I2: [Am Am/G Am/F# FE ] x2  C: []  O: Dm C B Bb, A  ');
@@ -567,8 +718,18 @@ void main() {
 
     {
       //  insert a default row at the start of an empty section
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob', 'V: [] x4',
-          'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'V: [] x4',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: []  ');
       var location = ChordSectionLocation.fromString('v:');
@@ -584,8 +745,18 @@ void main() {
   test('test edit manager end of row', () {
     {
       //  basic measure append
-      var a = Song.createSong('A', 'bob', 'copyright bsteele.com', Key.getDefault(), 100, 4, 4, 'bob',
-          'v: A B C D, D C G G ', 'v: bob, bob, bob berand');
+      var a = Song(
+          title: 'A',
+          artist: 'bob',
+          copyright: 'copyright bsteele.com',
+          key: Key.getDefault(),
+          beatsPerMinute: 100,
+          beatsPerBar: 4,
+          unitsPerMeasure: 4,
+          user: 'bob',
+          chords: 'v: A B C D, D C G G ',
+          rawLyrics: 'v: bob, bob, bob berand');
+
       var safeCopySong = a.copySong();
       var manager = SongEditManager(a.copySong());
       expect(manager.reset().toMarkup(), 'V: A B C D, D C G G  ');

@@ -496,12 +496,50 @@ void main() {
     DrumPartsList drumPartsList = DrumPartsList();
     drumPartsList.addDefaults();
 
-    Song a4 = Song.createSong('a song', 'bob', 'bob', Key.C, 104, 4, 4, 'pearl bob', 'v: A A A A',
-        'v: Ain\'t you going to play something else?');
-    Song b2 = Song.createSong('b song', 'bob', 'bob', Key.C, 104, 2, 4, 'pearl bob', 'v: B B B Bb', 'v: Be flat.');
-    Song c6 =
-        Song.createSong('c never sung song', 'bob', 'bob', Key.G, 104, 6, 8, 'pearl bob', 'v: G D C G', 'v: Gee baby');
-    Song d3 = Song.createSong('D3', 'bob', 'bob', Key.G, 104, 3, 4, 'pearl bob', 'v: G D C G', 'v: Gee baby');
+    Song a4 = Song(
+        title: 'a song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: A A A A',
+        rawLyrics: 'v: Ain\'t you going to play something else?');
+    Song b2 = Song(
+        title: 'b song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.G,
+        beatsPerMinute: 104,
+        beatsPerBar: 2,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: B B B Bb',
+        rawLyrics: 'v: Be flat.');
+    Song c6 = Song(
+        title: 'c never sung song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.G,
+        beatsPerMinute: 104,
+        beatsPerBar: 6,
+        unitsPerMeasure: 8,
+        user: 'pearl bob',
+        chords: 'v: G D C G',
+        rawLyrics: 'v: Gee baby');
+    Song d3 = Song(
+        title: 'c never sung song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.G,
+        beatsPerMinute: 104,
+        beatsPerBar: 3,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: G D C G',
+        rawLyrics: 'v: Gee baby');
     expect(drumPartsList[a4]?.name, 'Default4');
     expect(drumPartsList[b2]?.name, 'Default2');
     expect(drumPartsList[c6]?.name, 'Default6');
@@ -512,11 +550,39 @@ void main() {
     DrumPartsList drumPartsList = DrumPartsList();
     drumPartsList.clear();
 
-    Song a = Song.createSong('a song', 'bob', 'bob', Key.C, 104, 4, 4, 'pearl bob', 'v: A A A A',
-        'v: Ain\'t you going to play something else?');
-    Song b = Song.createSong('b song', 'bob', 'bob', Key.C, 104, 4, 4, 'pearl bob', 'v: B B B Bb', 'v: Be flat.');
-    Song c =
-        Song.createSong('c never sung song', 'bob', 'bob', Key.G, 104, 4, 4, 'pearl bob', 'v: G D C G', 'v: Gee baby');
+    Song a = Song(
+        title: 'a song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: A A A A',
+        rawLyrics: 'v: Ain\'t you going to play something else?');
+    Song b = Song(
+        title: 'b song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.G,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: B B B Bb',
+        rawLyrics: 'v: Be flat.');
+    Song c = Song(
+        title: 'c never sung song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.G,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: G D C G',
+        rawLyrics: 'v: Gee baby');
     expect(drumPartsList[a], null);
     expect(drumPartsList[b], null);
     expect(drumPartsList[c], null);

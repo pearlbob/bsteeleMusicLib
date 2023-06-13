@@ -12,13 +12,22 @@ void main() {
 
   test('test songmoment.lyrics', () {
     //  Create the song
-    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton', 'BMG', Key.D, 110, 4, 4, '''I:
+    SongBase a = SongBase(
+        title: 'After Midnight',
+        artist: 'Eric Clapton',
+        copyright: 'BMG',
+        key: Key.D,
+        beatsPerMinute: 110,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: '''I:
 D FG D D x2
 V:
 D FG D D x2
 D G G A
 O:
-D FG D D x3''', '''I: (instrumental)
+D FG D D x3''',
+        rawLyrics: '''I: (instrumental)
 
 V:
 After midnight
@@ -97,32 +106,46 @@ We gonna let it all hang down
         'We gonna');
     expect(songMoments[9].lyrics, 'let it');
     expect(songMoments[10].lyrics, 'all hang');
-    expect(songMoments[11].lyrics, 'down\n'
+    expect(
+        songMoments[11].lyrics,
+        'down\n'
         'After midnight');
     expect(songMoments[12].lyrics, 'We gonna');
     expect(songMoments[13].lyrics, 'chugalug and');
-    expect(songMoments[14].lyrics, 'shout\n''Gonna stimulate');
+    expect(songMoments[14].lyrics, 'shout\n' 'Gonna stimulate');
     expect(songMoments[15].lyrics, 'some action');
     expect(songMoments[16].lyrics, 'We gonna get some');
-    expect(songMoments[17].lyrics, 'satisfaction\n'
+    expect(
+        songMoments[17].lyrics,
+        'satisfaction\n'
         'We gonna find');
     expect(songMoments[18].lyrics, 'out what it');
     expect(songMoments[19].lyrics, 'is all about');
-    expect(songMoments[20].lyrics, 'After midnight\n'
+    expect(
+        songMoments[20].lyrics,
+        'After midnight\n'
         'We gonna');
     expect(songMoments[21].lyrics, 'let it');
     expect(songMoments[22].lyrics, 'all hang');
-    expect(songMoments[23].lyrics, 'down\n'
+    expect(
+        songMoments[23].lyrics,
+        'down\n'
         'After midnight');
     expect(songMoments[24].lyrics, 'We gonna shake');
-    expect(songMoments[25].lyrics, 'your tambourine\n'
+    expect(
+        songMoments[25].lyrics,
+        'your tambourine\n'
         'After midnight\n'
         'Soul');
     expect(songMoments[26].lyrics, 'gonna be peaches');
     expect(songMoments[27].lyrics, '& cream');
-    expect(songMoments[28].lyrics, 'Gonna cause talk and suspicion\n'
+    expect(
+        songMoments[28].lyrics,
+        'Gonna cause talk and suspicion\n'
         'We');
-    expect(songMoments[28].lyrics, 'Gonna cause talk and suspicion\n'
+    expect(
+        songMoments[28].lyrics,
+        'Gonna cause talk and suspicion\n'
         'We');
     expect(songMoments[30].lyrics, 'gonna find out what');
     expect(songMoments[31].lyrics, 'it is all about');
@@ -138,56 +161,80 @@ We gonna let it all hang down
     expect(songMoments[41].lyrics, isEmpty);
     expect(songMoments[42].lyrics, isEmpty);
     expect(songMoments[43].lyrics, isEmpty);
-    expect(songMoments[44].lyrics, 'After midnight\n'
+    expect(
+        songMoments[44].lyrics,
+        'After midnight\n'
         'We gonna');
     expect(songMoments[45].lyrics, 'let it');
     expect(songMoments[46].lyrics, 'all hang');
-    expect(songMoments[47].lyrics, 'down\n'
-             'After midnight');
+    expect(
+        songMoments[47].lyrics,
+        'down\n'
+        'After midnight');
     expect(songMoments[48].lyrics, 'We gonna shake');
-    expect(songMoments[49].lyrics, 'your tambourine\n'
+    expect(
+        songMoments[49].lyrics,
+        'your tambourine\n'
         'After midnight\n'
         'Soul');
     expect(songMoments[50].lyrics, 'gonna be peaches');
     expect(songMoments[51].lyrics, '& cream');
-    expect(songMoments[52].lyrics, 'Gonna cause talk and suspicion\n'
+    expect(
+        songMoments[52].lyrics,
+        'Gonna cause talk and suspicion\n'
         'We');
-    expect(songMoments[53].lyrics, 'gonna give an exhibition\n'
+    expect(
+        songMoments[53].lyrics,
+        'gonna give an exhibition\n'
         'We');
     expect(songMoments[54].lyrics, 'gonna find out what');
     expect(songMoments[55].lyrics, 'it is all about');
-    expect(songMoments[56].lyrics, 'After midnight\n'
+    expect(
+        songMoments[56].lyrics,
+        'After midnight\n'
         'We gonna');
     expect(songMoments[57].lyrics, 'let it');
     expect(songMoments[58].lyrics, 'all hang');
-    expect(songMoments[59].lyrics, 'down\n'
+    expect(
+        songMoments[59].lyrics,
+        'down\n'
         'After midnight');
     expect(songMoments[60].lyrics, 'We gonna let it');
-    expect(songMoments[61].lyrics, 'all hang down\n'
+    expect(
+        songMoments[61].lyrics,
+        'all hang down\n'
         'After midnight\n'
         'We');
-    expect(songMoments[62].lyrics, 'gonna let it'
-    );
+    expect(songMoments[62].lyrics, 'gonna let it');
     expect(songMoments[63].lyrics, 'all hang down');
-    expect(songMoments[64].lyrics, 'After midnight\n'
-        'We'
-    );
+    expect(
+        songMoments[64].lyrics,
+        'After midnight\n'
+        'We');
     expect(songMoments[65].lyrics, 'gonna let');
     expect(songMoments[66].lyrics, 'it all');
     expect(songMoments[67].lyrics, 'hang down');
     expect(songMoments.length, 68);
-
   });
 
   test('test After Midnight', () {
     //  Create the song
-    SongBase a = SongBase.createSongBase('After Midnight', 'Eric Clapton', 'BMG', Key.D, 110, 4, 4, '''I:
+    SongBase a = SongBase(
+        title: 'After Midnight',
+        artist: 'Eric Clapton',
+        copyright: 'BMG',
+        key: Key.D,
+        beatsPerMinute: 110,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: '''I:
 D FG D D x2
 V:
 D FG D D x2
 D G G A
 O:
-D FG D D x3''', '''I: (instrumental)
+D FG D D x3''',
+        rawLyrics: '''I: (instrumental)
 
 V:
 After midnight
@@ -381,8 +428,15 @@ We gonna let it all hang down
 
   test('test Allison Road', () {
     //  Create the song
-    SongBase a =
-    SongBase.createSongBase('Allison Road', 'Gin Blossoms, The', '1994 A&M', Key.C, 120, 4, 4, '''I1:
+    SongBase a = SongBase(
+        title: 'Allison Road',
+        artist: 'Gin Blossoms, The',
+        copyright: '1994 A&M',
+        key: Key.C,
+        beatsPerMinute: 120,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        chords: '''I1:
 AE DA AE DA
 AE DA G G
 I2:
@@ -396,7 +450,8 @@ Br:
 Bm D A E
 Bm D A G
 G
-        ''', '''I1: (Instrumental)
+        ''',
+        rawLyrics: '''I1: (Instrumental)
 V:
 I’ve lost my mind on what I’d find
 All of the pressure that I left behind

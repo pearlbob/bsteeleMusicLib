@@ -78,22 +78,22 @@ void main() {
    */
   test('find testing', () {
     int beatsPerBar = 4;
-    SongBase a = SongBase.createSongBase(
-        'A',
-        'bob',
-        'bsteele.com',
-        Key.getDefault(),
-        100,
-        beatsPerBar,
-        4,
-        'i: A B C D V: D E F F# '
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'i: A B C D V: D E F F# '
             'v1:    Em7 E E G \n'
             '       C D E Eb7 x2\n'
             'v2:    A B C D |\n'
             '       E F G7 G#m | x2\n'
             '       D C GB GbB \n'
             'C: F F# G G# Ab A Bb B C O: C C C C B',
-        'i:\nv: bob, bob, bob berand\nv1: lala \nv2: sosos \nc: sing chorus here \no:');
+        rawLyrics: 'i:\nv: bob, bob, bob berand\nv1: lala \nv2: sosos \nc: sing chorus here \no:');
     Section section = Section.get(SectionEnum.verse);
     int v = 1;
     SectionVersion sectionVersion = SectionVersion(section, v);

@@ -72,31 +72,17 @@ enum BannerColumn {
 
 const Level _logGrid = Level.debug;
 const Level _logGridDetails = Level.debug;
-const Level _logLyricsTableItems = Level.debug;
 
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
 ///  mechanics to be tested in the a code environment where debugging is easier.
 
 class SongBase {
-  ///  Not to be used externally:
-  SongBase() {
-    title = '';
-    artist = '';
-    coverArtist = '';
-    copyright = '';
-    key = Key.C;
-    timeSignature = TimeSignature.defaultTimeSignature;
-    rawLyrics = '';
-    chords = '';
-    setBeatsPerMinute(100);
-  }
-
   /// Constructor from a set of named arguments.
-  SongBase.from({
+  SongBase({
     String title = 'unknown',
     String artist = 'unknown',
-    String coverArtist = '',
+    String? coverArtist,
     String copyright = 'unknown',
     Key? key,
     int beatsPerMinute = MusicConstants.defaultBpm,
@@ -108,36 +94,16 @@ class SongBase {
   }) {
     this.title = title;
     this.artist = artist;
-    this.coverArtist = coverArtist;
+    this.coverArtist = coverArtist ?? '';
+    setSongId(title, artist, this.coverArtist);
     this.copyright = copyright;
     this.key = key ?? Key.getDefault();
-    this.beatsPerMinute = beatsPerMinute;
+    setBeatsPerMinute(beatsPerMinute);
     timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     this.chords = chords;
     this.rawLyrics = rawLyrics;
     _user = user;
-  }
-
-  /// A convenience constructor used to enforce the minimum requirements for a song.
-  ///
-  /// Note that this is the base class for a song object.
-  /// The split from Song was done for testability reasons.
-  static SongBase createSongBase(String title, String artist, String copyright, Key key, int bpm, int beatsPerBar,
-      int unitsPerMeasure, String chords, String rawLyrics,
-      {String user = defaultUser}) {
-    SongBase song = SongBase();
-    song.title = title;
-    song.artist = artist;
-    song.copyright = copyright;
-    song.key = key;
-    song.timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
-    song.chords = chords;
-    song.rawLyrics = rawLyrics;
-    song.setBeatsPerMinute(bpm);
-    song.resetLastModifiedDateToNow();
-    song._user = user;
-
-    return song;
+    resetLastModifiedDateToNow();
   }
 
   /// Compute the song moments list given the song's current state.
@@ -2890,8 +2856,8 @@ class SongBase {
     if (!twoOrThreeDigitsRegexp.hasMatch(bpmEntry)) {
       throw 'BPM has to be a number from ${MusicConstants.minBpm} to ${MusicConstants.maxBpm}';
     }
-    int bpm = int.parse(bpmEntry);
-    if (bpm < MusicConstants.minBpm || bpm > MusicConstants.maxBpm) {
+    int beatsPerMinute = int.parse(bpmEntry);
+    if (beatsPerMinute < MusicConstants.minBpm || beatsPerMinute > MusicConstants.maxBpm) {
       throw 'BPM has to be a number from ${MusicConstants.minBpm} to ${MusicConstants.maxBpm}';
     }
 
@@ -2942,8 +2908,17 @@ class SongBase {
       throw 'Please enter a user name.';
     }
 
-    Song newSong = Song.createSong(
-        title, artist, copyright, key, bpm, beatsPerBar, unitsPerMeasure, user, chordsTextEntry, lyricsTextEntry);
+    Song newSong = Song(
+        title: title,
+        artist: artist,
+        copyright: copyright,
+        key: key,
+        beatsPerMinute: beatsPerMinute,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: unitsPerMeasure,
+        user: user,
+        chords: chordsTextEntry,
+        rawLyrics: lyricsTextEntry);
 
     if (newSong.getChordSections().isEmpty) {
       throw 'The song has no chord sections! ';
@@ -3136,10 +3111,10 @@ class SongBase {
 
   /// Set the song default beats per minute.
   void setBeatsPerMinute(int bpm) {
-    if (bpm < 20) {
-      bpm = 20;
-    } else if (bpm > 1000) {
-      bpm = 1000;
+    if (bpm < MusicConstants.minBpm) {
+      bpm = MusicConstants.minBpm;
+    } else if (bpm > MusicConstants.maxBpm) {
+      bpm = MusicConstants.maxBpm;
     }
     beatsPerMinute = bpm;
     _duration = null;
