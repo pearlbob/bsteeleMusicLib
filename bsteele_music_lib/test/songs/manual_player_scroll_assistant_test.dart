@@ -3,9 +3,12 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/grid_coordinate.dart';
 import 'package:bsteele_music_lib/manual_player_scroll_assistant.dart';
+import 'package:bsteele_music_lib/songs/key.dart';
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/song.dart';
+import 'package:bsteele_music_lib/songs/song_base.dart';
 import 'package:bsteele_music_lib/songs/song_performance.dart';
 import 'package:bsteele_music_lib/songs/song_update.dart';
 import 'package:bsteele_music_lib/util/util.dart';
@@ -38,9 +41,44 @@ const songPerformanceExtension = '.songperformances';
 void main() {
   Logger.level = Level.info;
 
-  test('pitch mapping testing', () {
+  test('ManualPlayerScrollAssistant testing', () {
     List<String> args = [];
     CjLog().runMain(args);
+  });
+
+  test('ManualPlayerScrollAssistant BPM', () {
+    var song = Song(
+      title: 'the song',
+      artist: 'bob',
+      copyright: '2023 bob',
+      key: Key.C,
+      beatsPerMinute: 105,
+      beatsPerBar: 4,
+      unitsPerMeasure: 4,
+      chords: 'v: [ A B C D ] x2 o: [ E F G Ab ] x2 E',
+      rawLyrics: 'v: o:',
+    );
+
+    bool expanded = false;
+    // var displayGrid =
+    song.toDisplayGrid(UserDisplayStyle.both, expanded: expanded);
+    List<GridCoordinate> songMomentToGridCoordinate = song.songMomentToGridCoordinate;
+    ManualPlayerScrollAssistant assistant =
+        ManualPlayerScrollAssistant(song, expanded: expanded, bpm: song.beatsPerMinute);
+    final start = DateTime.now();
+    assistant.sectionRequest(start, 0);
+    final List<int> firstRowMoments = [0, 1, 2, 3, 8, 9, 10, 11];
+    for (var m in song.songMoments) {
+      var t = song.getSongTimeAtMoment(m.momentNumber);
+      var songTime = start.add(Duration(microseconds: (Duration.microsecondsPerSecond * t).round()));
+      var gc = songMomentToGridCoordinate[m.momentNumber];
+      var isFirstRow = assistant.isLyricSectionFirstRow(songTime, gc.row);
+      logger.i('${m.momentNumber}: ${m.lyricSection.sectionVersion} ${m.measure}'
+          ' $songTime, offset: ${songTime.difference(start)}'
+          ', row: ${gc.row}, firstRow? $isFirstRow');
+      expect(isFirstRow, firstRowMoments.contains(m.momentNumber));
+    }
+    // assistant.isLyricSectionFirstRow(now, row);
   });
 }
 

@@ -1,4 +1,5 @@
 import 'package:bsteele_music_lib/songs/lyric_section.dart';
+import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/song_base.dart';
 import 'package:logger/logger.dart';
 
@@ -41,6 +42,11 @@ class ManualPlayerScrollAssistant {
       for (var songMoment in song.songMoments) {
         //  find the minimum row required for a new lyric section, new phrase index, or any measure if expanded
         LyricSection lyricSection = songMoment.lyricSection;
+        var row = songMomentToGridCoordinateLookup[songMoment.momentNumber].row;
+        if (!identical(lyricSection, lastLyricSection)) {
+          //  mark the new section row
+          _lyricSectionFirstRows.add(row);
+        }
         if (!identical(lyricSection, lastLyricSection) ||
                 songMoment.phraseIndex != lastPhraseIndex ||
                 !songMoment.phrase.isRepeat() //  non-repeats use their own row
@@ -49,7 +55,7 @@ class ManualPlayerScrollAssistant {
             ) {
           lastLyricSection = lyricSection;
           lastPhraseIndex = songMoment.phraseIndex;
-          minRow = songMomentToGridCoordinateLookup[songMoment.momentNumber].row;
+          minRow = row;
         }
         songMomentsToMinRowIndex.add(minRow);
       }
@@ -75,6 +81,14 @@ class ManualPlayerScrollAssistant {
   int? rowSuggestion(final DateTime dateTime) {
     int? ret;
     switch (_state) {
+      case ManualPlayerScrollAssistantState.tooEarly:
+        //  compute max bpm for this section
+        var beatCount = song.songMomentAtBeatNumber(_refBeatNumber)?.chordSection.beatCount;
+        //logger.i('beatCount: $beatCount');
+        if (beatCount != null) {
+          _bpm = _computeBpmAt(dateTime, _refBeatNumber + beatCount);
+        }
+        break;
       case ManualPlayerScrollAssistantState.forward:
         var beatNumber = beatNumberAt(dateTime);
         ret = rowAtBeatNumber(beatNumber.round());
@@ -91,7 +105,7 @@ class ManualPlayerScrollAssistant {
   sectionRequest(final DateTime dateTime, int sectionIndex) {
     sectionIndex = Util.indexLimit(sectionIndex, song.lyricSections);
     var beatNumber = 0;
-    if (sectionIndex > _lastSectionIndex) {
+    if (sectionIndex >= _lastSectionIndex) {
       var newSongMomentIndex = song.firstMomentInLyricSection(song.lyricSections[sectionIndex]).momentNumber;
       beatNumber = song.songMoments[newSongMomentIndex].beatNumber;
       logger.log(
@@ -99,7 +113,7 @@ class ManualPlayerScrollAssistant {
           'section: from $_lastSectionIndex to $sectionIndex, moment: $newSongMomentIndex'
           ', row: ${songMomentsToMinRowIndex[newSongMomentIndex]}, beat: $beatNumber');
     } else {
-      //  going backwards?
+      //  going backwards
       _state = ManualPlayerScrollAssistantState.noClue;
     }
     _lastSectionIndex = sectionIndex;
@@ -110,7 +124,7 @@ class ManualPlayerScrollAssistant {
     switch (_state) {
       case ManualPlayerScrollAssistantState.noClue:
         //  skip the first beat number
-        if (beatNumber > 0) {
+        if (beatNumber >= 0) {
           _refBeatNumber = beatNumber;
           _refDateTime = dateTime;
           _state = ManualPlayerScrollAssistantState.tooEarly;
@@ -137,16 +151,25 @@ class ManualPlayerScrollAssistant {
   }
 
   int _computeBpmAt(final DateTime dateTime, final int beatNumber) {
-    return (60 *
-            (beatNumber - _refBeatNumber) *
-            Duration.microsecondsPerSecond /
-            dateTime.difference(_refDateTime!).inMicroseconds)
-        .round();
+    var diff = dateTime.difference(_refDateTime!).inMicroseconds;
+    var songMoment = song.songMomentAtBeatNumber(beatNumber);
+
+    if (songMoment == null ||
+        //  don't compute bpm at the start of the song
+        songMoment.sectionCount < 1 ||
+        //  don't compute bpm at the end of the song
+        songMoment.sectionCount >= song.lyricSections.length - 1) {
+      return _bpm ?? MusicConstants.defaultBpm;
+    }
+
+    return (diff > 0) ? (60 * (beatNumber - _refBeatNumber) * Duration.microsecondsPerSecond / diff).round() : 0;
   }
 
   double beatNumberAt(final DateTime dateTime) {
-    return _refBeatNumber +
-        bpm * dateTime.difference(_refDateTime!).inMicroseconds / (60 * Duration.microsecondsPerSecond);
+    return _refDateTime == null
+        ? 0.0
+        : _refBeatNumber +
+            bpm * dateTime.difference(_refDateTime!).inMicroseconds / (60 * Duration.microsecondsPerSecond);
   }
 
   int? rowAtBeatNumber(final int beatNumber) {
@@ -155,6 +178,19 @@ class ManualPlayerScrollAssistant {
       return null;
     }
     return songMomentsToMinRowIndex[moment.momentNumber];
+  }
+
+  bool isLyricSectionFirstRow(final DateTime dateTime, final int row) {
+    if (!_lyricSectionFirstRows.contains(row)) {
+      return false;
+    }
+    // logger.i( '     beatNumberAt($dateTime) = ${beatNumberAt(dateTime).ceil()}');
+    var moment = song.songMomentAtBeatNumber(beatNumberAt(dateTime).ceil());
+    // logger.i( '     moment: $moment');
+    if (moment == null) {
+      return false;
+    }
+    return moment.repeat == 0;
   }
 
   @override
@@ -181,4 +217,5 @@ class ManualPlayerScrollAssistant {
   ManualPlayerScrollAssistantState get state => _state;
   ManualPlayerScrollAssistantState _state = ManualPlayerScrollAssistantState.noClue;
   List<int> songMomentsToMinRowIndex = [];
+  final List<int> _lyricSectionFirstRows = [];
 }
