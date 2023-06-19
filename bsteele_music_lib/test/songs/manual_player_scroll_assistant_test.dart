@@ -46,7 +46,7 @@ void main() {
     CjLog().runMain(args);
   });
 
-  test('ManualPlayerScrollAssistant BPM', () {
+  test('ManualPlayerScrollAssistant isLyricSectionFirstRow()', () {
     var song = Song(
       title: 'the song',
       artist: 'bob',
@@ -55,8 +55,8 @@ void main() {
       beatsPerMinute: 105,
       beatsPerBar: 4,
       unitsPerMeasure: 4,
-      chords: 'v: [ A B C D ] x2 o: [ E F G Ab ] x2 E',
-      rawLyrics: 'v: o:',
+      chords: 'i: G G G G, A B C D v: [ A B C D ] x2 c: A B C D, [F F F G] x3 E o: [ E F G ] x2 E',
+      rawLyrics: 'i: v: c: o:',
     );
 
     bool expanded = false;
@@ -67,18 +67,26 @@ void main() {
         ManualPlayerScrollAssistant(song, expanded: expanded, bpm: song.beatsPerMinute);
     final start = DateTime.now();
     assistant.sectionRequest(start, 0);
-    final List<int> firstRowMoments = [0, 1, 2, 3, 8, 9, 10, 11];
+    final List<int> firstRowMoments = [
+      //  i:
+      0, 1, 2, 3,
+      //  v:
+      8, 9, 10, 11,
+      //  c:
+      16, 17, 18, 19,
+      //  o:
+      33, 34, 35
+    ];
     for (var m in song.songMoments) {
       var t = song.getSongTimeAtMoment(m.momentNumber);
       var songTime = start.add(Duration(microseconds: (Duration.microsecondsPerSecond * t).round()));
       var gc = songMomentToGridCoordinate[m.momentNumber];
-      var isFirstRow = assistant.isLyricSectionFirstRow(songTime, gc.row);
+      var isFirstRow = assistant.isLyricSectionFirstRow(songTime);
       logger.i('${m.momentNumber}: ${m.lyricSection.sectionVersion} ${m.measure}'
           ' $songTime, offset: ${songTime.difference(start)}'
           ', row: ${gc.row}, firstRow? $isFirstRow');
       expect(isFirstRow, firstRowMoments.contains(m.momentNumber));
     }
-    // assistant.isLyricSectionFirstRow(now, row);
   });
 }
 

@@ -538,6 +538,25 @@ class Phrase extends MeasureNode {
     return r;
   }
 
+  /// Return the expanded row count for the given measure index
+  int expandedRowIndexAt(final int measureIndex) {
+    if (measureIndex <= 0) {
+      return 0;
+    }
+    int rowIndex = 0;
+    int index = 0;
+    for (final m in measures) {
+      if (index == measureIndex) {
+        return rowIndex;
+      }
+      if (m.endOfRow) {
+        rowIndex++;
+      }
+      index++;
+    }
+    return rowIndex; //  shouldn't normally happen
+  }
+
   List<Measure> rowAt(int index, {expanded = false}) {
     var ret = <Measure>[];
 
