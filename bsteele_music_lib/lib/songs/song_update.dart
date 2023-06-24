@@ -15,6 +15,7 @@ enum SongUpdateState {
   manualPlay,
   playing,
   idle,
+  pause,
 }
 
 const unknownSinger = 'unknown';

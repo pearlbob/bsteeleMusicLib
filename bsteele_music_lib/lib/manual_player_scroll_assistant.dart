@@ -75,14 +75,6 @@ class ManualPlayerScrollAssistant {
   int? rowSuggestion(final DateTime dateTime) {
     int? ret;
     switch (_state) {
-      case ManualPlayerScrollAssistantState.tooEarly:
-        //  compute max bpm for this section
-        var beatCount = song.songMomentAtBeatNumber(_refBeatNumber)?.chordSection.beatCount;
-        //logger.i('beatCount: $beatCount');
-        if (beatCount != null) {
-          _bpm = _computeBpmAt(dateTime, _refBeatNumber + beatCount);
-        }
-        break;
       case ManualPlayerScrollAssistantState.forward:
         var beatNumber = beatNumberAt(dateTime);
         ret = rowAtBeatNumber(beatNumber.round());
@@ -127,7 +119,6 @@ class ManualPlayerScrollAssistant {
       case ManualPlayerScrollAssistantState.tooEarly:
         //  delay to get two points of reference
         _state = ManualPlayerScrollAssistantState.forward;
-        _bpm = _computeBpmAt(dateTime, beatNumber);
         break;
       case ManualPlayerScrollAssistantState.forward:
         var estimatedBeatNumber = beatNumberAt(dateTime);
@@ -160,7 +151,7 @@ class ManualPlayerScrollAssistant {
       ret = (diff > 0)
           ? (60 * (beatNumber - _refBeatNumber) * Duration.microsecondsPerSecond / diff).round()
           : _bpm ?? MusicConstants.defaultBpm;
-      logger.i('raw ret: $ret, diff: $diff');
+      //logger.i('raw ret: $ret, diff: $diff, state: ${state.name}, _bpm: $_bpm');
       if (ret < MusicConstants.minBpm || ret > MusicConstants.maxBpm) {
         //  out of range
         ret = _bpm ?? MusicConstants.defaultBpm;
