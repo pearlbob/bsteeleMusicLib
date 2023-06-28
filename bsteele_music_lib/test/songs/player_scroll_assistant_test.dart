@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/grid_coordinate.dart';
-import 'package:bsteele_music_lib/manual_player_scroll_assistant.dart';
+import 'package:bsteele_music_lib/player_scroll_assistant.dart';
 import 'package:bsteele_music_lib/songs/key.dart';
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/song.dart';
@@ -41,12 +41,12 @@ const songPerformanceExtension = '.songperformances';
 void main() {
   Logger.level = Level.info;
 
-  test('ManualPlayerScrollAssistant testing', () {
+  test('PlayerScrollAssistant testing', () {
     List<String> args = [];
     CjLog().runMain(args);
   });
 
-  test('ManualPlayerScrollAssistant isLyricSectionFirstRow()', () {
+  test('PlayerScrollAssistant isLyricSectionFirstRow()', () {
     var song = Song(
       title: 'the song',
       artist: 'bob',
@@ -63,8 +63,7 @@ void main() {
     // var displayGrid =
     song.toDisplayGrid(UserDisplayStyle.both, expanded: expanded);
     List<GridCoordinate> songMomentToGridCoordinate = song.songMomentToGridCoordinate;
-    ManualPlayerScrollAssistant assistant =
-        ManualPlayerScrollAssistant(song, expanded: expanded, bpm: song.beatsPerMinute);
+    PlayerScrollAssistant assistant = PlayerScrollAssistant(song, expanded: expanded, bpm: song.beatsPerMinute);
     final start = DateTime.now();
     assistant.sectionRequest(start, 0);
     final List<int> firstRowMoments = [
@@ -427,7 +426,7 @@ _simulateManualPlay(final Song song, final List<({DateTime dateTime, int section
   logger.log(_cjLogDetails, '');
   logger.log(_cjLogDetails, '${song.songId}, BPM: ${song.beatsPerMinute}');
 
-  ManualPlayerScrollAssistant assistant = ManualPlayerScrollAssistant(song, expanded: expanded);
+  PlayerScrollAssistant assistant = PlayerScrollAssistant(song, expanded: expanded);
 
   DateTime? baseTime;
   DateTime? rowTime;

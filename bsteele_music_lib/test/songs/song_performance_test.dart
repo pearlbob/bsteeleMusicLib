@@ -4,6 +4,7 @@ import 'package:bsteele_music_lib/songs/song.dart';
 import 'package:bsteele_music_lib/songs/song_performance.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
+import 'package:compute/compute.dart';
 
 void main() {
   Logger.level = Level.debug;
@@ -157,54 +158,60 @@ void main() {
   });
 
   test('song performance dates', () async {
-    var a = Song(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: 4,
-        unitsPerMeasure: 4,
-        user: 'pearlbob',
-        chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
+    await compute<void, void>((_) async {
+      //  run this test in an isolate so the singleton allSongPerformances is not affected by other
+      //  tests running in parallel.
+      test('performance dates', () async {
+        var a = Song(
+            title: 'A',
+            artist: 'bob',
+            copyright: 'bsteele.com',
+            key: Key.getDefault(),
+            beatsPerMinute: 100,
+            beatsPerBar: 4,
+            unitsPerMeasure: 4,
+            user: 'pearlbob',
+            chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
+            rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here');
 
-    var singer1 = 'bodhi';
-    SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.A);
-    logger.d('$songPerformance');
-    expect(songPerformance.lastSungDateString, matches(r'^\d{1,2}/\d{1,2}/202\d$'));
+        var singer1 = 'bodhi';
+        SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.A);
+        logger.d('$songPerformance');
+        expect(songPerformance.lastSungDateString, matches(r'^\d{1,2}/\d{1,2}/202\d$'));
 
-    var next = SongPerformance.fromSong(a, singer1, key: Key.A);
-    await Future.delayed(const Duration(seconds: 4));
-    logger.i('songPerformance: $songPerformance');
-    logger.i('next: $next');
-    expect(next.lastSung > songPerformance.lastSung, true);
+        var next = SongPerformance.fromSong(a, singer1, key: Key.A);
+        await Future.delayed(const Duration(seconds: 2));
+        logger.i('songPerformance: $songPerformance');
+        logger.i('next: $next');
+        expect(next.lastSung > songPerformance.lastSung, true);
 
-    songPerformance = SongPerformance.fromJsonString(
-        '{"songId":"Song_A_by_bob","singer":"bodhi","key":0,"bpm":100,"lastSung":1639848618406}');
-    expect(songPerformance.lastSungDateString, '12/18/2021');
+        songPerformance = SongPerformance.fromJsonString(
+            '{"songId":"Song_A_by_bob","singer":"bodhi","key":0,"bpm":100,"lastSung":1639848618406}');
+        expect(songPerformance.lastSungDateString, '12/18/2021');
 
-    songPerformance = SongPerformance.fromJsonString(
-        '{"songId":"Song_A_by_bob","singer":"bodhi","key":0,"bpm":100,"lastSung":1548296878134}');
-    expect(songPerformance.lastSungDateString, '1/23/2019');
+        songPerformance = SongPerformance.fromJsonString(
+            '{"songId":"Song_A_by_bob","singer":"bodhi","key":0,"bpm":100,"lastSung":1548296878134}');
+        expect(songPerformance.lastSungDateString, '1/23/2019');
 
-    var allSongPerformances = AllSongPerformances.test();
-    expect(allSongPerformances.length, 0);
-    allSongPerformances.addSongPerformance(songPerformance);
-    expect(allSongPerformances.length, 1);
-    //  duplicate songs should not be duplicated
-    allSongPerformances.addSongPerformance(songPerformance);
-    expect(allSongPerformances.length, 1);
-    allSongPerformances.addSongPerformance(songPerformance.update());
-    expect(allSongPerformances.length, 1);
-    allSongPerformances.addSongPerformance(songPerformance);
-    expect(allSongPerformances.length, 1);
+        var allSongPerformances = AllSongPerformances.test();
+        expect(allSongPerformances.length, 0);
+        allSongPerformances.addSongPerformance(songPerformance);
+        expect(allSongPerformances.length, 1);
+        //  duplicate songs should not be duplicated
+        allSongPerformances.addSongPerformance(songPerformance);
+        expect(allSongPerformances.length, 1);
+        allSongPerformances.addSongPerformance(songPerformance.update());
+        expect(allSongPerformances.length, 1);
+        allSongPerformances.addSongPerformance(songPerformance);
+        expect(allSongPerformances.length, 1);
 
-    allSongPerformances.loadSongs([a]);
-    expect(
-        allSongPerformances.bySong(a).toString(),
-        '[SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
-        ' _singer: \'bodhi\', _key: A, _bpm: 100, sung: 1/23/2019}]');
+        allSongPerformances.loadSongs([a]);
+        expect(
+            allSongPerformances.bySong(a).toString(),
+            '[SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
+            ' _singer: \'bodhi\', _key: A, _bpm: 100, sung: 1/23/2019}]');
+      });
+    }, null);
   });
 
   test('song all performances', () async {

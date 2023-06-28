@@ -11,15 +11,15 @@ import 'util/util.dart';
 const _cjLogManualBumps = Level.debug;
 const _logComputeBpm = Level.debug;
 
-enum ManualPlayerScrollAssistantState {
+enum PlayerScrollAssistantState {
   noClue,
   tooEarly,
   forward,
 }
 
-class ManualPlayerScrollAssistant {
-  ManualPlayerScrollAssistant(this.song, {required final bool expanded, int? bpm}) : _bpm = bpm ?? song.beatsPerMinute {
-    logger.i('ManualPlayerScrollAssistant(bpm: $_bpm)');
+class PlayerScrollAssistant {
+  PlayerScrollAssistant(this.song, {required final bool expanded, int? bpm}) : _bpm = bpm ?? song.beatsPerMinute {
+    logger.i('PlayerScrollAssistant(bpm: $bpm)');
 
     //  generate table of minimum phrase row indices
     {
@@ -75,7 +75,7 @@ class ManualPlayerScrollAssistant {
   int? rowSuggestion(final DateTime dateTime) {
     int? ret;
     switch (_state) {
-      case ManualPlayerScrollAssistantState.forward:
+      case PlayerScrollAssistantState.forward:
         var beatNumber = beatNumberAt(dateTime);
         ret = rowAtBeatNumber(beatNumber.round());
         // logger.i('beatNumber: $beatNumber, row: $ret');
@@ -100,7 +100,7 @@ class ManualPlayerScrollAssistant {
           ', row: ${songMomentsToMinRowIndex[newSongMomentIndex]}, beat: $beatNumber');
     } else {
       //  going backwards
-      _state = ManualPlayerScrollAssistantState.noClue;
+      _state = PlayerScrollAssistantState.noClue;
     }
     _lastSectionIndex = sectionIndex;
     rowSuggestion(dateTime);
@@ -108,19 +108,19 @@ class ManualPlayerScrollAssistant {
     //  compute the bpm going forward
     error = null;
     switch (_state) {
-      case ManualPlayerScrollAssistantState.noClue:
+      case PlayerScrollAssistantState.noClue:
         //  skip the first beat number
         if (beatNumber >= 0) {
           _refBeatNumber = beatNumber;
           _refDateTime = dateTime;
-          _state = ManualPlayerScrollAssistantState.tooEarly;
+          _state = PlayerScrollAssistantState.tooEarly;
         }
         break;
-      case ManualPlayerScrollAssistantState.tooEarly:
+      case PlayerScrollAssistantState.tooEarly:
         //  delay to get two points of reference
-        _state = ManualPlayerScrollAssistantState.forward;
+        _state = PlayerScrollAssistantState.forward;
         break;
-      case ManualPlayerScrollAssistantState.forward:
+      case PlayerScrollAssistantState.forward:
         var estimatedBeatNumber = beatNumberAt(dateTime);
         _bpm = _computeBpmAt(dateTime, beatNumber);
         error = estimatedBeatNumber - beatNumber;
@@ -146,15 +146,13 @@ class ManualPlayerScrollAssistant {
         songMoment.sectionCount < 1 ||
         //  don't compute bpm at the end of the song
         songMoment.sectionCount >= song.lyricSections.length - 1) {
-      ret = _bpm ?? MusicConstants.defaultBpm;
+      ret = _bpm;
     } else {
-      ret = (diff > 0)
-          ? (60 * (beatNumber - _refBeatNumber) * Duration.microsecondsPerSecond / diff).round()
-          : _bpm ?? MusicConstants.defaultBpm;
+      ret = (diff > 0) ? (60 * (beatNumber - _refBeatNumber) * Duration.microsecondsPerSecond / diff).round() : _bpm;
       //logger.i('raw ret: $ret, diff: $diff, state: ${state.name}, _bpm: $_bpm');
       if (ret < MusicConstants.minBpm || ret > MusicConstants.maxBpm) {
         //  out of range
-        ret = _bpm ?? MusicConstants.defaultBpm;
+        ret = _bpm;
       }
     }
     logger.log(
@@ -167,10 +165,10 @@ class ManualPlayerScrollAssistant {
   /// Compute the beat number for the given time
   /// Requires a valid BPM.
   double beatNumberAt(final DateTime dateTime) {
-    return _refDateTime == null || _bpm == null
+    return _refDateTime == null
         ? 0.0
         : _refBeatNumber +
-            bpm * dateTime.difference(_refDateTime!).inMicroseconds / (60 * Duration.microsecondsPerSecond);
+            _bpm * dateTime.difference(_refDateTime!).inMicroseconds / (60 * Duration.microsecondsPerSecond);
   }
 
   int? rowAtBeatNumber(final int beatNumber) {
@@ -200,8 +198,20 @@ class ManualPlayerScrollAssistant {
         '${error != null ? ', error: ${error?.toStringAsFixed(1)}' : ''}}';
   }
 
-  int get bpm => _bpm ?? 0;
-  int? _bpm;
+  set bpm(final int value) {
+    if (_bpm != value) {
+      //  reset the reference time based on the new bpm and the current position
+      if (_refDateTime != null) {
+        var now = DateTime.now();
+        _refBeatNumber = beatNumberAt(now).round(); //  fixme: coordinate with drums!!
+        _refDateTime = now;
+      }
+      _bpm = value;
+    }
+  }
+
+  int get bpm => _bpm;
+  int _bpm;
   double? error;
 
   int _lastSectionIndex = 0;
@@ -215,8 +225,8 @@ class ManualPlayerScrollAssistant {
 
   final Song song;
 
-  ManualPlayerScrollAssistantState get state => _state;
-  ManualPlayerScrollAssistantState _state = ManualPlayerScrollAssistantState.noClue;
+  PlayerScrollAssistantState get state => _state;
+  PlayerScrollAssistantState _state = PlayerScrollAssistantState.noClue;
   List<int> songMomentsToMinRowIndex = [];
   final List<int> _lyricSectionFirstRows = [];
 }

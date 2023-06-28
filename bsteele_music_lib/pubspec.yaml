@@ -31,3 +31,4 @@ dev_dependencies:
   test:
   build_runner:
   build_web_compilers:
+  compute:
