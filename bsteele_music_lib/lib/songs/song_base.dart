@@ -3256,12 +3256,13 @@ class SongBase {
   }
 
   /// determine the song's current moment given the time from the beginning to the current time
-  int? getSongMomentNumberAtSongTime(double songTime) {
-    if (beatsPerMinute <= 0) {
+  int? getSongMomentNumberAtSongTime(double songTime, {int? bpm}) {
+    bpm ??= beatsPerMinute;
+    if (bpm <= 0) {
       return null;
     } //  we're done with this song play
 
-    int? songBeat = getBeatNumberAtTime(beatsPerMinute, songTime);
+    int? songBeat = getBeatNumberAtTime(bpm, songTime);
     if (songBeat == null) {
       return null;
     }
@@ -3269,7 +3270,7 @@ class SongBase {
       return (songBeat - timeSignature.beatsPerBar + 1) ~/ timeSignature.beatsPerBar; //  constant measure based lead in
     }
 
-    _computeSongMoments();
+    _computeSongMoments(); //  typically this is already complete
     if (songBeat >= _beatsToMoment.length) {
       return null;
     } //  we're done with the last measure of this song play

@@ -8,7 +8,7 @@ import 'grid_coordinate.dart';
 import 'songs/song.dart';
 import 'util/util.dart';
 
-const _cjLogManualBumps = Level.debug;
+const _logPlayerScrollBumps = Level.info;
 const _logComputeBpm = Level.debug;
 
 enum PlayerScrollAssistantState {
@@ -74,16 +74,10 @@ class PlayerScrollAssistant {
   /// Suggest a row for the player list using the current time
   int? rowSuggestion(final DateTime dateTime) {
     int? ret;
-    switch (_state) {
-      case PlayerScrollAssistantState.forward:
-        var beatNumber = beatNumberAt(dateTime);
-        ret = rowAtBeatNumber(beatNumber.round());
-        // logger.i('beatNumber: $beatNumber, row: $ret');
-        _lastRowSuggestion = ret ?? _lastRowSuggestion;
-        break;
-      default:
-        break;
-    }
+    var beatNumber = beatNumberAt(dateTime);
+    ret = rowAtBeatNumber(beatNumber.round());
+    logger.log(_logPlayerScrollBumps, 'beatNumber: ${beatNumber.toStringAsFixed(1)}, row: $ret, bpm: $_bpm');
+    _lastRowSuggestion = ret ?? _lastRowSuggestion;
     return ret;
   }
 
@@ -95,7 +89,7 @@ class PlayerScrollAssistant {
       var newSongMomentIndex = song.firstMomentInLyricSection(song.lyricSections[sectionIndex]).momentNumber;
       beatNumber = song.songMoments[newSongMomentIndex].beatNumber;
       logger.log(
-          _cjLogManualBumps,
+          _logPlayerScrollBumps,
           'section: from $_lastSectionIndex to $sectionIndex, moment: $newSongMomentIndex'
           ', row: ${songMomentsToMinRowIndex[newSongMomentIndex]}, beat: $beatNumber');
     } else {
@@ -124,15 +118,15 @@ class PlayerScrollAssistant {
         var estimatedBeatNumber = beatNumberAt(dateTime);
         _bpm = _computeBpmAt(dateTime, beatNumber);
         error = estimatedBeatNumber - beatNumber;
-        logger.log(
-            _cjLogManualBumps,
-            'forward: $beatNumber/${dateTime.difference(_refDateTime!)}'
-            ' = $_bpm bpm'
-            ', est: ${estimatedBeatNumber.toStringAsFixed(3)}'
-            ', row: ${rowAtBeatNumber(beatNumber)}'
-            ', error: ${error?.toStringAsFixed(3)}');
+        logger.log(_logPlayerScrollBumps, 'forward:  estimatedBeatNumber: ${estimatedBeatNumber.toStringAsFixed(3)}');
         break;
     }
+    logger.log(
+        _logPlayerScrollBumps,
+        'forward: $beatNumber/${dateTime.difference(_refDateTime!)}'
+        ' = $_bpm bpm'
+        ', row: ${rowAtBeatNumber(beatNumber)}'
+        ', error: ${error?.toStringAsFixed(3)}');
   }
 
   int _computeBpmAt(final DateTime dateTime, final int beatNumber) {
