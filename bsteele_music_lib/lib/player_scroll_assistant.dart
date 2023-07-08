@@ -8,7 +8,7 @@ import 'grid_coordinate.dart';
 import 'songs/song.dart';
 import 'util/util.dart';
 
-const _logPlayerScrollBumps = Level.info;
+const _logPlayerScrollBumps = Level.debug;
 const _logComputeBpm = Level.debug;
 
 enum PlayerScrollAssistantState {
@@ -18,7 +18,9 @@ enum PlayerScrollAssistantState {
 }
 
 class PlayerScrollAssistant {
-  PlayerScrollAssistant(this.song, {required final bool expanded, int? bpm}) : _bpm = bpm ?? song.beatsPerMinute {
+  PlayerScrollAssistant(this.song,
+      {required final UserDisplayStyle userDisplayStyle, required final bool expanded, int? bpm})
+      : _bpm = bpm ?? song.beatsPerMinute {
     logger.i('PlayerScrollAssistant(bpm: $bpm)');
 
     //  generate table of minimum phrase row indices
@@ -26,8 +28,7 @@ class PlayerScrollAssistant {
       //  generate the display grid
       // Grid<MeasureNode> displayGrid =
       //  note: actual grid is not used!... just the song moment to grid coordinate mapping.
-      song.toDisplayGrid(UserDisplayStyle.both,
-          expanded: expanded); //  fixme: style and expanded from current values!!!!
+      song.toDisplayGrid(userDisplayStyle, expanded: expanded);
       final List<GridCoordinate> songMomentToGridCoordinateLookup = song.songMomentToGridCoordinate;
 
       int lastPhraseIndex = 0;
@@ -76,7 +77,11 @@ class PlayerScrollAssistant {
     int? ret;
     var beatNumber = beatNumberAt(dateTime);
     ret = rowAtBeatNumber(beatNumber.round());
-    logger.log(_logPlayerScrollBumps, 'beatNumber: ${beatNumber.toStringAsFixed(1)}, row: $ret, bpm: $_bpm');
+    logger.log(
+        _logPlayerScrollBumps,
+        'beatNumber: ${beatNumber.toStringAsFixed(1)}, row: $ret'
+        ', moment: ${song.getFirstSongMomentAtRow(ret ?? -1)}'
+        ', bpm: $_bpm');
     _lastRowSuggestion = ret ?? _lastRowSuggestion;
     return ret;
   }

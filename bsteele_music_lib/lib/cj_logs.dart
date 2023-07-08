@@ -94,7 +94,7 @@ class CjLog {
 
     var usTimer = UsTimer();
     Directory logs;
-    var processedLogs = Directory('${Util.homePath()}/communityJams/$_host/Downloads');
+    var processedLogs = Directory(downloadsDirString);
     if (_catalinaBase != null) {
       if (_catalinaBase!.isEmpty) {
         print('Empty CATALINA_BASE environment variable: "$_catalinaBase"');

@@ -118,21 +118,21 @@ class SongUpdate {
 
     beat = 0;
 
-//  leave negative moment numbers as they are
+    //  leave negative moment numbers as they are
     if (m < 0) {
       momentNumber = m;
       songMoment = null;
       return;
     }
 
-//  deal with empty songs
+    //  deal with empty songs
     if (song.getSongMomentsSize() == 0) {
       momentNumber = 0;
       songMoment = null;
       return;
     }
 
-//  past the end and we're done
+    //  past the end and we're done
     if (m >= song.getSongMomentsSize()) {
       momentNumber = song.getSongMomentsSize();
       songMoment = null;
@@ -286,7 +286,7 @@ class SongUpdate {
           case 'song':
             setSong(Song.songFromJson(jv));
             break;
-          //  momentNumber sequencing details should be found by local processing
+        //  momentNumber sequencing details should be found by local processing
           case 'momentNumber':
             momentNumber = jv;
             break;

@@ -63,7 +63,8 @@ void main() {
     // var displayGrid =
     song.toDisplayGrid(UserDisplayStyle.both, expanded: expanded);
     List<GridCoordinate> songMomentToGridCoordinate = song.songMomentToGridCoordinate;
-    PlayerScrollAssistant assistant = PlayerScrollAssistant(song, expanded: expanded, bpm: song.beatsPerMinute);
+    PlayerScrollAssistant assistant = PlayerScrollAssistant(song,
+        userDisplayStyle: UserDisplayStyle.both, expanded: expanded, bpm: song.beatsPerMinute);
     final start = DateTime.now();
     assistant.sectionRequest(start, 0);
     final List<int> firstRowMoments = [
@@ -426,7 +427,8 @@ _simulateManualPlay(final Song song, final List<({DateTime dateTime, int section
   logger.log(_cjLogDetails, '');
   logger.log(_cjLogDetails, '${song.songId}, BPM: ${song.beatsPerMinute}');
 
-  PlayerScrollAssistant assistant = PlayerScrollAssistant(song, expanded: expanded);
+  PlayerScrollAssistant assistant =
+      PlayerScrollAssistant(song, userDisplayStyle: UserDisplayStyle.both, expanded: expanded);
 
   DateTime? baseTime;
   DateTime? rowTime;

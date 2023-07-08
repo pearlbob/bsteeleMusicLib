@@ -708,6 +708,51 @@ void main() {
     expect(filter.testAll([rock]), false);
     expect(filter.testAll([blues]), false);
   });
+
+  test('test songMetadata', () {
+    final userBob = NameValue('User', 'bob');
+    final userShari = NameValue('User', 'Shari');
+    final userBodhi = NameValue('User', 'Bodhi');
+    final rock = NameValue('Genre', 'Rock');
+    final blues = NameValue('Genre', 'Blues');
+
+    SongMetadata.clear();
+
+    Song a = Song(
+        title: 'a song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+        rawLyrics: 'v:');
+
+    Song b = Song(
+        title: 'b song',
+        artist: 'bob',
+        copyright: 'bob',
+        key: Key.C,
+        beatsPerMinute: 104,
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+        rawLyrics: 'v:');
+
+    SongMetadata.set(SongIdMetadata(a.songId.toString(), metadata: <NameValue>[rock]));
+    SongMetadata.set(SongIdMetadata(b.songId.toString(), metadata: <NameValue>[blues]));
+
+    for (var idMetadata in SongMetadata.idMetadata) {
+      logger.i(idMetadata.toString());
+    }
+    logger.i('$a: ${rock.name}: ${SongMetadata.songMetadata(a, rock.name)}');
+    logger.i('$b: ${rock.name}: ${SongMetadata.songMetadata(b, rock.name)}');
+    logger.i('$a: genre: ${SongMetadata.songMetadata(a, 'genre')}');
+    logger.i('$b: genre: ${SongMetadata.songMetadata(b, 'genre')}');
+  });
 }
 
 final RegExp christmasRegExp = RegExp(r'.*christmas.*', caseSensitive: false);
