@@ -12,7 +12,6 @@ import 'song_moment.dart';
 
 enum SongUpdateState {
   none,
-  manualPlay,
   playing,
   idle,
   pause,
