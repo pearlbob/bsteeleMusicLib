@@ -326,7 +326,7 @@ class CjLog {
         }
 
         //  only push the display forward in manual play mode
-        if (songUpdate.state == SongUpdateState.manualPlay) {
+        if (songUpdate.state == SongUpdateState.playing) {
           //  mark the beginning to use it as a reference
           //  used to average the manual input (section bumps)
           if ((baseSectionCount ?? -1) >= 0) {
