@@ -1,5 +1,6 @@
 name: bsteele_music_lib
 description: backend Dart library for the bsteeleMusicApp, see bsteele.com
+publish_to: none
 # version: 1.0.0
 # homepage: https://pub.dev/packages?q=
 
