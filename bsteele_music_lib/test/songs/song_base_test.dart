@@ -1167,13 +1167,13 @@ c2:
 
 ''');
 
-    logger.v('<${a.rawLyrics}>');
+    logger.t('<${a.rawLyrics}>');
 
     for (var ls in a.lyricSections) {
-      logger.v(ls.sectionVersion.toString());
+      logger.t(ls.sectionVersion.toString());
       var i = 1;
       for (var line in ls.lyricsLines) {
-        logger.v('    ${i++}: $line');
+        logger.t('    ${i++}: $line');
       }
     }
     expect(a.lyricSections.length, 4);
@@ -1221,10 +1221,10 @@ c2:
         chords: 'O:'
             'D..Dm7 Dm7 C..B♭maj7 B♭maj7  x12',
         rawLyrics: 'o: nothing');
-    logger.v('grid: ${a.logGrid()}');
+    logger.t('grid: ${a.logGrid()}');
     location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
     MeasureNode? measureNode = a.findMeasureNodeByLocation(location);
-    logger.v('measure: ${measureNode!.toMarkup()}');
+    logger.t('measure: ${measureNode!.toMarkup()}');
     expect(measureNode, Measure.parseString('B♭maj7', beatsPerBar));
     MeasureNode? mn = a.findMeasureNodeByGrid(const GridCoordinate(0, 4));
     Measure? expectedMn = Measure.parseString('B♭maj7', beatsPerBar);
@@ -1391,7 +1391,7 @@ c2:
         unitsPerMeasure: 4,
         chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
         rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
-    logger.v(a.toMarkup());
+    logger.t(a.toMarkup());
     logger.d('testing: ${ChordSectionLocation.parseString('I:0:0')}');
     logger.d('testing2: ${a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0'))}');
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), const GridCoordinate(0, 1));
@@ -1812,11 +1812,11 @@ c2:
         logger.d('$bpm $t: $expected  ${SongBase.getBeatNumberAtTime(bpm, t)}');
         int? result = SongBase.getBeatNumberAtTime(bpm, t);
         if (result == null) throw 'result == null';
-        logger.v('beat at $t = $result');
-        logger.v('   expected: $expected');
+        logger.t('beat at $t = $result');
+        logger.t('   expected: $expected');
         if (result != expected) {
           //  deal with test rounding issues
-          logger.v('t/dt - e: ${t / (dtDiv * dt) - expected}');
+          logger.t('t/dt - e: ${t / (dtDiv * dt) - expected}');
           expect((t / (dtDiv * dt) - expected).abs() < 1.5e-14, isTrue);
         }
         count++;
@@ -1852,7 +1852,7 @@ c2:
       for (double t = -8 * 3 * dt; t < 8 * 3 * dt; t += dt) {
         int? result = a.getSongMomentNumberAtSongTime(t);
         if (result == null) throw 'result == null';
-        logger.v(
+        logger.t(
             '$t = ${t / dt} x dt   $expected  @$count  b:${SongBase.getBeatNumberAtTime(bpm, t)}: ${a.getSongMomentNumberAtSongTime(t)}, bpm: $bpm');
         if (expected != result) {
           //  deal with test rounding issues
@@ -1955,7 +1955,7 @@ c2:
         chords: 'I: [Am Am/G Am/F♯ FE ] x4  v: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ',
         rawLyrics: 'i:\nv: bob, bob, bob berand\nv: nope\nc: sing chorus here o: end here');
 
-//    logger.v(a.toMarkup());
+//    logger.t(a.toMarkup());
 //    logger.d('testing: ' + ChordSectionLocation.parseString('I:0:0').toString());
 //    logger.d('testing2: ' + a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')).toString());
     expect(a.getGridCoordinate(ChordSectionLocation.parseString('I:0:0')), const GridCoordinate(0, 1));
@@ -4602,7 +4602,7 @@ Grid{
           rawLyrics: 'v:');
 
       for (var lyricSection in a.lyricSections) {
-        logger.v('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
+        logger.t('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
       }
       expect(a.firstMomentInLyricSection(a.lyricSections[0]).momentNumber, 0);
     }
@@ -4627,7 +4627,7 @@ Grid{
               'yo4\nyo5\nyo6\nyo7');
 
       for (var lyricSection in a.lyricSections) {
-        logger.v('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
+        logger.t('$lyricSection: ${a.firstMomentInLyricSection(lyricSection).lyricSection.index}');
       }
       expect(a.firstMomentInLyricSection(a.lyricSections[0]).momentNumber, 0);
       expect(a.firstMomentInLyricSection(a.lyricSections[1]).momentNumber, 16);
@@ -4743,6 +4743,24 @@ Grid{
 
     logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
     expect(a.scaleChordsUsed().toString(), '[A♭, B♭maj7, Bsus4, C, Cm, D, G, G5, G7b5, G7#9]');
+  });
+
+  test('test short measures', () {
+    int beatsPerBar = 4;
+    Song a;
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bob',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: 1A 2B 3C 3DEF  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
+    logger.i(a.toJson());
   });
 }
 

@@ -134,7 +134,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       //  consume unused commas
       {
         String s = markedString.remainingStringLimited(10);
-        logger.v('s: $s');
+        logger.t('s: $s');
         RegExpMatch? mr = _commaRegexp.firstMatch(s);
         if (mr != null) {
           markedString.consume(mr.group(0)!.length);

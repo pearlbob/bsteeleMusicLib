@@ -17,7 +17,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   LyricSection(this._sectionVersion, this._index);
 
   void addLine(String lyricsLine) {
-    logger.v('LyricSection.add($lyricsLine)');
+    logger.t('LyricSection.add($lyricsLine)');
     _lyricsLines.add(lyricsLine);
   }
 

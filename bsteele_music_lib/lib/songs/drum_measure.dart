@@ -177,14 +177,14 @@ class DrumPart implements Comparable<DrumPart> {
       for (String name in json.keys) {
         switch (name) {
           case 'drumType':
-            logger.v('type: ${json[name]}');
+            logger.t('type: ${json[name]}');
             drumType = Util.enumFromString<DrumTypeEnum>(json[name], DrumTypeEnum.values);
             break;
           case 'beats':
             beats = json[name];
             break;
           case 'selection':
-            logger.v('selections: ${json[name]}');
+            logger.t('selections: ${json[name]}');
             for (var v in json[name]) {
               selections.add(v as int);
             }
@@ -397,9 +397,9 @@ class DrumParts implements Comparable<DrumParts> {
           volume = json[name];
           break;
         case 'parts':
-          logger.v('parts: ${json[name].runtimeType} ${json[name]}');
+          logger.t('parts: ${json[name].runtimeType} ${json[name]}');
           for (var jsonPart in json[name]) {
-            logger.v('json part: ${jsonPart.runtimeType} $jsonPart');
+            logger.t('json part: ${jsonPart.runtimeType} $jsonPart');
             var part = DrumPart.fromJsonDecoderConvert(jsonPart);
             if (part != null) {
               parts[part.drumType] = part;
@@ -595,7 +595,7 @@ class DrumPartsList {
   }
 
   DrumParts? songMatch(final Song song) {
-    logger.v('songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
+    logger.t('songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
         '${_drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]]}');
     return _drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]];
   }
@@ -694,7 +694,7 @@ class DrumPartsList {
         case 'matchesList':
           var jsonMatches = decoded[decodedKey];
           for (var key in jsonMatches.keys) {
-            logger.v('$key: ${jsonMatches[key]}');
+            logger.t('$key: ${jsonMatches[key]}');
             _songIdToDrumPartsNameMap[key] = jsonMatches[key];
           }
           break;

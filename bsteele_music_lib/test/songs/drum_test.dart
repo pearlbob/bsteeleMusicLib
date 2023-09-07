@@ -314,8 +314,8 @@ void main() {
               drumParts.addPart(drumPart);
 
               var drumPartsFromJson = DrumParts.fromJson(drumParts.toJson());
-              logger.v(drumParts.toJson());
-              logger.v(drumPartsFromJson?.toJson());
+              logger.t(drumParts.toJson());
+              logger.t(drumPartsFromJson?.toJson());
               expect(drumParts == drumPartsFromJson, isTrue);
             }
           }
@@ -347,11 +347,11 @@ void main() {
       for (var beats = 2; beats <= 6; beats += 2) {
         DrumParts drumParts = DrumParts();
         drumParts.name = 'bob stuff for $beats beats';
-        logger.v('beats: $beats');
+        logger.t('beats: $beats');
         for (var beat in DrumBeat.values) {
-          logger.v('  beat: $beat');
+          logger.t('  beat: $beat');
           for (var drumSubBeat in DrumSubBeatEnum.values) {
-            logger.v('    drumSubBeat: $drumSubBeat');
+            logger.t('    drumSubBeat: $drumSubBeat');
             for (var drumType in DrumTypeEnum.values) {
               drumParts.beats = beats;
               var drumPart = drumParts.at(drumType);
@@ -359,7 +359,7 @@ void main() {
 
               drumParts.addPart(drumPart);
 
-              logger.v(drumParts.toString());
+              logger.t(drumParts.toString());
               expect(drumParts.copyWith(), drumParts);
             }
           }
@@ -469,11 +469,11 @@ void main() {
       for (var beats = 2; beats <= 6; beats += 2) {
         DrumParts drumParts = DrumParts();
         drumParts.name = 'bob stuff for $beats beats';
-        logger.v('beats: $beats');
+        logger.t('beats: $beats');
         for (var beat in DrumBeat.values) {
-          logger.v('  beat: $beat');
+          logger.t('  beat: $beat');
           for (var drumSubBeat in DrumSubBeatEnum.values) {
-            logger.v('    drumSubBeat: $drumSubBeat');
+            logger.t('    drumSubBeat: $drumSubBeat');
             for (var drumType in DrumTypeEnum.values) {
               drumParts.beats = beats;
               var drumPart = drumParts.at(drumType);

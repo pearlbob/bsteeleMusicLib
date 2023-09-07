@@ -18,7 +18,7 @@ import '../app_logger.dart';
 final RegExp _notWordRegExp = RegExp(r'\W');
 final RegExp _whitespaceRegExp = RegExp(r'\s');
 
-const _log = Level.verbose;
+const _log = Level.trace;
 
 List<Tuple2<String, int>> toSyllableTuples(String words) {
   // TODO: deal with contractions

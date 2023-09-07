@@ -47,7 +47,7 @@ class TestSong {
 
     //  process the edits
     logger.d('editEntry: ${editEntry ?? 'null'}');
-    logger.v('edit loc: ${_myA.getCurrentChordSectionLocation()}');
+    logger.t('edit loc: ${_myA.getCurrentChordSectionLocation()}');
     List<MeasureNode> measureNodes = _myA.parseChordEntry(editEntry);
     if (measureNodes.isEmpty && (editEntry == null || editEntry.isEmpty) && type == MeasureEditType.delete) {
       expect(_myA.deleteCurrentSelection(), isTrue);
@@ -58,7 +58,7 @@ class TestSong {
       //  the edit is here:
       expect(_myA.editList(measureNodes), isTrue);
     }
-    logger.v('after edit loc: ${_myA.getCurrentChordSectionLocation()}');
+    logger.t('after edit loc: ${_myA.getCurrentChordSectionLocation()}');
   }
 
   void resultChords(String chords) {

@@ -483,4 +483,342 @@ void main() {
       }
     }
   });
+
+  test('test short measures', () {
+    int beatsPerBar;
+    Measure measure;
+    Chord expected;
+
+    beatsPerBar = 2;
+    measure = Measure.parseString('1A', beatsPerBar);
+    expect(measure.beatCount, 1);
+    expected = Chord.byScaleChordAndBeats(ScaleChord.fromScaleNote(ScaleNote.A), 1, beatsPerBar);
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.toMarkup(), '1A');
+    expect(measure.beatCount, 1);
+    expect(measure.getChordAtBeat(2), null);
+
+    measure = Measure.parseString('A', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.beatCount, 2);
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.toMarkup(), 'A');
+
+    measure = Measure.parseString('AB', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.toMarkup(), 'AB');
+
+    beatsPerBar = 3;
+    measure = Measure.parseString('1A', beatsPerBar);
+    expect(measure.beatCount, 1);
+    expect(measure.toMarkup(), '1A');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('2A', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), 'A.');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+
+    measure = Measure.parseString('2AB', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), '2AB');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(1), expected);
+
+    measure = Measure.parseString('A.', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), 'A.');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+
+    measure = Measure.parseString('A..', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 3;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+
+    measure = Measure.parseString('A', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 3;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+
+    measure = Measure.parseString('A.B', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A.B');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+
+    measure = Measure.parseString('AB.', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'AB.');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+
+    measure = Measure.parseString('ABC', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'ABC');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(1), expected);
+    expected = Chord.parseString('C', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+
+    beatsPerBar = 4;
+    measure = Measure.parseString('1A', beatsPerBar);
+    expect(measure.beatCount, 1);
+    expect(measure.toMarkup(), '1A');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('2A', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), 'A.');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('A.', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), 'A.');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('2AB', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), '2AB');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('A..', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A..');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 3;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    //  deprecated form
+    measure = Measure.parseString('A...', beatsPerBar);
+    expect(measure.beatCount, 4);
+    expect(measure.toMarkup(), 'A');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 4;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), expected);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('A', beatsPerBar);
+    expect(measure.beatCount, 4);
+    expect(measure.toMarkup(), 'A');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 4;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), expected);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('A.B', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A.B');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('AB.', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'AB.');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('ABC', beatsPerBar);
+    expect(measure.beatCount, 4);
+    expect(measure.toMarkup(), 'A.BC'); //  promoted without a beat count
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(2), expected);
+    expected = Chord.parseString('C', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(3), expected);
+    expect(measure.getChordAtBeat(4), null);
+
+/*
+    beats  bpb    forms, in order of preference
+    1       4     1A
+    2       4     A. 2A 2AB
+    3       4     A.. 3A A.B AB. 3ABC                   not: ABC
+    4       4     A A..B AB A.BC AB.C ABC.              not: ABC   A...
+    1       6     1A
+    2       6     A. 2A 2AB
+    3       6     A.. 3A A.B AB.                      not: ABC
+    4       6     A... 4A A..B 4A.B. 4A.BC 4AB.C 4ABC.
+    5       6     A.... 5A A...B A..B. A.BC. A.B.C AB..C ABC..
+    6       6     A AB A..B.C AB...C ABC...   A.B.C.  not:  ABC  A.....
+    */
+    beatsPerBar = 6;
+    measure = Measure.parseString('1A', beatsPerBar);
+    expect(measure.beatCount, 1);
+    expect(measure.toMarkup(), '1A');
+
+    measure = Measure.parseString('2A', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), '2A.');
+    expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
+        ChordAnticipationOrDelay.defaultValue, true);
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    measure = Measure.parseString('A.', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+
+    measure = Measure.parseString('2AB', beatsPerBar);
+    expect(measure.beatCount, 2);
+    expect(measure.toMarkup(), '2AB');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(1), expected);
+    expect(measure.getChordAtBeat(2), null);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('3A.B', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), '3A.B');
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 2;
+    expect(measure.getChordAtBeat(0), expected);
+    expect(measure.getChordAtBeat(1), expected);
+    expected = Chord.parseString('B', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(2), expected);
+    expect(measure.getChordAtBeat(3), null);
+    expect(measure.getChordAtBeat(4), null);
+
+    measure = Measure.parseString('A..', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A..');
+
+    measure = Measure.parseString('3A..', beatsPerBar);
+    expect(measure.beatCount, 3);
+    expect(measure.toMarkup(), 'A..');
+
+    measure = Measure.parseString('4Asus2...', beatsPerBar);
+    expect(measure.beatCount, 4);
+    expect(measure.toMarkup(), 'Asus2...');
+
+    measure = Measure.parseString('5A', 6);
+    expect(measure.beatCount, 5);
+    expect(measure.toMarkup(), 'A....');
+
+    measure = Measure.parseString('6A', 6);
+    expect(measure.beatCount, 6);
+    expect(measure.toMarkup(), 'A');
+  });
 }

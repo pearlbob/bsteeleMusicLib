@@ -113,7 +113,7 @@ void main() {
 
       for (String scorePart in partMap.keys) {
         XmlElement? part = partMap[scorePart];
-        logger.v('    scorePart: $part');
+        logger.t('    scorePart: $part');
 
         for (XmlElement xmlMeasure in part?.findElements('measure') ?? []) {
           var numberAttr = xmlMeasure.getAttribute('number');
@@ -225,7 +225,7 @@ void main() {
 
     StringBuffer sb = StringBuffer();
     {
-      logger.v(songAsMusicXml);
+      logger.t(songAsMusicXml);
       var allMatches = RegExp(r'^((?!\s*<encoding-date>\d{4}-\d{2}-\d{2}</encoding-date>\s*).)*$', multiLine: true)
           .allMatches(songAsMusicXml);
       expect(allMatches, isNotNull);

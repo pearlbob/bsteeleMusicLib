@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -16,8 +15,9 @@ import 'section.dart';
 /// When added, chord beat durations exceeding the measure beat count will be ignored on playback.
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
-  Measure(this._beatCount, this.chords) {
-    _allocateTheBeats();
+  Measure(this._beatCount, this.chords, {int? beatsPerBar, int? maxBeatCount})
+      : _beatsPerBar = beatsPerBar ?? _beatCount {
+    _allocateTheBeats(maxBeatCount ?? _beatCount);
   }
 
   Measure deepCopy() {
@@ -26,11 +26,12 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   /// for subclasses
   Measure.zeroArgs()
-      : _beatCount = 4,
+      : _beatCount = MusicConstants.defaultBeatsPerBar,
+        _beatsPerBar = MusicConstants.defaultBeatsPerBar,
         chords = [];
 
   /// Convenience method for testing only
-  static Measure parseString(String s, int beatsPerBar, {bool endOfRow = false}) {
+  static Measure parseString(String s, final int beatsPerBar, {final bool endOfRow = false}) {
     return parse(MarkedString(s), beatsPerBar, null, endOfRow: endOfRow);
   }
 
@@ -42,11 +43,30 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       throw 'no data to parse';
     }
 
+    int maxBeatCount = beatsPerBar;
+    {
+      //  look for leading beat count
+      var c = markedString.charAt(0);
+      switch (c) {
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+          maxBeatCount = int.parse(c);
+          markedString.consume(1);
+          break;
+      }
+    }
+
     List<Chord> chords = [];
     Measure? ret;
 
     for (int i = 0; i < 32; i++) //  safety
     {
+      assert(i < 30);
+
       if (markedString.isEmpty) {
         break;
       }
@@ -65,7 +85,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       } catch (e) {
         markedString.resetTo(mark);
 
-        //  see if this is a chordless measure
+        //  see if this is a chord less measure
         if (markedString.charAt(0) == 'X') {
           ret = Measure(beatsPerBar, emptyChordList);
           markedString.pop();
@@ -85,7 +105,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       throw 'no chords found';
     }
 
-    ret ??= Measure(beatsPerBar, chords);
+    assert(maxBeatCount <= beatsPerBar);
+    ret ??= Measure(maxBeatCount, chords, beatsPerBar: beatsPerBar, maxBeatCount: maxBeatCount);
 
     //  process end of row markers
     RegExpMatch? mr = sectionRegexp.firstMatch(markedString.toString());
@@ -99,102 +120,76 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return ret;
   }
 
-  void _allocateTheBeats() {
+  void _allocateTheBeats(final int maxBeatCount) {
     //  fixme: deal with under specified beats: eg. A.B in 4/4, implement as A.B1.
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
-    if (chords.isNotEmpty) {
-      //  find the total count of beats explicitly specified
-      int explicitChords = 0;
-      int explicitBeats = 0;
-      for (Chord c in chords) {
-        if (c.beats < beatCount) {
-          explicitChords++;
-          explicitBeats += c.beats;
-        }
-      }
-      //  verify not over specified
-      if (explicitBeats + (chords.length - explicitChords) > beatCount) {
-        return; //  too many beats!  even if the unspecified chords only got 1
-      }
+    if (chords.isEmpty) {
+      return;
+    }
 
-      //  verify not under specified
-      if (chords.length == explicitChords && explicitBeats < beatCount) {
-        //  a short measure
-        for (Chord c in chords) {
-          c.implicitBeats = false;
-        }
-        _beatCount = explicitBeats;
-        return;
-      }
+    //  find the total count of beats, prior to implicit distribution
+    int totalBeats = 0;
+    for (Chord c in chords) {
+      totalBeats += c.beats;
+    }
 
-      if (explicitBeats == 0 && explicitChords == 0 && beatCount % chords.length == 0) {
-        //  spread the implicit beats evenly
-        int implicitBeats = beatCount ~/ chords.length;
-        //  fixme: why is the cast required?
-        for (Chord c in chords) {
-          c.beats = implicitBeats;
-          c.implicitBeats = true;
-        }
-      } else {
-        //  allocate the remaining beats to the unspecified chords
-        //  give left over beats to the first unspecified
-        int totalBeats = explicitBeats;
-        if (chords.length > explicitChords) {
-          Chord? firstUnspecifiedChord;
-          int beatsPerUnspecifiedChord = max(1, (beatCount - explicitBeats) ~/ (chords.length - explicitChords));
-          for (Chord c in chords) {
-            c.implicitBeats = false;
-            if (c.beats == beatCount) {
-              firstUnspecifiedChord ??= c;
-              c.beats = beatsPerUnspecifiedChord;
-              totalBeats += beatsPerUnspecifiedChord;
-            }
-          }
-          //  dump all the remaining beats on the first unspecified
-          if (firstUnspecifiedChord != null && totalBeats < beatCount) {
-            firstUnspecifiedChord.implicitBeats = false;
-            firstUnspecifiedChord.beats = beatsPerUnspecifiedChord + (beatCount - totalBeats);
-            totalBeats = beatCount;
-          }
-        }
-        if (totalBeats == beatCount) {
-          int b = chords[0].beats;
-          bool allMatch = true;
-          for (Chord c in chords) {
-            allMatch &= (c.beats == b);
-          }
-          if (allMatch) {
-            //  reduce the over specification
-            for (Chord c in chords) {
-              c.implicitBeats = true;
-            }
-          } else if (totalBeats > 1) {
-            //  reduce the over specification
-            for (Chord c in chords) {
-              if (c.beats == 1) {
-                c.implicitBeats = true;
-              }
-            }
-          }
-        }
+    //  verify not over specified
+    if (totalBeats > maxBeatCount) {
+      _beatCount = maxBeatCount;
+      //  fixme: limit the total beats???
+      assert(false);
+      return; //  too many beats!  even if the implicit chords only got 1 beat
+    }
+
+    //  find the total count of beats explicitly specified
+    int explicitChords = 0;
+    for (Chord c in chords) {
+      if (!c.implicitBeats) {
+        explicitChords++;
       }
     }
+
+    //  explicit measures must be explicit, i.e. all beats are specified.
+    if (explicitChords > 0 || totalBeats < _beatsPerBar) {
+      //  a short measure
+      for (Chord c in chords) {
+        c.implicitBeats = false;
+      }
+      _beatCount = totalBeats;
+    }
+
+    //  allocate the remaining beats to the implicit chords
+    //  give left over beats to the first implicit
+    int unallocatedBeats = maxBeatCount - totalBeats;
+    if (unallocatedBeats > 0) {
+      int additionalBeatsPerChord = unallocatedBeats ~/ chords.length;
+      for (Chord c in chords) {
+        c.beats += additionalBeatsPerChord;
+        unallocatedBeats -= additionalBeatsPerChord;
+      }
+      //  dump all the remaining beats on the first unspecified
+      if (unallocatedBeats > 0) {
+        chords.first.beats += unallocatedBeats;
+      }
+    }
+
+    _beatCount = maxBeatCount;
   }
 
-  Chord? getChordAtBeat(double beat) {
+  Chord? getChordAtBeat(int beat) {
     if (chords.isEmpty) {
       return null;
     }
 
-    double beatSum = 0;
+    int beatSum = 0;
     for (Chord chord in chords) {
       beatSum += chord.beats;
-      if (beat <= beatSum) {
+      if (beatSum >= beat + 1) {
         return chord;
       }
     }
-    return chords[chords.length - 1];
+    return null;
   }
 
   @override
@@ -232,12 +227,12 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   String toMarkup({bool expanded = false}) {
-    return toMarkupWithEnd(',');
+    return _toMarkupWithEnd(',');
   }
 
   @override
   String toEntry() {
-    return toMarkupWithEnd('\n');
+    return _toMarkupWithEnd('\n');
   }
 
   @override
@@ -261,23 +256,29 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   String toJson() {
-    return toMarkupWithEnd(null);
+    return _toMarkupWithEnd(null);
   }
 
   @override
   String toMarkupWithoutEnd() {
-    return toMarkupWithEnd(null);
+    return _toMarkupWithEnd(null);
   }
 
-  String toMarkupWithEnd(String? endOfRowChar) {
+  String _toMarkupWithEnd(String? endOfRowChar) {
     if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
+      bool implicitBeats = false;
       for (Chord chord in chords) {
         sb.write(chord.toMarkup());
+        implicitBeats = implicitBeats || chord.implicitBeats;
       }
       if (endOfRowChar != null && endOfRow) {
         sb.write(endOfRowChar);
       }
+      if (!implicitBeats && (_beatCount == 1 || _beatCount == chords.length)) {
+        return '$_beatCount${sb.toString()}';
+      }
+
       return sb.toString();
     }
     if (endOfRowChar != null && endOfRow) {
@@ -334,7 +335,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   int get hashCode {
-    int ret = Object.hash(beatCount, endOfRow, hashObjects(chords));
+    int ret = Object.hash(_beatCount, endOfRow, _beatsPerBar, hashObjects(chords));
     return ret;
   }
 
@@ -343,6 +344,34 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   /// Defaults to 4.
   int get beatCount => _beatCount;
   int _beatCount = 4; //  default only
+
+  int get beatsPerBar => _beatCount;
+  final int _beatsPerBar;
+
+  /*
+  beats  bpb    forms, in order of preference
+  1       2     1A
+  2       2     A AB
+  1       3     1A
+  2       3     A. 2A 2AB
+  3       3     A A.. A.B AB. ABC
+                  AB => A.B  ???
+  1       4     1A
+  2       4     A. 2A 2AB
+  3       4     A.. 3A A.B AB. 3ABC                   not: ABC
+                  3AB => AB.  ???
+  4       4     A A..B AB A.BC AB.C ABC.              not: ABC   A...
+                  AB => A.B.
+                  ABC => A.BC ???       not: ABC.  ???
+  1       6     1A
+  2       6     A. 2A 2AB
+  3       6     A.. 3A A.B AB.                      not: ABC
+  4       6     A... 4A A..B 4A.B. 4A.BC 4AB.C 4ABC.
+  5       6     A.... 5A A...B A..B. A.BC. A.B.C AB..C ABC..
+  6       6     A AB A..B.C AB...C ABC...   A.B.C.  not:  ABC  A.....
+                  AB => A..B..
+                  ABC => A.B.C. ???  likely
+   */
 
   /// indicate that the measure is at the end of it's row of measures in the phrase
   bool endOfRow = false;

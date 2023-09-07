@@ -172,7 +172,7 @@ void main() {
     for (int i = -6; i <= 6; i++) {
       Key key = Key.getKeyByValue(i);
       expect(i, key.getKeyValue());
-      logger.v('${i >= 0 ? ' ' : ''}$i ${key.name} ($key)\t'
+      logger.t('${i >= 0 ? ' ' : ''}$i ${key.name} ($key)\t'
           //+ " html: " + key.toHtml()
           );
 
@@ -781,7 +781,7 @@ void main() {
           expect(accidental.contains(MusicConstants.sharpChar), false);
         }
         if (lastAccidental != null) {
-          logger.v('acc: "$accidental" ${accidental[0].codeUnitAt(0).toString()}'
+          logger.t('acc: "$accidental" ${accidental[0].codeUnitAt(0).toString()}'
               ', last: "${lastAccidental.toString()}"  ${lastAccidental[0].codeUnitAt(0).toString()}');
 
           //  same scale letter or the next one

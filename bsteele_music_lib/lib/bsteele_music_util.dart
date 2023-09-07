@@ -85,6 +85,7 @@ arguments:
 -longsections       select for songs  with long sections
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
+-oddmeasures        find the odd length measures in songs
 -perfupdate {file}  update the song performances with a file
 -perfwrite {file}   update the song performances to a file
 -popSongs           list the most popular songs
@@ -362,7 +363,7 @@ coerced to reflect the songlist's last modification for that song.
 
               var songId = SongId.computeSongId(title, artist, null);
 
-              logger.v('try $songId');
+              logger.t('try $songId');
 
               Song song;
               try {
@@ -377,7 +378,7 @@ coerced to reflect the songlist's last modification for that song.
                     ', coverArtist: "${song.coverArtist}"');
               }
               if (genre.isNotEmpty || subgenre.isNotEmpty || jam.isNotEmpty || year.isNotEmpty) {
-                logger.v('$song:  genre: $genre, subgenre: $subgenre, jam: $jam, year: $year');
+                logger.t('$song:  genre: $genre, subgenre: $subgenre, jam: $jam, year: $year');
                 if (genre.isNotEmpty) SongMetadata.addSong(song, NameValue('genre', genre));
                 if (subgenre.isNotEmpty) SongMetadata.addSong(song, NameValue('subgenre', subgenre));
                 if (jam.isNotEmpty) SongMetadata.addSong(song, NameValue('jam', jam));
@@ -913,6 +914,25 @@ coerced to reflect the songlist's last modification for that song.
             logger.e('missing output path for -o');
             _help();
             exit(-1);
+          }
+          break;
+
+        case '-oddmeasures':
+          for (var song in allSongs) {
+            StringBuffer sb = StringBuffer();
+            for (var chordSection in song.getChordSections()) {
+              for (var phrase in chordSection.phrases) {
+                for (var measure in phrase.measures) {
+                  if (measure.beatCount != song.beatsPerBar && measure.toString().contains('.')) {
+                    sb.writeln('    ${chordSection.sectionVersion}  $measure');
+                  }
+                }
+              }
+            }
+            if (sb.isNotEmpty) {
+              logger.i('${song.title} by ${song.artist}, beats: ${song.beatsPerBar}:');
+              logger.i(sb.toString());
+            }
           }
           break;
 
@@ -1831,7 +1851,7 @@ coerced to reflect the songlist's last modification for that song.
       if (i > 0) {
         List<String> ranking = line.split(_csvLineSplit);
         if (ranking[1].isNotEmpty) {
-          logger.v('$i: ${ranking[0]}, ${ranking[1]}');
+          logger.t('$i: ${ranking[0]}, ${ranking[1]}');
           SongMetadata.add(SongIdMetadata(ranking[0], metadata: <NameValue>[NameValue('jam', ranking[1])]));
         }
       }

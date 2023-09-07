@@ -36,7 +36,7 @@ class Chord implements Comparable<Chord> {
   Chord.byScaleChordAndBeats(this._scaleChord, this.beats, this._beatsPerBar)
       : _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none) {
     slashScaleNote = null;
-    implicitBeats = true;
+    implicitBeats = beats == _beatsPerBar;
   }
 
   static Chord? parseString(String s, int beatsPerBar) {
@@ -48,7 +48,6 @@ class Chord implements Comparable<Chord> {
       throw 'no data to parse';
     }
 
-    int beats = beatsPerBar; //  default only
     ScaleChord? scaleChord = ScaleChord.parse(markedString);
     if (scaleChord == null) {
       return null;
@@ -65,29 +64,25 @@ class Chord implements Comparable<Chord> {
       markedString.consume(1);
       slashScaleNote = ScaleNote.parse(markedString);
     }
+    int beats = 1;
+    bool implicitBeats = true;
     if (markedString.isNotEmpty && markedString.charAt(0) == '.') {
-      String s = markedString.toString();
-      if (_beatSizeRegexp.hasMatch(s)) {
-        beats = int.parse(s.substring(1, 2));
-        markedString.consume(2);
-      } else {
-        beats = 1;
-        while (markedString.isNotEmpty && markedString.charAt(0) == '.') {
-          markedString.consume(1);
-          beats++;
-          if (beats >= 12) {
-            break;
-          }
+      implicitBeats = false;
+      while (markedString.isNotEmpty && markedString.charAt(0) == '.') {
+        markedString.consume(1);
+        beats++;
+        if (beats >= 12) {
+          break;
         }
       }
     }
 
     if (beats > beatsPerBar) {
+      assert(false);
       throw 'too many beats in the chord';
     } //  whoops
 
-    Chord ret =
-        Chord(scaleChord, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, (beats == beatsPerBar)); //  fixme
+    Chord ret = Chord(scaleChord, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats); //  fixme
     return ret;
   }
 
@@ -152,10 +147,10 @@ class Chord implements Comparable<Chord> {
 
   String beatsToString() {
     String ret = '';
+    //  note: at the chord level, a single beat chord should not have additional beats
+    //  the single beat designation will be done at the measure level
     if (!implicitBeats && beats < _beatsPerBar) {
-      if (beats == 1) {
-        ret += '.1';
-      } else {
+      if (beats > 1) {
         int b = 1;
         while (b++ < beats && b < 12) {
           ret += '.';
@@ -171,13 +166,9 @@ class Chord implements Comparable<Chord> {
         (slashScaleNote == null ? '' : '/${slashScaleNote!.toMarkup()}') +
         _anticipationOrDelay.toString();
     if (!implicitBeats && beats < _beatsPerBar) {
-      if (beats == 1) {
-        ret += '.1';
-      } else {
-        int b = 1;
-        while (b++ < beats && b < 12) {
-          ret += '.';
-        }
+      int b = 1;
+      while (b++ < beats && b < 12) {
+        ret += '.';
       }
     }
     return ret;
@@ -243,13 +234,12 @@ class Chord implements Comparable<Chord> {
   int get beatsPerBar => _beatsPerBar;
   late int _beatsPerBar;
 
-  bool implicitBeats = true; //  fixme: explain this variable's purpose
+  bool implicitBeats = true; //  chord has fewer beats than the beats per bar
   ScaleNote? slashScaleNote;
 
   ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;
   late final ChordAnticipationOrDelay _anticipationOrDelay;
 
-  static final RegExp _beatSizeRegexp = RegExp(r'^\.\d');
   static final minimumPianoRootPitch = Pitch.get(PitchEnum.A3); //  the A below middle C, i.e. C4.
   static final minimumPianoSlashPitch = Pitch.get(PitchEnum.E2); // bottom of piano bass clef
   static final minimumBassSlashPitch = Pitch.get(PitchEnum.E1); //  the low E of a bass guitar

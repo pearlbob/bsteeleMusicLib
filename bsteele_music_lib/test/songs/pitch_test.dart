@@ -102,7 +102,7 @@ void main() {
     flats = 0;
 
     for (Pitch p in Pitch.getPitches()) {
-      logger.v(p.toString());
+      logger.t(p.toString());
       if (p.isSharp) sharps++;
       if (p.isNatural) naturals++;
       if (p.isFlat) flats++;

@@ -710,9 +710,9 @@ void main() {
   });
 
   test('test songMetadata', () {
-    final userBob = NameValue('User', 'bob');
-    final userShari = NameValue('User', 'Shari');
-    final userBodhi = NameValue('User', 'Bodhi');
+    // final userBob = NameValue('User', 'bob');
+    // final userShari = NameValue('User', 'Shari');
+    // final userBodhi = NameValue('User', 'Bodhi');
     final rock = NameValue('Genre', 'Rock');
     final blues = NameValue('Genre', 'Blues');
 

@@ -44,7 +44,7 @@ class MeasureRepeat extends Phrase {
     for (int i = 0; i < 1e3; i++) //  safety
     {
       markedString.stripLeadingSpaces();
-      logger.v('repeat parsing: ${markedString.remainingStringLimited(10)}');
+      logger.t('repeat parsing: ${markedString.remainingStringLimited(10)}');
       if (markedString.isEmpty) {
         markedString.resetTo(initialMark);
         throw 'no data to parse';

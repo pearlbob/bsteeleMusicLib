@@ -753,7 +753,7 @@ void main() {
         expect(allSongPerformances.length, 1);
 
         //  encode/decode to/from json
-        logger.v(allSongPerformances.toJsonString(prettyPrint: true));
+        logger.t(allSongPerformances.toJsonString(prettyPrint: true));
         allSongPerformances.fromJsonString(allSongPerformances.toJsonString());
         allSongPerformances.loadSongs([a]);
 

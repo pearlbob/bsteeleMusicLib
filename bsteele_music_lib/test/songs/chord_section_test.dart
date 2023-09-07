@@ -3,7 +3,6 @@ import 'package:bsteele_music_lib/grid.dart';
 import 'package:bsteele_music_lib/songs/chord_section.dart';
 import 'package:bsteele_music_lib/songs/key.dart';
 import 'package:bsteele_music_lib/songs/measure.dart';
-import 'package:bsteele_music_lib/songs/measure_comment.dart';
 import 'package:bsteele_music_lib/songs/measure_node.dart';
 import 'package:bsteele_music_lib/songs/phrase.dart';
 import 'package:bsteele_music_lib/songs/scale_note.dart';
@@ -145,16 +144,14 @@ void main() {
       measures = chordSection.phrases[0].measures;
       expect(measures, isNotNull);
       expect(measures, isNotEmpty);
-      expect(measures.length, 8);
+      expect(measures.length, 4);
       Measure m = measures[3];
       Measure mExpected = Measure.parseString('AmDm', beatsPerBar);
-      mExpected.endOfRow = true;
+      mExpected.endOfRow = false;
       expect(m, mExpected);
       m = measures[measures.length - 1];
-      expect(Measure.parseString('DmAm', beatsPerBar), m);
+      expect(Measure.parseString('AmDm', beatsPerBar), m);
       measures = chordSection.phrases[1].measures;
-      m = measures[0];
-      assert(m is MeasureComment);
     }
     {
       //  infinite loop?

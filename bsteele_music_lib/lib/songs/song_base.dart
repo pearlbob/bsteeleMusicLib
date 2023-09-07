@@ -284,7 +284,7 @@ class SongBase {
       if (momentGridCoordinate == null) {
         continue;
       }
-      logger.v('add ${songMoment.toString()}  at (${momentGridCoordinate.row},${momentGridCoordinate.col})');
+      logger.t('add ${songMoment.toString()}  at (${momentGridCoordinate.row},${momentGridCoordinate.col})');
       _songMomentGrid!.set(momentGridCoordinate.row, momentGridCoordinate.col, songMoment);
       maxCol = max(maxCol, momentGridCoordinate.col);
     }
@@ -661,7 +661,7 @@ class SongBase {
           continue toNormal; //  fall through
         toNormal:
         case UpperCaseState.normal:
-        //  reset on sequential reset characters
+          //  reset on sequential reset characters
           if (c == ' ' ||
               c == '\n' ||
               c == '\r' ||
@@ -743,13 +743,13 @@ class SongBase {
       if (lyricSections.isEmpty) {
         throw LyricParseException('No lyric section given', MarkedString(lyrics.substring(0, min(lyrics.length, 20))));
       }
-      logger.v('lyricSections: $lyricSections');
+      logger.t('lyricSections: $lyricSections');
     } on LyricParseException catch (e) {
       return e;
     }
 
     //  look for unused sections
-        {
+    {
       var sectionVersions = SplayTreeSet<SectionVersion>();
       sectionVersions.addAll(_getChordSectionMap().keys);
       for (var lyricSection in lyricSections) {
@@ -891,7 +891,7 @@ class SongBase {
           markedString.resetTo(mark);
         }
         //  the entry was not understood, force it to be a comment
-            {
+        {
           int commentIndex = markedString.indexOf(' ');
           if (commentIndex < 0) {
             ret.add(MeasureComment(markedString.toString()));
@@ -1032,7 +1032,7 @@ class SongBase {
       }
       col = 0;
 
-      logger.v('griding: $sectionVersion ($row, $col)');
+      logger.t('griding: $sectionVersion ($row, $col)');
 
       {
         //  grid the section header
@@ -1212,7 +1212,7 @@ class SongBase {
                 col = maxCol;
 
                 //  close the multiline repeat marker
-                    {
+                {
                   ChordSectionLocation loc = ChordSectionLocation.withMarker(
                       sectionVersion,
                       phraseIndex,
@@ -1249,7 +1249,7 @@ class SongBase {
     _chordSectionGrid = grid;
     //logger.d(grid.toString());
 
-    if (Logger.level.index >= Level.verbose.index) {
+    if (Logger.level.index >= Level.trace.index) {
       {
         logger.d('gridCoordinateChordSectionLocationMap: ');
         SplayTreeSet set = SplayTreeSet<GridCoordinate>();
@@ -1344,7 +1344,7 @@ class SongBase {
         }
         for (int c = 0; c < row.length; c++) {
           ChordSectionGridData? chordSectionGridData = row[c];
-          logger.v('($r,$c): $chordSectionGridData');
+          logger.t('($r,$c): $chordSectionGridData');
           if (chordSectionGridData == null) {
             continue;
           }
@@ -1378,7 +1378,7 @@ class SongBase {
   }
 
   void _clearCachedValues() {
-    logger.v('_clearCachedValues()');
+    logger.t('_clearCachedValues()');
     _isLyricsParseRequired = true;
     _chordSectionGrid = null;
     _complexity = 0;
@@ -1688,7 +1688,7 @@ class SongBase {
       case MeasureNodeType.section:
         switch (editType) {
           case MeasureEditType.delete:
-          //  find the section prior to the one being deleted
+            //  find the section prior to the one being deleted
             SectionVersion? nextSectionVersion = _priorSectionVersion(chordSection.sectionVersion);
             ret = (_getChordSectionMap().remove(chordSection.sectionVersion) != null);
             if (ret) {
@@ -1703,7 +1703,7 @@ class SongBase {
             }
             break;
           default:
-          //  all sections replace themselves
+            //  all sections replace themselves
             newChordSection = measureNode as ChordSection;
             _getChordSectionMap()[newChordSection.sectionVersion] = newChordSection;
             ret = true;
@@ -1996,7 +1996,7 @@ class SongBase {
 
       case MeasureNodeType.measure:
       case MeasureNodeType.comment:
-    //  add measure to current phrase
+        //  add measure to current phrase
         if (location != null) {
           if (location.hasMeasureIndex) {
             newLocation = location;
@@ -2005,7 +2005,7 @@ class SongBase {
                 newLocation = location.nextMeasureIndexLocation();
                 break;
               case MeasureEditType.replace:
-              //  deal with a change of endOfRow
+                //  deal with a change of endOfRow
                 Measure newMeasure = measureNode as Measure;
                 Measure oldMeasure = phrase.measures[newLocation.measureIndex];
                 if (newMeasure.endOfRow != oldMeasure.endOfRow) {
@@ -2075,7 +2075,7 @@ class SongBase {
         break;
 
       case MeasureEditType.append:
-      //  promote marker to repeat
+        //  promote marker to repeat
         if (location != null) {
           try {
             Measure refMeasure = phrase.getMeasure(location.measureIndex);
@@ -2125,7 +2125,7 @@ class SongBase {
         break;
 
       case MeasureEditType.delete:
-      //  note: measureNode is ignored, and should be ignored
+        //  note: measureNode is ignored, and should be ignored
         if (location != null) {
           if (location.isMeasure) {
             ret = phrase.deleteAt(location.measureIndex);
@@ -2195,7 +2195,7 @@ class SongBase {
       resetLastModifiedDateToNow();
 
       switch (currentMeasureEditType) {
-      // case MeasureEditType.replace:
+        // case MeasureEditType.replace:
         case MeasureEditType.delete:
           if (getCurrentChordSectionLocationMeasureNode() == null) {
             setCurrentMeasureEditType(MeasureEditType.append);
@@ -2530,7 +2530,7 @@ class SongBase {
           continue;
         } on String catch (e) {
           e.length; //  used only to avoid a dart analysis complaint
-          logger.v('not section: ${markedString.remainingStringLimited(25)}');
+          logger.t('not section: ${markedString.remainingStringLimited(25)}');
           //  ignore, this is typical of lyrics lines
         } catch (e) {
           if (strict) {
@@ -2547,7 +2547,7 @@ class SongBase {
         switch (c) {
           case '\n':
           case '\r':
-        //  insert verse if missing the section declaration
+            //  insert verse if missing the section declaration
             lyricSection ??= LyricSection(Section.getDefaultVersion(), lyricSections.length);
 
             //  add the lyrics
@@ -3036,7 +3036,7 @@ class SongBase {
     }
 
 //  lyrics
-        {
+    {
       int limit = min(a.lyricSections.length, b.lyricSections.length);
       for (int i = 0; i < limit; i++) {
         LyricSection aLyricSection = a.lyricSections[i];
@@ -3217,6 +3217,20 @@ class SongBase {
       firstSongMoment = sm;
     }
     return firstSongMoment;
+  }
+
+  SongMoment? getFirstSongMomentAtLyricSectionIndex(int lyricSectionIndex) {
+    if (lyricSections.isEmpty) {
+      return null;
+    }
+
+    int index = lyricSections[Util.indexLimit(lyricSectionIndex, lyricSections)].index;
+    for (SongMoment sm in _songMoments) {
+      if (sm.lyricSection.index == index) {
+        return sm;
+      }
+    }
+    return null;
   }
 
   SongMoment? getLastSongMomentInSection(int momentNumber) {
@@ -3527,7 +3541,7 @@ class SongBase {
       var sectionGrid = Grid<MeasureNode>();
 
       //  map multiple lyrics lines to repeats
-          {
+      {
         var lyricsIndex = 0;
         var rowIndex = 0;
         //  section indicator
@@ -3703,7 +3717,7 @@ class SongBase {
             } else {
               lastMarker = marker;
             }
-            logger.v('banner marker: $lastMarker  $marker');
+            logger.t('banner marker: $lastMarker  $marker');
             gc = GridCoordinate(BannerColumn.repeats.index, m.momentNumber);
             grid.setAt(gc, marker);
 

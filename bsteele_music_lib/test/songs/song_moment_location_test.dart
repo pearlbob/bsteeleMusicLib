@@ -12,7 +12,7 @@ import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Logger.level = Level.verbose;
+  Logger.level = Level.trace;
 
   test('parse ', () {
     SongMomentLocation? loc;
@@ -74,7 +74,7 @@ void main() {
 
     Grid<SongMoment> songMomentGrid = a.songMomentGrid;
 
-    logger.v(songMomentGrid.toString());
+    logger.t(songMomentGrid.toString());
     expect(songMomentGrid.getRowCount(), 8);
 
     {

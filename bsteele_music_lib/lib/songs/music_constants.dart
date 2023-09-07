@@ -11,6 +11,7 @@ enum MinorDiatonic { i, ii, III, iv, v, VI, VII }
 class MusicConstants {
   static const int maxMeasuresPerChordRow = 8;
   static const int nominalMeasuresPerChordRow = 4;
+  static const int defaultBeatsPerBar = 4;
 
   static const String flatChar = '\u266D';
   static const String naturalChar = '\u266E';
