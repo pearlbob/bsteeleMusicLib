@@ -1970,6 +1970,7 @@ c2:
   });
 
   test('test entryToUppercase', () {
+    expect(SongBase.entryToUppercase('1a'), '1A');
     expect(SongBase.entryToUppercase('emaj9'), 'Emaj9');
     expect(SongBase.entryToUppercase('bbdim7'), 'Bbdim7');
     expect(SongBase.entryToUppercase('abdim7'), 'Abdim7');
@@ -3174,6 +3175,14 @@ Grid{
   test('test songBase validateChords', () {
     int beatsPerBar = 4;
 
+    {
+      //  allow single beat measures
+      var chordEntry = '''
+i: 1A 2B 3C D
+''';
+      var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
+      expect(markedString, isNull);
+    }
     {
       //  don't allow empty chord sections
       var chordEntry = '''

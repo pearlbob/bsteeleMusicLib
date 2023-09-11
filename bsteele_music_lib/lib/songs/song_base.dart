@@ -675,7 +675,10 @@ class SongBase {
               c == MusicConstants.flatChar ||
               c == MusicConstants.sharpChar ||
               c == '[' ||
-              c == ']') state = UpperCaseState.initial;
+              c == ']' ||
+              (c.codeUnitAt(0) >= '1'.codeUnitAt(0) && c.codeUnitAt(0) <= '9'.codeUnitAt(0))) {
+            state = UpperCaseState.initial;
+          }
 
           sb.write(c);
           break;
