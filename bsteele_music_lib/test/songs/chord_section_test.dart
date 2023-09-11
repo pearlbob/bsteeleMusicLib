@@ -127,9 +127,9 @@ void main() {
     }
     try {
       //  invented garbage is comment, verse is presumed
-      ChordSection chordSection = ChordSection.parseString('ia: EDCBA (single notes rapid)', 4);
+      ChordSection chordSection = ChordSection.parseString('ia: EDCB (single notes rapid)', 4);
       logger.i(chordSection.toMarkup());
-      expect('V: (ia:) EDCBA (single notes rapid)', chordSection.toMarkup().trim());
+      expect('V: (ia:) EDCB (single notes rapid)', chordSection.toMarkup().trim());
     } catch (e) {
       fail('parse error on comment parse');
     }

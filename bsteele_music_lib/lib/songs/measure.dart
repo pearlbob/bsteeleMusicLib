@@ -130,16 +130,42 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
     //  find the total count of beats, prior to implicit distribution
     int totalBeats = 0;
+    bool allMatch = true;
+    int defaultBeat = chords.first.beats;
     for (Chord c in chords) {
       totalBeats += c.beats;
+      allMatch = allMatch && c.beats == defaultBeat;
     }
 
     //  verify not over specified
     if (totalBeats > maxBeatCount) {
       _beatCount = maxBeatCount;
       //  fixme: limit the total beats???
-      assert(false);
       return; //  too many beats!  even if the implicit chords only got 1 beat
+    }
+
+    //  abbreviate when appropriate
+    if (chords.length == 1) {
+      //  silence the explicit beats
+      var first = chords.first;
+      if (first.implicitBeats == false) {
+        _beatCount = first.beats;
+        return;
+      }
+
+      first.implicitBeats = maxBeatCount == 1 || chords.first.beats == beatsPerBar;
+      first.beats = maxBeatCount;
+      _beatCount = maxBeatCount;
+      return;
+    }
+
+    if (allMatch && totalBeats == beatsPerBar) {
+      //  silence the explicit beats
+      for (Chord c in chords) {
+        c.implicitBeats = true;
+      }
+      _beatCount = beatsPerBar;
+      return;
     }
 
     //  find the total count of beats explicitly specified
@@ -151,30 +177,32 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     }
 
     //  explicit measures must be explicit, i.e. all beats are specified.
-    if (explicitChords > 0 || totalBeats < _beatsPerBar) {
+    if (explicitChords > 0) {
       //  a short measure
       for (Chord c in chords) {
         c.implicitBeats = false;
       }
       _beatCount = totalBeats;
+      return;
     }
 
     //  allocate the remaining beats to the implicit chords
-    //  give left over beats to the first implicit
     int unallocatedBeats = maxBeatCount - totalBeats;
-    if (unallocatedBeats > 0) {
+    if (unallocatedBeats > 0 && unallocatedBeats % chords.length == 0) {
       int additionalBeatsPerChord = unallocatedBeats ~/ chords.length;
       for (Chord c in chords) {
         c.beats += additionalBeatsPerChord;
         unallocatedBeats -= additionalBeatsPerChord;
       }
-      //  dump all the remaining beats on the first unspecified
-      if (unallocatedBeats > 0) {
-        chords.first.beats += unallocatedBeats;
-      }
+      _beatCount = maxBeatCount;
+      return;
     }
 
-    _beatCount = maxBeatCount;
+    //  a short measure
+    for (Chord c in chords) {
+      c.implicitBeats = false;
+    }
+    _beatCount = totalBeats;
   }
 
   Chord? getChordAtBeat(int beat) {
@@ -275,7 +303,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       if (endOfRowChar != null && endOfRow) {
         sb.write(endOfRowChar);
       }
-      if (!implicitBeats && (_beatCount == 1 || _beatCount == chords.length)) {
+      if (_beatCount < _beatsPerBar && (chords.length > 1 || chords.first.implicitBeats == true)) {
         return '$_beatCount${sb.toString()}';
       }
 
@@ -345,7 +373,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   int get beatCount => _beatCount;
   int _beatCount = 4; //  default only
 
-  int get beatsPerBar => _beatCount;
+  int get beatsPerBar => _beatsPerBar;
   final int _beatsPerBar;
 
   /*
