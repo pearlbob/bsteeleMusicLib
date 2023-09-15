@@ -323,6 +323,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   @override
   MeasureNodeType get measureNodeType => MeasureNodeType.measure;
 
+  bool get hasReducedBeats => beatCount < beatsPerBar;
+
   @override
   String toString() {
     return toMarkup();
