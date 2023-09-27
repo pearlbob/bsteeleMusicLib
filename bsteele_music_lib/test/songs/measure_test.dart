@@ -12,6 +12,10 @@ import 'package:test/test.dart';
 
 import '../custom_matchers.dart';
 
+Chord chordByScaleChordAndBeats(final ScaleChord scaleChord, final int beats, final int beatsPerBar) {
+  return Chord(scaleChord, beats, beatsPerBar, null, ChordAnticipationOrDelay.defaultValue, (beats == beatsPerBar));
+}
+
 void main() {
   Logger.level = Level.warning;
 
@@ -24,7 +28,7 @@ void main() {
     {
       m = Measure.parseString('B', beats);
       expect(m, isNotNull);
-      Chord chord = Chord.byScaleChordAndBeats(ScaleChord(ScaleNote.B, ChordDescriptor.major), beats, beatsPerBar);
+      Chord chord = chordByScaleChordAndBeats(ScaleChord(ScaleNote.B, ChordDescriptor.major), beats, beatsPerBar);
       ref = Measure(beats, [chord]);
       logger.i('m:   ${m.toMarkup()}');
       logger.i('ref: ${ref.toMarkup()}');
@@ -244,7 +248,7 @@ void main() {
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
       expect(chord,
-          CompareTo(Chord.byScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.A), beatsPerBar, beatsPerBar)));
+          CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.A), beatsPerBar, beatsPerBar)));
     }
 
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
@@ -254,10 +258,10 @@ void main() {
       Chord chord0 = m.chords[0];
       Chord chord1 = m.chords[1];
       int beat = beatsPerBar ~/ 2;
-      Chord refChord = Chord.byScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.B), beat, beatsPerBar);
+      Chord refChord = chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.B), beat, beatsPerBar);
       expect(chord0, CompareTo(refChord));
       expect(
-          chord1, CompareTo(Chord.byScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.C), beat, beatsPerBar)));
+          chord1, CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.C), beat, beatsPerBar)));
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('E#m7. ', beatsPerBar);
@@ -267,7 +271,7 @@ void main() {
       Chord chord0 = m.chords[0];
       expect(
           chord0,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Es, ChordDescriptor.minor7), 2, beatsPerBar)));
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar += 2) {
@@ -280,13 +284,13 @@ void main() {
       int beat0 = beatsPerBar - beat1;
       expect(
           chord0,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Es, ChordDescriptor.minor7),
               beat0,
               beatsPerBar)));
       expect(
           chord1,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Gb, ChordDescriptor.dominant7),
               beat1,
               beatsPerBar)));
@@ -301,13 +305,13 @@ void main() {
       int beat1 = 1;
       expect(
           chord0,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Fs, ChordDescriptor.minor7),
               beat0,
               beatsPerBar)));
       expect(
           chord1,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.A, ChordDescriptor.suspended4),
               beat1,
               beatsPerBar)));
@@ -322,13 +326,13 @@ void main() {
       int beat1 = 1;
       expect(
           chord0,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Fs, ChordDescriptor.minor7),
               beat0,
               beatsPerBar)));
       expect(
           chord1,
-          CompareTo(Chord.byScaleChordAndBeats(
+          CompareTo(chordByScaleChordAndBeats(
               ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.A, ChordDescriptor.nineSus4),
               beat1,
               beatsPerBar)));
@@ -361,7 +365,7 @@ void main() {
           CompareTo(
               Chord(ScaleChord.fromScaleNoteEnum(ScaleNote.C), beat0, beatsPerBar, ScaleNote.Fs, delayNone, true)));
       expect(
-          chord1, CompareTo(Chord.byScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.G), beat1, beatsPerBar)));
+          chord1, CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.G), beat1, beatsPerBar)));
     }
     {
       for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
@@ -427,7 +431,7 @@ void main() {
         Chord chord0 = m.chords[0];
         expect(
             chord0,
-            CompareTo(Chord.byScaleChordAndBeats(
+            CompareTo(chordByScaleChordAndBeats(
                 ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Es, ChordDescriptor.minor7), 3, beatsPerBar)));
       } catch (e) {
         //  parseString failed
@@ -505,12 +509,15 @@ void main() {
     measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A', comment: 'one beat');
     expect(measure.beatCount, 1);
     expect(measure.hasReducedBeats, isTrue);
-    expected = Chord.byScaleChordAndBeats(ScaleChord.fromScaleNote(ScaleNote.A), 1, beatsPerBar);
+    expect(measure.hasExplicitBeats, isTrue);
+
+    expected = chordByScaleChordAndBeats(ScaleChord.fromScaleNote(ScaleNote.A), 1, beatsPerBar);
     expect(measure.getChordAtBeat(0), expected);
     expect(measure.getChordAtBeat(2), null);
 
     measure = _shortMeasureTest(beatsPerBar, 2, 'A', 'A', comment: 'two beats');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -525,6 +532,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, 'AB', 'AB', comment: 'two beats');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -537,6 +545,7 @@ void main() {
     beatsPerBar = 3;
     measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A', comment: 'one beat');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -546,6 +555,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2A', 'A.', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expect(measure.toMarkup(), 'A.');
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
@@ -557,6 +567,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2AB', '2AB', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -566,6 +577,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A', 'A', comment: 'three beats');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -575,6 +587,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -584,6 +597,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A..', 'A', comment: '3 beats');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -593,6 +607,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A.B', 'A.B');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -604,6 +619,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'AB.', 'AB.');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -615,6 +631,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'ABC', 'ABC');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -629,6 +646,7 @@ void main() {
     beatsPerBar = 4;
     measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A', comment: 'one beat');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -638,6 +656,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -648,6 +667,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2A', 'A.');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -658,6 +678,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2AB', '2AB');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -670,6 +691,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A..', 'A..');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -681,6 +703,7 @@ void main() {
     //  deprecated form
     measure = _shortMeasureTest(beatsPerBar, 4, 'A...', 'A', comment: '4 beats');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 4;
     expect(measure.getChordAtBeat(0), expected);
@@ -691,6 +714,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'A', 'A');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 4;
     expect(measure.getChordAtBeat(0), expected);
@@ -702,6 +726,7 @@ void main() {
     beatsPerBar = 4;
     measure = _shortMeasureTest(beatsPerBar, 4, 'AB', 'AB');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -714,6 +739,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A.B', '3A.B');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -726,6 +752,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'AB.', '3AB.');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -749,6 +776,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'A.BC', 'A.BC');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -761,6 +789,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'AB.C', 'AB.C');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expect(measure.getChordAtBeat(0), expected);
     expected = Chord.parseString('B.', beatsPerBar)!;
@@ -773,6 +802,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'ABC.', 'ABC.');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expect(measure.getChordAtBeat(0), expected);
     expected = Chord.parseString('B', beatsPerBar)!;
@@ -799,12 +829,14 @@ void main() {
     beatsPerBar = 6;
     measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expect(measure.getChordAtBeat(0), expected);
     expect(measure.getChordAtBeat(1), null);
 
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
         ChordAnticipationOrDelay.defaultValue, true);
     expect(measure.getChordAtBeat(0), expected);
@@ -816,6 +848,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2A', 'A.');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expect(measure.beatCount, 2);
     expect(measure.toMarkup(), 'A.');
     expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
@@ -830,6 +863,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2AB', '2AB');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -842,6 +876,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A..', 'A..');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -851,6 +886,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, '3A.B', '3A.B');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -863,6 +899,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'A...', 'A...');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 4;
     expect(measure.getChordAtBeat(0), expected);
@@ -873,6 +910,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 5, 'A....', 'A....');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 5;
     expect(measure.getChordAtBeat(0), expected);
@@ -884,6 +922,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 5, '5A', 'A....');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 5;
     expect(measure.getChordAtBeat(0), expected);
@@ -895,6 +934,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 6, 'A', 'A');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 6;
     expect(measure.getChordAtBeat(0), expected);
@@ -907,6 +947,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 6, 'AB', 'AB', comment: '3 beats of each chord');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -921,6 +962,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 6, 'ABC', 'ABC', comment: 'two beats of each chord');
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -937,6 +979,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'Asus2...', 'Asus2...');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
     expected = Chord.parseString('Asus2', beatsPerBar)!;
     expected.beats = 4;
     expect(measure.getChordAtBeat(0), expected);
@@ -950,6 +993,7 @@ void main() {
 
     measure = Measure.parseString('6A', 6);
     expect(measure.hasReducedBeats, isFalse);
+    expect(measure.hasExplicitBeats, isFalse);
     expect(measure.beatCount, 6);
     expect(measure.toMarkup(), 'A');
   });
@@ -1038,6 +1082,7 @@ Measure _shortMeasureTest(int beatsPerBar, int beats, String input, String expec
   var measure = Measure.parseString(input, beatsPerBar);
   expect(measure.beatCount, beats);
   expect(measure.toMarkup(), expected);
+  _shortMeasureTestJSON(beatsPerBar, input, expected);
 
   return measure;
 }

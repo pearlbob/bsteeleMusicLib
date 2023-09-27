@@ -25,20 +25,6 @@ class Chord implements Comparable<Chord> {
     implicitBeats = chord.implicitBeats;
   }
 
-  Chord.byScaleChord(this._scaleChord)
-      : _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none) {
-    beats = 4;
-    _beatsPerBar = 4;
-    slashScaleNote = null;
-    implicitBeats = true;
-  }
-
-  Chord.byScaleChordAndBeats(this._scaleChord, this.beats, this._beatsPerBar)
-      : _anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none) {
-    slashScaleNote = null;
-    implicitBeats = beats == _beatsPerBar;
-  }
-
   static Chord? parseString(String s, int beatsPerBar) {
     return parse(MarkedString(s), beatsPerBar);
   }

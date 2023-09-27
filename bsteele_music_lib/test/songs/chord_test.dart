@@ -13,6 +13,10 @@ import 'package:test/test.dart';
 
 import '../custom_matchers.dart';
 
+Chord chordByScaleChord(final ScaleChord scaleChord) {
+  return Chord(scaleChord, 4, 4, null, ChordAnticipationOrDelay.defaultValue, false);
+}
+
 void testChordTranspose(Key key) {
   int count = 0;
   for (final sn in ScaleNote.values) {
@@ -98,7 +102,7 @@ void main() {
       Chord? chord;
       int beatsPerBar = 4;
       chord =
-          Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.D, ChordDescriptor.diminished));
+          chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.D, ChordDescriptor.diminished));
       chord.slashScaleNote = ScaleNote.G;
 
       logger.i('"${Chord.parseString('Ddim/G', beatsPerBar)}"');
@@ -108,30 +112,30 @@ void main() {
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
 
-      chord = Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.X, ChordDescriptor.major));
+      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.X, ChordDescriptor.major));
       chord.slashScaleNote = ScaleNote.G;
       pChord = Chord.parseString('X/G', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
 
       chord =
-          Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.A, ChordDescriptor.diminished));
+          chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.A, ChordDescriptor.diminished));
       chord.slashScaleNote = ScaleNote.G;
       pChord = Chord.parseString('Adim/G', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
 
-      chord = Chord.byScaleChord(
+      chord = chordByScaleChord(
           ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.suspendedSecond));
       chord.slashScaleNote = ScaleNote.A;
       pChord = Chord.parseString('G2/A', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
-      chord = Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.add9));
+      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.add9));
       pChord = Chord.parseString('Gadd9A', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
-      chord = Chord.byScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.madd9));
+      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.madd9));
       pChord = Chord.parseString('Gmadd9A', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
