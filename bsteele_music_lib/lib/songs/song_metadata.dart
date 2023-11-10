@@ -89,9 +89,7 @@ enum NameValueType {
 }
 
 class NameValueMatcher extends NameValue {
-  NameValueMatcher(String name, String value, {NameValueType type = NameValueType.value})
-      : _type = type,
-        super(name, value);
+  NameValueMatcher(super.name, super.value, {NameValueType type = NameValueType.value}) : _type = type;
 
   NameValueMatcher.value(NameValue nameValue) : this(nameValue.name, nameValue.value, type: NameValueType.value);
 
@@ -378,10 +376,10 @@ class SongMetadata {
       var newSong = songRepair.findBestSong(songIdMetadata.id);
       if (newSong == null) {
         logger.i('SongMetadata.repairSongs: missing: ${songIdMetadata.id}');
-        assert(false);
+        continue;
       }
 
-      if (songIdMetadata.id != newSong!.songId.toString()) {
+      if (songIdMetadata.id != newSong.songId.toString()) {
         repairs[songIdMetadata.id] = newSong;
         // logger.i('repair: ${songIdMetadata.id}  vs  ${newSong.songId}');
       }

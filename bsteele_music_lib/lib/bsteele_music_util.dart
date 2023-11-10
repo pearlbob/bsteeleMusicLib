@@ -794,8 +794,8 @@ coerced to reflect the songlist's last modification for that song.
               int maxLength = 0;
               for (var lyricSection in song.lyricSections) {
                 maxLength = max(maxLength, lyricSection.lyricsLines.length);
-                maxLength =
-                    max(maxLength, song.findChordSectionByLyricSection(lyricSection)?.rowCount(expanded: true) ?? 0);
+                // maxLength =
+                //     max(maxLength, song.findChordSectionByLyricSection(lyricSection)?.rowCount(expanded: true) ?? 0);
               }
               if (maxLength >= 10) {
                 longSections[song] = maxLength;
@@ -814,7 +814,9 @@ coerced to reflect the songlist's last modification for that song.
               for (Song song in sortedSongs) {
                 logger.i('"${song.title}" by "${song.artist}"'
                     '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                    ': maxLength: $i');
+                    ': maxLength: $i'
+                    ', last modified:'
+                    ' ${song.lastModifiedTime == 0 ? 'unknown' : DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime).toString()}');
               }
             }
           }
@@ -1146,6 +1148,9 @@ coerced to reflect the songlist's last modification for that song.
                   ', idMetadata.length: ${SongMetadata.idMetadata.length}'
                   ', corrections: $corrections');
               assert(seconds < 0.25);
+            }
+            if (_verbose) {
+              logger.i(allSongPerformances.toString());
             }
           }
           break;
@@ -2141,7 +2146,7 @@ coerced to reflect the songlist's last modification for that song.
     }
     sheet.appendRow(colNames);
     for (int c = 0; c < first.length; c++) {
-      sheet.setColWidth(c, first[c].width);
+      sheet.setColumnWidth(c, first[c].width);
     }
 
     //  add all the data rows

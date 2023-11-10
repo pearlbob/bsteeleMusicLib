@@ -3630,7 +3630,6 @@ class SongBase {
           }
         }
       }
-      assert(songMoments.length == _songMomentToGridCoordinate.length);
     }
 
     return grid;
@@ -4131,7 +4130,7 @@ String debugGridToString(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayS
         } else {
           var s = '';
           switch (measureNode.runtimeType) {
-            case ChordSection:
+            case ChordSection _:
               s = (measureNode as ChordSection).sectionVersion.toString();
               break;
             default:

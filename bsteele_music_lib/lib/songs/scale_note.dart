@@ -216,7 +216,7 @@ abstract class _ScaleNoteInterval {
 }
 
 class FiveLimitScaleNoteInterval extends _ScaleNoteInterval {
-  const FiveLimitScaleNoteInterval._(name, numerator, denominator) : super(name, numerator, denominator);
+  const FiveLimitScaleNoteInterval._(super.name, super.numerator, super.denominator);
 
   static const intervals = [
     FiveLimitScaleNoteInterval._('P1', 1, 1), // C
@@ -235,7 +235,7 @@ class FiveLimitScaleNoteInterval extends _ScaleNoteInterval {
 }
 
 class DPythagoreanScaleNoteInterval extends _ScaleNoteInterval {
-  const DPythagoreanScaleNoteInterval._(name, numerator, denominator) : super(name, numerator, denominator);
+  const DPythagoreanScaleNoteInterval._(super.name, super.numerator, super.denominator);
 
   static const intervals = [
     DPythagoreanScaleNoteInterval._('P1', 1, 1),
