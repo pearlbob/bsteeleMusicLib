@@ -15,9 +15,7 @@ import 'phrase.dart';
 import 'section.dart';
 
 class MeasureRepeat extends Phrase {
-  MeasureRepeat(List<Measure> measures, int phraseIndex, int repeats)
-      : _repeatMarker = MeasureRepeatMarker(repeats),
-        super(measures, phraseIndex);
+  MeasureRepeat(super.measures, super.phraseIndex, int repeats) : _repeatMarker = MeasureRepeatMarker(repeats);
 
   static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);

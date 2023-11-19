@@ -2141,7 +2141,7 @@ coerced to reflect the songlist's last modification for that song.
     }
     sheet.appendRow(colNames);
     for (int c = 0; c < first.length; c++) {
-      sheet.setColWidth(c, first[c].width);
+      sheet.setColumnWidth(c, first[c].width);
     }
 
     //  add all the data rows

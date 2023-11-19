@@ -4131,7 +4131,7 @@ String debugGridToString(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayS
         } else {
           var s = '';
           switch (measureNode.runtimeType) {
-            case ChordSection:
+            case const (ChordSection):
               s = (measureNode as ChordSection).sectionVersion.toString();
               break;
             default:

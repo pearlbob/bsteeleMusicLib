@@ -28,29 +28,19 @@ enum SongComparatorType {
 
 class Song extends SongBase implements Comparable<Song> {
   Song({
-    required String title,
-    required String artist,
+    required super.title,
+    required super.artist,
     String? coverArtist,
-    required String copyright,
-    required Key key,
-    required int beatsPerMinute,
-    required int beatsPerBar, //  beats per bar, i.e. timeSignature numerator
-    required int unitsPerMeasure,
+    required super.copyright,
+    required Key super.key,
+    required super.beatsPerMinute,
+    required super.beatsPerBar, //  beats per bar, i.e. timeSignature numerator
+    required super.unitsPerMeasure,
     String? user,
-    required String chords,
-    required String rawLyrics,
+    required super.chords,
+    required super.rawLyrics,
   }) : super(
-            title: title,
-            artist: artist,
-            coverArtist: coverArtist ?? '',
-            copyright: copyright,
-            key: key,
-            beatsPerMinute: beatsPerMinute,
-            beatsPerBar: beatsPerBar,
-            unitsPerMeasure: unitsPerMeasure,
-            user: user ?? defaultUser,
-            chords: chords,
-            rawLyrics: rawLyrics);
+            coverArtist: coverArtist ?? '', user: user ?? defaultUser);
 
   /// Create a minimal song to be used internally as a place holder.
   static Song createEmptySong({int? currentBeatsPerMinute, Key? currentKey}) {

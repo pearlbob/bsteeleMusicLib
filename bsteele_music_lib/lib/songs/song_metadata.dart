@@ -89,9 +89,7 @@ enum NameValueType {
 }
 
 class NameValueMatcher extends NameValue {
-  NameValueMatcher(String name, String value, {NameValueType type = NameValueType.value})
-      : _type = type,
-        super(name, value);
+  NameValueMatcher(super.name, super.value, {NameValueType type = NameValueType.value}) : _type = type;
 
   NameValueMatcher.value(NameValue nameValue) : this(nameValue.name, nameValue.value, type: NameValueType.value);
 
