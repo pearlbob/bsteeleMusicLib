@@ -135,7 +135,7 @@ class Section implements Comparable<Section> {
         mapStringToSection[section._formalName.toLowerCase()] = section;
         mapStringToSection[section._abbreviation.toLowerCase()] = section;
         if (section._alternateAbbreviation != null) {
-          mapStringToSection[section._alternateAbbreviation.toLowerCase()] = section;
+          mapStringToSection[section._alternateAbbreviation!.toLowerCase()] = section;
         }
       }
       //  additions:
