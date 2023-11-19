@@ -295,15 +295,13 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   String _toMarkupWithEnd(String? endOfRowChar) {
     if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
-      bool implicitBeats = false;
       for (Chord chord in chords) {
         sb.write(chord.toMarkup());
-        implicitBeats = implicitBeats || chord.implicitBeats;
       }
       if (endOfRowChar != null && endOfRow) {
         sb.write(endOfRowChar);
       }
-      if (_beatCount < _beatsPerBar && (chords.length > 1 || chords.first.implicitBeats == true)) {
+      if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
         return '$_beatCount${sb.toString()}';
       }
 
@@ -324,6 +322,21 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   MeasureNodeType get measureNodeType => MeasureNodeType.measure;
 
   bool get hasReducedBeats => beatCount < beatsPerBar;
+
+  bool get hasExplicitBeats {
+    if (hasReducedBeats) {
+      return true;
+    }
+    if (chords.isNotEmpty) {
+      int beats = chords.first.beats;
+      for (var chord in chords) {
+        if (chord.beats != beats) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   @override
   String toString() {

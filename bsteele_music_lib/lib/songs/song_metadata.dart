@@ -376,10 +376,10 @@ class SongMetadata {
       var newSong = songRepair.findBestSong(songIdMetadata.id);
       if (newSong == null) {
         logger.i('SongMetadata.repairSongs: missing: ${songIdMetadata.id}');
-        assert(false);
+        continue;
       }
 
-      if (songIdMetadata.id != newSong!.songId.toString()) {
+      if (songIdMetadata.id != newSong.songId.toString()) {
         repairs[songIdMetadata.id] = newSong;
         // logger.i('repair: ${songIdMetadata.id}  vs  ${newSong.songId}');
       }

@@ -343,8 +343,8 @@ class SongRepair {
       assert(song != null);
       return song;
     }
-    logger.i('lost song: $lowerCaseId, ${bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0}'
-        ', best: ${song?.songId.toString().toLowerCase()}'
+    logger.i('lost song: $id, ${bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0}'
+        ', best: ${song?.songId.toString()}'
         '\n     $song');
     return null;
   }
