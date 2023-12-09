@@ -2136,13 +2136,13 @@ coerced to reflect the songlist's last modification for that song.
       horizontalAlign: HorizontalAlign.Left,
       textWrapping: TextWrapping.WrapText,
     );
-    var first = data.first;
-    List<String> colNames = [];
+    List<CellData> first = data.first;
+    List<CellValue?> colNames = [];
     for (int c = 0; c < first.length; c++) {
       var cellData = first[c];
-      var cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: 0));
-      cell.value = cellData.name;
-      cell.cellStyle = titleCellStyle;
+      var data = sheet.cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: 0));
+      data.value = TextCellValue(cellData.name);
+      data.cellStyle = titleCellStyle;
     }
     sheet.appendRow(colNames);
     for (int c = 0; c < first.length; c++) {
@@ -2154,10 +2154,22 @@ coerced to reflect the songlist's last modification for that song.
       var row = data[r];
       for (var c = 0; c < row.length; c++) {
         var cellData = row[c];
-        var cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: r + 1));
+        var data = sheet.cell(CellIndex.indexByColumnRow(columnIndex: c, rowIndex: r + 1));
 
-        cell.value = cellData.value;
-        cell.cellStyle = songCellStyle;
+        cellData.value.runtimeType;
+        switch (cellData.value.runtimeType) {
+          case const (String):
+            data.value = TextCellValue(cellData.value as String);
+            break;
+          case const (int):
+            data.value = IntCellValue(cellData.value as int);
+            break;
+          default:
+            logger.t('type failure: ${cellData.value.runtimeType}');
+            assert(false);
+        }
+
+        data.cellStyle = songCellStyle;
       }
     }
   }

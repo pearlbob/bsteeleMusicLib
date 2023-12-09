@@ -2933,7 +2933,7 @@ class SongBase {
       }
     }
 
-//  see that all chord sections have a lyric section
+    //  see that all chord sections have a lyric section
     for (ChordSection chordSection in newSong.getChordSections()) {
       SectionVersion chordSectionVersion = chordSection.sectionVersion;
       bool found = false;
@@ -2948,7 +2948,7 @@ class SongBase {
       }
     }
 
-//  see that all lyric sections have a chord section
+    //  see that all lyric sections have a chord section
     for (LyricSection lyricSection in newSong.lyricSections) {
       SectionVersion lyricSectionVersion = lyricSection.sectionVersion;
       bool found = false;
@@ -4008,7 +4008,10 @@ class SongBase {
 
   int lastModifiedTime = 0;
 
+  int originalEntryTime = DateTime(2017).millisecondsSinceEpoch;
+
   //  chords as a string is only valid on input or output
+  String get chords => _getChords();
   String _chords = '';
 
   //  normally the chords data is held in the chord section map

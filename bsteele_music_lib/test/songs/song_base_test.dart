@@ -2638,8 +2638,8 @@ o: end here''');
 
     {
       //  try some permutations
-      List<String> chordList = ['', 'i: A B C D', 'i: A B C D v: D C X X'];
-      List<String> lyricsList = ['', 'i: (instrumental)', 'i: (instrumental)\n  v: sing some words'];
+      List<String> chordList = ['', 'i: A B C D', ''];
+      List<String> lyricsList = ['', '', 'i: (instrumental)'];
       for (var title in ['title 1', 'bobs song', 'not bobs song']) {
         for (var artist in ['bob', 'fred', 'joe']) {
           for (var coverArtist in ['', 'bob', 'not bob', 'hidden']) {
@@ -2652,25 +2652,58 @@ o: end here''');
                     title: title,
                     artist: artist,
                     coverArtist: coverArtist,
+                    user: 'pearlbob',
                     beatsPerBar: timeSignature.beatsPerBar,
                     unitsPerMeasure: timeSignature.unitsPerMeasure,
                     beatsPerMinute: beatsPerMinute,
                     chords: chordList[index],
                     rawLyrics: lyricsList[index],
                   );
-                  expect(a.title, title);
-                  expect(a.artist, artist);
-                  expect(a.coverArtist, coverArtist);
-                  expect(a.timeSignature, timeSignature);
-                  expect(a.beatsPerMinute, beatsPerMinute);
-                  expect(a.getChordSections().length, index);
-                  expect(a.lyricSections.length, index);
+                  try {
+                    a.checkSong();
+                    expect(true, isFalse); //  not expected, i.e. expect exception thrown
+                  } catch (e) {
+                    switch (index) {
+                      case 0:
+                      case 2:
+                        expect(e.toString(), 'no chords given!');
+                        break;
+                      case 1:
+                        expect(e.toString(), 'no lyrics given!');
+                        break;
+                    }
+                  }
                 }
               }
             }
           }
         }
       }
+    }
+
+    {
+      a = SongBase(
+        title: 'bobs song',
+        artist: 'bob',
+        coverArtist: 'joe',
+        user: 'bob',
+        beatsPerBar: 4,
+        unitsPerMeasure: 4,
+        beatsPerMinute: 4,
+        chords: 'i: 2AG#m',
+        rawLyrics: 'i: (instrumental)',
+      );
+      try {
+        a.checkSong();
+        expect(true, isTrue); //  not expected, i.e. expect exception thrown
+      } catch (e) {
+        expect(e.toString(), 'no error here!');
+      }
+      logger.i(a.chords);
+      expect(
+          a.chords,
+          'I:\n'
+          '2AG#m\n');
     }
   });
 
@@ -2680,8 +2713,8 @@ o: end here''');
 
     Logger.level = Level.info;
 
-    // if ( false )
-        {
+// if ( false )
+    {
       a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -2724,8 +2757,8 @@ Grid{
         _testSongMomentToGrid(a, UserDisplayStyle.both);
       }
     }
-    // if ( false )
-        {
+// if ( false )
+    {
       a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -2770,8 +2803,8 @@ Grid{
       }
     }
 
-    // if ( false )
-        {
+// if ( false )
+    {
       a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -3156,7 +3189,7 @@ Grid{
     }
 
     {
-      //  empty lyrics
+//  empty lyrics
       a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -3176,7 +3209,7 @@ Grid{
     int beatsPerBar = 4;
 
     {
-      //  allow single beat measures
+//  allow single beat measures
       var chordEntry = '''
 i: 1A 2B 3C D
 ''';
@@ -3184,7 +3217,7 @@ i: 1A 2B 3C D
       expect(markedString, isNull);
     }
     {
-      //  don't allow empty chord sections
+//  don't allow empty chord sections
       var chordEntry = '''
 i: A B C D , []
 ''';
@@ -3194,7 +3227,7 @@ i: A B C D , []
       expect(markedString!.getMark(), 14);
     }
     {
-      //  don't allow empty chord sections
+//  don't allow empty chord sections
       var chordEntry = '''
 i:
 ''';
@@ -3203,7 +3236,7 @@ i:
       expect(markedString.toString(), 'I: [] ');
     }
     {
-      //  don't allow empty chord phrase sections
+//  don't allow empty chord phrase sections
       var chordEntry = '''
 i: []
 ''';
@@ -3257,7 +3290,7 @@ v:
   test('test songBase validateLyrics', () {
     int beatsPerBar = 4;
     {
-      //  empty lyrics
+//  empty lyrics
       var a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -3275,27 +3308,27 @@ v:
       expect(a.validateLyrics('no section here  v: foo').runtimeType, LyricParseException);
       expect(a.validateLyrics('no section here  v: foo')?.message, 'Lyrics prior to section version');
 
-      //  non-empty lyrics
+//  non-empty lyrics
       var lyrics = '    v:\n foo\n';
       expect(a.validateLyrics(lyrics), null); //  no error
 
-      //  missing lead section
+//  missing lead section
       lyrics = 'no\n  v:\n foo\n';
       expect(a.validateLyrics(lyrics).runtimeType, LyricParseException);
       expect(a.validateLyrics(lyrics)?.message, 'Lyrics prior to section version');
       expect(a.validateLyrics(lyrics)?.markedString.toString(), 'no\n  v:\n foo\n');
 
-      //  damaged section
+//  damaged section
       expect(a.validateLyrics('herev: foo').runtimeType, LyricParseException);
       expect(a.validateLyrics('herev: foo')?.message, 'Lyrics prior to section version');
       expect(a.validateLyrics('herev: foo')?.markedString.toString(), 'herev: foo');
 
-      //  missing chords
+//  missing chords
       expect(a.validateLyrics('v: lkf'), null); // no error
       expect(a.validateLyrics('i: lkf').runtimeType, LyricParseException);
       expect(a.validateLyrics('i: lkf')?.message, 'Section version not found');
 
-      //  multiple sections
+//  multiple sections
       a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -3310,7 +3343,7 @@ v:
       lyrics = 'i: no\n  v:\n foo\n';
       expect(a.validateLyrics('i:v: lkf'), null); // no error
 
-      //  multiple sections, empty last lyrics
+//  multiple sections, empty last lyrics
       a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -3325,7 +3358,7 @@ v:
       lyrics = 'i: no\n  v:\n foo\ni:';
       expect(a.validateLyrics('i:v: lkf'), null); // no error
 
-      //  unused chord section
+//  unused chord section
       lyrics = 'i: no\n bar bar';
       expect(a.validateLyrics(lyrics).runtimeType, LyricParseException);
       expect(a.validateLyrics(lyrics)?.message,
@@ -3468,7 +3501,7 @@ v:
   test('test songBase chordMarkupForLyrics()', () {
     int beatsPerBar = 4;
     {
-      //  fixme: force a new line at lyrics entry?
+//  fixme: force a new line at lyrics entry?
       var a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -3488,7 +3521,7 @@ v:
           'O: C C G G\n');
     }
     {
-      //  fixme: force a new line at lyrics entry?
+//  fixme: force a new line at lyrics entry?
       var a = Song(
           title: 'ive go the blanks',
           artist: 'bob',
@@ -4012,13 +4045,13 @@ v:
           rawLyrics: 'i: (instrumental)\r\nmore instrumental\nv: line 1\r\n line 2\r\no:\r\nyo\ryo2\nyo3\r\nyo4');
 
       var grid = a.chordSectionGrid;
-      // for (int r = 0; r < grid.getRowCount(); r++) {
-      //   var row = grid.getRow(r);
-      //   for (int c = 0; c < row!.length; c++) {
-      //     var data = grid.get(r, c);
-      //     logger.i('expect(grid.get($r,$c)?.toMarkup(), \'${data?.toMarkup() ?? 'isNull'}\');');  //  almost
-      //   }
-      // }
+// for (int r = 0; r < grid.getRowCount(); r++) {
+//   var row = grid.getRow(r);
+//   for (int c = 0; c < row!.length; c++) {
+//     var data = grid.get(r, c);
+//     logger.i('expect(grid.get($r,$c)?.toMarkup(), \'${data?.toMarkup() ?? 'isNull'}\');');  //  almost
+//   }
+// }
 
       expect(grid.get(0, 0)?.transpose(music_key.Key.C, 0), 'I:');
       expect(grid.get(0, 1)?.transpose(music_key.Key.C, 0), 'A');
@@ -4179,7 +4212,7 @@ Grid{
         expect((grid.get(3, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
         expect((grid.get(3, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
 
-        //  in pro, verify top row of chord sections in song order
+//  in pro, verify top row of chord sections in song order
         for (var songMoment in a.songMoments) {
           logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
           expect(
@@ -4187,13 +4220,13 @@ Grid{
                   as ChordSection,
               songMoment.chordSection);
         }
-        //  in pro, verify each section has it's label and duplicate for chords
+//  in pro, verify each section has it's label and duplicate for chords
         for (var songMoment in a.songMoments) {
-          //  expect entry for section labels
+//  expect entry for section labels
           var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
           logger.d('$songMoment: $gc');
           expect(grid.at(gc) as ChordSection, songMoment.chordSection);
-          //  expect duplicate for chords
+//  expect duplicate for chords
           expect(grid.at(GridCoordinate(gc.row, gc.col + 1)) as ChordSection, songMoment.chordSection);
         }
         _testSongMomentToGrid(a, userDisplayStyle);
@@ -4321,7 +4354,7 @@ Grid{
 	A       B       C       (7,3)   (7,4)   (7,5)
 }''');
 
-      //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
 
       expanded = true;
@@ -4382,7 +4415,7 @@ Grid{
 	A       B       C       (8,3)   (8,4)   (8,5)
 }''');
 
-      //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
 
       expanded = true;
@@ -4444,7 +4477,7 @@ Grid{
 	A       B       C       (10,3)  (10,4)  (10,5)  "yo7"
 }''');
 
-      //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
 
       expanded = true;
@@ -4506,7 +4539,7 @@ Grid{
 	F7      F7      C7      C7,
 	G7      F7      C7      G7
 }''');
-      //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
 
       expanded = false;
@@ -4520,7 +4553,7 @@ Grid{
 	G7      F7      C7      G7
 }''');
 
-      //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
     }
 
@@ -4565,7 +4598,7 @@ Grid{
 	A       A.      C#m.    C#m     C#m     (5,5)   "Waiting there for you""
 }''');
 
-        //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
         _testSongMomentToGrid(a, userDisplayStyle);
       }
 
@@ -4587,7 +4620,7 @@ Grid{
 	B       D#m     G#m     G#m/F#, (10,4)  (10,5)  "He turned to me as if to say, "Hurry, boy, it's"
 	A       A.      C#m.    C#m     C#m     (11,5)  "Waiting there for you""
 }''');
-      //  validate song moment to grid coordinates
+//  validate song moment to grid coordinates
       _testSongMomentToGrid(a, userDisplayStyle);
     }
   });

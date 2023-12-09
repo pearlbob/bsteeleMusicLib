@@ -76,10 +76,16 @@ enum ScaleNote implements Comparable<ScaleNote> {
   }
 
   ScaleNote asSharp({bool value = true}) {
+    if (this == ScaleNote.X) {
+      return ScaleNote.X;
+    }
     return value ? _sharps[_halfStep] : _flats[_halfStep];
   }
 
   ScaleNote asFlat({bool value = true}) {
+    if (this == ScaleNote.X) {
+      return ScaleNote.X;
+    }
     return value ? _flats[_halfStep] : _sharps[_halfStep];
   }
 

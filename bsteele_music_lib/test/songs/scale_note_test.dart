@@ -186,4 +186,13 @@ void main() {
     expect(sn.toMarkup(), 'G#');
     expect(sn.name, 'Gs');
   });
+
+  test('test accidental', () {
+    Logger.level = Level.info;
+
+    for (var scaleNote in ScaleNote.values) {
+      logger.i('${scaleNote.toString().padRight(2)}: b: ${scaleNote.asFlat().toString().padRight(2)}'
+          ',  #: ${scaleNote.asSharp().toString().padRight(2)}');
+    }
+  });
 }

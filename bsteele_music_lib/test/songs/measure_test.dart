@@ -575,6 +575,16 @@ void main() {
     expected.beats = 1;
     expect(measure.getChordAtBeat(1), expected);
 
+    measure = _shortMeasureTest(beatsPerBar, 2, '2AG#m', '2AG#m', comment: 'two beats');
+    expect(measure.hasReducedBeats, isTrue);
+    expect(measure.hasExplicitBeats, isTrue);
+    expected = Chord.parseString('A', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(0), expected);
+    expected = Chord.parseString('G#m', beatsPerBar)!;
+    expected.beats = 1;
+    expect(measure.getChordAtBeat(1), expected);
+
     measure = _shortMeasureTest(beatsPerBar, 3, 'A', 'A', comment: 'three beats');
     expect(measure.hasReducedBeats, isFalse);
     expect(measure.hasExplicitBeats, isFalse);
