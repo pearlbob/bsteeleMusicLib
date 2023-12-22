@@ -1710,6 +1710,76 @@ c2:
     }
   });
 
+  test('test first songMoment at next or prior row', () {
+    int beatsPerBar = 4;
+
+    SongBase a = SongBase(
+        title: 'A',
+        artist: 'bob',
+        copyright: 'bsteele.com',
+        key: music_key.Key.getDefault(),
+        beatsPerMinute: 100,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        chords: 'I: G C D A [A B C D, E F]  x2 v: D C G G c: Ab Bb C Db o: G G G G ',
+        rawLyrics: 'i:\nv: verse\n c: chorus\nv: verse\n c: chorus\no: outro');
+
+    {
+      int r = -1;
+      for (var m in a.getSongMoments()) {
+        if (m.row != r) {
+          logger.i('row ${m.row}: ${m.momentNumber}: $m');
+          r = m.row!;
+        }
+      }
+    }
+
+    // expect(a.getFirstSongMomentAtNextRow(-3), a.getSongMoment(4));
+    // expect(a.getFirstSongMomentAtNextRow(0), isNotNull);
+    // expect(a.getFirstSongMomentAtNextRow(0), a.getSongMoment(4));
+    // expect(a.getFirstSongMomentAtNextRow(4), a.getSongMoment(8));
+    // expect(a.getFirstSongMomentAtNextRow(8), a.getSongMoment(10));
+    // expect(a.getFirstSongMomentAtNextRow(9), a.getSongMoment(10));
+    // expect(a.getFirstSongMomentAtNextRow(10), a.getSongMoment(14));
+    // expect(a.getFirstSongMomentAtNextRow(11), a.getSongMoment(14));
+    // expect(a.getFirstSongMomentAtNextRow(12), a.getSongMoment(14));
+    // expect(a.getFirstSongMomentAtNextRow(14), a.getSongMoment(16));
+    // expect(a.getFirstSongMomentAtNextRow(16), a.getSongMoment(20));
+    // expect(a.getFirstSongMomentAtNextRow(20), a.getSongMoment(24));
+    // expect(a.getFirstSongMomentAtNextRow(24), a.getSongMoment(28));
+    // expect(a.getFirstSongMomentAtNextRow(28), a.getSongMoment(32));
+    // expect(a.getFirstSongMomentAtNextRow(29), a.getSongMoment(32));
+    // expect(a.getFirstSongMomentAtNextRow(30), a.getSongMoment(32));
+    // expect(a.getFirstSongMomentAtNextRow(31), a.getSongMoment(32));
+    // expect(a.getFirstSongMomentAtNextRow(32), null);
+    // expect(a.getFirstSongMomentAtNextRow(33), null);
+    //
+    //
+    // expect(a.getFirstSongMomentAtPriorRow(-3), a.getSongMoment(0));
+    // expect(a.getFirstSongMomentAtPriorRow(0), isNotNull);
+    // expect(a.getFirstSongMomentAtPriorRow(0), a.getSongMoment(0));
+    expect(a.getFirstSongMomentAtPriorRow(4), a.getSongMoment(0));
+    expect(a.getFirstSongMomentAtPriorRow(8), a.getSongMoment(4));
+    expect(a.getFirstSongMomentAtPriorRow(9), a.getSongMoment(4));
+    expect(a.getFirstSongMomentAtPriorRow(10), a.getSongMoment(8));
+    expect(a.getFirstSongMomentAtPriorRow(11), a.getSongMoment(8));
+    expect(a.getFirstSongMomentAtPriorRow(12), a.getSongMoment(8));
+    expect(a.getFirstSongMomentAtPriorRow(14), a.getSongMoment(10));
+    expect(a.getFirstSongMomentAtPriorRow(16), a.getSongMoment(14));
+    expect(a.getFirstSongMomentAtPriorRow(20), a.getSongMoment(16));
+    expect(a.getFirstSongMomentAtPriorRow(24), a.getSongMoment(20));
+    expect(a.getFirstSongMomentAtPriorRow(28), a.getSongMoment(24));
+    expect(a.getFirstSongMomentAtPriorRow(29), a.getSongMoment(24));
+    expect(a.getFirstSongMomentAtPriorRow(30), a.getSongMoment(24));
+    expect(a.getFirstSongMomentAtPriorRow(31), a.getSongMoment(24));
+    expect(a.getFirstSongMomentAtPriorRow(32), a.getSongMoment(28));
+    expect(a.getFirstSongMomentAtPriorRow(33), a.getSongMoment(28));
+    expect(a.getFirstSongMomentAtPriorRow(34), a.getSongMoment(28));
+    expect(a.getFirstSongMomentAtPriorRow(35), a.getSongMoment(28));
+    expect(a.getFirstSongMomentAtPriorRow(36), null);
+    expect(a.getFirstSongMomentAtPriorRow(37), null);
+  });
+
   test('testSetMeasuresPerRow', () {
     int beatsPerBar = 4;
     SongBase a;

@@ -3314,6 +3314,53 @@ class SongBase {
     return null;
   }
 
+  SongMoment? getFirstSongMomentAtNextRow(int givenMomentNumber) {
+    //  forwards
+    int limit = getSongMomentsSize();
+    int oldRow = getSongMoment(givenMomentNumber)?.row ?? 0;
+    for (int momentNumber = givenMomentNumber; momentNumber < limit; momentNumber++) {
+      var moment = getSongMoment(momentNumber);
+      if (moment != null) {
+        int newRow = moment.row!;
+        if (newRow != oldRow) {
+          return moment;
+        }
+        oldRow = newRow;
+      }
+    }
+    return null;
+  }
+
+  SongMoment? getFirstSongMomentAtPriorRow(int givenMomentNumber) {
+    if (givenMomentNumber >= getSongMomentsSize()) {
+      return null;
+    }
+    if (givenMomentNumber <= 0) {
+      return getSongMoment(0);
+    }
+    //  prior
+    int oldRow = getSongMoment(givenMomentNumber)?.row ?? 0;
+    for (int momentNumber = givenMomentNumber; momentNumber > 0; momentNumber--) {
+      var moment = getSongMoment(momentNumber);
+      if (moment != null) {
+        int newRow = moment.row!;
+        if (newRow != oldRow) {
+          //  find the start of this row
+          for (; momentNumber >= 0; momentNumber--) {
+            var newMoment = getSongMoment(momentNumber);
+            if (newMoment == null || newMoment.row != newRow) {
+              return moment;
+            }
+            moment = newMoment;
+          }
+          return moment;
+        }
+        oldRow = newRow;
+      }
+    }
+    return null;
+  }
+
   ///  maximum number of measures in any chord row
   int chordRowMaxLength() {
     var ret = 0;
