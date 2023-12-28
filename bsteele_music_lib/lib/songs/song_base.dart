@@ -3682,6 +3682,7 @@ class SongBase {
     return grid;
   }
 
+  /// Build a grid for the UI to display
   Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
     _songMomentToGridCoordinate = [];
     _measureNodeIdToGridCoordinate = {};
