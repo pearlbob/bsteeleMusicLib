@@ -187,12 +187,18 @@ void main() {
     expect(sn.name, 'Gs');
   });
 
-  test('test accidental', () {
+  test('test accidental easy read', () {
     Logger.level = Level.info;
 
     for (var scaleNote in ScaleNote.values) {
-      logger.i('${scaleNote.toString().padRight(2)}: b: ${scaleNote.asFlat().toString().padRight(2)}'
-          ',  #: ${scaleNote.asSharp().toString().padRight(2)}');
+      logger.i('${scaleNote.toString().padRight(2)}:'
+          // '  as b: ${scaleNote.asFlat().toString().padRight(2)}'
+          // ',  as #: ${scaleNote.asSharp().toString().padRight(2)}, '
+          '  best as: ${scaleNote.asEasyRead().toString().padRight(2)}');
+      expect(
+          [ScaleNote.Bs, ScaleNote.Es, ScaleNote.As, ScaleNote.Fb, ScaleNote.Cb, ScaleNote.Gb]
+              .contains(scaleNote.asEasyRead()),
+          isFalse);
     }
   });
 }

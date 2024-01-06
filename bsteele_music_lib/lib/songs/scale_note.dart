@@ -89,6 +89,13 @@ enum ScaleNote implements Comparable<ScaleNote> {
     return value ? _flats[_halfStep] : _sharps[_halfStep];
   }
 
+  ScaleNote asEasyRead() {
+    if (this == ScaleNote.X) {
+      return ScaleNote.X;
+    }
+    return _easyRead[_halfStep];
+  }
+
   //  all sharps
   static final _sharps = [
     ScaleNote.A,
@@ -117,6 +124,22 @@ enum ScaleNote implements Comparable<ScaleNote> {
     ScaleNote.E,
     ScaleNote.F,
     ScaleNote.Gb,
+    ScaleNote.G,
+    ScaleNote.Ab
+  ];
+
+  //  easy read
+  static final _easyRead = [
+    ScaleNote.A,
+    ScaleNote.Bb,
+    ScaleNote.B,
+    ScaleNote.C,
+    ScaleNote.Db,
+    ScaleNote.D,
+    ScaleNote.Eb,
+    ScaleNote.E,
+    ScaleNote.F,
+    ScaleNote.Fs,
     ScaleNote.G,
     ScaleNote.Ab
   ];
