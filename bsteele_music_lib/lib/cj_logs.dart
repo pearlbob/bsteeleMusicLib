@@ -20,14 +20,15 @@ const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSon
 final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 late final String downloadsDirString;
 
-final _firstValidDate = DateTime(2022, 7, 26);
+// final _firstValidFormatDate = DateTime(2022, 7, 26); //  first valid file format
 final _now = DateTime.now();
 final _oldestValidDate = DateTime(_now.year - 2, _now.month, _now.day);
+final _firstValidDate = _oldestValidDate;
 
-const _cjLogFiles = Level.info;
+const _cjLogFiles = Level.debug;
 const _cjLogLines = Level.debug;
 const _cjLogPerformances = Level.debug;
-const _cjLogDups = Level.debug;
+const _cjLogDelete = Level.debug;
 
 const songPerformanceExtension = '.songperformances';
 
@@ -113,8 +114,13 @@ class CjLog {
     processedLogs.createSync();
 
     //  add the github version
-    allSongPerformances
-        .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+    {
+      File file = File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation');
+      String data = file.readAsStringSync();
+      allSongPerformances.updateFromJsonString(data);
+    }
+
+    logger.i('request count: ${allSongPerformances.allSongPerformanceRequests.length}');
 
     //  process the logs
     var list = logs.listSync();
@@ -184,11 +190,12 @@ class CjLog {
           print('   line: <$line>');
           continue;
         }
-        logger.log(_cjLogLines,
-            '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}');
 
         //  output the update if the song has changed
         if (!songUpdate.song.songBaseSameContent(lastSongUpdate.song) && lastSongUpdate.song.title.isNotEmpty) {
+          logger.log(_cjLogLines,
+              '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}');
+
           //  convert last song update to a performance
           allSongPerformances.addSongPerformance(toSongPerformance(lastSongUpdate, dateTime));
         }
@@ -211,11 +218,15 @@ class CjLog {
       SongPerformance? lastPerformance;
       List<SongPerformance> deleteList = [];
       for (SongPerformance performance in allSongPerformances.allSongPerformanceHistory) {
-        if (lastPerformance != null) {
+        //  throw out the old performances
+        if (performance.lastSungDateTime.compareTo(_firstValidDate) < 0) {
+          logger.log(_cjLogDelete, 'delete: $performance');
+          deleteList.add(performance);
+        } else if (lastPerformance != null) {
           if (performance.compareTo(lastPerformance) == 0 &&
               (performance.lastSung - lastPerformance.lastSung).abs() < Duration.millisecondsPerDay) {
             //  same performance
-            logger.log(_cjLogDups, 'dup: $performance');
+            logger.log(_cjLogDelete, 'delete: $performance');
             deleteList.add(performance);
           }
         }
@@ -323,6 +334,23 @@ class CjLog {
 
   void _writeSongPerformances(File file, {bool prettyPrint = true}) {
     if (allSongPerformances.isNotEmpty) {
+      logger.i('first valid date: $_firstValidDate');
+      {
+        int count = 0;
+        var oldest = _now;
+        for (var p in allSongPerformances.allSongPerformanceHistory) {
+          if (p.lastSungDateTime.compareTo(oldest) < 0) {
+            oldest = p.lastSungDateTime;
+          }
+          if (p.lastSungDateTime.compareTo(_firstValidDate) < 0) {
+            // logger.i('      too early:  ${p.lastSungDateTime}');
+            count++;
+          }
+        }
+        logger.i('oldest:  $oldest');
+        logger.i('history too early count:  $count');
+      }
+
       if (file.path.endsWith('.gz')) {
         file.writeAsBytesSync(gzip.encode(utf8.encode(allSongPerformances.toJsonString(prettyPrint: prettyPrint))),
             flush: true);

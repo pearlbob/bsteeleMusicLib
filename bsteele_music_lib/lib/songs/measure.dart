@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
@@ -121,7 +123,6 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   void _allocateTheBeats(final int maxBeatCount) {
-    //  fixme: deal with under specified beats: eg. A.B in 4/4, implement as A.B1.
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
     if (chords.isEmpty) {
@@ -195,6 +196,14 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         unallocatedBeats -= additionalBeatsPerChord;
       }
       _beatCount = maxBeatCount;
+      return;
+    }
+
+    if (requiresNashvilleBeats) {
+      for (Chord c in chords) {
+        c.implicitBeats = true;
+      }
+      _beatCount = totalBeats;
       return;
     }
 
@@ -284,7 +293,18 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   String toJson() {
-    return _toMarkupWithEnd(null);
+    if (chords.isNotEmpty) {
+      StringBuffer sb = StringBuffer();
+      for (Chord chord in chords) {
+        sb.write(chord.markupStart());
+        sb.write(chord.beatsToString());
+      }
+      if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
+        return '$_beatCount${sb.toString()}';
+      }
+      return sb.toString();
+    }
+    return 'X'; // no chords
   }
 
   @override
@@ -323,19 +343,52 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   bool get hasReducedBeats => beatCount < beatsPerBar;
 
-  bool get hasExplicitBeats {
-    if (hasReducedBeats) {
+  //  try to minimize Nashville style top dots if they can be expressed without ambiguity with dots on the text line
+  static bool reducedTopDots = false;
+
+  /*
+  beats  bpb    requiresNashvilleBeats
+                        forms, in order of preference
+  1       2     T       1A
+  2       2     F       A AB
+  1       3     T       1A
+  2       3     F       A. 2A
+  2       3     T       2AB
+  3       3     F       A A.. A.B AB. ABC
+                  AB => A.B  ???
+  1       4     T       1A
+  2       4     F       A. 2A
+  2       4     T       2AB
+  3       4     F       A.. 3A
+  3       4     T       A.B AB. ABC
+  3       4     T       3ABC
+  4       4     A A..B AB A.BC AB.C ABC.              not: ABC   A...
+                  AB => A.B.
+                  ABC => A.BC ???       not: ABC.  ???
+  1       6     T       1A
+  2       6     F       A. 2A
+  2       6     T       2AB
+  3       6     F       A.. 3A A.B AB.                      not: ABC
+  4       6     F       A... 4A A..B 4A.B. 4A.BC 4AB.C 4ABC.
+  5       6     F       A.... 5A A...B A..B. A.BC. A.B.C AB..C ABC..
+  6       6     F       A AB A..B.C AB...C ABC...   A.B.C.  not:  ABC  A.....
+                  AB => A..B..
+                  ABC => A.B.C. ???  likely
+   */
+  bool get requiresNashvilleBeats {
+    if (chords.isEmpty || beatCount == beatsPerBar) {
+      return false;
+    }
+    if (!reducedTopDots) {
       return true;
     }
-    if (chords.isNotEmpty) {
-      int beats = chords.first.beats;
-      for (var chord in chords) {
-        if (chord.beats != beats) {
-          return true;
-        }
-      }
+    //  a short measure
+    int minBeats = chords.first.beats;
+    for (var chord in chords) {
+      minBeats = min(minBeats, chord.beats);
     }
-    return false;
+    //  short measure, single beat needs to be marked as special
+    return minBeats == 1;
   }
 
   @override
@@ -390,31 +443,6 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   int get beatsPerBar => _beatsPerBar;
   final int _beatsPerBar;
-
-  /*
-  beats  bpb    forms, in order of preference
-  1       2     1A
-  2       2     A AB
-  1       3     1A
-  2       3     A. 2A 2AB
-  3       3     A A.. A.B AB. ABC
-                  AB => A.B  ???
-  1       4     1A
-  2       4     A. 2A 2AB
-  3       4     A.. 3A A.B AB. 3ABC                   not: ABC
-                  3AB => AB.  ???
-  4       4     A A..B AB A.BC AB.C ABC.              not: ABC   A...
-                  AB => A.B.
-                  ABC => A.BC ???       not: ABC.  ???
-  1       6     1A
-  2       6     A. 2A 2AB
-  3       6     A.. 3A A.B AB.                      not: ABC
-  4       6     A... 4A A..B 4A.B. 4A.BC 4AB.C 4ABC.
-  5       6     A.... 5A A...B A..B. A.BC. A.B.C AB..C ABC..
-  6       6     A AB A..B.C AB...C ABC...   A.B.C.  not:  ABC  A.....
-                  AB => A..B..
-                  ABC => A.B.C. ???  likely
-   */
 
   /// indicate that the measure is at the end of it's row of measures in the phrase
   bool endOfRow = false;

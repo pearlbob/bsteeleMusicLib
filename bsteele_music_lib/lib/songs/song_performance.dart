@@ -127,8 +127,12 @@ class SongPerformance implements Comparable<SongPerformance> {
       : _songIdAsString = json['songId'],
         _lowerCaseSongIdAsString = json['songId'].toString().toLowerCase(),
         _singer = _cleanPerformer(json['singer']),
-        _key = json['key'] is int ? Key.getKeyByHalfStep(json['key']) : Key.fromMarkup(json['key']),
-        _bpm = json['bpm'],
+        _key = json['key'] == null
+            ? Key.getDefault()
+            : json['key'] is int
+                ? Key.getKeyByHalfStep(json['key'])
+                : Key.fromMarkup(json['key']),
+        _bpm = json['bpm'] ?? MusicConstants.defaultBpm,
         _lastSung = json['lastSung'] ?? 0;
 
   String toJsonString() {
@@ -642,7 +646,8 @@ class AllSongPerformances {
     } else {
       throw 'updateFromJsonString wrong json decode: ${decoded.runtimeType}';
     }
-    logger.log(_logPerformance, 'updateFromJsonString: $usTimer, count: $count');
+    logger.log(_logPerformance,
+        'updateFromJsonString: $usTimer, count: $count, requests: ${_allSongPerformanceRequests.length}');
     return count;
   }
 
