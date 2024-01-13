@@ -510,6 +510,7 @@ void main() {
     expect(measure.beatCount, 1);
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.chords.first.implicitBeats, isFalse);
 
     expected = chordByScaleChordAndBeats(ScaleChord.fromScaleNote(ScaleNote.A), 1, beatsPerBar);
     expect(measure.getChordAtBeat(0), expected);
@@ -778,6 +779,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'ABC', '3ABC');
     expect(measure.hasReducedBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
     expect(measure.getChordAtBeat(0), expected);
     expected = Chord.parseString('B', beatsPerBar)!;

@@ -129,7 +129,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       return;
     }
 
-    //  find the total count of beats, prior to implicit distribution
+    //  find the total count of beats, prior to distribution of beats implied
     int totalBeats = 0;
     bool allMatch = true;
     int defaultBeat = chords.first.beats;
@@ -147,16 +147,16 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
     //  abbreviate when appropriate
     if (chords.length == 1) {
-      //  silence the explicit beats
       var first = chords.first;
       if (first.implicitBeats == false) {
+        //  use the explicit beat count
         _beatCount = first.beats;
-        return;
+      } else {
+        //  imply the beat count from the measure count
+        first.beats = maxBeatCount;
       }
-
-      first.implicitBeats = maxBeatCount == 1 || chords.first.beats == beatsPerBar;
-      first.beats = maxBeatCount;
-      _beatCount = maxBeatCount;
+      first.implicitBeats = first.beats == beatsPerBar; //  alter based on the measure
+      _beatCount = first.beats;
       return;
     }
 
@@ -201,7 +201,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
     if (requiresNashvilleBeats) {
       for (Chord c in chords) {
-        c.implicitBeats = true;
+        c.implicitBeats = false;
       }
       _beatCount = totalBeats;
       return;
@@ -355,14 +355,14 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   2       3     F       A. 2A
   2       3     T       2AB
   3       3     F       A A.. A.B AB. ABC
-                  AB => A.B  ???
+                  AB => A.B  ???  no?
   1       4     T       1A
   2       4     F       A. 2A
   2       4     T       2AB
   3       4     F       A.. 3A
   3       4     T       A.B AB. ABC
   3       4     T       3ABC
-  4       4     A A..B AB A.BC AB.C ABC.              not: ABC   A...
+  4       4     F       A A..B AB A.BC AB.C ABC.              not: ABC   A...
                   AB => A.B.
                   ABC => A.BC ???       not: ABC.  ???
   1       6     T       1A
@@ -370,7 +370,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   2       6     T       2AB
   3       6     F       A.. 3A A.B AB.                      not: ABC
   4       6     F       A... 4A A..B 4A.B. 4A.BC 4AB.C 4ABC.
-  5       6     F       A.... 5A A...B A..B. A.BC. A.B.C AB..C ABC..
+  5       6     T       A.... 5A A...B A..B. A.BC. A.B.C AB..C ABC..
   6       6     F       A AB A..B.C AB...C ABC...   A.B.C.  not:  ABC  A.....
                   AB => A..B..
                   ABC => A.B.C. ???  likely
