@@ -353,9 +353,8 @@ class SongRepair {
     return null;
   }
 
-  static final HashMap<String, String> repairMap = HashMap()
-    ..addAll({
-      //  new song id: old song id
+  static const Map<String, String> repairMap = {
+    //  new song id: old song id
       'song_all_of_me_by_ruth_etting_coverby_frank_sinatra': 'song_all_of_me_by_sinatra',
       'song_for_no_one_by_beatles_the': 'song_for_no_one_by_emmy_lou_harris_orig_beatles',
       'song_lookin_out_my_back_door_by_creedence_clearwater_revival': 'song_lookin_out_my_back_door_by_john_fogerty',
@@ -368,9 +367,9 @@ class SongRepair {
       'song_winter_wonderland_by_guy_lombardo_johnny_mathis_et_al_at_christmas': 'song_winter_wonderland_by_christmas',
       'song_let_it_snow_by_vaughn_monroe_and_everybody_at_christmas': 'song_let_it_snow_by_christmas',
       'song_feliz_navidad_by_jos_feliciano': 'song_feliz_navidad_by_christmas',
-      'Song_Blue_Bayou_by_Roy_Orbison_coverBy_Linda_Rondstadt'.toLowerCase():
-          'Song_Blue_Bayou_by_Roy_Orbison'.toLowerCase(),
-    });
+    'song_blue_bayou_by_roy_orbison_coverby_linda_rondstadt': 'song_blue_bayou_by_roy_orbison',
+    'song_sin_city_by_flying_burrito_brothers_the': 'song_sin_city_by_gram_parsons',
+  };
 
   int misses = 0;
   static const _matchRatingMinimum = 0.70;
