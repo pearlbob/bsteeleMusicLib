@@ -11,10 +11,11 @@ import 'song.dart';
 import 'song_moment.dart';
 
 enum SongUpdateState {
-  none,
-  playing,
-  idle,
-  pause,
+  none, //  basically an initial condition
+  playing, // song is in play mode
+  idle, //  song is stopped
+  pause, //  song play is paused
+  drumTempo, //  prior to play, drum the given tempo, temporarily
 }
 
 const unknownSinger = 'unknown';
