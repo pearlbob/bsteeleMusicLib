@@ -497,12 +497,11 @@ void main() {
     }
   });
 
-  test('test short measures', () {
+  _testShortMeasures() {
     int beatsPerBar;
     Measure measure;
     Chord expected;
 
-    Logger.level = Level.info;
     logger.i('bar, beats, input, output, comment');
 
     beatsPerBar = 2;
@@ -556,7 +555,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2A', 'A.', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, !Measure.reducedTopDots);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expect(measure.toMarkup(), 'A.');
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
@@ -596,9 +595,10 @@ void main() {
     expect(measure.getChordAtBeat(2), expected);
     expect(measure.getChordAtBeat(3), null);
 
+    beatsPerBar = 3;
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -618,7 +618,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A.B', 'A.B');
     expect(measure.hasReducedBeats, isFalse);
-    expect(measure.requiresNashvilleBeats, isFalse);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -630,7 +630,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'AB.', 'AB.');
     expect(measure.hasReducedBeats, isFalse);
-    expect(measure.requiresNashvilleBeats, isFalse);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 1;
     expect(measure.getChordAtBeat(0), expected);
@@ -665,9 +665,10 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
     expect(measure.getChordAtBeat(4), null);
 
+    beatsPerBar = 4;
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -676,9 +677,10 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
     expect(measure.getChordAtBeat(4), null);
 
+    beatsPerBar = 4;
     measure = _shortMeasureTest(beatsPerBar, 2, '2A', 'A.');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -702,7 +704,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A..', 'A..');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -791,7 +793,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'A.BC', 'A.BC');
     expect(measure.hasReducedBeats, isFalse);
-    expect(measure.requiresNashvilleBeats, isFalse);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 2;
     expect(measure.getChordAtBeat(0), expected);
@@ -804,7 +806,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'AB.C', 'AB.C');
     expect(measure.hasReducedBeats, isFalse);
-    expect(measure.requiresNashvilleBeats, isFalse);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expect(measure.getChordAtBeat(0), expected);
     expected = Chord.parseString('B.', beatsPerBar)!;
@@ -817,7 +819,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'ABC.', 'ABC.');
     expect(measure.hasReducedBeats, isFalse);
-    expect(measure.requiresNashvilleBeats, isFalse);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expect(measure.getChordAtBeat(0), expected);
     expected = Chord.parseString('B', beatsPerBar)!;
@@ -851,7 +853,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
         ChordAnticipationOrDelay.defaultValue, true);
     expect(measure.getChordAtBeat(0), expected);
@@ -863,7 +865,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 2, '2A', 'A.');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expect(measure.beatCount, 2);
     expect(measure.toMarkup(), 'A.');
     expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
@@ -891,7 +893,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 3, 'A..', 'A..');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 3;
     expect(measure.getChordAtBeat(0), expected);
@@ -914,7 +916,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'A...', 'A...');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 4;
     expect(measure.getChordAtBeat(0), expected);
@@ -925,7 +927,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 5, 'A....', 'A....');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 5;
     expect(measure.getChordAtBeat(0), expected);
@@ -937,7 +939,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 5, '5A', 'A....');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('A', beatsPerBar)!;
     expected.beats = 5;
     expect(measure.getChordAtBeat(0), expected);
@@ -994,7 +996,7 @@ void main() {
 
     measure = _shortMeasureTest(beatsPerBar, 4, 'Asus2...', 'Asus2...');
     expect(measure.hasReducedBeats, isTrue);
-    expect(measure.requiresNashvilleBeats, isTrue);
+    expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expected = Chord.parseString('Asus2', beatsPerBar)!;
     expected.beats = 4;
     expect(measure.getChordAtBeat(0), expected);
@@ -1011,6 +1013,18 @@ void main() {
     expect(measure.requiresNashvilleBeats, isFalse);
     expect(measure.beatCount, 6);
     expect(measure.toMarkup(), 'A');
+  }
+
+  test('test short measures', () {
+    Logger.level = Level.info;
+
+    Measure.reducedNashvilleDots = true;
+    logger.i('\nreducedNashvilleDots: ${Measure.reducedNashvilleDots}');
+    _testShortMeasures();
+
+    Measure.reducedNashvilleDots = false;
+    logger.i('\nreducedNashvilleDots: ${Measure.reducedNashvilleDots}');
+    _testShortMeasures();
   });
 
   test('test short measure JSON', () {

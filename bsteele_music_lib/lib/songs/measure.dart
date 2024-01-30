@@ -344,7 +344,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   bool get hasReducedBeats => beatCount < beatsPerBar;
 
   //  try to minimize Nashville style top dots if they can be expressed without ambiguity with dots on the text line
-  static bool reducedTopDots = false;
+  static bool reducedNashvilleDots = true;
 
   /*
   beats  bpb    requiresNashvilleBeats
@@ -376,19 +376,42 @@ class Measure extends MeasureNode implements Comparable<Measure> {
                   ABC => A.B.C. ???  likely
    */
   bool get requiresNashvilleBeats {
-    if (chords.isEmpty || beatCount == beatsPerBar) {
+    if (chords.isEmpty) {
       return false;
     }
-    if (!reducedTopDots) {
+    if (reducedNashvilleDots) {
+      if (beatCount == beatsPerBar) {
+        return false;
+      }
+
+      //  a short measure
+      if (chords.length == 1 && chords.first.beats > 1) {
+        //  one chord short of a measure beat count requires Nashville beats if only one beat
+        return false;
+      }
+
+      //  short measure, single beat needs to be marked as special
+      int minBeats = chords.first.beats;
+      for (var chord in chords) {
+        minBeats = min(minBeats, chord.beats);
+      }
+      return minBeats == 1;
+    } else {
+      //  all uneven beats need Nashville beat notation
+
+      //  require beats if they are not even
+      if (beatCount == beatsPerBar) {
+        int beats = chords.first.beats;
+        for (var chord in chords) {
+          if (beats != chord.beats) {
+            return true;
+          }
+        }
+        return false;
+      }
+
       return true;
     }
-    //  a short measure
-    int minBeats = chords.first.beats;
-    for (var chord in chords) {
-      minBeats = min(minBeats, chord.beats);
-    }
-    //  short measure, single beat needs to be marked as special
-    return minBeats == 1;
   }
 
   @override
