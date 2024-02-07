@@ -68,6 +68,7 @@ bsteeleMusicUtil:
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
 -allSongPerformances sync with CJ performances
+-bpm                list the bpm's used
 -cjwrite {file)     format the song metadata
 -cjwritesongs {file)     write song list of cj songs
 -cjread {file)      add song metadata
@@ -207,6 +208,37 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           SongMetadata.fromJson(inputFile.readAsStringSync());
+          break;
+
+        case '-bpm':
+          {
+            Map<int, int> bpms = {};
+            for (Song song in allSongs) {
+              int bpm = song.beatsPerMinute;
+              var n = bpms[bpm];
+              bpms[bpm] = (n ?? 0) == 0 ? 1 : n! + 1;
+              logger.i('"${song.songId.songId}", bpm: $bpm');
+            }
+            for (int n in SplayTreeSet<int>()
+              ..addAll(bpms.keys)
+              ..toList()) {
+              logger.i('$n: ${bpms[n]}');
+            }
+            for (Song song in SplayTreeSet<Song>((song1, song2) {
+              var ret = song1.beatsPerMinute.compareTo(song2.beatsPerMinute);
+              if (ret != 0) {
+                return ret;
+              }
+              return song1.compareTo(song2);
+            })
+              ..addAll(allSongs)
+              ..toList()) {
+              int bpm = song.beatsPerMinute;
+              if (bpm > 200) {
+                logger.i('${song.title} by ${song.artist}, bpm: $bpm, beats: ${song.beatsPerBar}');
+              }
+            }
+          }
           break;
 
         case '-cjwrite': // {file)     format the song metadata

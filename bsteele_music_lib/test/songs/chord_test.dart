@@ -271,4 +271,11 @@ void main() {
           ]);
     });
   });
+
+  test('test simplified chords', () {
+    logger.i('${'chord'.padLeft(7)}: simplified');
+    for (var descriptor in ChordDescriptor.values) {
+      logger.i('${descriptor.toString().padLeft(7)}: ${descriptor.simplified?.name ?? 'unknown'}');
+    }
+  });
 }

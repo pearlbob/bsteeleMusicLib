@@ -497,7 +497,7 @@ void main() {
     }
   });
 
-  _testShortMeasures() {
+  testShortMeasures() {
     int beatsPerBar;
     Measure measure;
     Chord expected;
@@ -1020,11 +1020,11 @@ void main() {
 
     Measure.reducedNashvilleDots = true;
     logger.i('\nreducedNashvilleDots: ${Measure.reducedNashvilleDots}');
-    _testShortMeasures();
+    testShortMeasures();
 
     Measure.reducedNashvilleDots = false;
     logger.i('\nreducedNashvilleDots: ${Measure.reducedNashvilleDots}');
-    _testShortMeasures();
+    testShortMeasures();
   });
 
   test('test short measure JSON', () {

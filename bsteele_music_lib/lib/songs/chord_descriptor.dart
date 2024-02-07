@@ -324,6 +324,24 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   ChordDescriptor? get alias => _alias;
   final ChordDescriptor? _alias;
 
+  ChordDescriptor get simplified {
+    if (_simplified != null) {
+      return _simplified!;
+    }
+
+    //  major, minor or dominant7
+    if (chordComponents.contains(ChordComponent.minorThird)) {
+      _simplified = _minor;
+    } else if (chordComponents.contains(ChordComponent.minorSeventh)) {
+      _simplified = _dominant7;
+    } else {
+      _simplified = _major;
+    }
+    return _simplified!;
+  }
+
+  ChordDescriptor? _simplified;
+
   static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [
     //  most common

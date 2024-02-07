@@ -38,7 +38,8 @@ enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
   openHighHat,
   snare,
   kick,
-  bass;
+  bass,
+  blip;
 
   @override
   int compareTo(DrumTypeEnum other) {
