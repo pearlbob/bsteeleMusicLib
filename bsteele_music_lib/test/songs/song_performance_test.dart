@@ -73,7 +73,7 @@ void main() {
       expect(
           songPerformance.toString(),
           'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
-          ' _singer: \'vicki\', _key: A, _bpm: 120, sung: 12/18/2021}');
+          ' _singer: \'vicki\', _key: A, _bpm: 120, last sung: 12/18/2021}');
       expect(songPerformance.songIdAsString, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
       expect(songPerformance.key, Key.A);
@@ -93,10 +93,10 @@ void main() {
       allSongPerformances.loadSongs(songs);
       expect(
           allSongPerformances.bySinger(singer1).toString(),
-          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', _key: G♭, _bpm: 100, sung: 12/18/2021}'
-          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', _key: G♭, _bpm: 120, sung: 12/18/2021}]');
+          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', _key: G♭, _bpm: 100, last sung: 12/18/2021}'
+          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', _key: G♭, _bpm: 120, last sung: 12/18/2021}]');
       expect(allSongPerformances.bySinger(singer2).toString(),
-          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', _key: A, _bpm: 120, sung: 12/18/2021}]');
+          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', _key: A, _bpm: 120, last sung: 12/18/2021}]');
 
       logger.i('String toJsonStringFor($singer1): \'${allSongPerformances.toJsonStringFor(singer1)}\'');
       expect(
@@ -863,5 +863,50 @@ void main() {
     var performance2 = SongPerformance(b.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung + 30000);
     logger.i('performedSong: "${performance2.performedSong.title}"');
     expect(performance1.performedSong.title, 'Ive Got The Blanks by Bob');
+  });
+
+  test('song first sung', () async {
+    int beatsPerBar = 4;
+    int bpm = 106;
+    var singer = 'Bob S.';
+    var firstSung = DateTime(2024, 1, 1).millisecondsSinceEpoch;
+    var lastSung = DateTime(2024, 3, 1).millisecondsSinceEpoch;
+
+    Logger.level = Level.info;
+
+    var a = Song(
+        title: 'ive got the blanks',
+        artist: 'bob',
+        copyright: '2022 bsteele.com',
+        key: Key.C,
+        beatsPerMinute: bpm,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
+    var allSongPerformances = AllSongPerformances.test();
+
+    var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+    logger.i('performedSong: $performance1');
+    expect(performance1.firstSung, lastSung);
+    expect(performance1.lastSung, lastSung);
+
+    allSongPerformances.addSongPerformance(performance1);
+
+    var performance2 = performance1.copyWith(lastSung: firstSung);
+    logger.i('performedSong: $performance2');
+    expect(performance2.firstSung, firstSung);
+    expect(performance2.lastSung, firstSung);
+
+    allSongPerformances.updateSongPerformance(performance2);
+    for (var p in allSongPerformances.allSongPerformances) {
+      logger.i('$p');
+    }
+
+    var found = allSongPerformances.find(singer: singer, song: a);
+    expect(found?.firstSung, firstSung);
+    expect(found?.lastSung, lastSung);
   });
 }

@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import '../util/us_timer.dart';
 import '../util/util.dart';
@@ -29,21 +30,24 @@ String _cleanPerformer(final String? value) {
 }
 
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this._songIdAsString, final String singer, {Key? key, int? bpm, int? lastSung, Song? song})
+  SongPerformance(this._songIdAsString, final String singer,
+      {Key? key, int? bpm, int? firstSung, int? lastSung, Song? song})
       : _song = song,
         _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _singer = _cleanPerformer(singer),
         _key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
+        _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song song, final String singer, {Key? key, int? bpm, int? lastSung})
+  SongPerformance.fromSong(Song song, final String singer, {Key? key, int? bpm, int? firstSung, int? lastSung})
       : _song = song,
         _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
         _singer = _cleanPerformer(singer),
         _songIdAsString = song.songId.toString(),
         _key = key ?? song.key,
         _bpm = bpm ?? song.beatsPerMinute,
+        _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
   SongPerformance update({Key? key, int? bpm}) {
@@ -52,6 +56,12 @@ class SongPerformance implements Comparable<SongPerformance> {
   }
 
   SongPerformance copy() {
+    var ret = SongPerformance(_songIdAsString, singer, key: _key, bpm: bpm, firstSung: _firstSung, lastSung: lastSung);
+    ret.song = song;
+    return ret;
+  }
+
+  SongPerformance copyWith({int? lastSung}) {
     var ret = SongPerformance(_songIdAsString, singer, key: _key, bpm: bpm, lastSung: lastSung);
     ret.song = song;
     return ret;
@@ -103,8 +113,13 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   @override
   String toString() {
+    if (_firstSung == 0) {
+      logger.i('break here');
+    }
     return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', _key: $_key'
-        ', _bpm: $_bpm, sung: $lastSungDateString'
+        ', _bpm: $_bpm'
+        '${_firstSung < _lastSung ? ', first sung: $firstSungDateString' : ''}'
+        ', last sung: $lastSungDateString'
         //' = $_lastSung'
         '}';
   }
@@ -133,7 +148,9 @@ class SongPerformance implements Comparable<SongPerformance> {
                 ? Key.getKeyByHalfStep(json['key'])
                 : Key.fromMarkup(json['key']),
         _bpm = json['bpm'] ?? MusicConstants.defaultBpm,
-        _lastSung = json['lastSung'] ?? 0;
+        _lastSung = json['lastSung'] ?? 0 {
+    _firstSung = _lastSung; //  first sung are all relative the list contents so they are not stored.
+  }
 
   String toJsonString() {
     return jsonEncode(this);
@@ -215,11 +232,18 @@ class SongPerformance implements Comparable<SongPerformance> {
   int get bpm => _bpm;
   final int _bpm;
 
-  String get lastSungDateString => _lastSung == 0
-      ? ''
-      : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung)); // fixme: performance
+  String get firstSungDateString =>
+      _firstSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_firstSung));
+
+  DateTime get firstSungDateTime => DateTime.fromMillisecondsSinceEpoch(_firstSung);
+
+  String get lastSungDateString =>
+      _lastSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
   DateTime get lastSungDateTime => DateTime.fromMillisecondsSinceEpoch(_lastSung);
+
+  int get firstSung => _firstSung;
+  int _firstSung = 0;
 
   int get lastSung => _lastSung;
   int _lastSung = 0;
@@ -355,18 +379,17 @@ class SongRepair {
 
   static const Map<String, String> repairMap = {
     //  new song id: old song id
-      'song_all_of_me_by_ruth_etting_coverby_frank_sinatra': 'song_all_of_me_by_sinatra',
-      'song_for_no_one_by_beatles_the': 'song_for_no_one_by_emmy_lou_harris_orig_beatles',
-      'song_lookin_out_my_back_door_by_creedence_clearwater_revival': 'song_lookin_out_my_back_door_by_john_fogerty',
-      'song_spooky_by_classic_iv': 'song_spooky_by_atlanta_rhythm_section',
-      'song_working_on_a_building_by_traditional_folk_song': 'song_working_on_a_building_by_african_american_spiritual',
-      'song_blue_christmas_cover_by_elvis_presley_by_billy_hayes_and_jay_johnson':
-          'song_blue_christmas_by_elvis_presley',
-      'song_parting_glass_the_by_traditional_folk_song_coverby_ed_sheeran':
-          'song_parting_glass_the_by_wailin_jeenys_lyrics',
-      'song_winter_wonderland_by_guy_lombardo_johnny_mathis_et_al_at_christmas': 'song_winter_wonderland_by_christmas',
-      'song_let_it_snow_by_vaughn_monroe_and_everybody_at_christmas': 'song_let_it_snow_by_christmas',
-      'song_feliz_navidad_by_jos_feliciano': 'song_feliz_navidad_by_christmas',
+    'song_all_of_me_by_ruth_etting_coverby_frank_sinatra': 'song_all_of_me_by_sinatra',
+    'song_for_no_one_by_beatles_the': 'song_for_no_one_by_emmy_lou_harris_orig_beatles',
+    'song_lookin_out_my_back_door_by_creedence_clearwater_revival': 'song_lookin_out_my_back_door_by_john_fogerty',
+    'song_spooky_by_classic_iv': 'song_spooky_by_atlanta_rhythm_section',
+    'song_working_on_a_building_by_traditional_folk_song': 'song_working_on_a_building_by_african_american_spiritual',
+    'song_blue_christmas_cover_by_elvis_presley_by_billy_hayes_and_jay_johnson': 'song_blue_christmas_by_elvis_presley',
+    'song_parting_glass_the_by_traditional_folk_song_coverby_ed_sheeran':
+        'song_parting_glass_the_by_wailin_jeenys_lyrics',
+    'song_winter_wonderland_by_guy_lombardo_johnny_mathis_et_al_at_christmas': 'song_winter_wonderland_by_christmas',
+    'song_let_it_snow_by_vaughn_monroe_and_everybody_at_christmas': 'song_let_it_snow_by_christmas',
+    'song_feliz_navidad_by_jos_feliciano': 'song_feliz_navidad_by_christmas',
     'song_blue_bayou_by_roy_orbison_coverby_linda_rondstadt': 'song_blue_bayou_by_roy_orbison',
     'song_sin_city_by_flying_burrito_brothers_the': 'song_sin_city_by_gram_parsons',
   };
@@ -409,7 +432,8 @@ class AllSongPerformances {
           corrections += songPerformance.song != null && newSong.songId != songPerformance.song?.songId ? 1 : 0;
           if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
             removals.add(songPerformance);
-            additions.add(songPerformance.copy()..song = newSong);
+            var copy = songPerformance.copy()..song = newSong;
+            additions.add(copy);
           }
         } else {
           logger.e('lost _allSongPerformances song: ${songPerformance.lowerCaseSongIdAsString}');
@@ -501,9 +525,12 @@ class AllSongPerformances {
     //  don't bother to compare performances, always use the most recent
     if (songPerformance.lastSung <= original.lastSung) {
       //  use the original since it's the same or newer
+      //  update first sung
+      original._firstSung = min(original._firstSung, songPerformance.lastSung);
       return false;
     }
 
+    songPerformance._firstSung = min(original._firstSung, songPerformance.lastSung);
     addSongPerformance(songPerformance);
     return true;
   }

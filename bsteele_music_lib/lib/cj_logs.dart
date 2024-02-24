@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'songs/song.dart';
 import 'songs/song_metadata.dart';
@@ -27,6 +29,7 @@ final _firstValidDate = _oldestValidDate;
 
 const _cjLogFiles = Level.debug;
 const _cjLogLines = Level.debug;
+const _cjLogWasSung = Level.info;
 const _cjLogPerformances = Level.debug;
 const _cjLogDelete = Level.debug;
 
@@ -127,7 +130,8 @@ class CjLog {
     list.sort((a, b) {
       return a.path.compareTo(b.path);
     });
-    //  List<File> fileList = [];
+
+    SplayTreeSet<int> momentNumbers = SplayTreeSet();
     for (var fileSystemEntity in list) {
       if (fileSystemEntity is! File) {
         continue;
@@ -167,9 +171,10 @@ class CjLog {
       logger.log(_cjLogFiles, '${file.path}:  $date');
       var log = utf8Decoder
           .convert(file.path.endsWith('.gz') ? gZipDecoder.convert(file.readAsBytesSync()) : file.readAsBytesSync());
+      SongUpdate? firstSongUpdate;
       SongUpdate lastSongUpdate = SongUpdate();
-      //allSongPerformances.clear();
       var dateTime = DateTime(1970);
+      // var startTime = DateTime(1970);
       for (var line in log.split('\n')) {
         RegExpMatch? m = messageRegExp.firstMatch(line);
         if (m == null) {
@@ -190,15 +195,43 @@ class CjLog {
           print('   line: <$line>');
           continue;
         }
+        // if ( firstSongUpdate == null ) startTime = dateTime;
+        firstSongUpdate ??= songUpdate;
 
         //  output the update if the song has changed
         if (!songUpdate.song.songBaseSameContent(lastSongUpdate.song) && lastSongUpdate.song.title.isNotEmpty) {
           logger.log(_cjLogLines,
               '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}');
 
+          //  see if it makes sense that this song was actually played... or only looked at
+          var song = lastSongUpdate.song;
+
+          //  note: duration of time on the song does not seem to indicate whether it was played
+          // logger.log(_cjLogWasSung, '   from $startTime to $dateTime: ${dateTime.difference(startTime)}'
+          //     ' vs ${lastSongUpdate.song.duration} s');
+          var moments = song.getSongMoments();
+          var minimumMomentCount = moments.length - moments.last.chordSection.getTotalMoments();
+          //  try to allow one section songs, e.g. the blues
+          //  will be fooled by damaged songs
+          if (song.lyricSections.length > 1) {
+            //  otherwise, try assure that most nearly all the song was seen
+            minimumMomentCount = max(minimumMomentCount, (0.6 * moments.last.momentNumber).round());
+          }
+          logger.log(
+              _cjLogWasSung,
+              '$song:  ${momentNumbers.toString()}/$minimumMomentCount '
+              '(${song.getSongMomentsSize()})');
+          if (momentNumbers.first <= 0 && momentNumbers.last >= minimumMomentCount) {
+            logger.log(_cjLogWasSung, '  sung');
+          } else {
+            logger.i('  not sung: ${song.toString()}');
+          }
+
           //  convert last song update to a performance
           allSongPerformances.addSongPerformance(toSongPerformance(lastSongUpdate, dateTime));
+          momentNumbers.clear(); //  remove the last moment numbers from the prior song
         }
+        momentNumbers.add(songUpdate.momentNumber);
         lastSongUpdate = songUpdate;
       }
 

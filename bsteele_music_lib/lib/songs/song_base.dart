@@ -4083,6 +4083,7 @@ class SongBase {
   SongId get songId => _songId;
   SongId _songId = SongId.noArgs();
 
+  //  units of seconds
   double get duration {
     computeDuration();
     return _duration!;
