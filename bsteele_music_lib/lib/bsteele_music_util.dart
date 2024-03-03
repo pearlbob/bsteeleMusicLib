@@ -716,7 +716,7 @@ coerced to reflect the songlist's last modification for that song.
 
           //  singers songs sung per jam
 
-          excel.delete('Sheet1');
+          // fixme: the library won't do this:   excel.delete('Sheet1');
           excel.setDefaultSheet('By Song Title');
 
           var fileBytes = excel.save();

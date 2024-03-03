@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
@@ -16,10 +18,24 @@ void main() {
   });
 
   test('pitch numbers', () {
+    var lastPitch = Pitch.get(PitchEnum.A0);
+
+    //  expected pitch ratio between half steps
+    var refRatio = pow(2, (1 / 12));
+    logger.i('$refRatio');
+
     for (var e in PitchEnum.values) {
       var pitch = Pitch.get(e);
 
-      logger.i('$e: $pitch: ${pitch.number}');
+      logger.i('${e.name.padLeft(4)}: ${pitch.toString().padLeft(4)}: ${pitch.number.toString().padLeft(2)}'
+          ': ${pitch.frequency.toStringAsFixed(3)}');
+
+      if (pitch.frequency != lastPitch.frequency) {
+        var fRatio = pitch.frequency / lastPitch.frequency;
+        // logger.i('$fRatio: ${fRatio - refRatio}');
+        expect((fRatio - refRatio) < 2.23e-16, isTrue);
+      }
+      lastPitch = pitch;
     }
   });
 

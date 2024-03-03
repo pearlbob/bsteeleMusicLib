@@ -1728,36 +1728,35 @@ c2:
       int r = -1;
       for (var m in a.getSongMoments()) {
         if (m.row != r) {
-          logger.i('row ${m.row}: ${m.momentNumber}: $m');
+          logger.i('row ${m.row}: momentNumber: ${m.momentNumber}: $m');
           r = m.row!;
         }
       }
     }
 
-    // expect(a.getFirstSongMomentAtNextRow(-3), a.getSongMoment(4));
-    // expect(a.getFirstSongMomentAtNextRow(0), isNotNull);
-    // expect(a.getFirstSongMomentAtNextRow(0), a.getSongMoment(4));
-    // expect(a.getFirstSongMomentAtNextRow(4), a.getSongMoment(8));
-    // expect(a.getFirstSongMomentAtNextRow(8), a.getSongMoment(10));
-    // expect(a.getFirstSongMomentAtNextRow(9), a.getSongMoment(10));
-    // expect(a.getFirstSongMomentAtNextRow(10), a.getSongMoment(14));
-    // expect(a.getFirstSongMomentAtNextRow(11), a.getSongMoment(14));
-    // expect(a.getFirstSongMomentAtNextRow(12), a.getSongMoment(14));
-    // expect(a.getFirstSongMomentAtNextRow(14), a.getSongMoment(16));
-    // expect(a.getFirstSongMomentAtNextRow(16), a.getSongMoment(20));
-    // expect(a.getFirstSongMomentAtNextRow(20), a.getSongMoment(24));
-    // expect(a.getFirstSongMomentAtNextRow(24), a.getSongMoment(28));
-    // expect(a.getFirstSongMomentAtNextRow(28), a.getSongMoment(32));
-    // expect(a.getFirstSongMomentAtNextRow(29), a.getSongMoment(32));
-    // expect(a.getFirstSongMomentAtNextRow(30), a.getSongMoment(32));
-    // expect(a.getFirstSongMomentAtNextRow(31), a.getSongMoment(32));
-    // expect(a.getFirstSongMomentAtNextRow(32), null);
-    // expect(a.getFirstSongMomentAtNextRow(33), null);
-    //
-    //
-    // expect(a.getFirstSongMomentAtPriorRow(-3), a.getSongMoment(0));
-    // expect(a.getFirstSongMomentAtPriorRow(0), isNotNull);
-    // expect(a.getFirstSongMomentAtPriorRow(0), a.getSongMoment(0));
+    expect(a.getFirstSongMomentAtNextRow(-3), a.getSongMoment(4));
+    expect(a.getFirstSongMomentAtNextRow(0), isNotNull);
+    expect(a.getFirstSongMomentAtNextRow(0), a.getSongMoment(4));
+    expect(a.getFirstSongMomentAtNextRow(4), a.getSongMoment(8));
+    expect(a.getFirstSongMomentAtNextRow(8), a.getSongMoment(10));
+    expect(a.getFirstSongMomentAtNextRow(9), a.getSongMoment(10));
+    expect(a.getFirstSongMomentAtNextRow(10), a.getSongMoment(14));
+    expect(a.getFirstSongMomentAtNextRow(11), a.getSongMoment(14));
+    expect(a.getFirstSongMomentAtNextRow(12), a.getSongMoment(14));
+    expect(a.getFirstSongMomentAtNextRow(14), a.getSongMoment(16));
+    expect(a.getFirstSongMomentAtNextRow(16), a.getSongMoment(20));
+    expect(a.getFirstSongMomentAtNextRow(20), a.getSongMoment(24));
+    expect(a.getFirstSongMomentAtNextRow(24), a.getSongMoment(28));
+    expect(a.getFirstSongMomentAtNextRow(28), a.getSongMoment(32));
+    expect(a.getFirstSongMomentAtNextRow(29), a.getSongMoment(32));
+    expect(a.getFirstSongMomentAtNextRow(30), a.getSongMoment(32));
+    expect(a.getFirstSongMomentAtNextRow(31), a.getSongMoment(32));
+    expect(a.getFirstSongMomentAtNextRow(32), null);
+    expect(a.getFirstSongMomentAtNextRow(33), null);
+
+    expect(a.getFirstSongMomentAtPriorRow(-3), a.getSongMoment(0));
+    expect(a.getFirstSongMomentAtPriorRow(0), isNotNull);
+    expect(a.getFirstSongMomentAtPriorRow(0), a.getSongMoment(0));
     expect(a.getFirstSongMomentAtPriorRow(4), a.getSongMoment(0));
     expect(a.getFirstSongMomentAtPriorRow(8), a.getSongMoment(4));
     expect(a.getFirstSongMomentAtPriorRow(9), a.getSongMoment(4));
