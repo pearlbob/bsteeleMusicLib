@@ -2160,8 +2160,8 @@ coerced to reflect the songlist's last modification for that song.
       horizontalAlign: HorizontalAlign.Center,
       leftBorder: Border(borderStyle: BorderStyle.Thin),
       rightBorder: Border(borderStyle: BorderStyle.Thin),
-      topBorder: Border(borderStyle: BorderStyle.Thin, borderColorHex: 'FFFF0000'),
-      bottomBorder: Border(borderStyle: BorderStyle.Medium, borderColorHex: 'FF0000FF'),
+      topBorder: Border(borderStyle: BorderStyle.Thin, borderColorHex: ExcelColor.fromHexString('FFFF0000')),
+      bottomBorder: Border(borderStyle: BorderStyle.Medium, borderColorHex: ExcelColor.fromHexString('FF0000FF')),
       textWrapping: TextWrapping.WrapText,
     );
     CellStyle songCellStyle = CellStyle(
