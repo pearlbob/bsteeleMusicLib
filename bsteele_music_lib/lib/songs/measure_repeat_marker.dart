@@ -31,7 +31,7 @@ class MeasureRepeatMarker extends Measure {
 
   @override
   String toString() {
-    return 'x$repeats${repetition == null ? '' : '#$repetition'}';
+    return 'x${repetition == null ? '' : '$repetition/'}$repeats';
   }
 
   @override

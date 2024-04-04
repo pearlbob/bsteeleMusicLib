@@ -3585,7 +3585,7 @@ class SongBase {
 
       //  convert to chord section grid
       //  get the lyrics spread properly across the chord row count
-      var lyrics = lyricSection.asExpandedLyrics(chordSection, chordSection.rowCount(expanded: true));
+      List<Lyric> lyrics = lyricSection.asExpandedLyrics(chordSection, chordSection.rowCount(expanded: true));
 
       //  fill in the two verticals (chords and lyrics), aligning the lyrics by phrase
       var sectionGrid = Grid<MeasureNode>();
@@ -3594,6 +3594,7 @@ class SongBase {
       {
         var lyricsIndex = 0;
         var rowIndex = 0;
+
         //  section indicator
         sectionGrid.set(rowIndex++, 0, lyricSection);
         for (var phrase in chordSection.phrases) {

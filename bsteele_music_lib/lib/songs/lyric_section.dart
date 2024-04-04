@@ -29,30 +29,34 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     }
   }
 
+  /// Split the lyric section into rows for the given chord section and row count
   List<Lyric> asExpandedLyrics(ChordSection chordSection, int rows) {
     rows = max(rows, 1);
-
-    List<Lyric> lyrics = [];
-
     int linesPerRow = lyricsLines.length ~/ rows;
-    int lineExtra = lyricsLines.length % rows;
+    int lineExtras = lyricsLines.length % rows;
     var lineCount = 0;
     String lyricString = '';
-
     int phraseIndex = 0;
     int repeat = 0;
     var phrases = chordSection.phrases;
     assert(phrases.isNotEmpty);
     var phrase = phrases.first;
     var phraseRow = 0;
+    List<Lyric> lyrics = [];
+
     for (var i = 0; i < lyricsLines.length; i++) {
+      //  accumulate the lines into rows
       lyricString += (lyricString.isNotEmpty ? '\n' : '') + lyricsLines[i];
       lineCount++;
-      if (lineCount >= linesPerRow + (lineExtra > 0 ? 1 : 0)) {
+
+      //  when the row is full, create a lyric measure node for them
+      if (lineCount >= linesPerRow + (lineExtras > 0 ? 1 : 0)) {
         lyrics.add(Lyric(lyricString, phraseIndex: phraseIndex, repeat: repeat));
         lyricString = '';
         lineCount = 0;
-        lineExtra = max(0, lineExtra - 1);
+        lineExtras = max(0, lineExtras - 1);
+
+        //  keep track of the current phrase and repeat for the next lyric row
         phraseRow++;
         if (phraseRow >= phrase.rowCount(expanded: false)) {
           phraseRow = 0;
