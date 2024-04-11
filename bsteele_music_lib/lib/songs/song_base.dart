@@ -520,7 +520,7 @@ class SongBase {
     _duration = 0;
     _totalBeats = 0;
 
-    List<SongMoment>? moments = getSongMoments();
+    List<SongMoment>? moments = songMoments;
     if (timeSignature.beatsPerBar == 0 || beatsPerMinute == 0 || moments.isEmpty) {
       return;
     }
@@ -3177,14 +3177,9 @@ class SongBase {
     return _totalBeats;
   }
 
+  @Deprecated('Use `getSongMoments().length` instead.')
   int getSongMomentsSize() {
-    return getSongMoments().length;
-  }
-
-  List<SongMoment> getSongMoments() {
-    songMomentGrid; //  fixme: shouldn't have to compute grid just to get the lyrics on the moments!!!!!
-    //_computeSongMoments();
-    return _songMoments;
+    return songMoments.length;
   }
 
   SongMoment? getSongMoment(int momentNumber) {
@@ -3197,7 +3192,7 @@ class SongBase {
 
   SongMoment firstMomentInLyricSection(LyricSection lyricSection) {
     //  force parse of lyrics
-    getSongMoments();
+    songMoments;
     assert(lyricSections.length == _lyricSectionIndexToMomentNumber.length);
     assert(lyricSection.index >= 0 && lyricSection.index < _lyricSectionIndexToMomentNumber.length);
     return _songMoments[_lyricSectionIndexToMomentNumber[
@@ -3316,7 +3311,7 @@ class SongBase {
 
   SongMoment? getFirstSongMomentAtNextRow(int givenMomentNumber) {
     //  forwards
-    int limit = getSongMomentsSize();
+    int limit = songMoments.length;
     int oldRow = getSongMoment(givenMomentNumber)?.row ?? 0;
     for (int momentNumber = givenMomentNumber; momentNumber < limit; momentNumber++) {
       var moment = getSongMoment(momentNumber);
@@ -3332,7 +3327,7 @@ class SongBase {
   }
 
   SongMoment? getFirstSongMomentAtPriorRow(int givenMomentNumber) {
-    if (givenMomentNumber >= getSongMomentsSize()) {
+    if (givenMomentNumber >= songMoments.length) {
       return null;
     }
     if (givenMomentNumber <= 0) {
@@ -3557,6 +3552,7 @@ class SongBase {
         'set loc: ${currentChordSectionLocation != null ? currentChordSectionLocation.toString() : 'none'}, type: $currentMeasureEditType, song value: ${currentChordSectionLocation != null ? findMeasureNodeByLocation(currentChordSectionLocation).toString() : 'none'}');
   }
 
+  ///  the play and both display styles only differ by the display of the lyrics text
   Grid<MeasureNode> _toBothGrid({bool? expanded}) {
     var grid = Grid<MeasureNode>();
     expanded = expanded ?? false;
@@ -3585,7 +3581,10 @@ class SongBase {
 
       //  convert to chord section grid
       //  get the lyrics spread properly across the chord row count
-      List<Lyric> lyrics = lyricSection.asExpandedLyrics(chordSection, chordSection.rowCount(expanded: true));
+      List<Lyric> lyrics = lyricSection.asExpandedLyrics(
+          chordSection, //
+          //  count all the rows implied by the chord section for lyric distribution
+          chordSection.rowCount(expanded: true));
 
       //  fill in the two verticals (chords and lyrics), aligning the lyrics by phrase
       var sectionGrid = Grid<MeasureNode>();
@@ -3600,28 +3599,28 @@ class SongBase {
         for (var phrase in chordSection.phrases) {
           sectionGrid.add(phrase.toGrid(chordColumns: columns, expanded: expanded));
 
-          if (!expanded && phrase.repeats > 1) {
+          if (phrase.repeats > 1) {
             for (var repeats = 0; repeats < phrase.repeats; repeats++) {
-              logger.log(_logGridDetails, '   phrase ${phrase.phraseIndex}: $phrase');
+              logger.log(_logGridDetails, '   phrase: ${phrase.phraseIndex}: $phrase');
               if (lyricsIndex < lyrics.length) {
                 var lyric = lyrics[lyricsIndex];
-                if (phrase.repeats > 1 && !expanded) {
-                  //  gather all the rows for a repeat
-                  while (lyricsIndex < lyrics.length - 1) {
-                    var nextLyric = lyrics[lyricsIndex + 1];
-                    if (nextLyric.phraseIndex == lyric.phraseIndex && nextLyric.repeat == lyric.repeat) {
-                      lyric = Lyric('${lyric.line}\n${nextLyric.line}',
-                          phraseIndex: lyric.phraseIndex, repeat: lyric.repeat);
-                      lyricsIndex++;
-                      continue;
-                    }
-                    break;
+
+                //  gather all the rows for a repeat
+                while (lyricsIndex < lyrics.length - 1) {
+                  var nextLyric = lyrics[lyricsIndex + 1];
+                  if (nextLyric.phraseIndex == lyric.phraseIndex && nextLyric.repeat == lyric.repeat) {
+                    lyric =
+                        Lyric('${lyric.line}\n${nextLyric.line}', phraseIndex: lyric.phraseIndex, repeat: lyric.repeat);
+                    lyricsIndex++;
+                    continue;
                   }
+                  break;
                 }
+
                 lyricsIndex++;
 
                 sectionGrid.set(rowIndex++, columns, lyric);
-                logger.log(_logGridDetails, '      lyric $lyricsIndex: ${lyric.line}');
+                logger.log(_logGridDetails, '      lyric: $lyricsIndex: ${lyric.line}');
               }
             }
             //  use the row past the longest of chords or lyrics
@@ -3683,7 +3682,10 @@ class SongBase {
     return grid;
   }
 
-  /// Build a grid for the UI to display
+  /// Build a measure node grid for the UI to display.
+  /// Note that the output is in terms of measure nodes
+  /// but the node grid is still difficult enough to do without
+  /// complications from the flutter widgets.
   Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
     _songMomentToGridCoordinate = [];
     _measureNodeIdToGridCoordinate = {};
@@ -3783,6 +3785,7 @@ class SongBase {
         break;
       case UserDisplayStyle.player:
       case UserDisplayStyle.both:
+        //  the play and both display styles only differ by the display of the lyrics
         grid = _toBothGrid(expanded: expanded);
         break;
     }
@@ -4138,7 +4141,12 @@ class SongBase {
 
   String? message;
 
-  List<SongMoment> get songMoments => getSongMoments();
+  List<SongMoment> get songMoments {
+    songMomentGrid; //  fixme: shouldn't have to compute grid just to get the lyrics on the moments!!!!!
+    //_computeSongMoments();
+    return _songMoments;
+  }
+
   List<SongMoment> _songMoments = [];
   List<int> _lyricSectionIndexToMomentNumber = [];
   HashMap<int, SongMoment> _beatsToMoment = HashMap();

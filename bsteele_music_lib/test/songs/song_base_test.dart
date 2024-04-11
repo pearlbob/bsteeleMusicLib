@@ -777,8 +777,8 @@ void main() {
         rawLyrics: 'i: v: bob, bob, bob berand');
 
     logger.d(a.logGrid());
-    logger.d('moment count: ${a.getSongMoments().length}');
-    for (SongMoment moment in a.getSongMoments()) {
+    logger.d('moment count: ${a.songMoments.length}');
+    for (SongMoment moment in a.songMoments) {
       logger.d('moment: $moment');
       ChordSection? chordSection = a.findChordSectionBySectionVersion(moment.chordSection.sectionVersion);
       if (chordSection == null) throw 'chordSection == null';
@@ -1552,7 +1552,7 @@ c2:
             'v: nope\nt:\no: last line of outro\n');
     a.debugSongMoments();
 
-    for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
+    for (int momentNumber = 0; momentNumber < a.songMoments.length; momentNumber++) {
       SongMoment? songMoment = a.getSongMoment(momentNumber);
       if (songMoment == null) {
         break;
@@ -1644,7 +1644,7 @@ c2:
     {
       //  verify beats total as expected
       int beats = 0;
-      for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
+      for (int momentNumber = 0; momentNumber < a.songMoments.length; momentNumber++) {
         SongMoment? songMoment = a.getSongMoment(momentNumber);
         if (songMoment == null) break;
         expect(beats, songMoment.beatNumber);
@@ -1653,7 +1653,7 @@ c2:
     }
     {
       int count = 0;
-      for (int momentNumber = 0; momentNumber < a.getSongMomentsSize(); momentNumber++) {
+      for (int momentNumber = 0; momentNumber < a.songMoments.length; momentNumber++) {
         SongMoment? songMoment = a.getSongMoment(momentNumber);
         if (songMoment == null) break;
         logger.d(' ');
@@ -1697,7 +1697,7 @@ c2:
         rawLyrics: 'i:\nv: verse\n c: chorus\nv: verse\n c: chorus\no: outro');
     a.debugSongMoments();
     logger.i(a.toMarkup());
-    int size = a.getSongMomentsSize();
+    int size = a.songMoments.length;
     for (int momentNumber = 0; momentNumber < size; momentNumber++) {
       SongMoment? songMoment = a.getSongMoment(momentNumber);
       if (songMoment == null) throw 'songMoment == null';
@@ -1726,7 +1726,7 @@ c2:
 
     {
       int r = -1;
-      for (var m in a.getSongMoments()) {
+      for (var m in a.songMoments) {
         if (m.row != r) {
           logger.i('row ${m.row}: momentNumber: ${m.momentNumber}: $m');
           r = m.row!;
@@ -4179,12 +4179,137 @@ v:
           beatsPerBar: beatsPerBar,
           unitsPerMeasure: 4,
           user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i('expanded: $expanded');
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)"
+	A       B       C       D       x2/3    "last lyric of intro repeat"
+	A       B       C       D       x3/3
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\nanother lyrics line\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i('expanded: $expanded');
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)"
+	A       B       C       D       x2/3    "another lyrics line"
+	A       B       C       D       x3/3    "last lyric of intro repeat"
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\n lyrics due in first line\nanother lyrics line\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      expanded = true;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i('expanded: $expanded');
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)\\nlyrics due in first line"
+	A       B       C       D       x2/3    "another lyrics line"
+	A       B       C       D       x3/3    "last lyric of intro repeat"
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\n lyrics due in first line\nanother lyrics line\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      expanded = false;
+      grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i('expanded: $expanded');
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)\\nlyrics due in first line"
+	A       B       C       D       x2/3    "another lyrics line"
+	A       B       C       D       x3/3    "last lyric of intro repeat"
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
           chords: 'i: A B C D x3 C D G C v: D C G G',
           rawLyrics: 'i: (instrumental)\nmore instrumental\nyet more intro2\nlast line of intro: C D G C\n'
               'v: one verse lyric line');
 
       expanded = true;
       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i('expanded: $expanded');
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
@@ -4199,6 +4324,7 @@ Grid{
 
       expanded = false;
       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      logger.i('expanded: $expanded');
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
@@ -4246,6 +4372,7 @@ Grid{
 }''');
       _testSongMomentToGrid(a, userDisplayStyle);
     }
+
     {
       userDisplayStyle = UserDisplayStyle.proPlayer;
       a = Song(
@@ -4401,7 +4528,7 @@ Grid{
           unitsPerMeasure: 4,
           user: 'pearl bob',
           chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-          rawLyrics: 'i: (instrumental)\nmore instrumental'
+          rawLyrics: 'i: (instrumental)\nmore instrumental\n'
               'v: line 1\n line 2\n'
               'o:\n'
               'yo1\n'
@@ -4418,8 +4545,10 @@ Grid{
 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
 	O:#1
-	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
-	E       F       G       E       ⎦       x3      "yo3\\nyo4"
+	C       C       G       G,      ⎤       (5,5)   "yo1"
+	E       F       G       E       ⎦       x3      "yo2"
+	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo3"
+	A       B       C       (8,3)   (8,4)   (8,5)   "yo4"
 	A       B       C       (7,3)   (7,4)   (7,5)
 }''');
 

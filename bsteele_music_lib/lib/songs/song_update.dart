@@ -126,15 +126,15 @@ class SongUpdate {
     }
 
     //  deal with empty songs
-    if (song.getSongMomentsSize() == 0) {
+    if (song.songMoments.isEmpty) {
       momentNumber = 0;
       songMoment = null;
       return;
     }
 
     //  past the end and we're done
-    if (m >= song.getSongMomentsSize()) {
-      momentNumber = song.getSongMomentsSize();
+    if (m >= song.songMoments.length) {
+      momentNumber = song.songMoments.length;
       songMoment = null;
       return;
     }
@@ -315,7 +315,7 @@ class SongUpdate {
       }
       setMomentNumber(momentNumber);
       songMoment =
-          song.songMoments.isNotEmpty ? song.songMoments[min(max(0, momentNumber), song.getSongMomentsSize())] : null;
+          song.songMoments.isNotEmpty ? song.songMoments[min(max(0, momentNumber), song.songMoments.length)] : null;
     }
   }
 

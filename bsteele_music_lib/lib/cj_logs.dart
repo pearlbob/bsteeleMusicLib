@@ -209,7 +209,7 @@ class CjLog {
           //  note: duration of time on the song does not seem to indicate whether it was played
           // logger.log(_cjLogWasSung, '   from $startTime to $dateTime: ${dateTime.difference(startTime)}'
           //     ' vs ${lastSongUpdate.song.duration} s');
-          var moments = song.getSongMoments();
+          var moments = song.songMoments;
           var minimumMomentCount = moments.length - moments.last.chordSection.getTotalMoments();
           //  try to allow one section songs, e.g. the blues
           //  will be fooled by damaged songs
@@ -220,7 +220,7 @@ class CjLog {
           logger.log(
               _cjLogWasSung,
               '$song:  ${momentNumbers.toString()}/$minimumMomentCount '
-              '(${song.getSongMomentsSize()})');
+              '(${song.songMoments.length})');
           if (momentNumbers.first <= 0 && momentNumbers.last >= minimumMomentCount) {
             logger.log(_cjLogWasSung, '  sung');
           } else {

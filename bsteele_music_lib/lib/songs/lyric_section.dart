@@ -32,8 +32,8 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   /// Split the lyric section into rows for the given chord section and row count
   List<Lyric> asExpandedLyrics(ChordSection chordSection, int rows) {
     rows = max(rows, 1);
-    int linesPerRow = lyricsLines.length ~/ rows;
-    int lineExtras = lyricsLines.length % rows;
+    int linesPerRow = _lyricsLines.length ~/ rows;
+    int lineExtras = _lyricsLines.length % rows;
     var lineCount = 0;
     String lyricString = '';
     int phraseIndex = 0;
@@ -44,9 +44,9 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     var phraseRow = 0;
     List<Lyric> lyrics = [];
 
-    for (var i = 0; i < lyricsLines.length; i++) {
+    for (var i = 0; i < _lyricsLines.length; i++) {
       //  accumulate the lines into rows
-      lyricString += (lyricString.isNotEmpty ? '\n' : '') + lyricsLines[i];
+      lyricString += (lyricString.isNotEmpty ? '\n' : '') + _lyricsLines[i];
       lineCount++;
 
       //  when the row is full, create a lyric measure node for them
