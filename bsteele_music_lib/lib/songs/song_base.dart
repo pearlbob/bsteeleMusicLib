@@ -3250,6 +3250,8 @@ class SongBase {
     return lastSongMoment;
   }
 
+  /// Return the time in the song for the given song moment number
+  /// using the given beats per minute.
   double getSongTimeAtMoment(int momentNumber, {int? beatsPerMinute}) {
     SongMoment? songMoment = getSongMoment(momentNumber);
     if (songMoment == null) {
@@ -3606,7 +3608,8 @@ class SongBase {
                 var lyric = lyrics[lyricsIndex];
 
                 //  gather all the rows for a repeat
-                while (lyricsIndex < lyrics.length - 1) {
+                if (!expanded) {
+                  while (lyricsIndex < lyrics.length - 1) {
                   var nextLyric = lyrics[lyricsIndex + 1];
                   if (nextLyric.phraseIndex == lyric.phraseIndex && nextLyric.repeat == lyric.repeat) {
                     lyric =
@@ -3615,6 +3618,7 @@ class SongBase {
                     continue;
                   }
                   break;
+                  }
                 }
 
                 lyricsIndex++;

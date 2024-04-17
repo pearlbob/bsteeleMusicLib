@@ -225,16 +225,15 @@ class SongUpdate {
   String toString() {
     var sb = StringBuffer('SongUpdate: "${song.title}" by "${song.artist}" '
         '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}"' : ''}: ');
+    sb.write(', moment: ');
     sb.write(momentNumber);
     if (songMoment != null) {
-      sb.write(' ');
-      sb.write(songMoment!.momentNumber.toString());
-      sb.write(' ');
+      sb.write(', beat: ');
       sb.write(songMoment!.beatNumber);
-      sb.write(' ');
+      sb.write(', measure: ');
       sb.write(songMoment!.measure.toString());
       if (songMoment!.repeatMax > 0) {
-        sb.write(' ');
+        sb.write(', repeat: ');
         sb.write((songMoment!.repeat + 1));
         sb.write('/');
         sb.write(songMoment!.repeatMax);
@@ -278,7 +277,9 @@ class SongUpdate {
         var jv = json[name];
         switch (name) {
           case 'state':
-            state = (_stateFromString(jv) ?? SongUpdateState.none);
+            state = (_stateFromString(jv) ??
+                //  workaround for old historical value: manualPlay
+                (jv == 'manualPlay' ? SongUpdateState.playing : SongUpdateState.none));
             break;
           case 'currentKey':
             setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
@@ -286,7 +287,7 @@ class SongUpdate {
           case 'song':
             setSong(Song.songFromJson(jv));
             break;
-        //  momentNumber sequencing details should be found by local processing
+          //  momentNumber sequencing details should be found by local processing
           case 'momentNumber':
             momentNumber = jv;
             break;

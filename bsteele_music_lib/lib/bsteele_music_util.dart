@@ -67,6 +67,7 @@ bsteeleMusicUtil:
 //  a utility for the bsteele Music App
 arguments:
 -a {file_or_dir}    add all the .songlyrics files to the utility's allSongs list 
+-autoscroll         test the auto scroll algorithm against the CJ historical data
 -allSongPerformances sync with CJ performances
 -bpm                list the bpm's used
 -cjwrite {file)     format the song metadata
@@ -169,6 +170,10 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           _addAllSongsFromDir(inputFile);
+          break;
+
+        case '-autoscroll':
+          testAutoScrollAlgorithm();
           break;
 
         case '-copyright':
@@ -2269,4 +2274,136 @@ class CellData {
   final String name;
   final double width;
   final Comparable value;
+}
+
+enum MonitorState {
+  changeOfSong,
+  starting,
+  measured;
+}
+
+testAutoScrollAlgorithm() {
+  final RegExp catalinaLog = RegExp(r'/catalina\..*\.log$');
+  final RegExp webSocketServerMessage = RegExp(r'^(.*) INFO'
+      r' .* com\.bsteele\.bsteeleMusicApp\.WebSocketServer\.onMessage'
+      r' onMessage\(\"(.*)\"\)$');
+
+  //  13-Apr-2024 15:52:55.993
+  DateFormat format = DateFormat("dd-MMM-yyyy hh:mm:ss.SSS");
+
+  //  collect all the files to be read
+  var dir = Directory('${Util.homePath()}/$_allSongPerformancesDirectoryLocation');
+  SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
+  for (var file in dir.listSync()) {
+    if (file is File && catalinaLog.hasMatch(file.path)) {
+      files.add(file);
+    }
+  }
+
+  //  update from the all local server song performance log files
+  MonitorState monitorState = MonitorState.changeOfSong;
+  for (var file in files) {
+    var name = file.path.split('/').last;
+    logger.i('name: $name');
+
+    var data = file.readAsStringSync();
+    double lastTimeS = 0.0;
+    int lastMomentNumber = 0;
+    double startTimeS = 0.0;
+    int startMomentNumber = 0;
+
+    SongUpdate songUpdate = SongUpdate();
+    for (var line in data.split('\n')) {
+      var m = webSocketServerMessage.firstMatch(line);
+      if (m != null) {
+        //logger.i('message: "$line"');
+        if (m.groupCount > 0) {
+          var dateString = m.group(1);
+          //logger.i('   dateString: $dateString');
+          if (dateString != null) {
+            var dateTime = format.parse(dateString);
+            var deltaTimeS = lastTimeS;
+            lastTimeS = dateTime.millisecondsSinceEpoch / Duration.millisecondsPerSecond;
+            deltaTimeS = lastTimeS - deltaTimeS;
+            //logger.i('   dateTime: $dateTime, delta: $deltaTimeS s');
+          }
+
+          var content = m.group(2);
+
+          if (content != null) {
+            //  print the song update on a change of song
+            var nextSongUpdate = songUpdate.updateFromJson(content);
+            if (nextSongUpdate.song.songId != songUpdate.song.songId) {
+              songUpdate = nextSongUpdate;
+              // logger.i('$songUpdate, beats: ${songUpdate.song.beatsPerBar}'
+              //     ', ${songUpdate.song.songMoments.length}');
+              monitorState = MonitorState.changeOfSong;
+            } else {
+              songUpdate = nextSongUpdate;
+            }
+            var song = songUpdate.song; //  convenience variable
+
+            //logger.i(' monitorState: ${monitorState.name}');
+            switch (monitorState) {
+              case MonitorState.changeOfSong:
+                //  skip looking at the data when the song has changed
+                startTimeS = lastTimeS;
+                startMomentNumber = 0;
+                monitorState = MonitorState.starting;
+                logger.i('\n$dateString: ${song.title} by ${song.artist}'
+                    '${song.coverArtist.isEmpty ? "" : " cover by ${song.coverArtist}"}'
+                    ', song BPM: ${song.beatsPerMinute}:');
+                break;
+              case MonitorState.starting:
+                if (songUpdate.state != SongUpdateState.playing) {
+                  break;
+                }
+                //  reset on a backup
+                if (songUpdate.momentNumber <= lastMomentNumber) {
+                  monitorState = MonitorState.starting;
+                  break;
+                }
+                //  count in will have negative moment numbers
+                if (songUpdate.momentNumber > 0) {
+                  //  use the second section played as a start for the measurement of the BPM
+                  startTimeS = lastTimeS;
+                  startMomentNumber = songUpdate.momentNumber;
+                  monitorState = MonitorState.measured;
+                }
+                break;
+              case MonitorState.measured:
+                //  reset on a backup or restart
+                if (songUpdate.momentNumber <= lastMomentNumber) {
+                  monitorState = MonitorState.starting;
+                  break;
+                }
+
+                int beatCountFromStart = song.songMoments[songUpdate.momentNumber].beatNumber -
+                    song.songMoments[startMomentNumber].beatNumber;
+                double measuredBpm = Duration.secondsPerMinute * beatCountFromStart / (lastTimeS - startTimeS);
+                double songDt =
+                    song.getSongTimeAtMoment(songUpdate.momentNumber) - song.getSongTimeAtMoment(startMomentNumber);
+                logger.i('     moment: ${songUpdate.momentNumber.toString().padLeft(3)}:'
+                    ', beatCountFromStart: ${beatCountFromStart.toString().padLeft(4)}'
+                    ', t: ${songDt.toStringAsFixed(3).padLeft(7)}'
+                    ' vs ${(lastTimeS - startTimeS).toStringAsFixed(3).padLeft(7)}'
+                    ', bpm: ${measuredBpm.toStringAsFixed(3).padLeft(7)}');
+                break;
+            }
+
+            // logger.i('$dateString: $content');
+            // logger.i('      since: ${(lastTimeS - startTimeS).toStringAsFixed(3)}'
+            //     ', startMomentNumber: $startMomentNumber'
+            //     ', startT: ${song.getSongTimeAtMoment(startMomentNumber).toStringAsFixed(3)}'
+            //     // ', startTimeMs: $startTimeMs, lastTimeMs: $lastTimeMs
+            //     '\n');
+
+            lastMomentNumber = songUpdate.momentNumber;
+          }
+        }
+      } else {
+        logger.i('   line: "$line"');
+      }
+    }
+  }
 }
