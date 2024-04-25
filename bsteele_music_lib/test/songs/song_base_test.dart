@@ -5002,6 +5002,68 @@ v:
 
     logger.i(a.toJson());
   });
+
+  test('generate song repeat tests', () {
+    int beatsPerBar = 4;
+    const bool printOnly = true;
+    List<bool> expandBooleans;
+    if (printOnly) {
+      expandBooleans = [false];
+    } else {
+      expandBooleans = [true, false];
+    }
+    bool first = true;
+    Song a;
+
+    for (bool expanded in expandBooleans) {
+      for (int repeat = 2; repeat <= 3; repeat++) {
+        for (int rows = 1; rows <= 2; rows++) {
+          for (int lyricsLines = 1; lyricsLines < 8; lyricsLines++) {
+            StringBuffer sb = StringBuffer();
+            for (int line = 1; line <= lyricsLines; line++) {
+              sb.write('Line $line/$lyricsLines\n');
+            }
+            String chordRow = 'A B C D';
+            if (rows > 1) {
+              chordRow += '\nD C G G';
+              if (rows > 2) {
+                chordRow += '\nE E F G';
+              }
+              chordRow = '[$chordRow]';
+            }
+            String v = 'v: $chordRow ${repeat > 1 ? 'x$repeat' : ''}';
+
+            a = Song(
+                title: '000 repeat test $repeat/$lyricsLines${printOnly ? '' : '/$expanded'}',
+                artist: 'bob',
+                copyright: 'bob',
+                key: music_key.Key.get(music_key.KeyEnum.C),
+                beatsPerMinute: 106,
+                beatsPerBar: beatsPerBar,
+                unitsPerMeasure: 4,
+                user: 'pearl bob',
+                chords: //'i: 1A 2B 3C 3DEF '
+                    '$v o: C C G G',
+                rawLyrics: //'i: (instrumental)\n'
+                    'v: ${sb.toString()}\no:\n');
+
+            if (first) {
+              first = false;
+              logger.i('[');
+            } else {
+              logger.i(',');
+            }
+            logger.i(a.toJson());
+            if (!printOnly) {
+              var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: expanded);
+              logger.i(grid.toString());
+            }
+          }
+        }
+      }
+    }
+    logger.i(']');
+  });
 }
 
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {

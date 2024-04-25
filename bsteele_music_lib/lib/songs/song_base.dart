@@ -71,7 +71,7 @@ enum BannerColumn {
 }
 
 const Level _logGrid = Level.debug;
-const Level _logGridDetails = Level.debug;
+const Level _logGridDetails = Level.info;
 
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
@@ -3583,7 +3583,7 @@ class SongBase {
 
       //  convert to chord section grid
       //  get the lyrics spread properly across the chord row count
-      List<Lyric> lyrics = lyricSection.asExpandedLyrics(
+      List<Lyric> lyrics = lyricSection.asBundledLyrics(
           chordSection, //
           //  count all the rows implied by the chord section for lyric distribution
           chordSection.rowCount(expanded: true));
@@ -3608,17 +3608,20 @@ class SongBase {
                 var lyric = lyrics[lyricsIndex];
 
                 //  gather all the rows for a repeat
-                if (!expanded) {
-                  while (lyricsIndex < lyrics.length - 1) {
+                while (lyricsIndex < lyrics.length - 1) {
                   var nextLyric = lyrics[lyricsIndex + 1];
                   if (nextLyric.phraseIndex == lyric.phraseIndex && nextLyric.repeat == lyric.repeat) {
-                    lyric =
-                        Lyric('${lyric.line}\n${nextLyric.line}', phraseIndex: lyric.phraseIndex, repeat: lyric.repeat);
+                    //  concatenate the lyrics... no longer used!  Fri Apr 19 02:23:28 PM PDT 2024
+                    // lyric = Lyric('${lyric.line}\n${nextLyric.line}',
+                    //     phraseIndex: lyric.phraseIndex, repeat: lyric.repeat);
+                    //  each lyric line now gets its own grid row
+                    logger.log(_logGridDetails, '   phrase: row: $rowIndex: "$lyric"');
+                    sectionGrid.set(rowIndex++, columns, lyric);
                     lyricsIndex++;
+                    lyric = nextLyric;
                     continue;
                   }
                   break;
-                  }
                 }
 
                 lyricsIndex++;
@@ -3659,7 +3662,7 @@ class SongBase {
         for (var c = 0; c < (row?.length ?? 0); c++) {
           var measureNode = grid.get(r, c);
           if (songMoment.measure == measureNode) {
-            logger.log(_logGridDetails, 'match: $songMoment: ($r,$c): $measureNode');
+            //logger.log(_logGridDetails, 'match: $songMoment: ($r,$c): $measureNode');
             _songMomentToGridCoordinate.add(GridCoordinate(r, c));
 
             //  setup for the next target
@@ -3744,7 +3747,7 @@ class SongBase {
             grid.set(r, 0, lyricSection); //  for the label
             grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
             r++;
-            for (var lyric in lyricSection.asExpandedLyrics(chordSection, lyricSection.lyricsLines.length)) {
+            for (var lyric in lyricSection.asBundledLyrics(chordSection, lyricSection.lyricsLines.length)) {
               GridCoordinate gc = GridCoordinate(r++, 1);
               grid.setAt(gc, lyric);
               _measureNodeIdToGridCoordinate[lyric.id] = gc;
@@ -4146,8 +4149,8 @@ class SongBase {
   String? message;
 
   List<SongMoment> get songMoments {
+    _computeSongMoments();
     songMomentGrid; //  fixme: shouldn't have to compute grid just to get the lyrics on the moments!!!!!
-    //_computeSongMoments();
     return _songMoments;
   }
 

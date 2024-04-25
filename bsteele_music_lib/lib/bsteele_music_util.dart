@@ -35,6 +35,7 @@ import 'package:string_similarity/string_similarity.dart';
 import 'app_logger.dart';
 
 const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
+const String _allSongPerformancesHistoricalDirectoryLocation = 'communityJams/cj/old_Downloads';
 const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
@@ -44,6 +45,8 @@ final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSon
 AllSongPerformances allSongPerformances = AllSongPerformances();
 
 const _logFiles = Level.debug;
+const _logMessageLines = Level.debug;
+const _logManualPushes = Level.debug;
 const _logPerformanceDetails = Level.debug;
 
 final int lastSungLimit = DateTime.now().millisecondsSinceEpoch - 2 * Duration.millisecondsPerDay * 365;
@@ -2287,12 +2290,17 @@ testAutoScrollAlgorithm() {
   final RegExp webSocketServerMessage = RegExp(r'^(.*) INFO'
       r' .* com\.bsteele\.bsteeleMusicApp\.WebSocketServer\.onMessage'
       r' onMessage\(\"(.*)\"\)$');
+  final RegExp bsteeleMusicAppMessage = RegExp(r'^\s*({.*})\s*$');
 
   //  13-Apr-2024 15:52:55.993
   DateFormat format = DateFormat("dd-MMM-yyyy hh:mm:ss.SSS");
 
   //  collect all the files to be read
-  var dir = Directory('${Util.homePath()}/$_allSongPerformancesDirectoryLocation');
+  var dir = Directory('${Util.homePath()}/'
+      // '$_allSongPerformancesDirectoryLocation'
+      '$_allSongPerformancesHistoricalDirectoryLocation'
+      //
+      );
   SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
   for (var file in dir.listSync()) {
     if (file is File && catalinaLog.hasMatch(file.path)) {
@@ -2311,12 +2319,14 @@ testAutoScrollAlgorithm() {
     int lastMomentNumber = 0;
     double startTimeS = 0.0;
     int startMomentNumber = 0;
+    const int defaultDelay = 3;
+    int delay = 0;
 
     SongUpdate songUpdate = SongUpdate();
     for (var line in data.split('\n')) {
       var m = webSocketServerMessage.firstMatch(line);
       if (m != null) {
-        //logger.i('message: "$line"');
+        logger.log(_logMessageLines, 'message: "$line"');
         if (m.groupCount > 0) {
           var dateString = m.group(1);
           //logger.i('   dateString: $dateString');
@@ -2330,7 +2340,7 @@ testAutoScrollAlgorithm() {
 
           var content = m.group(2);
 
-          if (content != null) {
+          if (content != null && bsteeleMusicAppMessage.firstMatch(content) != null) {
             //  print the song update on a change of song
             var nextSongUpdate = songUpdate.updateFromJson(content);
             if (nextSongUpdate.song.songId != songUpdate.song.songId) {
@@ -2350,44 +2360,61 @@ testAutoScrollAlgorithm() {
                 startTimeS = lastTimeS;
                 startMomentNumber = 0;
                 monitorState = MonitorState.starting;
+                delay = 0;
                 logger.i('\n$dateString: ${song.title} by ${song.artist}'
                     '${song.coverArtist.isEmpty ? "" : " cover by ${song.coverArtist}"}'
                     ', song BPM: ${song.beatsPerMinute}:');
                 break;
               case MonitorState.starting:
                 if (songUpdate.state != SongUpdateState.playing) {
+                  delay = 0;
                   break;
                 }
                 //  reset on a backup
                 if (songUpdate.momentNumber <= lastMomentNumber) {
-                  monitorState = MonitorState.starting;
+                  delay = 0;
                   break;
                 }
                 //  count in will have negative moment numbers
                 if (songUpdate.momentNumber > 0) {
+                  delay++;
+                  if (delay < defaultDelay) break;
                   //  use the second section played as a start for the measurement of the BPM
                   startTimeS = lastTimeS;
                   startMomentNumber = songUpdate.momentNumber;
                   monitorState = MonitorState.measured;
                 }
                 break;
+
               case MonitorState.measured:
                 //  reset on a backup or restart
                 if (songUpdate.momentNumber <= lastMomentNumber) {
                   monitorState = MonitorState.starting;
+                  delay = 0;
                   break;
                 }
 
-                int beatCountFromStart = song.songMoments[songUpdate.momentNumber].beatNumber -
-                    song.songMoments[startMomentNumber].beatNumber;
-                double measuredBpm = Duration.secondsPerMinute * beatCountFromStart / (lastTimeS - startTimeS);
-                double songDt =
-                    song.getSongTimeAtMoment(songUpdate.momentNumber) - song.getSongTimeAtMoment(startMomentNumber);
-                logger.i('     moment: ${songUpdate.momentNumber.toString().padLeft(3)}:'
-                    ', beatCountFromStart: ${beatCountFromStart.toString().padLeft(4)}'
-                    ', t: ${songDt.toStringAsFixed(3).padLeft(7)}'
-                    ' vs ${(lastTimeS - startTimeS).toStringAsFixed(3).padLeft(7)}'
-                    ', bpm: ${measuredBpm.toStringAsFixed(3).padLeft(7)}');
+                if (song.songMoments.isEmpty) {
+                  logger.i('bad song:  $song');
+                } else {
+                  // logger.i('good song:  $song');
+                  if (!(songUpdate.momentNumber >= 0 && songUpdate.momentNumber < song.songMoments.length)) {
+                    logger.i('songUpdate.momentNumber: ${songUpdate.momentNumber}/${song.songMoments.length}');
+                    assert(songUpdate.momentNumber >= 0 && songUpdate.momentNumber < song.songMoments.length);
+                  }
+                  int beatCountFromStart = song.songMoments[songUpdate.momentNumber].beatNumber -
+                      song.songMoments[startMomentNumber].beatNumber;
+                  double measuredBpm = Duration.secondsPerMinute * beatCountFromStart / (lastTimeS - startTimeS);
+                  double songDt =
+                      song.getSongTimeAtMoment(songUpdate.momentNumber) - song.getSongTimeAtMoment(startMomentNumber);
+                  logger.log(
+                      _logManualPushes,
+                      '     moment: ${songUpdate.momentNumber.toString().padLeft(3)}:'
+                      ', beatCountFromStart: ${beatCountFromStart.toString().padLeft(4)}'
+                      ', t: ${songDt.toStringAsFixed(3).padLeft(7)}'
+                      ' vs ${(lastTimeS - startTimeS).toStringAsFixed(3).padLeft(7)}'
+                      ', bpm: ${measuredBpm.toStringAsFixed(3).padLeft(7)}');
+                }
                 break;
             }
 
@@ -2399,6 +2426,8 @@ testAutoScrollAlgorithm() {
             //     '\n');
 
             lastMomentNumber = songUpdate.momentNumber;
+          } else {
+            logger.i('no bsteeleMusicAppMessage match: "$content"');
           }
         }
       } else {

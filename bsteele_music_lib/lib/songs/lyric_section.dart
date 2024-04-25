@@ -30,7 +30,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   }
 
   /// Split the lyric section into rows for the given chord section and row count
-  List<Lyric> asExpandedLyrics(ChordSection chordSection, int rows) {
+  List<Lyric> asBundledLyrics(ChordSection chordSection, int rows) {
     rows = max(rows, 1);
     int linesPerRow = _lyricsLines.length ~/ rows;
     int lineExtras = _lyricsLines.length % rows;
@@ -66,6 +66,36 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
             repeat = 0;
             phrase = phrases[phraseIndex];
           }
+        }
+      }
+    }
+    return lyrics;
+  }
+
+  /// Return the lyric section as rows for each lyric line
+  List<Lyric> asLyrics(ChordSection chordSection, int rows) {
+    rows = max(rows, 1);
+    int phraseIndex = 0;
+    int repeat = 0;
+    var phrases = chordSection.phrases;
+    assert(phrases.isNotEmpty);
+    var phrase = phrases.first;
+    var phraseRow = 0;
+    List<Lyric> lyrics = [];
+
+    for (var i = 0; i < _lyricsLines.length; i++) {
+      //  create a lyric measure node for each lyric line
+      lyrics.add(Lyric(_lyricsLines[i], phraseIndex: phraseIndex, repeat: repeat));
+
+      //  keep track of the current phrase and repeat for the next lyric row
+      phraseRow++;
+      if (phraseRow >= phrase.rowCount(expanded: false)) {
+        phraseRow = 0;
+        repeat++;
+        if (repeat >= phrase.repeats && !identical(phrase, phrases.last)) {
+          phraseIndex++;
+          repeat = 0;
+          phrase = phrases[phraseIndex];
         }
       }
     }
