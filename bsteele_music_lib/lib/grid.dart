@@ -31,6 +31,17 @@ class Grid<T> {
 
   bool get isNotEmpty => gridList.isNotEmpty;
 
+  /// Copy a list to a given row
+  /// Watch for mutations after the fact
+  void setRow(int r, int c, List<T?>? tList) {
+    if (tList == null || tList.isEmpty) return;
+
+    //  copy the list to the row
+    for (int tc = 0; tc < tList.length; tc++) {
+      set(r, c + tc, tList[tc]);
+    }
+  }
+
   void set(int r, int c, T? t) {
     if (r < 0) {
       r = 0;
@@ -39,20 +50,23 @@ class Grid<T> {
       c = 0;
     }
 
+    //  add new rows to the grid if required
     while (r >= gridList.length) {
-      //  addTo a new row to the grid
       gridList.add(List.generate(1, (a) {
         return null;
       }));
     }
 
+    //  add new columns to the grid if required
     List<T?>? row = gridList[r];
     if (c == row?.length) {
+      //  add at the given column
       row?.add(t);
     } else {
       while (c > (row?.length ?? 0) - 1) {
         row?.add(null);
       }
+      //  set at the given column
       row?[c] = t;
     }
   }
@@ -83,7 +97,7 @@ class Grid<T> {
     return sb.toString();
   }
 
-  //  map the grid to a debug string
+//  map the grid to a debug string
   String _debugString() {
     var sb = StringBuffer();
     for (var r = 0; r < getRowCount(); r++) {

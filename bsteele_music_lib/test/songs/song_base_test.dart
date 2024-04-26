@@ -5005,7 +5005,7 @@ v:
 
   test('generate song repeat tests', () {
     int beatsPerBar = 4;
-    const bool printOnly = true;
+    const bool printOnly = false;
     List<bool> expandBooleans;
     if (printOnly) {
       expandBooleans = [false];
@@ -5016,9 +5016,9 @@ v:
     Song a;
 
     for (bool expanded in expandBooleans) {
-      for (int repeat = 2; repeat <= 3; repeat++) {
-        for (int rows = 1; rows <= 2; rows++) {
-          for (int lyricsLines = 1; lyricsLines < 8; lyricsLines++) {
+      for (int rows = 2; rows <= 3; rows++) {
+        for (int repeat = 3; repeat <= 5; repeat++) {
+          for (int lyricsLines = 1; lyricsLines <= repeat * rows; lyricsLines++) {
             StringBuffer sb = StringBuffer();
             for (int line = 1; line <= lyricsLines; line++) {
               sb.write('Line $line/$lyricsLines\n');
@@ -5047,14 +5047,17 @@ v:
                 rawLyrics: //'i: (instrumental)\n'
                     'v: ${sb.toString()}\no:\n');
 
-            if (first) {
-              first = false;
-              logger.i('[');
+            if (printOnly) {
+              if (first) {
+                first = false;
+                logger.i('[');
+              } else {
+                logger.i(',');
+              }
+              logger.i(a.toJson());
             } else {
-              logger.i(',');
-            }
-            logger.i(a.toJson());
-            if (!printOnly) {
+              logger.i('');
+              logger.i('title: ${a.title}');
               var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: expanded);
               logger.i(grid.toString());
             }
@@ -5062,7 +5065,9 @@ v:
         }
       }
     }
-    logger.i(']');
+    if (printOnly) {
+      logger.i(']');
+    }
   });
 }
 

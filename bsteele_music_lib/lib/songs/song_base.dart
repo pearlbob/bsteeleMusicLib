@@ -71,7 +71,7 @@ enum BannerColumn {
 }
 
 const Level _logGrid = Level.debug;
-const Level _logGridDetails = Level.info;
+const Level _logGridDetails = Level.debug;
 
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
@@ -3598,42 +3598,64 @@ class SongBase {
 
         //  section indicator
         sectionGrid.set(rowIndex++, 0, lyricSection);
-        for (var phrase in chordSection.phrases) {
-          sectionGrid.add(phrase.toGrid(chordColumns: columns, expanded: expanded));
 
+        //  section contents
+        for (var phrase in chordSection.phrases) {
           if (phrase.repeats > 1) {
-            for (var repeats = 0; repeats < phrase.repeats; repeats++) {
+            var phraseGrid = phrase.toGrid(chordColumns: columns, expanded: true);
+            var phraseRowIndex = 0;
+            for (var repeat = 0; repeat < phrase.repeats; repeat++) {
               logger.log(_logGridDetails, '   phrase: ${phrase.phraseIndex}: $phrase');
               if (lyricsIndex < lyrics.length) {
-                var lyric = lyrics[lyricsIndex];
+                //  lyrics to add
+                rowIndex = sectionGrid.getRowCount();
 
                 //  gather all the rows for a repeat
-                while (lyricsIndex < lyrics.length - 1) {
-                  var nextLyric = lyrics[lyricsIndex + 1];
-                  if (nextLyric.phraseIndex == lyric.phraseIndex && nextLyric.repeat == lyric.repeat) {
-                    //  concatenate the lyrics... no longer used!  Fri Apr 19 02:23:28 PM PDT 2024
-                    // lyric = Lyric('${lyric.line}\n${nextLyric.line}',
-                    //     phraseIndex: lyric.phraseIndex, repeat: lyric.repeat);
-                    //  each lyric line now gets its own grid row
-                    logger.log(_logGridDetails, '   phrase: row: $rowIndex: "$lyric"');
-                    sectionGrid.set(rowIndex++, columns, lyric);
+
+                while (lyricsIndex < lyrics.length) {
+                  var lyric = lyrics[lyricsIndex];
+                  if (phrase.phraseIndex == lyric.phraseIndex && repeat == lyric.repeat) {
+                    sectionGrid.setRow(rowIndex, 0, phraseGrid.getRow(phraseRowIndex));
+                    sectionGrid.set(rowIndex, columns, lyric);
+
+                    phraseRowIndex++;
+                    rowIndex++;
                     lyricsIndex++;
-                    lyric = nextLyric;
-                    continue;
+                  } else {
+                    break;
                   }
-                  break;
                 }
 
-                lyricsIndex++;
+                //  complete the repeat if we've run out of lyrics
+                while (phraseRowIndex % phrase.rowCount() != 0) {
+                  sectionGrid.setRow(rowIndex, 0, phraseGrid.getRow(phraseRowIndex));
+                  sectionGrid.set(rowIndex, columns, null);
+                  phraseRowIndex++;
+                  rowIndex++;
+                }
+              } else {
+                //  no more lyrics to add
 
-                sectionGrid.set(rowIndex++, columns, lyric);
-                logger.log(_logGridDetails, '      lyric: $lyricsIndex: ${lyric.line}');
+                //  add one blank repeat
+                rowIndex = sectionGrid.getRowCount();
+                while (phraseRowIndex < phrase.chordRowCount) {
+                  sectionGrid.setRow(rowIndex, 0, phraseGrid.getRow(phraseRowIndex));
+                  sectionGrid.set(rowIndex, columns, null);
+                  phraseRowIndex++;
+                  rowIndex++;
+                  if (phraseRowIndex % phrase.rowCount() == 0) {
+                    //  add only one
+                    break;
+                  }
+                }
+                rowIndex = sectionGrid.getRowCount(); // safety
+                break;
               }
             }
-            //  use the row past the longest of chords or lyrics
-            rowIndex = sectionGrid.getRowCount();
-            logger.log(_logGridDetails, '   sectionGrid.wip: $sectionGrid');
+            // logger.log(_logGridDetails, '   sectionGrid.wip: $sectionGrid');
           } else {
+            //  a whole phrase if not a repeat
+            sectionGrid.add(phrase.toGrid(chordColumns: columns, expanded: expanded));
             for (var phraseRow = 0; phraseRow < phrase.rowCount(expanded: expanded); phraseRow++) {
               if (lyricsIndex < lyrics.length) {
                 sectionGrid.set(rowIndex++, columns, lyrics[lyricsIndex++]);
