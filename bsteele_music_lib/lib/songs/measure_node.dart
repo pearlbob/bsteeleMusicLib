@@ -47,6 +47,10 @@ abstract class MeasureNode {
     return !isEmpty;
   }
 
+  int get chordExpandedRowCount {
+    return 0;
+  }
+
   /// Transpose the measure node the given number of half steps from the given key.
   String transpose(Key key, int halfSteps);
 

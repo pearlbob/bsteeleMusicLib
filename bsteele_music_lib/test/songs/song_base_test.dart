@@ -3178,11 +3178,8 @@ Grid{
           beatsPerBar: beatsPerBar,
           unitsPerMeasure: 4,
           user: 'pearlbob',
-          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
-          rawLyrics: 'i: intro lyric\n'
-              'v: verse lyric\n'
-              'more verse lyrcs\n'
-              'o: outro lyric');
+          chords: 'i: D C G G# x2',
+          rawLyrics: 'i: no lyrics here');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
     {
@@ -3195,10 +3192,14 @@ Grid{
           beatsPerBar: beatsPerBar,
           unitsPerMeasure: 4,
           user: 'pearlbob',
-          chords: 'i: D C G G# x2',
-          rawLyrics: 'i: no lyrics here');
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: intro lyric\n'
+              'v: verse lyric\n'
+              'more verse lyrcs\n'
+              'o: outro lyric');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
+
     {
       a = Song(
           title: 'ive go the blanks',
@@ -5010,7 +5011,10 @@ v:
     if (printOnly) {
       expandBooleans = [false];
     } else {
-      expandBooleans = [true, false];
+      expandBooleans = [
+        false,
+        true,
+      ];
     }
     bool first = true;
     Song a;

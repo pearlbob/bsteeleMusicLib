@@ -296,13 +296,10 @@ class MeasureRepeat extends Phrase {
     return MeasureRepeat(newMeasures, phraseIndex, repeats);
   }
 
+  /// Get chord row count after repeat expansion.
   @override
-  int get chordRowCount {
-    return super.chordRowCount * _repeatMarker.repeats;
-  }
-
-  int get chordRowCountAsPhrase {
-    return super.chordRowCount;
+  int get chordExpandedRowCount {
+    return super.chordExpandedRowCount * _repeatMarker.repeats;
   }
 
   // @override

@@ -775,13 +775,15 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return _phrases[_phrases.length - 1];
   }
 
-  int get chordRowCount {
+  /// Get the number of rows in this phrase after griding, with repeat expansion.
+  @override
+  int get chordExpandedRowCount {
     if (isEmpty) {
       return 0;
     }
     int chordRowCount = 0;
     for (Phrase phrase in _phrases) {
-      chordRowCount += phrase.chordRowCount;
+      chordRowCount += phrase.chordExpandedRowCount;
     }
     return chordRowCount;
   }

@@ -707,8 +707,9 @@ class Phrase extends MeasureNode {
     return ret;
   }
 
-  /// Get the number of rows in this phrase after griding.
-  int get chordRowCount {
+  /// Get the number of rows in this phrase after griding, with repeat expansion.
+  @override
+  int get chordExpandedRowCount {
     if (_measures.isEmpty) {
       return 0;
     }
