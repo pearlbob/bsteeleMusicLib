@@ -71,8 +71,8 @@ enum BannerColumn {
 }
 
 const Level _logGrid = Level.debug;
-const Level _logGridDetails = Level.info;
-const Level _logSongMomentToGrid = Level.info;
+const Level _logGridDetails = Level.debug;
+const Level _logSongMomentToGrid = Level.debug;
 
 /// A piece of music to be played according to the structure it contains.
 ///  The song base class has been separated from the song class to allow most of the song
@@ -3561,40 +3561,41 @@ class SongBase {
     expanded = expanded ?? false;
 
     //  find the required chord columns across all sections in the song
-    var columns = 0;
+    var lastColumn = 0;
     for (var lyricSection in lyricSections) {
       var chordSection = findChordSectionByLyricSection(lyricSection);
       assert(chordSection != null);
       if (chordSection == null) {
         continue;
       }
-      columns = max(columns, chordSection.chordRowMaxLength());
+      lastColumn = max(lastColumn, chordSection.chordRowMaxLength());
     }
 
     //  add the lyric sections, with their chords
     var momentNumber = 0;
-    for (var lyricSection in lyricSections) {
-      //  section by section
+    _songMomentToGridCoordinate = [];
+    if (songMoments.isNotEmpty /* force lazy eval */) {
+      for (var lyricSection in lyricSections) {
+        //  section by section
 
-      //  get the chord section
-      var chordSection = findChordSectionByLyricSection(lyricSection);
-      assert(chordSection != null);
-      if (chordSection == null) {
-        continue;
-      }
+        //  get the chord section
+        var chordSection = findChordSectionByLyricSection(lyricSection);
+        assert(chordSection != null);
+        if (chordSection == null) {
+          continue;
+        }
 
-      //  convert to chord section grid
-      //  get the lyrics spread properly across the chord row count
-      List<Lyric> lyrics = lyricSection.asBundledLyrics(
-          chordSection, //
-          //  count all the rows implied by the chord section for lyric distribution
-          chordSection.rowCount(expanded: true));
+        //  convert to chord section grid
+        //  get the lyrics spread properly across the chord row count
+        List<Lyric> lyrics = lyricSection.asBundledLyrics(
+            chordSection, //
+            //  count all the rows implied by the chord section for lyric distribution
+            chordSection.rowCount(expanded: true));
 
-      //  fill in the two verticals (chords and lyrics), aligning the lyrics by phrase
-      var sectionGrid = Grid<MeasureNode>();
+        //  fill in the two verticals (chords and lyrics), aligning the lyrics by phrase
+        var sectionGrid = Grid<MeasureNode>();
 
-      //  map multiple lyrics lines to repeats
-      {
+        //  map multiple lyrics lines to repeats
         var lyricsIndex = 0;
         var sectionRowIndex = 0;
 
@@ -3605,34 +3606,40 @@ class SongBase {
         for (var phrase in chordSection.phrases) {
           int? firstBlankSectionRow;
           if (phrase.repeats > 1) {
-            var phraseGrid = phrase.toGrid(chordColumns: columns, expanded: true);
+            var phraseGrid = phrase.toGrid(chordColumns: lastColumn, expanded: true);
 
+            var phraseRowIndex = 0;
             for (var repeat = 0; repeat < phrase.repeats; repeat++) {
               logger.log(
                   _logGridDetails,
                   '   phrase: ${phrase.phraseIndex}: ${phrase.toString().replaceAll('\n', '')}'
                   ', repeat: $repeat');
+              var phraseRowCount = phrase.rowCount();
               if (lyricsIndex < lyrics.length) {
                 //  lyrics to add
-                sectionRowIndex = sectionGrid.getRowCount();
 
                 //  gather all the rows for a repeat
-                var phraseRowIndex = 0;
+
                 while (lyricsIndex < lyrics.length) {
                   var lyric = lyrics[lyricsIndex];
                   if (phrase.phraseIndex == lyric.phraseIndex && repeat == lyric.repeat) {
                     var phraseGridRow = phraseGrid.getRow(phraseRowIndex);
                     sectionGrid.setRow(sectionRowIndex, 0, phraseGridRow);
-                    sectionGrid.set(sectionRowIndex, columns, lyric);
+                    sectionGrid.set(sectionRowIndex, lastColumn, lyric);
 
+                    //  log the song moments of the row into the grid
+                    var columnIndex = 0; //  column index
                     for (var node in phraseGridRow ?? []) {
                       if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                        var rowIndex = grid.getRowCount() + sectionRowIndex;
                         logger.log(
                             _logGridDetails,
-                            '  lyricRow: ${grid.getRowCount() + sectionRowIndex}: $node'
-                            ' vs $momentNumber');
+                            '  lyricRow: $rowIndex: $node'
+                            ' as $momentNumber');
+                        _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                         momentNumber++;
                       }
+                      columnIndex++;
                     }
 
                     phraseRowIndex++;
@@ -3644,19 +3651,24 @@ class SongBase {
                 }
 
                 //  complete the repeat if we've run out of lyrics
-                while (phraseRowIndex % phrase.rowCount() != 0) {
+                while (phraseRowIndex % phraseRowCount != 0) {
                   var phraseGridRow = phraseGrid.getRow(phraseRowIndex);
                   sectionGrid.setRow(sectionRowIndex, 0, phraseGridRow);
-                  sectionGrid.set(sectionRowIndex, columns, null);
+                  sectionGrid.set(sectionRowIndex, lastColumn, null);
 
+                  //  log the song moments of the row into the grid
+                  var columnIndex = 0; //  column index
                   for (var node in phraseGridRow ?? []) {
                     if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                      var rowIndex = grid.getRowCount() + sectionRowIndex;
                       logger.log(
                           _logGridDetails,
-                          ' finishRow: ${grid.getRowCount() + sectionRowIndex}: $node'
-                          ' vs $momentNumber');
+                          ' finishRow: $rowIndex: $node'
+                          ' as $momentNumber');
+                      _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                       momentNumber++;
                     }
+                    columnIndex++;
                   }
 
                   phraseRowIndex++;
@@ -3665,122 +3677,99 @@ class SongBase {
               } else {
                 //  no more lyrics to add
 
-                sectionRowIndex = sectionGrid.getRowCount();
-
                 //  add just one blank repeat
                 if (firstBlankSectionRow == null) {
                   firstBlankSectionRow = sectionRowIndex;
-                  for (var phraseRowIndex = 0; phraseRowIndex < phrase.rowCount(); phraseRowIndex++) {
+                  int limit = phraseRowIndex + phraseRowCount; //  one repeat
+                  for (; phraseRowIndex < limit; phraseRowIndex++) {
                     var phraseGridRow = phraseGrid.getRow(phraseRowIndex);
                     sectionGrid.setRow(sectionRowIndex, 0, phraseGridRow);
-                    sectionGrid.set(sectionRowIndex, columns, null);
+                    sectionGrid.set(sectionRowIndex, lastColumn, null);
 
+                    //  log the song moments of the row into the grid
+                    var columnIndex = 0; //  column index
                     for (var node in phraseGridRow ?? []) {
                       if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                        var rowIndex = grid.getRowCount() + sectionRowIndex;
                         logger.log(
                             _logGridDetails,
-                            '  blankRow: ${grid.getRowCount() + sectionRowIndex}: $node'
-                            ' vs $momentNumber');
+                            '  blankRow: $rowIndex: $node'
+                            ' as $momentNumber');
+                        _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                         momentNumber++;
                       }
+                      columnIndex++;
                     }
 
                     sectionRowIndex++;
                   }
-                  sectionRowIndex = sectionGrid.getRowCount(); // safety
                 } else {
                   //  remap all subsequent repeats with the one blank repeat (i.e. no lyrics)
-                  for (var phraseRowIndex = 0; phraseRowIndex < phrase.rowCount(); phraseRowIndex++) {
+                  for (var phraseRowIndex = 0; phraseRowIndex < phraseRowCount; phraseRowIndex++) {
                     var phraseGridRow = phraseGrid.getRow(phraseRowIndex);
                     //  no grid added here!
 
+                    //  log the song moments of the row into the grid
+                    var columnIndex = 0; //  column index
                     for (var node in phraseGridRow ?? []) {
                       if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                        var rowIndex = grid.getRowCount() + firstBlankSectionRow + phraseRowIndex;
                         logger.log(
                             _logGridDetails,
-                            '     noRow: ${firstBlankSectionRow + phraseRowIndex}: $node'
-                            ' vs $momentNumber');
+                            '     noRow: $rowIndex: $node'
+                            ' as $momentNumber');
+                        _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                         momentNumber++;
                       }
+                      columnIndex++;
                     }
+                    //  no sectionRowIndex increment here!
                   }
                 }
               }
             }
             // logger.log(_logGridDetails, '   sectionGrid.wip: $sectionGrid');
           } else {
-            //  a whole phrase if not a repeat
-            var phraseGrid = phrase.toGrid(chordColumns: columns, expanded: expanded);
+            //  grid a whole phrase if not a repeat
+            var lyricsPhraseRowIndex = sectionRowIndex;
+            var phraseGrid = phrase.toGrid(chordColumns: lastColumn, expanded: expanded);
             for (var r = 0; r < phraseGrid.getRowCount(); r++) {
               var phraseGridRow = phraseGrid.getRow(r);
+
+              //  log the song moments of the row into the grid
+              var columnIndex = 0; //  column index
               for (var node in phraseGridRow ?? []) {
                 if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                  var rowIndex = grid.getRowCount() + sectionRowIndex;
                   logger.log(
                       _logGridDetails,
-                      '  wholeRow: ${grid.getRowCount() + r + sectionRowIndex}: $node'
-                      ' vs $momentNumber');
+                      '  wholeRow: $rowIndex: $node'
+                      ' as $momentNumber');
+                  _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                   momentNumber++;
                 }
+                columnIndex++;
               }
+              sectionRowIndex++;
             }
             sectionGrid.add(phraseGrid);
 
             for (var phraseRow = 0; phraseRow < phrase.rowCount(expanded: expanded); phraseRow++) {
               if (lyricsIndex < lyrics.length) {
-                sectionGrid.set(sectionRowIndex++, columns, lyrics[lyricsIndex++]);
+                sectionGrid.set(lyricsPhraseRowIndex++, lastColumn, lyrics[lyricsIndex++]);
               }
             }
           }
         }
+
+        logger.log(_logGrid, 'grid section: $chordSection:  $sectionGrid');
+
+        //  add the lyrics section grid to the song grid
+        grid.add(sectionGrid);
       }
-
-      logger.log(_logGrid, 'grid section: $chordSection:  $sectionGrid');
-
-      //  add the lyrics section grid to the song grid
-      grid.add(sectionGrid);
     }
 
-    //  assign grid locations to song moments
-    //  fixme: why is this so difficult and fragile?
-    if (songMoments.isNotEmpty) {
-      _songMomentToGridCoordinate = [];
-      //  setup the initial target to find
-      int momentNumber = 0;
-      SongMoment? songMoment = songMoments[momentNumber];
-      int repeatGridRow = 0;
-      for (var r = 0; r < grid.getRowCount(); r++) {
-        var row = grid.getRow(r);
-        for (var c = 0; c < (row?.length ?? 0); c++) {
-          var measureNode = row![c];
-          if (songMoment != null && identical(songMoment.measure, measureNode)) {
-            logger.log(_logGridDetails, 'match: $songMoment: ($r,$c): $measureNode');
-            _songMomentToGridCoordinate.add(GridCoordinate(r, c));
-
-            //  setup for the next target
-            momentNumber++;
-            if (momentNumber < songMoments.length) {
-              songMoment = songMoments[momentNumber];
-              if ( //!expanded &&
-                  songMoment.repeatMax > 1) {
-                if (songMoment.measureIndex == 0) {
-                  if (songMoment.repeat == 0) {
-                    repeatGridRow = r;
-                  } else {
-                    r = repeatGridRow; //  reset the row on a non-expanded repeat iteration
-                  }
-                }
-              }
-            } else {
-              //  safety check
-              assert(momentNumber == songMoments.length);
-              //  last of the moments has been processed
-              songMoment = null;
-            }
-          }
-        }
-      }
-      assert(songMoments.length == _songMomentToGridCoordinate.length);
-    }
+    assert(songMoments.length == _songMomentToGridCoordinate.length);
 
     logger.log(_logSongMomentToGrid, _songMomentsToString());
     logger.log(_logSongMomentToGrid, _songMomentToGridCoordinateToString());
@@ -3812,10 +3801,9 @@ class SongBase {
   /// Note that the output is in terms of measure nodes
   /// but the node grid is still difficult enough to do without
   /// complications from the flutter widgets.
-  Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle, {bool? expanded}) {
+  Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle) {
     _songMomentToGridCoordinate = [];
     _measureNodeIdToGridCoordinate = {};
-    expanded = expanded ?? false;
 
     var grid = Grid<MeasureNode>();
     switch (userDisplayStyle) {
@@ -3912,7 +3900,7 @@ class SongBase {
       case UserDisplayStyle.player:
       case UserDisplayStyle.both:
         //  the play and both display styles only differ by the display of the lyrics
-        grid = _toBothGrid(expanded: expanded);
+        grid = _toBothGrid();
         break;
     }
 

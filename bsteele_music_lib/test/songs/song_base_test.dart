@@ -2776,299 +2776,299 @@ o: end here''');
     }
   });
 
-//   test('test songBase toGrid()', () {
-//     int beatsPerBar = 4;
-//     Song a;
-//
-//     Logger.level = Level.info;
-//
-// // if ( false )
-//     {
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearlbob',
-//           chords: 'v: [ A B C D ] x4',
-//           rawLyrics: 'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
-//               'bar bar2\n'
-//               'bob, bob2, bob3 berand\n'
-//               'You got me');
-//
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both);
-//         logger.i('a.toGrid(): $grid');
-//         expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	A       B       C       D       x4      "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
-// 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bar bar2"
-// 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "bob, bob2, bob3 berand"
-// 	(4,0)   (4,1)   (4,2)   (4,3)   (4,4)   "You got me"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	A       B       C       D       x1/4    "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
-// 	A       B       C       D       x2/4    "bar bar2"
-// 	A       B       C       D       x3/4    "bob, bob2, bob3 berand"
-// 	A       B       C       D       x4/4    "You got me"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//     }
-// // if ( false )
-//     {
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearlbob',
-//           chords: 'v: [ A B C D ] x2 D C G G x2',
-//           rawLyrics: 'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
-//               'bar bar2\n'
-//               'bob, bob2, bob3 berand\n'
-//               'You got me'
-//               '\nlast lyric');
-//
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	A       B       C       D       x2      "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
-// 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "bob, bob2, bob3 berand"
-// 	D       C       G       G       x2      "You got me"
-// 	(4,0)   (4,1)   (4,2)   (4,3)   (4,4)   "last lyric"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	A       B       C       D       x1/2    "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
-// 	A       B       C       D       x2/2    "bob, bob2, bob3 berand"
-// 	D       C       G       G       x1/2    "You got me"
-// 	D       C       G       G       x2/2    "last lyric"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//     }
-//
-// // if ( false )
-//     {
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bsteele.com',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearlbob',
-//           chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
-//           rawLyrics: 'i: v: o:');
-//
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#
-// 	V:#1
-// 	C       F       C       C#,
-// 	F       F       C       B,
-// 	G       F       C       Gb
-// 	O:#2
-// 	D       C       G       G#
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#
-// 	V:#1
-// 	C       F       C       C#,
-// 	F       F       C       B,
-// 	G       F       C       Gb
-// 	O:#2
-// 	D       C       G       G#
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//     }
-//     {
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bsteele.com',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearlbob',
-//           chords: 'i:o: D C G G# V: C F C C# [ F F C B ] x2,  G F C Gb',
-//           rawLyrics: 'i: v: o:');
-//
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#      (1,4)
-// 	V:#1
-// 	C       F       C       C#      (3,4)
-// 	F       F       C       B       x2
-// 	G       F       C       Gb      (5,4)
-// 	O:#2
-// 	D       C       G       G#      (7,4)
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#      (1,4)
-// 	V:#1
-// 	C       F       C       C#      (3,4)
-// 	F       F       C       B       x1/2
-// 	F       F       C       B       x2/2
-// 	G       F       C       Gb      (6,4)
-// 	O:#2
-// 	D       C       G       G#      (8,4)
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//     }
-//
-//     {
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearlbob',
-//           chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
-//           rawLyrics: 'i: intro lyric\n'
-//               'v: verse lyric 1\nverse lyric 2\no: outro lyric\n');
-//
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-// 	V:#1
-// 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1\\nverse lyric 2"
-// 	F       F       C       B       ⎦       x2
-// 	G       F       C       Gb      (5,4)   (5,5)
-// 	O:#2
-// 	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-// 	V:#1
-// 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
-// 	F       F       C       B       ⎦       x1/2    "verse lyric 2"
-// 	C       F       C       C#,     ⎤       (5,5)
-// 	F       F       C       B       ⎦       x2/2
-// 	G       F       C       Gb      (7,4)   (7,5)
-// 	O:#2
-// 	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//     }
-//     {
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearlbob',
-//           chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
-//           rawLyrics: 'i: intro lyric\n'
-//               'v: verse lyric 1\nverse lyric 2\nverse lyric 3\n'
-//               'o: outro lyric\n');
-//
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-// 	V:#1
-// 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1\\nverse lyric 2"
-// 	F       F       C       B       ⎦       x2      "verse lyric 3"
-// 	G       F       C       Gb      (5,4)   (5,5)
-// 	O:#2
-// 	D       C       G       G#      (7,4)   (7,5)   "outro lyric"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//       {
-//         var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
-// 	V:#1
-// 	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
-// 	F       F       C       B       ⎦       x1/2    "verse lyric 2"
-// 	C       F       C       C#,     ⎤       (5,5)   "verse lyric 3"
-// 	F       F       C       B       ⎦       x2/2
-// 	G       F       C       Gb      (7,4)   (7,5)
-// 	O:#2
-// 	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
-// }''');
-//         _testSongMomentToGrid(a, UserDisplayStyle.both);
-//       }
-//     }
-//   });
+  test('test songBase toGrid()', () {
+    int beatsPerBar = 4;
+    Song a;
 
-  test('test song toGrid(expanded:true)', () {
+    Logger.level = Level.info;
+
+    {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: [ A B C D ] x4',
+          rawLyrics: 'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
+              'bar bar2\n'
+              'bob, bob2, bob3 berand\n'
+              'You got me');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i('a.toGrid(): $grid');
+        expect(grid.toString(), '''
+Grid{
+	V:#0
+\tA       B       C       D       x1/4    "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
+\tA       B       C       D       x2/4    "bar bar2"
+\tA       B       C       D       x3/4    "bob, bob2, bob3 berand"
+\tA       B       C       D       x4/4    "You got me"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	V:#0
+	A       B       C       D       x1/4    "foo foo2 foo3 foo4 baby, oh baby2 yesterday"
+	A       B       C       D       x2/4    "bar bar2"
+	A       B       C       D       x3/4    "bob, bob2, bob3 berand"
+	A       B       C       D       x4/4    "You got me"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+    {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: [ A B C D ] x2 D C G G x2',
+          rawLyrics: 'v: foo foo2 foo3 foo4 baby, oh baby2 yesterday\n'
+              'bar bar2\n'
+              'bob, bob2, bob3 berand\n'
+              'You got me'
+              '\nlast lyric');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	V:#0
+\tA       B       C       D       x1/2    "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
+\tA       B       C       D       x2/2    "bob, bob2, bob3 berand"
+\tD       C       G       G       x1/2    "You got me"
+\tD       C       G       G       x2/2    "last lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	V:#0
+	A       B       C       D       x1/2    "foo foo2 foo3 foo4 baby, oh baby2 yesterday\\nbar bar2"
+	A       B       C       D       x2/2    "bob, bob2, bob3 berand"
+	D       C       G       G       x1/2    "You got me"
+	D       C       G       G       x2/2    "last lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+
+    {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: v: o:');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#
+	V:#1
+	C       F       C       C#,
+	F       F       C       B,
+	G       F       C       Gb
+	O:#2
+	D       C       G       G#
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#
+	V:#1
+	C       F       C       C#,
+	F       F       C       B,
+	G       F       C       Gb
+	O:#2
+	D       C       G       G#
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+    {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bsteele.com',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: C F C C# [ F F C B ] x2,  G F C Gb',
+          rawLyrics: 'i: v: o:');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#      (1,4)
+	V:#1
+	C       F       C       C#      (3,4)
+	F       F       C       B       x1/2    (4,5)
+	G       F       C       Gb      (5,4)
+	O:#2
+	D       C       G       G#      (7,4)
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#      (1,4)
+	V:#1
+	C       F       C       C#      (3,4)
+	F       F       C       B       x1/2    (4,5)
+	G       F       C       Gb      (5,4)
+	O:#2
+	D       C       G       G#      (7,4)
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+
+    {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          rawLyrics: 'i: intro lyric\n'
+              'v: verse lyric 1\nverse lyric 2\no: outro lyric\n');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:#1
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
+\tF       F       C       B       ⎦       x1/2    "verse lyric 2"
+\tC       F       C       C#,     ⎤       (5,5)   (5,6)
+\tF       F       C       B       ⎦       x2/2    (6,6)
+\tG       F       C       Gb      (7,4)   (7,5)
+\tO:#2
+\tD       C       G       G#      (9,4)   (9,5)   "outro lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:#1
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
+	F       F       C       B       ⎦       x1/2    "verse lyric 2"
+	C       F       C       C#,     ⎤       (5,5)   (5,6)
+	F       F       C       B       ⎦       x2/2    (6,6)
+	G       F       C       Gb      (7,4)   (7,5)
+	O:#2
+	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+    {
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
+          rawLyrics: 'i: intro lyric\n'
+              'v: verse lyric 1\nverse lyric 2\nverse lyric 3\n'
+              'o: outro lyric\n');
+
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:#1
+\tC       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
+\tF       F       C       B       ⎦       x1/2    "verse lyric 2"
+\tC       F       C       C#,     ⎤       (5,5)   "verse lyric 3"
+\tF       F       C       B       ⎦       x2/2    (6,6)
+\tG       F       C       Gb      (7,4)   (7,5)
+\tO:#2
+	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+      {
+        var grid = a.toDisplayGrid(UserDisplayStyle.both);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0
+	D       C       G       G#      (1,4)   (1,5)   "intro lyric"
+	V:#1
+	C       F       C       C#,     ⎤       (3,5)   "verse lyric 1"
+	F       F       C       B       ⎦       x1/2    "verse lyric 2"
+	C       F       C       C#,     ⎤       (5,5)   "verse lyric 3"
+	F       F       C       B       ⎦       x2/2    (6,6)
+	G       F       C       Gb      (7,4)   (7,5)
+	O:#2
+	D       C       G       G#      (9,4)   (9,5)   "outro lyric"
+}''');
+        _testSongMomentToGrid(a, UserDisplayStyle.both);
+      }
+    }
+  });
+
+  test('test song toGrid()', () {
     Logger.level = Level.info;
 
     int beatsPerBar = 4;
@@ -3086,7 +3086,7 @@ o: end here''');
           user: 'pearlbob',
           chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
           rawLyrics: 'i: v: o:');
-      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
+      var grid = a.toDisplayGrid(UserDisplayStyle.both);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
@@ -3114,7 +3114,7 @@ Grid{
           chords: 'i:o: D C G G# V: C F C C#,F F C B x2,  G F C Gb',
           rawLyrics: 'i: v: o:');
 
-      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
+      var grid = a.toDisplayGrid(UserDisplayStyle.both);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
@@ -3122,11 +3122,10 @@ Grid{
 	D       C       G       G#      (1,4)
 	V:#1
 	C       F       C       C#      (3,4)
-	F       F       C       B       x1/2
-	F       F       C       B       x2/2
-	G       F       C       Gb      (6,4)
+	F       F       C       B       x1/2    (4,5)
+	G       F       C       Gb      (5,4)
 	O:#2
-	D       C       G       G#      (8,4)
+	D       C       G       G#      (7,4)
 }''');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
@@ -3143,20 +3142,18 @@ Grid{
           user: 'pearlbob',
           chords: 'i:o: D C G G# V: [C F C C#,F F C B] x2,  G F C Gb',
           rawLyrics: 'i: v: o:');
-      var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: true);
+      var grid = a.toDisplayGrid(UserDisplayStyle.both);
       logger.i(grid.toString());
       expect(grid.toString(), '''
 Grid{
 	I:#0
-	D       C       G       G#      (1,4)   (1,5)
-	V:#1
-	C       F       C       C#,     ⎤       (3,5)
-	F       F       C       B       ⎦       x1/2
-	C       F       C       C#,     ⎤       (5,5)
-	F       F       C       B       ⎦       x2/2
-	G       F       C       Gb      (7,4)   (7,5)
-	O:#2
-	D       C       G       G#      (9,4)   (9,5)
+\tD       C       G       G#      (1,4)   (1,5)
+\tV:#1
+\tC       F       C       C#,     ⎤       (3,5)   (3,6)
+\tF       F       C       B       ⎦       x1/2    (4,6)
+\tG       F       C       Gb      (5,4)   (5,5)
+\tO:#2
+\tD       C       G       G#      (7,4)   (7,5)
 }''');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
@@ -3168,6 +3165,21 @@ Grid{
     int beatsPerBar = 4;
     Song a;
 
+    {
+      //  empty lyrics
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearlbob',
+          chords: 'v: G G G G, C C G G, D C G D',
+          rawLyrics: 'v:');
+      _testSongMomentToGrid(a, UserDisplayStyle.both);
+    }
     {
       a = Song(
           title: 'ive go the blanks',
@@ -3255,22 +3267,6 @@ Grid{
           user: 'pearlbob',
           chords: 'i:o: D C G G# V: [C F C C#, F F C B] x2,  G F C Gb',
           rawLyrics: 'i: v: o:');
-      _testSongMomentToGrid(a, UserDisplayStyle.both);
-    }
-
-    {
-//  empty lyrics
-      a = Song(
-          title: 'ive go the blanks',
-          artist: 'bob',
-          copyright: 'bob',
-          key: music_key.Key.get(music_key.KeyEnum.C),
-          beatsPerMinute: 106,
-          beatsPerBar: beatsPerBar,
-          unitsPerMeasure: 4,
-          user: 'pearlbob',
-          chords: 'v: G G G G, C C G G, D C G D',
-          rawLyrics: 'v:');
       _testSongMomentToGrid(a, UserDisplayStyle.both);
     }
   });
@@ -4160,562 +4156,175 @@ v:
     }
   });
 
-//   test('test songBase toDisplayGrid()', () {
-//     int beatsPerBar = 4;
-//     Song a;
-//     var userDisplayStyle = UserDisplayStyle.proPlayer;
-//     Grid<MeasureNode> grid;
-//     bool expanded = true;
-//     Logger.level = Level.info;
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D x3 v: D C G G',
-//           rawLyrics: 'i: (instrumental)\nlast lyric of intro repeat\n'
-//               'v: one verse lyric line');
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i('expanded: $expanded');
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/3    "(instrumental)"
-// 	A       B       C       D       x2/3    "last lyric of intro repeat"
-// 	A       B       C       D       x3/3
-// 	V:#1
-// 	D       C       G       G       (5,4)   "one verse lyric line"
-// }''');
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D x3 v: D C G G',
-//           rawLyrics: 'i: (instrumental)\nanother lyrics line\nlast lyric of intro repeat\n'
-//               'v: one verse lyric line');
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i('expanded: $expanded');
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/3    "(instrumental)"
-// 	A       B       C       D       x2/3    "another lyrics line"
-// 	A       B       C       D       x3/3    "last lyric of intro repeat"
-// 	V:#1
-// 	D       C       G       G       (5,4)   "one verse lyric line"
-// }''');
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D x3 v: D C G G',
-//           rawLyrics: 'i: (instrumental)\n lyrics due in first line\nanother lyrics line\nlast lyric of intro repeat\n'
-//               'v: one verse lyric line');
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i('expanded: $expanded');
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/3    "(instrumental)\\nlyrics due in first line"
-// 	A       B       C       D       x2/3    "another lyrics line"
-// 	A       B       C       D       x3/3    "last lyric of intro repeat"
-// 	V:#1
-// 	D       C       G       G       (5,4)   "one verse lyric line"
-// }''');
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D x3 v: D C G G',
-//           rawLyrics: 'i: (instrumental)\n lyrics due in first line\nanother lyrics line\nlast lyric of intro repeat\n'
-//               'v: one verse lyric line');
-//
-//       expanded = false;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i('expanded: $expanded');
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/3    "(instrumental)\\nlyrics due in first line"
-// 	A       B       C       D       x2/3    "another lyrics line"
-// 	A       B       C       D       x3/3    "last lyric of intro repeat"
-// 	V:#1
-// 	D       C       G       G       (5,4)   "one verse lyric line"
-// }''');
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D x3 C D G C v: D C G G',
-//           rawLyrics: 'i: (instrumental)\nmore instrumental\nyet more intro2\nlast line of intro: C D G C\n'
-//               'v: one verse lyric line');
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i('expanded: $expanded');
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/3    "(instrumental)"
-// 	A       B       C       D       x2/3    "more instrumental"
-// 	A       B       C       D       x3/3    "yet more intro2"
-// 	C       D       G       C       (4,4)   "last line of intro: C D G C"
-// 	V:#1
-// 	D       C       G       G       (6,4)   "one verse lyric line"
-// }''');
-//
-//       expanded = false;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i('expanded: $expanded');
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x3      "(instrumental)"
-// 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   "more instrumental"
-// 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   "yet more intro2"
-// 	C       D       G       C       (4,4)   "last line of intro: C D G C"
-// 	V:#1
-// 	D       C       G       G       (6,4)   "one verse lyric line"
-// }''');
-//     }
-//     {
-//       userDisplayStyle = UserDisplayStyle.proPlayer;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'v: [ A B C D ] x4',
-//           rawLyrics: 'v: foo foo foo foo baby oh baby yesterday\n'
-//               'bar bar\n'
-//               'bob, bob, bob berand\n'
-//               'You got me');
-//
-//       var expanded = false;
-//       var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	V:\\nA B C D  x4\\n
-// 	V:\\nA B C D  x4\\nV:\\nA B C D  x4\\n
-// }''');
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	V:\\nA B C D  x4\\n
-// 	V:\\nA B C D  x4\\nV:\\nA B C D  x4\\n
-// }''');
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.proPlayer;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
-//           rawLyrics: 'i: v: o:');
-//
-//       for (var expanded in [false, true]) {
-//         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:\\nD C G G# \\nV:\\nC F C C#, F F C B, G F C Gb \\nO:\\nD C G G# \\n
-// 	I:\\nD C G G# \\nI:\\nD C G G# \\n
-// 	V:\\nC F C C#, F F C B, G F C Gb \\nV:\\nC F C C#, F F C B, G F C Gb \\n
-// 	O:\\nD C G G# \\nO:\\nD C G G# \\n
-// }''');
-//         expect(grid.getRowCount(), 3 + 1);
-//         expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-//         expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-//         expect((grid.get(0, 2) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-//         expect((grid.get(1, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-//         expect((grid.get(1, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-//         expect((grid.get(2, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-//         expect((grid.get(2, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-//         expect((grid.get(3, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-//         expect((grid.get(3, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-//
-// //  in pro, verify top row of chord sections in song order
-//         for (var songMoment in a.songMoments) {
-//           logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
-//           expect(
-//               grid.get(0, a.songMomentToGridCoordinate[songMoment.momentNumber].row - 1 /* row is at +1  */)
-//                   as ChordSection,
-//               songMoment.chordSection);
-//         }
-// //  in pro, verify each section has it's label and duplicate for chords
-//         for (var songMoment in a.songMoments) {
-// //  expect entry for section labels
-//           var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
-//           logger.d('$songMoment: $gc');
-//           expect(grid.at(gc) as ChordSection, songMoment.chordSection);
-// //  expect duplicate for chords
-//           expect(grid.at(GridCoordinate(gc.row, gc.col + 1)) as ChordSection, songMoment.chordSection);
-//         }
-//         _testSongMomentToGrid(a, userDisplayStyle);
-//       }
-//     }
-//     {
-//       userDisplayStyle = UserDisplayStyle.singer;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'v: [ A B C D ] x4',
-//           rawLyrics: 'v: foo foo foo foo baby oh baby yesterday\n'
-//               'bar bar\n'
-//               'bob, bob, bob berand\n'
-//               'You got me');
-//
-//       for (var expanded in [false, true]) //  shouldn't matter
-//       {
-//         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	V:#0    V:\\nA B C D  x4\\n
-// 	(1,0)   "foo foo foo foo baby oh baby yesterday"
-// 	(2,0)   "bar bar"
-// 	(3,0)   "bob, bob, bob berand"
-// 	(4,0)   "You got me"
-// }''');
-//         expect(grid.getRowCount(), 5);
-//         assert(grid.get(0, 0) is LyricSection);
-//         var lyricSection = grid.get(0, 0) as LyricSection;
-//         expect(lyricSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-//         expect(grid.get(1, 0), isNull);
-//         expect(grid.get(1, 1)!.measureNodeType, MeasureNodeType.lyric);
-//         var lyric = grid.get(1, 1) as Lyric;
-//         expect(lyric.line, 'foo foo foo foo baby oh baby yesterday');
-//         expect(grid.get(2, 0), isNull);
-//         lyric = grid.get(2, 1) as Lyric;
-//         expect(lyric.line, 'bar bar');
-//         expect(grid.get(3, 0), isNull);
-//         lyric = grid.get(3, 1) as Lyric;
-//         expect(lyric.line, 'bob, bob, bob berand');
-//         expect(grid.get(4, 0), isNull);
-//         lyric = grid.get(4, 1) as Lyric;
-//         expect(lyric.line, 'You got me');
-//
-//         _testSongMomentToGrid(a, userDisplayStyle);
-//       }
-//     }
-//     {
-//       userDisplayStyle = UserDisplayStyle.singer;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
-//           rawLyrics: 'i: (instrumental)\n '
-//               'v: v: foo foo foo foo baby\n oh baby yesterday\n'
-//               'bar bar\no:  yo yo yo\n yeah');
-//
-//       for (var expanded in [false, true]) //  shouldn't matter
-//       {
-//         var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	I:#0    I:\\nD C G G# \\n
-// 	(1,0)   "(instrumental)"
-// 	V:#1    V:\\nC F C C#, F F C B, G F C Gb \\n
-// 	V:#2    V:\\nC F C C#, F F C B, G F C Gb \\n
-// 	(4,0)   "foo foo foo foo baby"
-// 	(5,0)   "oh baby yesterday"
-// 	(6,0)   "bar bar"
-// 	O:#3    O:\\nD C G G# \\n
-// 	(8,0)   "yo yo yo"
-// 	(9,0)   "yeah"
-// }''');
-//         _testSongMomentToGrid(a, userDisplayStyle);
-//       }
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//       bool expanded = false;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 106,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-//           rawLyrics: 'i: (instrumental)\nmore instrumental\n'
-//               'v: line 1\n line 2\n'
-//               'o:\n'
-//               'yo1\n'
-//               'yo2\n'
-//               'yo3\n'
-//               'yo4');
-//
-//       var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x4      (1,5)   "(instrumental)"
-// 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
-// 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
-// 	O:#1
-// 	C       C       G       G,      ⎤       (5,5)   "yo1"
-// 	E       F       G       E       ⎦       x3      "yo2"
-// 	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo3"
-// 	A       B       C       (8,3)   (8,4)   (8,5)   "yo4"
-// 	A       B       C       (7,3)   (7,4)   (7,5)
-// }''');
-//
-// //  validate song moment to grid coordinates
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/4    (1,5)   "(instrumental)"
-// 	A       B       C       D       x2/4    (2,5)   "more instrumentalv: line 1"
-// 	A       B       C       D       x3/4    (3,5)   "line 2"
-// 	A       B       C       D       x4/4
-// 	O:#1
-// 	C       C       G       G,      ⎤       (6,5)   "yo1"
-// 	E       F       G       E       ⎦       x1/3    "yo2"
-// 	C       C       G       G,      ⎤       (8,5)   "yo3"
-// 	E       F       G       E       ⎦       x2/3    "yo4"
-// 	C       C       G       G,      ⎤       (10,5)
-// 	E       F       G       E       ⎦       x3/3
-// 	A       B       C       (12,3)  (12,4)  (12,5)
-// }''');
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//       bool expanded = false;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-//           rawLyrics: 'i: (instrumental)\nmore instrumental'
-//               'v: line 1\n line 2\n'
-//               'o:\n'
-//               'yo1\n'
-//               'yo2\n'
-//               'yo3\n'
-//               'yo4\nyo5\nyo6');
-//
-//       var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x4      (1,5)   "(instrumental)"
-// 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumentalv: line 1"
-// 	(3,0)   (3,1)   (3,2)   (3,3)   (3,4)   (3,5)   "line 2"
-// 	O:#1
-// 	C       C       G       G,      ⎤       (5,5)   "yo1\\nyo2"
-// 	E       F       G       E       ⎦       x3      "yo3\\nyo4"
-// 	(7,0)   (7,1)   (7,2)   (7,3)   (7,4)   (7,5)   "yo5\\nyo6"
-// 	A       B       C       (8,3)   (8,4)   (8,5)
-// }''');
-//
-// //  validate song moment to grid coordinates
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x1/4    (1,5)   "(instrumental)"
-// 	A       B       C       D       x2/4    (2,5)   "more instrumentalv: line 1"
-// 	A       B       C       D       x3/4    (3,5)   "line 2"
-// 	A       B       C       D       x4/4
-// 	O:#1
-// 	C       C       G       G,      ⎤       (6,5)   "yo1"
-// 	E       F       G       E       ⎦       x1/3    "yo2"
-// 	C       C       G       G,      ⎤       (8,5)   "yo3"
-// 	E       F       G       E       ⎦       x2/3    "yo4"
-// 	C       C       G       G,      ⎤       (10,5)  "yo5"
-// 	E       F       G       E       ⎦       x3/3    "yo6"
-// 	A       B       C       (12,3)  (12,4)  (12,5)
-// }''');
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//     }
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//       bool expanded = false;
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
-//           rawLyrics: 'i: (instrumental)\nmore instrumental\n'
-//               'v: line 1\n line 2\n'
-//               'o:\n'
-//               'yo1\n'
-//               'yo2\n'
-//               'yo3\n'
-//               'yo4\nyo5\nyo6\nyo7');
-//
-//       var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	I:#0
-// 	A       B       C       D       x4      (1,5)   "(instrumental)"
-// 	(2,0)   (2,1)   (2,2)   (2,3)   (2,4)   (2,5)   "more instrumental"
-// \tV:#1
-// \tG       G       G       G,      (4,4)   (4,5)   "line 1"
-// \tC       C       G       G       (5,4)   (5,5)   "line 2"
-// 	O:#2
-// 	C       C       G       G,      ⎤       (7,5)   "yo1\\nyo2"
-// 	E       F       G       E       ⎦       x3      "yo3\\nyo4"
-// 	(9,0)   (9,1)   (9,2)   (9,3)   (9,4)   (9,5)   "yo5\\nyo6"
-// 	A       B       C       (10,3)  (10,4)  (10,5)  "yo7"
-// }''');
-//
-// //  validate song moment to grid coordinates
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// \tI:#0
-// \tA       B       C       D       x1/4    (1,5)   "(instrumental)"
-// \tA       B       C       D       x2/4    (2,5)   "more instrumental"
-// \tA       B       C       D       x3/4
-// \tA       B       C       D       x4/4
-// \tV:#1
-// \tG       G       G       G,      (6,4)   (6,5)   "line 1"
-// \tC       C       G       G       (7,4)   (7,5)   "line 2"
-// \tO:#2
-// \tC       C       G       G,      ⎤       (9,5)   "yo1"
-// \tE       F       G       E       ⎦       x1/3    "yo2"
-// \tC       C       G       G,      ⎤       (11,5)  "yo3"
-// \tE       F       G       E       ⎦       x2/3    "yo4"
-// \tC       C       G       G,      ⎤       (13,5)  "yo5"
-// \tE       F       G       E       ⎦       x3/3    "yo6"
-// \tA       B       C       (15,3)  (15,4)  (15,5)  "yo7"
-// }''');
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//     }
-//   });
+  test('test songBase toDisplayGrid()', () {
+    int beatsPerBar = 4;
+    Song a;
+    var userDisplayStyle = UserDisplayStyle.proPlayer;
+    Grid<MeasureNode> grid;
+    Logger.level = Level.info;
 
-//   test('test more songBase toDisplayGrid()', () {
-//     int beatsPerBar = 4;
-//     Song a;
-//     var userDisplayStyle = UserDisplayStyle.proPlayer;
-//     Grid<MeasureNode> grid;
-//     bool expanded = true;
-//     Logger.level = Level.info;
-//
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)"
+	A       B       C       D       x2/3    "last lyric of intro repeat"
+	A       B       C       D       x3/3    (3,5)
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\nanother lyrics line\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)"
+	A       B       C       D       x2/3    "another lyrics line"
+	A       B       C       D       x3/3    "last lyric of intro repeat"
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\n lyrics due in first line\nanother lyrics line\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)\\nlyrics due in first line"
+	A       B       C       D       x2/3    "another lyrics line"
+	A       B       C       D       x3/3    "last lyric of intro repeat"
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\n lyrics due in first line\nanother lyrics line\nlast lyric of intro repeat\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)\\nlyrics due in first line"
+	A       B       C       D       x2/3    "another lyrics line"
+	A       B       C       D       x3/3    "last lyric of intro repeat"
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 C D G C v: D C G G',
+          rawLyrics: 'i: (instrumental)\nmore instrumental\nyet more intro2\nlast line of intro: C D G C\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)"
+	A       B       C       D       x2/3    "more instrumental"
+	A       B       C       D       x3/3    "yet more intro2"
+	C       D       G       C       (4,4)   "last line of intro: C D G C"
+	V:#1
+	D       C       G       G       (6,4)   "one verse lyric line"
+}''');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+\tA       B       C       D       x1/3    "(instrumental)"
+\tA       B       C       D       x2/3    "more instrumental"
+\tA       B       C       D       x3/3    "yet more intro2"
+\tC       D       G       C       (4,4)   "last line of intro: C D G C"
+	V:#1
+	D       C       G       G       (6,4)   "one verse lyric line"
+}''');
+    }
+
 //     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
+//       //  fixme: UserDisplayStyle.proPlayer
+//       userDisplayStyle = UserDisplayStyle.proPlayer;
 //       a = Song(
 //           title: 'ive go the blanks',
 //           artist: 'bob',
@@ -4725,104 +4334,409 @@ v:
 //           beatsPerBar: beatsPerBar,
 //           unitsPerMeasure: 4,
 //           user: 'pearl bob',
-//           chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
-//           rawLyrics: 'v:');
+//           chords: 'v: [ A B C D ] x4',
+//           rawLyrics: 'v: foo foo foo foo baby oh baby yesterday\n'
+//               'bar bar\n'
+//               'bob, bob, bob berand\n'
+//               'You got me');
 //
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
+//       var grid = a.toDisplayGrid(userDisplayStyle);
 //       logger.i(grid.toString());
 //       expect(grid.toString(), '''
 // Grid{
-// 	V:#0
-// 	C7      C7      C7      C7,
-// 	F7      F7      C7      C7,
-// 	G7      F7      C7      G7
+// 	V:\\nA B C D  x4\\n
+// 	V:\\nA B C D  x4\\nV:\\nA B C D  x4\\n
 // }''');
-// //  validate song moment to grid coordinates
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//
-//       expanded = false;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	C7      C7      C7      C7,
-// 	F7      F7      C7      C7,
-// 	G7      F7      C7      G7
-// }''');
-//
-// //  validate song moment to grid coordinates
 //       _testSongMomentToGrid(a, userDisplayStyle);
 //     }
-//
-//     {
-//       userDisplayStyle = UserDisplayStyle.both;
-//
-//       a = Song(
-//           title: 'ive go the blanks',
-//           artist: 'bob',
-//           copyright: 'bob',
-//           key: music_key.Key.get(music_key.KeyEnum.C),
-//           beatsPerMinute: 104,
-//           beatsPerBar: beatsPerBar,
-//           unitsPerMeasure: 4,
-//           user: 'pearl bob',
-//           chords: 'v: [  B D#m G#m G#m/F#,A C#m G#m,A A. C#m. ] x3, B D#m G#m G#m/F#, A A. C#m. C#m C#m',
-//           rawLyrics: '''v:
-// I hear the drums echoing tonight but she hears only
-// Whispers of some quiet conversation
-// -
-// She's coming in twelve-thirty flight, her moonlit wings
-// Reflect the stars that guide me towards salvation
-// -
-// I stopped an old man along the way hoping to find some
-// Old forgotten words or ancient melodies
-// -
-// He turned to me as if to say, "Hurry, boy, it's
-// Waiting there for you"
-// ''');
-//
-//       {
-//         expanded = false;
-//         grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//         logger.i(grid.toString());
-//         expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only\\nWhispers of some quiet conversation\\n-"
-// 	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "She's coming in twelve-thirty flight, her moonlit wings\\nReflect the stars that guide me towards salvation\\n-"
-// 	A       A.      C#m.    (3,3)   ⎦       x3      "I stopped an old man along the way hoping to find some\\nOld forgotten words or ancient melodies\\n-"
-// 	B       D#m     G#m     G#m/F#, (4,4)   (4,5)   "He turned to me as if to say, "Hurry, boy, it's"
-// 	A       A.      C#m.    C#m     C#m     (5,5)   "Waiting there for you""
-// }''');
-//
-// //  validate song moment to grid coordinates
-//         _testSongMomentToGrid(a, userDisplayStyle);
-//       }
-//
-//       expanded = true;
-//       grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-//       logger.i(grid.toString());
-//       expect(grid.toString(), '''
-// Grid{
-// 	V:#0
-// 	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only"
-// 	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "Whispers of some quiet conversation"
-// 	A       A.      C#m.    (3,3)   ⎦       x1/3    "-"
-// 	B       D#m     G#m     G#m/F#, ⎤       (4,5)   "She's coming in twelve-thirty flight, her moonlit wings"
-// 	A       C#m     G#m,    (5,3)   ⎥       (5,5)   "Reflect the stars that guide me towards salvation"
-// 	A       A.      C#m.    (6,3)   ⎦       x2/3    "-"
-// 	B       D#m     G#m     G#m/F#, ⎤       (7,5)   "I stopped an old man along the way hoping to find some"
-// 	A       C#m     G#m,    (8,3)   ⎥       (8,5)   "Old forgotten words or ancient melodies"
-// 	A       A.      C#m.    (9,3)   ⎦       x3/3    "-"
-// 	B       D#m     G#m     G#m/F#, (10,4)  (10,5)  "He turned to me as if to say, "Hurry, boy, it's"
-// 	A       A.      C#m.    C#m     C#m     (11,5)  "Waiting there for you""
-// }''');
-// //  validate song moment to grid coordinates
-//       _testSongMomentToGrid(a, userDisplayStyle);
-//     }
-//   });
+
+    {
+      userDisplayStyle = UserDisplayStyle.proPlayer;
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: v: o:');
+
+      {
+        var grid = a.toDisplayGrid(userDisplayStyle);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:\\nD C G G# \\nV:\\nC F C C#, F F C B, G F C Gb \\nO:\\nD C G G# \\n
+	I:\\nD C G G# \\nI:\\nD C G G# \\n
+	V:\\nC F C C#, F F C B, G F C Gb \\nV:\\nC F C C#, F F C B, G F C Gb \\n
+	O:\\nD C G G# \\nO:\\nD C G G# \\n
+}''');
+        expect(grid.getRowCount(), 3 + 1);
+        expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
+        expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        expect((grid.get(0, 2) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+        expect((grid.get(1, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
+        expect((grid.get(1, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
+        expect((grid.get(2, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        expect((grid.get(2, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        expect((grid.get(3, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+        expect((grid.get(3, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+
+//  in pro, verify top row of chord sections in song order
+        for (var songMoment in a.songMoments) {
+          logger.d('$songMoment: ${a.songMomentToGridCoordinate[songMoment.momentNumber]}');
+          expect(
+              grid.get(0, a.songMomentToGridCoordinate[songMoment.momentNumber].row - 1 /* row is at +1  */)
+                  as ChordSection,
+              songMoment.chordSection);
+        }
+//  in pro, verify each section has it's label and duplicate for chords
+        for (var songMoment in a.songMoments) {
+//  expect entry for section labels
+          var gc = a.songMomentToGridCoordinate[songMoment.momentNumber];
+          logger.d('$songMoment: $gc');
+          expect(grid.at(gc) as ChordSection, songMoment.chordSection);
+//  expect duplicate for chords
+          expect(grid.at(GridCoordinate(gc.row, gc.col + 1)) as ChordSection, songMoment.chordSection);
+        }
+        _testSongMomentToGrid(a, userDisplayStyle);
+      }
+    }
+    {
+      userDisplayStyle = UserDisplayStyle.singer;
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: [ A B C D ] x4',
+          rawLyrics: 'v: foo foo foo foo baby oh baby yesterday\n'
+              'bar bar\n'
+              'bob, bob, bob berand\n'
+              'You got me');
+
+      {
+        var grid = a.toDisplayGrid(userDisplayStyle);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	V:#0    V:\\nA B C D  x4\\n
+	(1,0)   "foo foo foo foo baby oh baby yesterday"
+	(2,0)   "bar bar"
+	(3,0)   "bob, bob, bob berand"
+	(4,0)   "You got me"
+}''');
+        expect(grid.getRowCount(), 5);
+        assert(grid.get(0, 0) is LyricSection);
+        var lyricSection = grid.get(0, 0) as LyricSection;
+        expect(lyricSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        expect(grid.get(1, 0), isNull);
+        expect(grid.get(1, 1)!.measureNodeType, MeasureNodeType.lyric);
+        var lyric = grid.get(1, 1) as Lyric;
+        expect(lyric.line, 'foo foo foo foo baby oh baby yesterday');
+        expect(grid.get(2, 0), isNull);
+        lyric = grid.get(2, 1) as Lyric;
+        expect(lyric.line, 'bar bar');
+        expect(grid.get(3, 0), isNull);
+        lyric = grid.get(3, 1) as Lyric;
+        expect(lyric.line, 'bob, bob, bob berand');
+        expect(grid.get(4, 0), isNull);
+        lyric = grid.get(4, 1) as Lyric;
+        expect(lyric.line, 'You got me');
+
+        _testSongMomentToGrid(a, userDisplayStyle);
+      }
+    }
+    {
+      userDisplayStyle = UserDisplayStyle.singer;
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i:o: D C G G# V: C F C C#,F F C B,  G F C Gb',
+          rawLyrics: 'i: (instrumental)\n '
+              'v: v: foo foo foo foo baby\n oh baby yesterday\n'
+              'bar bar\no:  yo yo yo\n yeah');
+
+      {
+        var grid = a.toDisplayGrid(userDisplayStyle);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	I:#0    I:\\nD C G G# \\n
+	(1,0)   "(instrumental)"
+	V:#1    V:\\nC F C C#, F F C B, G F C Gb \\n
+	V:#2    V:\\nC F C C#, F F C B, G F C Gb \\n
+	(4,0)   "foo foo foo foo baby"
+	(5,0)   "oh baby yesterday"
+	(6,0)   "bar bar"
+	O:#3    O:\\nD C G G# \\n
+	(8,0)   "yo yo yo"
+	(9,0)   "yeah"
+}''');
+        _testSongMomentToGrid(a, userDisplayStyle);
+      }
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 106,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental\n'
+              'v: line 1\n line 2\n'
+              'o:\n'
+              'yo1\n'
+              'yo2\n'
+              'yo3\n'
+              'yo4');
+
+      var grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+\tA       B       C       D       x1/4    (1,5)   "(instrumental)"
+\tA       B       C       D       x2/4    (2,5)   "more instrumental"
+\tA       B       C       D       x3/4    (3,5)   (3,6)
+\tV:#1
+\tG       G       G       G,      (5,4)   (5,5)   "line 1"
+\tC       C       G       G       (6,4)   (6,5)   "line 2"
+\tO:#2
+\tC       C       G       G,      ⎤       (8,5)   "yo1"
+\tE       F       G       E       ⎦       x1/3    "yo2"
+\tC       C       G       G,      ⎤       (10,5)  "yo3"
+\tE       F       G       E       ⎦       x2/3    "yo4"
+\tC       C       G       G,      ⎤       (12,5)  (12,6)
+\tE       F       G       E       ⎦       x3/3    (13,6)
+\tA       B       C       (14,3)  (14,4)  (14,5)
+}''');
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental'
+              'v: line 1\n line 2\n'
+              'o:\n'
+              'yo1\n'
+              'yo2\n'
+              'yo3\n'
+              'yo4\nyo5\nyo6');
+
+      var grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+\tA       B       C       D       x1/4    (1,5)   "(instrumental)"
+\tA       B       C       D       x2/4    (2,5)   "more instrumentalv: line 1"
+\tA       B       C       D       x3/4    (3,5)   "line 2"
+\tA       B       C       D       x4/4    (4,5)   (4,6)
+\tO:#1
+\tC       C       G       G,      ⎤       (6,5)   "yo1"
+\tE       F       G       E       ⎦       x1/3    "yo2"
+\tC       C       G       G,      ⎤       (8,5)   "yo3"
+\tE       F       G       E       ⎦       x2/3    "yo4"
+\tC       C       G       G,      ⎤       (10,5)  "yo5"
+\tE       F       G       E       ⎦       x3/3    "yo6"
+\tA       B       C       (12,3)  (12,4)  (12,5)
+}''');
+
+//  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  x4 v: G G G G, C C G G o: [ C C G G, E F G E ] x3 A B C',
+          rawLyrics: 'i: (instrumental)\nmore instrumental\n'
+              'v: line 1\n line 2\n'
+              'o:\n'
+              'yo1\n'
+              'yo2\n'
+              'yo3\n'
+              'yo4\nyo5\nyo6\nyo7');
+
+      var grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+\tA       B       C       D       x1/4    (1,5)   "(instrumental)"
+\tA       B       C       D       x2/4    (2,5)   "more instrumental"
+\tA       B       C       D       x3/4    (3,5)   (3,6)
+\tV:#1
+\tG       G       G       G,      (5,4)   (5,5)   "line 1"
+\tC       C       G       G       (6,4)   (6,5)   "line 2"
+\tO:#2
+\tC       C       G       G,      ⎤       (8,5)   "yo1"
+\tE       F       G       E       ⎦       x1/3    "yo2"
+\tC       C       G       G,      ⎤       (10,5)  "yo3"
+\tE       F       G       E       ⎦       x2/3    "yo4"
+\tC       C       G       G,      ⎤       (12,5)  "yo5"
+\tE       F       G       E       ⎦       x3/3    "yo6"
+\tA       B       C       (14,3)  (14,4)  (14,5)  "yo7"
+}''');
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+  });
+
+  test('test more songBase toDisplayGrid()', () {
+    int beatsPerBar = 4;
+    Song a;
+    var userDisplayStyle = UserDisplayStyle.proPlayer;
+    Grid<MeasureNode> grid;
+    Logger.level = Level.info;
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: C7 C7 C7 C7, F7 F7 C7 C7, G7 F7 C7 G7',
+          rawLyrics: 'v:');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	V:#0
+	C7      C7      C7      C7,
+	F7      F7      C7      C7,
+	G7      F7      C7      G7
+}''');
+//  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	V:#0
+	C7      C7      C7      C7,
+	F7      F7      C7      C7,
+	G7      F7      C7      G7
+}''');
+
+//  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'v: [  B D#m G#m G#m/F#,A C#m G#m,A A. C#m. ] x3, B D#m G#m G#m/F#, A A. C#m. C#m C#m',
+          rawLyrics: '''v:
+I hear the drums echoing tonight but she hears only
+Whispers of some quiet conversation
+-
+She's coming in twelve-thirty flight, her moonlit wings
+Reflect the stars that guide me towards salvation
+-
+I stopped an old man along the way hoping to find some
+Old forgotten words or ancient melodies
+-
+He turned to me as if to say, "Hurry, boy, it's
+Waiting there for you"
+''');
+
+      {
+        grid = a.toDisplayGrid(userDisplayStyle);
+        logger.i(grid.toString());
+        expect(grid.toString(), '''
+Grid{
+	V:#0
+\tB       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only"
+\tA       C#m     G#m,    (2,3)   ⎥       (2,5)   "Whispers of some quiet conversation"
+\tA       A.      C#m.    (3,3)   ⎦       x1/3    "-"
+\tB       D#m     G#m     G#m/F#, ⎤       (4,5)   "She's coming in twelve-thirty flight, her moonlit wings"
+\tA       C#m     G#m,    (5,3)   ⎥       (5,5)   "Reflect the stars that guide me towards salvation"
+\tA       A.      C#m.    (6,3)   ⎦       x2/3    "-"
+\tB       D#m     G#m     G#m/F#, ⎤       (7,5)   "I stopped an old man along the way hoping to find some"
+\tA       C#m     G#m,    (8,3)   ⎥       (8,5)   "Old forgotten words or ancient melodies"
+\tA       A.      C#m.    (9,3)   ⎦       x3/3    "-"
+\tB       D#m     G#m     G#m/F#, (10,4)  (10,5)  "He turned to me as if to say, "Hurry, boy, it's"
+\tA       A.      C#m.    C#m     C#m     (11,5)  "Waiting there for you""
+}''');
+
+//  validate song moment to grid coordinates
+        _testSongMomentToGrid(a, userDisplayStyle);
+      }
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	V:#0
+	B       D#m     G#m     G#m/F#, ⎤       (1,5)   "I hear the drums echoing tonight but she hears only"
+	A       C#m     G#m,    (2,3)   ⎥       (2,5)   "Whispers of some quiet conversation"
+	A       A.      C#m.    (3,3)   ⎦       x1/3    "-"
+	B       D#m     G#m     G#m/F#, ⎤       (4,5)   "She's coming in twelve-thirty flight, her moonlit wings"
+	A       C#m     G#m,    (5,3)   ⎥       (5,5)   "Reflect the stars that guide me towards salvation"
+	A       A.      C#m.    (6,3)   ⎦       x2/3    "-"
+	B       D#m     G#m     G#m/F#, ⎤       (7,5)   "I stopped an old man along the way hoping to find some"
+	A       C#m     G#m,    (8,3)   ⎥       (8,5)   "Old forgotten words or ancient melodies"
+	A       A.      C#m.    (9,3)   ⎦       x3/3    "-"
+	B       D#m     G#m     G#m/F#, (10,4)  (10,5)  "He turned to me as if to say, "Hurry, boy, it's"
+	A       A.      C#m.    C#m     C#m     (11,5)  "Waiting there for you""
+}''');
+//  validate song moment to grid coordinates
+      _testSongMomentToGrid(a, userDisplayStyle);
+    }
+  });
 
   test('test more songBase firstMomentInLyricSection()', () {
     int beatsPerBar = 4;
@@ -5007,64 +4921,54 @@ v:
   test('generate song repeat tests', () {
     int beatsPerBar = 4;
     const bool printOnly = false;
-    List<bool> expandBooleans;
-    if (printOnly) {
-      expandBooleans = [false];
-    } else {
-      expandBooleans = [
-        false,
-        true,
-      ];
-    }
     bool first = true;
     Song a;
 
-    for (bool expanded in expandBooleans) {
-      for (int rows = 2; rows <= 3; rows++) {
-        for (int repeat = 3; repeat <= 5; repeat++) {
-          for (int lyricsLines = 1; lyricsLines <= repeat * rows; lyricsLines++) {
-            StringBuffer sb = StringBuffer();
-            for (int line = 1; line <= lyricsLines; line++) {
-              sb.write('Line $line/$lyricsLines\n');
+    for (int rows = 2; rows <= 3; rows++) {
+      for (int repeat = 3; repeat <= 5; repeat++) {
+        for (int lyricsLines = 1; lyricsLines <= repeat * rows; lyricsLines++) {
+          StringBuffer sb = StringBuffer();
+          for (int line = 1; line <= lyricsLines; line++) {
+            sb.write('Line $line/$lyricsLines\n');
+          }
+          String chordRow = 'A B C D';
+          if (rows > 1) {
+            chordRow += '\nD C G G';
+            if (rows > 2) {
+              chordRow += '\nE E F G';
             }
-            String chordRow = 'A B C D';
-            if (rows > 1) {
-              chordRow += '\nD C G G';
-              if (rows > 2) {
-                chordRow += '\nE E F G';
-              }
-              chordRow = '[$chordRow]';
-            }
-            String v = 'v: $chordRow ${repeat > 1 ? 'x$repeat' : ''}';
+            chordRow = '[$chordRow]';
+          }
+          String v = 'v: $chordRow ${repeat > 1 ? 'x$repeat' : ''}';
 
-            a = Song(
-                title: '000 repeat test $repeat/$lyricsLines${printOnly ? '' : '/$expanded'}',
-                artist: 'bob',
-                copyright: 'bob',
-                key: music_key.Key.get(music_key.KeyEnum.C),
-                beatsPerMinute: 106,
-                beatsPerBar: beatsPerBar,
-                unitsPerMeasure: 4,
-                user: 'pearl bob',
-                chords: //'i: 1A 2B 3C 3DEF '
-                    '$v o: C C G G',
-                rawLyrics: //'i: (instrumental)\n'
-                    'v: ${sb.toString()}\no:\n');
+          a = Song(
+              title: '000 repeat test $repeat/$lyricsLines',
+              artist: 'bob',
+              copyright: 'bob',
+              key: music_key.Key.get(music_key.KeyEnum.C),
+              beatsPerMinute: 106,
+              beatsPerBar: beatsPerBar,
+              unitsPerMeasure: 4,
+              user: 'pearl bob',
+              chords: //'i: 1A 2B 3C 3DEF '
+                  '$v o: C C G G',
+              rawLyrics: //'i: (instrumental)\n'
+                  'v: ${sb.toString()}\no:\n');
 
-            if (printOnly) {
-              if (first) {
-                first = false;
-                logger.i('[');
-              } else {
-                logger.i(',');
-              }
-              logger.i(a.toJson());
+          if (printOnly) {
+            if (first) {
+              first = false;
+              logger.i('[');
             } else {
-              logger.i('');
-              logger.i('title: ${a.title}');
-              var grid = a.toDisplayGrid(UserDisplayStyle.both, expanded: expanded);
-              logger.i(grid.toString());
+              logger.i(',');
             }
+            logger.i(a.toJson());
+          } else {
+            logger.i('');
+            logger.i('title: ${a.title}');
+            var grid = a.toDisplayGrid(UserDisplayStyle.both);
+            logger.i(grid.toString());
+            expect(grid.getRowCount(), 1 + min(rows * ((lyricsLines / rows).ceil() + 1), rows * repeat) + 2);
           }
         }
       }
@@ -5076,24 +4980,25 @@ v:
 }
 
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {
-  for (var expanded in [false, true]) {
-    var grid = a.toDisplayGrid(userDisplayStyle, expanded: expanded);
-    logger.d('a.toGrid(): ${expanded ? 'expanded:' : ''} $grid ');
+  var grid = a.toDisplayGrid(userDisplayStyle);
+  logger.i('');
+  logger.i('a.toGrid(): ${userDisplayStyle.name}: $grid ');
 
-    List<GridCoordinate> list = a.songMomentToGridCoordinate;
-    expect(list.length, a.songMoments.length);
-    for (var songMoment in a.songMoments) {
-      var gc = list[songMoment.momentNumber];
-      var measureNode = grid.get(gc.row, gc.col);
-      expect(measureNode, isNotNull);
-      logger.d('${songMoment.momentNumber}: $gc: $measureNode');
-      if (measureNode is Measure) {
-        expect(measureNode, songMoment.measure);
-      } else if (userDisplayStyle == UserDisplayStyle.singer && gc.col == 0) {
-        expect(measureNode, songMoment.lyricSection);
-      } else {
-        expect(measureNode, songMoment.chordSection);
-      }
+  List<GridCoordinate> list = a.songMomentToGridCoordinate;
+  expect(list.length, a.songMoments.length);
+  for (var songMoment in a.songMoments) {
+    var gc = list[songMoment.momentNumber];
+    var measureNode = grid.get(gc.row, gc.col);
+    logger.i('${songMoment.momentNumber}: $gc: $measureNode');
+    expect(measureNode, isNotNull);
+    if (measureNode is Measure) {
+      expect(measureNode, songMoment.measure);
+    } else if (userDisplayStyle == UserDisplayStyle.singer && gc.col == 0) {
+      expect(measureNode, songMoment.lyricSection);
+    } else if (userDisplayStyle == UserDisplayStyle.proPlayer) {
+      expect(measureNode, songMoment.chordSection);
+    } else {
+      expect(measureNode, songMoment.lyricSection);
     }
   }
 }

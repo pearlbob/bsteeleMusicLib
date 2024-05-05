@@ -18,8 +18,7 @@ enum PlayerScrollAssistantState {
 }
 
 class PlayerScrollAssistant {
-  PlayerScrollAssistant(this.song,
-      {required final UserDisplayStyle userDisplayStyle, required final bool expanded, int? bpm})
+  PlayerScrollAssistant(this.song, {required final UserDisplayStyle userDisplayStyle, int? bpm})
       : _bpm = bpm ?? song.beatsPerMinute {
     logger.i('PlayerScrollAssistant(bpm: $bpm)');
 
@@ -28,7 +27,7 @@ class PlayerScrollAssistant {
       //  generate the display grid
       // Grid<MeasureNode> displayGrid =
       //  note: actual grid is not used!... just the song moment to grid coordinate mapping.
-      song.toDisplayGrid(userDisplayStyle, expanded: expanded);
+      song.toDisplayGrid(userDisplayStyle);
       final List<GridCoordinate> songMomentToGridCoordinateLookup = song.songMomentToGridCoordinate;
 
       int lastPhraseIndex = 0;
@@ -45,8 +44,6 @@ class PlayerScrollAssistant {
         if (!identical(lyricSection, lastLyricSection) ||
                 songMoment.phraseIndex != lastPhraseIndex ||
                 !songMoment.phrase.isRepeat() //  non-repeats use their own row
-                ||
-                expanded //  every repeat row gets a row for itself if expanded
             ) {
           lastLyricSection = lyricSection;
           lastPhraseIndex = songMoment.phraseIndex;
