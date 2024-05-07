@@ -3684,9 +3684,9 @@ v:
           rawLyrics: 'i: (instrumental)\n v: foobar');
       expect(
           a.chordMarkupForLyrics(),
-          'I:\n[A B C D] x2#1 [A B C D] x2#2\n'
-          'V:\n[G G G G, C C G G, D C G D] x4#1 [G G G G, C C G G, D C G D] x4#2'
-          ' [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
+          'I:\n[A B C D] x1/2 [A B C D] x2/2\n'
+          'V:\n[G G G G, C C G G, D C G D] x1/4 [G G G G, C C G G, D C G D] x2/4'
+          ' [G G G G, C C G G, D C G D] x3/4 [G G G G, C C G G, D C G D] x4/4\n');
     }
     {
       var a = Song(
@@ -3704,14 +3704,14 @@ v:
       expect(
           a.chordMarkupForLyrics(),
           'I:\n'
-          '[A B C D] x2#1 [A B C D] x2#2\n'
+          '[A B C D] x1/2 [A B C D] x2/2\n'
           'V:\n'
           '[G G G G\n'
           ' C C G G\n'
-          ' D C G D] x4#1\n'
+          ' D C G D] x1/4\n'
           '[G G G G\n'
           ' C C G G\n'
-          ' D C G D] x4#2 [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
+          ' D C G D] x2/4 [G G G G, C C G G, D C G D] x3/4 [G G G G, C C G G, D C G D] x4/4\n');
     }
     {
       var a = Song(
@@ -3729,14 +3729,14 @@ v:
       expect(
           a.chordMarkupForLyrics(),
           'I:\n'
-          '[A B C D] x2#1 [A B C D] x2#2\n'
+          '[A B C D] x1/2 [A B C D] x2/2\n'
           'V:\n'
           '[G G G G\n'
           ' C C G G\n'
-          ' D C G D] x4#1\n'
+          ' D C G D] x1/4\n'
           '[G G G G\n'
           ' C C G G\n'
-          ' D C G D] x4#2 [G G G G, C C G G, D C G D] x4#3 [G G G G, C C G G, D C G D] x4#4\n');
+          ' D C G D] x2/4 [G G G G, C C G G, D C G D] x3/4 [G G G G, C C G G, D C G D] x4/4\n');
     }
     {
       var a = Song(
@@ -3783,10 +3783,10 @@ v:
           a.chordMarkupForLyrics(),
           'I: A B C D\n'
           'V:\n'
-          '[Am Am/G Am/F# FE] x4#1\n'
-          '[Am Am/G Am/F# FE] x4#2\n'
-          '[Am Am/G Am/F# FE] x4#3\n'
-          '[Am Am/G Am/F# FE] x4#4\n');
+          '[Am Am/G Am/F# FE] x1/4\n'
+          '[Am Am/G Am/F# FE] x2/4\n'
+          '[Am Am/G Am/F# FE] x3/4\n'
+          '[Am Am/G Am/F# FE] x4/4\n');
     }
   });
 

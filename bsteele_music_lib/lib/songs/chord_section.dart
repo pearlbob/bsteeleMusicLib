@@ -504,7 +504,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return ChordSection(_sectionVersion, newPhrases);
   }
 
-  String toMarkupInRows(int lines, {expanded = true}) // fixme: worry about this is being complex and fragile
+  String toMarkupInRows(int lines) // fixme: worry about this is being complex and fragile
   {
     _LineCounts lineCounts = _LineCounts(lines, repeatRowCount);
     logger.d('toMarkupInRows($lines):');
@@ -514,7 +514,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
     for (var phrase in phrases) {
       var repeatReps = phrase is MeasureRepeat ? phrase.repeats : 1;
-      var reps = (expanded && repeatReps > 0 ? repeatReps : 1);
+      var reps = (repeatReps > 0 ? repeatReps : 1);
       for (var rep = 0; rep < reps; rep++) {
         var whiteSpace = phrase.markupStart();
         for (var m in phrase.measures) {
@@ -544,7 +544,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  String toMarkup({bool expanded = false}) {
+  String toMarkup() {
     StringBuffer sb = StringBuffer();
     sb.write(sectionVersion.toString());
     sb.write(' ');
@@ -552,7 +552,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return sb.toString();
   }
 
-  String phrasesToMarkup({bool expanded = false}) {
+  String phrasesToMarkup() {
     if (isEmpty) {
       return '[] ';
     }

@@ -187,7 +187,6 @@ class MeasureRepeat extends Phrase {
     //  walk through all prior measures //  fixme: efficiency?
     var editRowCount = 0;
     for (var repetition = 0; repetition < repeats; repetition++) {
-      var r = 0;
       for (var measure in measures) {
         ret.add(measure);
         if (measure.endOfRow || identical(measure, measures.last)) {
@@ -208,7 +207,6 @@ class MeasureRepeat extends Phrase {
           ret.clear();
           editRowCount++;
         }
-        r++;
       }
     }
 
@@ -320,7 +318,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   String markupEnd({int? rep}) {
-    return '] x$repeats${rep == null ? '' : '#$rep'}';
+    return '] x${rep == null ? '' : '$rep/'}$repeats';
   }
 
   @override

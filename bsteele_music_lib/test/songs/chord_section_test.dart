@@ -552,7 +552,7 @@ void main() {
         'A B C D E F G G# x2\n',
         beatsPerBar);
     grid = chordSection.toGrid();
-    expect(grid.getRowCount(), 4);
+    expect(grid.getRowCount(), 5);
     expect(grid.rowLength(0), 9);
     expect(grid.rowLength(1), 9);
     expect(grid.rowLength(2), 9);
@@ -575,7 +575,7 @@ void main() {
         'A B C D, E F G G# x2\n',
         beatsPerBar);
     grid = chordSection.toGrid();
-    expect(grid.getRowCount(), 1 + 2 + 2);
+    expect(grid.getRowCount(), 1 + 3 + 2);
     for (var r = 0; r < 5; r++) {
       expect(grid.rowLength(r), 5);
     }
@@ -587,7 +587,7 @@ void main() {
         '[A B C D, E F G G#] x2\n',
         beatsPerBar);
     grid = chordSection.toGrid();
-    expect(grid.getRowCount(), 1 + 2 + 2);
+    expect(grid.getRowCount(), 1 + 2 + 2 * 2);
     for (var r = 0; r < 5; r++) {
       expect(grid.rowLength(r), 6);
     }
@@ -623,13 +623,13 @@ void main() {
     expect(
         chordSection.toMarkupInRows(5),
         'I:\n'
-            ' A B C D\n\n'
-            ' D C G G\n\n');
+        ' A B C D\n\n'
+        ' D C G G\n\n');
     expect(
-        chordSection.toMarkupInRows(5, expanded: false),
+        chordSection.toMarkupInRows(5),
         'I:\n'
-            ' A B C D\n\n'
-            ' D C G G\n\n');
+        ' A B C D\n\n'
+        ' D C G G\n\n');
     expect(
         chordSection.toMarkupInRows(6),
         'I:\n'
@@ -655,34 +655,34 @@ void main() {
 
     expect(
         chordSection.toMarkupInRows(0),
-        'I: A B, A B C D [A B C D, E F G G#, A# Bb] x2#1'
-        ' [A B C D, E F G G#, A# Bb] x2#2\n');
+        'I: A B, A B C D [A B C D, E F G G#, A# Bb] x1/2'
+        ' [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(1),
-        'I: A B, A B C D [A B C D, E F G G#, A# Bb] x2#1'
-        ' [A B C D, E F G G#, A# Bb] x2#2\n');
+        'I: A B, A B C D [A B C D, E F G G#, A# Bb] x1/2'
+        ' [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(2),
         'I:\n'
-        ' A B, A B C D [A B C D, E F G G#, A# Bb] x2#1 [A B C D, E F G G#, A# Bb] x2#2\n');
+        ' A B, A B C D [A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(3),
         'I:\n'
         ' A B\n'
-        ' A B C D [A B C D, E F G G#, A# Bb] x2#1 [A B C D, E F G G#, A# Bb] x2#2\n');
+        ' A B C D [A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(4),
         'I:\n'
         ' A B\n'
         ' A B C D\n'
-        '[A B C D, E F G G#, A# Bb] x2#1 [A B C D, E F G G#, A# Bb] x2#2\n');
+        '[A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(5),
         'I:\n'
         ' A B\n'
         ' A B C D\n'
         '[A B C D\n'
-        ' E F G G#, A# Bb] x2#1 [A B C D, E F G G#, A# Bb] x2#2\n');
+        ' E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(6),
         'I:\n'
@@ -690,7 +690,7 @@ void main() {
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1 [A B C D, E F G G#, A# Bb] x2#2\n');
+        ' A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(7),
         'I:\n'
@@ -698,8 +698,8 @@ void main() {
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1\n'
-        '[A B C D, E F G G#, A# Bb] x2#2\n');
+        ' A# Bb] x1/2\n'
+        '[A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(8),
         'I:\n'
@@ -707,9 +707,9 @@ void main() {
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        ' E F G G#, A# Bb] x2#2\n');
+        ' E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(9),
         'I:\n'
@@ -717,9 +717,9 @@ void main() {
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(10),
         'I:\n'
@@ -727,9 +727,9 @@ void main() {
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(11),
         'I:\n'
@@ -737,9 +737,9 @@ void main() {
         ' A B C D\n\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(12),
         'I:\n'
@@ -747,9 +747,9 @@ void main() {
         ' A B C D\n\n'
         '[A B C D\n\n'
         ' E F G G#\n'
-        ' A# Bb] x2#1\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
 
     expect(
         chordSection.toMarkupInRows(13),
@@ -758,9 +758,9 @@ void main() {
         ' A B C D\n\n'
         '[A B C D\n\n'
         ' E F G G#\n\n'
-        ' A# Bb] x2#1\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
 
     expect(
         chordSection.toMarkupInRows(14),
@@ -769,9 +769,9 @@ void main() {
         ' A B C D\n\n'
         '[A B C D\n\n'
         ' E F G G#\n\n'
-        ' A# Bb] x2#1\n\n'
+        ' A# Bb] x1/2\n\n'
         '[A B C D\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(15),
         'I:\n'
@@ -779,54 +779,88 @@ void main() {
         ' A B C D\n\n'
         '[A B C D\n\n'
         ' E F G G#\n\n'
-        ' A# Bb] x2#1\n\n'
+        ' A# Bb] x1/2\n\n'
         '[A B C D\n\n'
-        ' E F G G#\n A# Bb] x2#2\n');
+        ' E F G G#\n A# Bb] x2/2\n');
 
-    expect(chordSection.toMarkupInRows(0, expanded: false), 'I: A B, A B C D [A B C D, E F G G#, A# Bb] x2\n');
-    expect(chordSection.toMarkupInRows(1, expanded: false), 'I: A B, A B C D [A B C D, E F G G#, A# Bb] x2\n');
+    expect(chordSection.toMarkupInRows(0),
+        'I: A B, A B C D [A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
+    expect(chordSection.toMarkupInRows(1),
+        'I: A B, A B C D [A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(2, expanded: false),
+        chordSection.toMarkupInRows(2),
         'I:\n'
-        ' A B, A B C D [A B C D, E F G G#, A# Bb] x2\n');
+        ' A B, A B C D [A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(3, expanded: false),
+        chordSection.toMarkupInRows(3),
         'I:\n'
         ' A B\n'
-        ' A B C D [A B C D, E F G G#, A# Bb] x2\n');
+        ' A B C D [A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(4, expanded: false),
+        chordSection.toMarkupInRows(4),
         'I:\n'
         ' A B\n'
         ' A B C D\n'
-        '[A B C D, E F G G#, A# Bb] x2\n');
+        '[A B C D, E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(5, expanded: false),
+        chordSection.toMarkupInRows(5),
         'I:\n'
         ' A B\n'
         ' A B C D\n'
         '[A B C D\n'
-        ' E F G G#, A# Bb] x2\n');
+        ' E F G G#, A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(6, expanded: false),
+        chordSection.toMarkupInRows(6),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x1/2 [A B C D, E F G G#, A# Bb] x2/2\n');
+    expect(
+        chordSection.toMarkupInRows(7),
         'I:\n'
         ' A B\n'
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2\n');
+        ' A# Bb] x1/2\n'
+        '[A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(7, expanded: false),
+        chordSection.toMarkupInRows(8),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x1/2\n'
+        '[A B C D\n'
+        ' E F G G#, A# Bb] x2/2\n');
+    expect(
+        chordSection.toMarkupInRows(9),
+        'I:\n'
+        ' A B\n'
+        ' A B C D\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x1/2\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x2/2\n');
+    expect(
+        chordSection.toMarkupInRows(10),
         'I:\n'
         ' A B\n'
         '\n'
         ' A B C D\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2\n'
-        );
+        ' A# Bb] x1/2\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(8, expanded: false),
+        chordSection.toMarkupInRows(11),
         'I:\n'
         ' A B\n'
         '\n'
@@ -834,32 +868,12 @@ void main() {
         '\n'
         '[A B C D\n'
         ' E F G G#\n'
-        ' A# Bb] x2\n');
-    expect(
-        chordSection.toMarkupInRows(9, expanded: false),
-        'I:\n'
-        ' A B\n'
-        '\n'
-        ' A B C D\n'
-        '\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        '\n'
         ' E F G G#\n'
-        ' A# Bb] x2\n');
+        ' A# Bb] x2/2\n');
     expect(
-        chordSection.toMarkupInRows(10, expanded: false),
-        'I:\n'
-        ' A B\n'
-        '\n'
-        ' A B C D\n'
-        '\n'
-        '[A B C D\n'
-        '\n'
-        ' E F G G#\n'
-        '\n'
-        ' A# Bb] x2\n');
-    expect(
-        chordSection.toMarkupInRows(11, expanded: false),
+        chordSection.toMarkupInRows(12),
         'I:\n'
         ' A B\n'
         '\n'
@@ -868,73 +882,60 @@ void main() {
         '[A B C D\n'
         '\n'
         ' E F G G#\n'
-        '\n'
-        ' A# Bb] x2\n'
-        '\n');
-    expect(
-        chordSection.toMarkupInRows(12, expanded: false),
-        'I:\n'
-        ' A B\n'
-        '\n'
-        '\n'
-        ' A B C D\n'
-        '\n'
+        ' A# Bb] x1/2\n'
         '[A B C D\n'
-        '\n'
         ' E F G G#\n'
-        '\n'
-        ' A# Bb] x2\n'
-        '\n');
-
-    expect(
-        chordSection.toMarkupInRows(13, expanded: false),
-        'I:\n'
-        ' A B\n'
-        '\n'
-        '\n'
-        ' A B C D\n'
-        '\n'
-        '\n'
-        '[A B C D\n'
-        '\n'
-        ' E F G G#\n'
-        '\n'
-        ' A# Bb] x2\n'
-        '\n');
+        ' A# Bb] x2/2\n');
 
     expect(
-        chordSection.toMarkupInRows(14, expanded: false),
+        chordSection.toMarkupInRows(13),
         'I:\n'
         ' A B\n'
         '\n'
-        '\n'
         ' A B C D\n'
-        '\n'
         '\n'
         '[A B C D\n'
         '\n'
-        '\n'
         ' E F G G#\n'
         '\n'
-        ' A# Bb] x2\n'
-        '\n');
+        ' A# Bb] x1/2\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x2/2\n');
+
     expect(
-        chordSection.toMarkupInRows(15, expanded: false),
+        chordSection.toMarkupInRows(14),
         'I:\n'
         ' A B\n'
         '\n'
-        '\n'
         ' A B C D\n'
-        '\n'
         '\n'
         '[A B C D\n'
         '\n'
+        ' E F G G#\n'
+        '\n'
+        ' A# Bb] x1/2\n'
+        '\n'
+        '[A B C D\n'
+        ' E F G G#\n'
+        ' A# Bb] x2/2\n');
+    expect(
+        chordSection.toMarkupInRows(15),
+        'I:\n'
+        ' A B\n'
+        '\n'
+        ' A B C D\n'
+        '\n'
+        '[A B C D\n'
         '\n'
         ' E F G G#\n'
         '\n'
+        ' A# Bb] x1/2\n'
         '\n'
-        ' A# Bb] x2\n'
-        '\n');
+        '[A B C D\n'
+        '\n'
+        ' E F G G#\n'
+        ' A# Bb] x2/2\n');
   });
 
   test('test ChordSection transpose()', () {
