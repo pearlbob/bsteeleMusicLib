@@ -60,12 +60,12 @@ class MeasureRepeatExtension extends MeasureComment {
     return markerString;
   }
 
-  static const String _upperRight = '\u23A4';
-  static const String _lowerRight = '\u23A6';
+  static const String _upperRight = '\u23A4'; //  ⎤
+  static const String _lowerRight = '\u23A6'; //  ⎦
 
   // static final String _upperLeft = '\u23A1';
   // static final String _lowerLeft = '\u23A3';
-  static const String _extension = '\u23A5';
+  static const String _extension = '\u23A5'; // ⎥
   static final MeasureRepeatExtension upperRightMeasureRepeatExtension =
       MeasureRepeatExtension(ChordSectionLocationMarker.repeatUpperRight, _upperRight);
   static final MeasureRepeatExtension middleRightMeasureRepeatExtension =

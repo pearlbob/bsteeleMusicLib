@@ -2701,7 +2701,7 @@ class SongBase {
         var measureIndex = chordSectionLocation.measureIndex;
         var first = measureIndex;
         for (int i = first - 1; i >= 0; i--) {
-          var m = phrase.measureAt(i);
+          var m = phrase.phraseMeasureAt(i);
           if (m?.endOfRow ?? true) {
             break;
           }
@@ -2709,7 +2709,7 @@ class SongBase {
         }
         var last = phrase.length; //  if not end of row at last
         for (int i = measureIndex; i < phrase.length; i++) {
-          var m = phrase.measureAt(i);
+          var m = phrase.phraseMeasureAt(i);
           if (m?.endOfRow ?? true) {
             last = i + 1;
             break;
@@ -3590,7 +3590,7 @@ class SongBase {
         List<Lyric> lyrics = lyricSection.asBundledLyrics(
             chordSection, //
             //  count all the rows implied by the chord section for lyric distribution
-            chordSection.rowCount(expanded: true));
+            chordSection.repeatRowCount);
 
         //  fill in the two verticals (chords and lyrics), aligning the lyrics by phrase
         var sectionGrid = Grid<MeasureNode>();
@@ -3606,7 +3606,7 @@ class SongBase {
         for (var phrase in chordSection.phrases) {
           int? firstBlankSectionRow;
           if (phrase.repeats > 1) {
-            var phraseGrid = phrase.toGrid(chordColumns: lastColumn, expanded: true);
+            var phraseGrid = phrase.toGrid(chordColumns: lastColumn);
 
             var phraseRowIndex = 0;
             for (var repeat = 0; repeat < phrase.repeats; repeat++) {
@@ -3614,7 +3614,7 @@ class SongBase {
                   _logGridDetails,
                   '   phrase: ${phrase.phraseIndex}: ${phrase.toString().replaceAll('\n', '')}'
                   ', repeat: $repeat');
-              var phraseRowCount = phrase.rowCount();
+              var phraseRowCount = phrase.phraseRowCount;
               if (lyricsIndex < lyrics.length) {
                 //  lyrics to add
 
@@ -3704,8 +3704,8 @@ class SongBase {
                     sectionRowIndex++;
                   }
                 } else {
-                  //  remap all subsequent repeats with the one blank repeat (i.e. no lyrics)
-                  for (var phraseRowIndex = 0; phraseRowIndex < phraseRowCount; phraseRowIndex++) {
+                  //  remap all subsequent repeats with the one blank repeat (i.e. no lyrics in the repeat)
+                  for (phraseRowIndex = 0; phraseRowIndex < phraseRowCount; phraseRowIndex++) {
                     var phraseGridRow = phraseGrid.getRow(phraseRowIndex);
                     //  no grid added here!
 
@@ -3732,7 +3732,9 @@ class SongBase {
           } else {
             //  grid a whole phrase if not a repeat
             var lyricsPhraseRowIndex = sectionRowIndex;
-            var phraseGrid = phrase.toGrid(chordColumns: lastColumn, expanded: expanded);
+            var phraseGrid = phrase.toGrid(
+              chordColumns: lastColumn,
+            );
             for (var r = 0; r < phraseGrid.getRowCount(); r++) {
               var phraseGridRow = phraseGrid.getRow(r);
 
@@ -3754,7 +3756,7 @@ class SongBase {
             }
             sectionGrid.add(phraseGrid);
 
-            for (var phraseRow = 0; phraseRow < phrase.rowCount(expanded: expanded); phraseRow++) {
+            for (var phraseRow = 0; phraseRow < phrase.phraseRowCount; phraseRow++) {
               if (lyricsIndex < lyrics.length) {
                 sectionGrid.set(lyricsPhraseRowIndex++, lastColumn, lyrics[lyricsIndex++]);
               }
@@ -3769,10 +3771,14 @@ class SongBase {
       }
     }
 
-    assert(songMoments.length == _songMomentToGridCoordinate.length);
-
     logger.log(_logSongMomentToGrid, _songMomentsToString());
     logger.log(_logSongMomentToGrid, _songMomentToGridCoordinateToString());
+
+    if (songMoments.length != _songMomentToGridCoordinate.length) {
+      logger.i('break; here.'); //!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+
+    assert(songMoments.length == _songMomentToGridCoordinate.length);
 
     return grid;
   }
@@ -4289,7 +4295,10 @@ class LyricParseException {
 
 void debugGridLog(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayStyle, bool? expanded}) {
   if (Logger.level.index <= Level.debug.index) {
-    logger.i(debugGridToString(grid, userDisplayStyle: userDisplayStyle, expanded: expanded));
+    logger.i(debugGridToString(
+      grid,
+      userDisplayStyle: userDisplayStyle,
+    ));
   }
 }
 

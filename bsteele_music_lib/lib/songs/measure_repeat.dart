@@ -137,6 +137,14 @@ class MeasureRepeat extends Phrase {
   @override
   int get repeats => getRepeatMarker().repeats;
 
+  @override
+  int get repeatMeasureCount => phraseMeasureCount * repeats;
+
+  @override
+  int get repeatRowCount {
+    return phraseRowCount * repeats;
+  }
+
   set repeats(int repeats) => getRepeatMarker().repeats = repeats;
 
   @override
@@ -164,12 +172,12 @@ class MeasureRepeat extends Phrase {
   @override
   int chordRowMaxLength() {
     //  include the row markers
-    return super.maxMeasuresPerChordRow() + (rowCount() > 1 ? 1 : 0) + 1;
+    return super.maxMeasuresPerChordRow() + (phraseRowCount > 1 ? 1 : 0) /* extension marker*/ + 1 /* repeat marker*/;
   }
 
-  /// get a display row at the index, including the repeat markers
+  /// get a edit chord row at the index, including the repeat markers
   @override
-  List<Measure> rowAt(int index, {expanded = false}) {
+  List<Measure> rowAt(final int index) {
     var ret = <Measure>[];
 
     if (measures.isEmpty) {
@@ -177,81 +185,51 @@ class MeasureRepeat extends Phrase {
     }
 
     //  walk through all prior measures //  fixme: efficiency?
-    var repeatRowCount = 0;
-    for (var measure in measures) {
-      if (measure.endOfRow) {
-        repeatRowCount++;
-      } else if (identical(measure, measures.last)) {
-        repeatRowCount++;
-        break; //  redundant
-      }
-    }
-    int chordRowMaxLength = super.chordRowMaxLength();
-
-    var r = 0;
-    for (var m = 0; m < measureCount * repeats /*  safety only */; m++) {
-      var measure = measureAt(m, expanded: expanded);
-      if (measure == null) {
-        break;
-      }
-      if (r == index) {
+    var editRowCount = 0;
+    for (var repetition = 0; repetition < repeats; repetition++) {
+      var r = 0;
+      for (var measure in measures) {
         ret.add(measure);
-      }
-      if (measure.endOfRow || identical(measure, measures.last)) {
-        if (r == index) {
-          //  fill a short row
-          while (ret.length < chordRowMaxLength) {
-            ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.none));
-          }
-
-          //  place repeat markers
-          var repeatRowNumber = r % repeatRowCount;
-          if (measure == measures.last) {
-            if (repeatRowNumber == 0) {
-              //  marker not necessary!
-              //ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatOnOneLineRight));
-            } else {
-              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
+        if (measure.endOfRow || identical(measure, measures.last)) {
+          if (editRowCount == index) {
+            //  place repeat markers
+            if (phraseRowCount > 1 && identical(ret.first, measures.first)) {
+              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatUpperRight));
+            } else if (identical(measure, measures.last)) {
+              if (phraseRowCount > 1) {
+                ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
+              }
+              ret.add(MeasureRepeatMarker(repeats, repetition: repetition + 1));
+            } else if (phraseRowCount > 2) {
+              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatMiddleRight));
             }
-            if (expanded) {
-              ret.add(MeasureRepeatExtension(
-                  ChordSectionLocationMarker.repeatLowerRight, '${r ~/ repeatRowCount + 1}/$repeats'));
-            } else {
-              ret.add(_repeatMarker);
-            }
-          } else if (repeatRowNumber == 0) {
-            ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatUpperRight));
-          } else {
-            ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatMiddleRight));
+            return ret;
           }
-          return ret;
+          ret.clear();
+          editRowCount++;
         }
         r++;
       }
     }
 
+    ret.clear();
     return ret;
   }
 
   @override
-  Measure? measureAt(int measureIndex, {expanded = false}) {
-    if (expanded) {
-      if (measureIndex >= measures.length * repeats) {
-        return null;
-      }
-      measureIndex %= measures.length;
+  Measure? repeatMeasureAt(int measureIndex) {
+    if (measureIndex >= measures.length * repeats) {
+      return null;
     }
-    return super.measureAt(measureIndex);
+    return phraseMeasureAt(measureIndex % measures.length);
   }
 
-  //  return the first measure of the given row
+//  return the first measure of the given row
   @override
-  Measure firstMeasureInRow(int row, {expanded = false}) {
-    if (expanded == false) {
-      return super.firstMeasureInRow(row);
-    }
-    int n = rowCount(expanded: false);
-    return super.firstMeasureInRow(Util.intLimit(row, 0, n * repeats) % n);
+  Measure firstMeasureInRow(final int row) {
+    int n = phraseRowCount;
+    var r = Util.intLimit(row, 0, n * repeats) % n;
+    return super.firstMeasureInRow(r);
   }
 
   @override
@@ -302,21 +280,21 @@ class MeasureRepeat extends Phrase {
     return super.chordExpandedRowCount * _repeatMarker.repeats;
   }
 
-  // @override
-  // int beatsInRow( int row,{bool? expanded} ){
-  //   if (measures.isEmpty) {
-  //     return 0;
-  //   }
-  //   var chordRowCount = 0;
-  //   var beats = 0;  fixme here now
-  //   for (Measure measure in measures) {
-  //     chordRowCount += (measure.endOfRow ? 1 : 0);
-  //     if ( row == chordRowCount ){
-  //       beats += measure.beatCount;
-  //     }
-  //   }
-  //   return beats;
-  // }
+// @override
+// int beatsInRow( int row,{bool? expanded} ){
+//   if (measures.isEmpty) {
+//     return 0;
+//   }
+//   var chordRowCount = 0;
+//   var beats = 0;  fixme here now
+//   for (Measure measure in measures) {
+//     chordRowCount += (measure.endOfRow ? 1 : 0);
+//     if ( row == chordRowCount ){
+//       beats += measure.beatCount;
+//     }
+//   }
+//   return beats;
+// }
 
   @override
   String toMarkup({bool expanded = false}) {
@@ -395,13 +373,13 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  Grid<MeasureNode> toGrid({int? chordColumns, bool? expanded}) {
+  Grid<MeasureNode> toGrid({int? chordColumns}) {
     var grid = Grid<MeasureNode>();
     int row = 0;
     int rowMod = 0;
     int col = 0;
-    var rowCount = this.rowCount();
-    bool hasExtensions = rowCount > 1;
+    var rowCount = repeatMeasureCount;
+    bool hasExtensions = phraseRowCount > 1;
     int maxCol = max(
         chordColumns ?? 0,
         maxMeasuresPerChordRow() +
@@ -410,9 +388,8 @@ class MeasureRepeat extends Phrase {
             1 //  for repeat marker
         );
 
-    var limit = (expanded ?? false) ? repeats : 1;
     var repetition = 1;
-    for (var repeatExpansion = 0; repeatExpansion < limit; repeatExpansion++) {
+    for (var repeatExpansion = 0; repeatExpansion < repeats; repeatExpansion++) {
       for (Measure measure in measures) {
         grid.set(row, col++, measure);
         if (measure.endOfRow) {
@@ -424,9 +401,9 @@ class MeasureRepeat extends Phrase {
 
             //  add the extension
             MeasureRepeatExtension extension;
-            if (rowMod == 0) {
+            if (rowMod % phraseRowCount == 0) {
               extension = MeasureRepeatExtension.upperRightMeasureRepeatExtension;
-            } else if (rowMod == rowCount - 1) {
+            } else if (rowMod % phraseRowCount == phraseRowCount - 1) {
               extension = MeasureRepeatExtension.lowerRightMeasureRepeatExtension;
             } else {
               extension = MeasureRepeatExtension.middleRightMeasureRepeatExtension;
@@ -449,7 +426,7 @@ class MeasureRepeat extends Phrase {
         }
         grid.set(row, col++, MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
       }
-      grid.set(row, col, (limit > 1 ? MeasureRepeatMarker(limit, repetition: repetition++) : _repeatMarker));
+      grid.set(row, col, (repeats > 1 ? MeasureRepeatMarker(repeats, repetition: repetition++) : _repeatMarker));
       row++;
       rowMod = row % rowCount;
       col = 0;

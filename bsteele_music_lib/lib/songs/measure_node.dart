@@ -48,7 +48,7 @@ abstract class MeasureNode {
   }
 
   int get chordExpandedRowCount {
-    return 0;
+    return 0; //  please override
   }
 
   /// Transpose the measure node the given number of half steps from the given key.
@@ -67,7 +67,7 @@ abstract class MeasureNode {
   String toNashville(Key key);
 
   /// Represent the measure node to the user in a string form and from storage encoding.
-  String toMarkup({bool expanded = false});
+  String toMarkup();
 
   /// Represent the measure node to the user in a display string for presentation
   String toMarkupWithoutEnd();

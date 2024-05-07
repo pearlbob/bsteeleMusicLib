@@ -607,42 +607,37 @@ void main() {
 
   test('test repeat chord rows', () {
     int beatsPerBar = 4;
-    var expanded = true;
     MeasureRepeat m;
 
     m = MeasureRepeat.parseString('[A B C D, E F G, D C G G ] x2', 0, beatsPerBar, null);
     expect(m.chordRowMaxLength(), 6);
-    expanded = false;
-    expect(m.rowAt(0, expanded: expanded).length, 5);
-    expect(m.rowAt(1, expanded: expanded).length, 5);
-    expect(m.rowAt(2, expanded: expanded).length, 6);
-    expect(m.rowAt(3, expanded: expanded).length, 0);
+    expect(m.rowAt(0).length, 5);
+    expect(m.rowAt(1).length, 5);
+    expect(m.rowAt(2).length, 6);
+    expect(m.rowAt(3).length, 0);
 
     m = MeasureRepeat.parseString('[A B C D, E F G, D C G G ] x2', 0, beatsPerBar, null);
     expect(m.chordRowMaxLength(), 6);
-    expanded = true;
-    expect(m.rowAt(0, expanded: expanded).length, 5);
-    expect(m.rowAt(1, expanded: expanded).length, 5);
-    expect(m.rowAt(2, expanded: expanded).length, 6);
-    expect(m.rowAt(3, expanded: expanded).length, 5);
-    expect(m.rowAt(4, expanded: expanded).length, 5);
-    expect(m.rowAt(5, expanded: expanded).length, 6);
-    expect(m.rowAt(6, expanded: expanded).length, 0);
+    expect(m.rowAt(0).length, 5);
+    expect(m.rowAt(1).length, 5);
+    expect(m.rowAt(2).length, 6);
+    expect(m.rowAt(3).length, 5);
+    expect(m.rowAt(4).length, 5);
+    expect(m.rowAt(5).length, 6);
+    expect(m.rowAt(6).length, 0);
 
     m = MeasureRepeat.parseString('[A B C D, E F G ] x2', 0, beatsPerBar, null);
     expect(m.chordRowMaxLength(), 6);
-    expanded = true;
-    expect(m.rowAt(0, expanded: expanded).length, 5);
-    expect(m.rowAt(1, expanded: expanded).length, 6);
-    expect(m.rowAt(2, expanded: expanded).length, 5);
-    expect(m.rowAt(3, expanded: expanded).length, 6);
+    expect(m.rowAt(0).length, 5);
+    expect(m.rowAt(1).length, 6);
+    expect(m.rowAt(2).length, 5);
+    expect(m.rowAt(3).length, 6);
 
     m = MeasureRepeat.parseString('[A B C D ] x2', 0, beatsPerBar, null);
     expect(m.chordRowMaxLength(), 5);
-    expanded = true;
-    expect(m.rowAt(0, expanded: expanded).length, 5);
-    expect(m.rowAt(1, expanded: expanded).length, 5);
-    expect(m.rowAt(2, expanded: expanded).length, 0);
+    expect(m.rowAt(0).length, 5);
+    expect(m.rowAt(1).length, 5);
+    expect(m.rowAt(2).length, 0);
   });
 
   test('test repeat grid', () {
@@ -781,7 +776,7 @@ void main() {
     {
       s = 'A B C D x2';
       repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = repeat.toGrid(expanded: true);
+      grid = repeat.toGrid();
       expect(grid.getRowCount(), 2);
       expect(grid.rowLength(0), 5);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('D', beatsPerBar));
@@ -790,7 +785,7 @@ void main() {
     {
       s = 'A B C D E F G A x3';
       repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = repeat.toGrid(expanded: true);
+      grid = repeat.toGrid();
       expect(grid.getRowCount(), 3);
       expect(grid.rowLength(0), 9);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('A', beatsPerBar));
@@ -799,7 +794,7 @@ void main() {
     {
       s = '[A B C D, E F G A#] x4';
       repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = repeat.toGrid(expanded: true);
+      grid = repeat.toGrid();
       expect(grid.getRowCount(), 8);
       for (var r = 0; r < grid.getRowCount(); r++) {
         expect(grid.rowLength(r), 4 + 1 + 1);
@@ -815,7 +810,7 @@ void main() {
     {
       s = '[A B C D, E F G A#, Bb CE C#] x2';
       repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = repeat.toGrid(expanded: true);
+      grid = repeat.toGrid();
       expect(grid.getRowCount(), 6);
       for (var r = 0; r < grid.getRowCount(); r++) {
         expect(grid.rowLength(r), 4 + 1 + 1);
@@ -837,7 +832,7 @@ void main() {
     {
       s = '[A, E F, Bb CE C#, A# B C D] x2';
       repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = repeat.toGrid(expanded: true);
+      grid = repeat.toGrid();
       expect(grid.getRowCount(), 8);
       for (var r = 0; r < grid.getRowCount(); r++) {
         expect(grid.rowLength(r), 4 + 1 + 1);
@@ -867,7 +862,7 @@ void main() {
     {
       s = '[A# B C D, Bb CE C#, E F, A,  ] x3';
       repeat = MeasureRepeat.parseString(s, phraseIndex, beatsPerBar, null);
-      grid = repeat.toGrid(expanded: true);
+      grid = repeat.toGrid();
       expect(grid.getRowCount(), 12);
       for (var r = 0; r < grid.getRowCount(); r++) {
         expect(grid.rowLength(r), 4 + 1 + 1);
@@ -904,25 +899,20 @@ void main() {
 
     var repeat = MeasureRepeat.parseString('[Dm C B Bb, A, B C D] x3', phraseIndex, beatsPerBar, null);
     logger.i('0: ${repeat.firstMeasureInRow(0)}');
+
     expect(repeat.firstMeasureInRow(0).toMarkup(), 'Dm');
     expect(repeat.firstMeasureInRow(1).toMarkup(), 'A,');
     expect(repeat.firstMeasureInRow(2).toMarkup(), 'B');
-    expect(repeat.firstMeasureInRow(3).toMarkup(), 'B');
-    expect(repeat.firstMeasureInRow(4).toMarkup(), 'B');
-
-    expect(repeat.firstMeasureInRow(0, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(1, expanded: true).toMarkup(), 'A,');
-    expect(repeat.firstMeasureInRow(2, expanded: true).toMarkup(), 'B');
-    expect(repeat.firstMeasureInRow(3, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(4, expanded: true).toMarkup(), 'A,');
-    expect(repeat.firstMeasureInRow(5, expanded: true).toMarkup(), 'B');
-    expect(repeat.firstMeasureInRow(6, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(7, expanded: true).toMarkup(), 'A,');
-    expect(repeat.firstMeasureInRow(8, expanded: true).toMarkup(), 'B');
-    expect(repeat.firstMeasureInRow(9, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(10, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(11, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(12, expanded: true).toMarkup(), 'Dm');
-    expect(repeat.firstMeasureInRow(13, expanded: true).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(3).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(4).toMarkup(), 'A,');
+    expect(repeat.firstMeasureInRow(5).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(6).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(7).toMarkup(), 'A,');
+    expect(repeat.firstMeasureInRow(8).toMarkup(), 'B');
+    expect(repeat.firstMeasureInRow(9).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(10).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(11).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(12).toMarkup(), 'Dm');
+    expect(repeat.firstMeasureInRow(13).toMarkup(), 'Dm');
   });
 }

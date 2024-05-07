@@ -506,7 +506,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   String toMarkupInRows(int lines, {expanded = true}) // fixme: worry about this is being complex and fragile
   {
-    _LineCounts lineCounts = _LineCounts(lines, rowCount(expanded: expanded));
+    _LineCounts lineCounts = _LineCounts(lines, repeatRowCount);
     logger.d('toMarkupInRows($lines):');
 
     var sb = StringBuffer(sectionVersion.toString());
@@ -548,7 +548,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     StringBuffer sb = StringBuffer();
     sb.write(sectionVersion.toString());
     sb.write(' ');
-    sb.write(phrasesToMarkup(expanded: expanded));
+    sb.write(phrasesToMarkup());
     return sb.toString();
   }
 
@@ -558,7 +558,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
     StringBuffer sb = StringBuffer();
     for (Phrase phrase in _phrases) {
-      sb.write(phrase.toMarkup(expanded: expanded));
+      sb.write(phrase.toMarkup());
     }
     return sb.toString();
   }
@@ -686,7 +686,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
 
     for (var phrase in phrases) {
-      grid.add(phrase.toGrid(chordColumns: chordColumns, expanded: expanded));
+      grid.add(phrase.toGrid(chordColumns: chordColumns));
     }
     return grid;
   }
@@ -696,10 +696,10 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   /// sum all the measures in all the phrases
-  int get measureCount {
+  int get repeatMeasureCount {
     int measureCount = 0;
     for (Phrase phrase in _phrases) {
-      measureCount += phrase.measureCount;
+      measureCount += phrase.repeatMeasureCount;
     }
     return measureCount;
   }
@@ -713,56 +713,44 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     return ret;
   }
 
-  int rowCount({expanded = false}) {
+  int get repeatRowCount {
     var ret = 0;
     for (var phrase in _phrases) {
-      ret += phrase.rowCount(expanded: expanded);
+      ret += phrase.repeatRowCount;
     }
     return ret;
   }
 
-  List<Measure> rowAt(int index, {expanded = false}) {
-    var ret = <Measure>[];
-
-    //  walk through all prior measures //  fixme: efficiency?
-    var r = 0;
+  int get phraseRowCount {
+    var ret = 0;
     for (var phrase in _phrases) {
-      var phraseIndex = 0;
-      for (var m = 0; m < phrase.measureCount + 1000 /*  safety only */; m++) {
-        var row = phrase.rowAt(phraseIndex, expanded: expanded);
-        if (row.isEmpty) {
-          break;
-        }
-        if (r == index) {
-          return row;
-        }
-        phraseIndex++;
-        r++;
-      }
+      ret += phrase.phraseRowCount;
     }
     return ret;
   }
 
-  Measure? measureAt(int index, {expanded = false}) {
-    if (expanded) {
-      for (var phrase in _phrases) {
-        var measureCount = phrase.measureCount;
-        if (phrase.measureNodeType == MeasureNodeType.repeat) {
-          measureCount = phrase.measureCount * (phrase as MeasureRepeat).repeats;
-        }
-        if (index >= measureCount) {
-          index -= measureCount;
-        } else {
-          return phrase.measureAt(index, expanded: expanded);
-        }
+  //  used for edit row chording
+  List<Measure> rowAt(final int desiredIndex) {
+    //  walk through all prior measures //  fixme: efficiency?
+    var index = desiredIndex;
+    for (var phrase in _phrases) {
+      var row = phrase.rowAt(index);
+      if (row.isNotEmpty) {
+        return row;
       }
-    } else {
-      for (var phrase in _phrases) {
-        if (index >= phrase.measureCount) {
-          index -= phrase.measureCount;
-        } else {
-          return phrase.measureAt(index);
-        }
+      index -= phrase.repeatRowCount;
+    }
+
+    return <Measure>[];
+  }
+
+  Measure? measureAt(int index) {
+    for (var phrase in _phrases) {
+      var measureCount = phrase.repeatMeasureCount;
+      if (index >= measureCount) {
+        index -= measureCount;
+      } else {
+        return phrase.repeatMeasureAt(index);
       }
     }
     return null;
@@ -837,12 +825,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     if (!(runtimeType == other.runtimeType &&
         other is ChordSection &&
         _sectionVersion == other._sectionVersion &&
-        measureCount == other.measureCount)) {
+        repeatMeasureCount == other.repeatMeasureCount)) {
       return false;
     }
-    //  deal with empty-ish phrases
-    if (measureCount == 0) {
-      //  only works since the measure counts are identical
+//  deal with empty-ish phrases
+    if (phraseRowCount == 0) {
+//  only works since the measure counts are identical
       return true;
     }
     return listsEqual(_phrases, other._phrases);

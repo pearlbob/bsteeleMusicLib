@@ -508,8 +508,8 @@ class Phrase extends MeasureNode {
     //  walk through all prior measures //  fixme: efficiency?
     var maxLength = 0;
     var length = 0;
-    for (var m = 0; m < measureCount + 1000 /*  safety only */; m++) {
-      var measure = measureAt(m);
+    for (var m = 0; m < phraseMeasureCount + 1000 /*  safety only */; m++) {
+      var measure = phraseMeasureAt(m);
       if (measure == null) {
         break;
       }
@@ -523,11 +523,21 @@ class Phrase extends MeasureNode {
     return maxLength;
   }
 
-  int rowCount({expanded = false}) {
+  int get repeatRowCount {
+    return phraseRowCount;
+  }
+
+  /// Get chord row count after repeat expansion.
+  @override
+  int get chordExpandedRowCount {
+    return phraseRowCount;
+  }
+
+  int get phraseRowCount {
     //  walk through all prior measures //  fixme: efficiency?
     var r = 0;
-    for (var m = 0; m < measureCount + 1000 /*  safety only */; m++) {
-      var measure = measureAt(m, expanded: expanded);
+    for (var m = 0; m < phraseMeasureCount + 1000 /*  safety only */; m++) {
+      var measure = phraseMeasureAt(m);
       if (measure == null) {
         break;
       }
@@ -557,31 +567,34 @@ class Phrase extends MeasureNode {
     return rowIndex; //  shouldn't normally happen
   }
 
-  List<Measure> rowAt(int index, {expanded = false}) {
+  List<Measure> rowAt(int index) {
     var ret = <Measure>[];
 
-    //  walk through all prior measures //  fixme: efficiency?
-    var r = 0;
-    for (var m = 0; m < measureCount + 1000 /*  safety only */; m++) {
-      var measure = measureAt(m, expanded: expanded);
-      if (measure == null) {
-        break;
-      }
-      if (r == index) {
-        ret.add(measure);
-      }
-      if (measure.endOfRow) {
-        r++;
-        if (r > index) {
-          return ret;
-        }
-      }
+    if (measures.isEmpty) {
+      return ret;
     }
 
+    //  walk through all prior measures //  fixme: efficiency?
+    var editRowCount = 0;
+    for (var measure in measures) {
+      ret.add(measure);
+      if (measure.endOfRow || identical(measure, measures.last)) {
+        if (editRowCount == index) {
+          return ret;
+        }
+        ret.clear();
+        editRowCount++;
+      }
+    }
+    ret.clear();
     return ret;
   }
 
-  Measure? measureAt(int measureIndex, {expanded = false}) {
+  Measure? repeatMeasureAt(final int measureIndex) {
+    return phraseMeasureAt(measureIndex);
+  }
+
+  Measure? phraseMeasureAt(final int measureIndex) {
     if (measureIndex < 0 || measureIndex >= _measures.length) {
       return null;
     }
@@ -707,22 +720,6 @@ class Phrase extends MeasureNode {
     return ret;
   }
 
-  /// Get the number of rows in this phrase after griding, with repeat expansion.
-  @override
-  int get chordExpandedRowCount {
-    if (_measures.isEmpty) {
-      return 0;
-    }
-    int chordRowCount = 0;
-    for (Measure measure in _measures) {
-      chordRowCount += (measure.endOfRow ? 1 : 0);
-    }
-    if (!_measures[_measures.length - 1].endOfRow) {
-      chordRowCount++; //  fixme: shouldn't be needed?  last measure doesn't have endOfRow!
-    }
-    return chordRowCount;
-  }
-
   int get beatCount {
     var beats = 0;
     for (Measure measure in _measures) {
@@ -746,12 +743,12 @@ class Phrase extends MeasureNode {
     return beats;
   }
 
-  Grid<MeasureNode> toGrid({int? chordColumns, bool? expanded}) {
+  Grid<MeasureNode> toGrid({int? chordColumns}) {
     var grid = Grid<MeasureNode>();
     chordColumns = max(chordColumns ?? 0, maxMeasuresPerChordRow());
     int row = 0;
     int col = 0;
-    var rowCount = this.rowCount();
+    var rowCount = repeatRowCount;
     for (Measure measure in _measures) {
       grid.set(row, col++, measure);
       if (measure.endOfRow) {
@@ -813,7 +810,9 @@ class Phrase extends MeasureNode {
     }
   }
 
-  int get measureCount => measures.length;
+  int get phraseMeasureCount => measures.length;
+
+  int get repeatMeasureCount => phraseMeasureCount;
 
   @override
   String toString() {

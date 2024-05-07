@@ -223,7 +223,6 @@ class CjLog {
       int? baseSectionCount;
       int? lastSectionIndex;
       int lastMoment = 0;
-      bool expanded = false; //fixme:  needs to match the song display!!!!!
 
       for (var line in log.split('\n')) {
         //  look for the bsteeleMusicApp log messages
@@ -262,7 +261,10 @@ class CjLog {
         //  see if this is a new song
         if (lastSong == null || lastSong?.songId != songUpdate.song.songId) {
           if (lastSong != null) {
-            _simulateManualPlay(lastSong!, bumps, expanded: expanded);
+            _simulateManualPlay(
+              lastSong!,
+              bumps,
+            );
           }
 
           //  prep the next song
@@ -375,7 +377,10 @@ class CjLog {
         }
       }
       if (lastSong != null) {
-        _simulateManualPlay(lastSong!, bumps, expanded: expanded); //  do the last song of that day
+        _simulateManualPlay(
+          lastSong!,
+          bumps,
+        ); //  do the last song of that day
       }
 
       break; //fixme: only one file for the moment
@@ -416,8 +421,7 @@ class CjLog {
       r' onMessage\("(.*)"\)\s*$');
 }
 
-_simulateManualPlay(final Song song, final List<({DateTime dateTime, int sectionIndex})> bumps,
-    {final bool expanded = false}) {
+_simulateManualPlay(final Song song, final List<({DateTime dateTime, int sectionIndex})> bumps) {
   if (bumps.isEmpty || song.songMoments.isEmpty) {
     logger.i('invalid play: $song, $bumps');
     return;

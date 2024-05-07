@@ -2191,18 +2191,15 @@ o: end here''');
     var chordSection = a.getChordSection(lyricSections[1].sectionVersion);
     expect(chordSection?.sectionVersion, SectionVersion.parseString('v:'));
 
-    expect(chordSection?.measureAt(0, expanded: false), Measure.parseString('Am', beatsPerBar));
+    expect(chordSection?.measureAt(0), Measure.parseString('Am', beatsPerBar));
+    expect(chordSection?.measureAt(1), Measure.parseString('Am/G,', beatsPerBar));
     expect(chordSection?.measureAt(3), Measure.parseString('FE', beatsPerBar));
-    expect(chordSection?.measureAt(4), isNull);
-    expect(chordSection?.measureAt(0, expanded: true), Measure.parseString('Am', beatsPerBar));
-    expect(chordSection?.measureAt(1, expanded: true), Measure.parseString('Am/G,', beatsPerBar));
-    expect(chordSection?.measureAt(3, expanded: true), Measure.parseString('FE', beatsPerBar));
-    expect(chordSection?.measureAt(4, expanded: true), Measure.parseString('Am', beatsPerBar));
-    expect(chordSection?.measureAt(6, expanded: true), Measure.parseString('Am/F♯', beatsPerBar));
-    expect(chordSection?.measureAt(7, expanded: true), Measure.parseString('FE', beatsPerBar));
+    expect(chordSection?.measureAt(4), Measure.parseString('Am', beatsPerBar));
+    expect(chordSection?.measureAt(6), Measure.parseString('Am/F♯', beatsPerBar));
+    expect(chordSection?.measureAt(7), Measure.parseString('FE', beatsPerBar));
 
     chordSection = a.getChordSection(lyricSections[3].sectionVersion);
-    expect(chordSection?.measureAt(0, expanded: false), Measure.parseString('F', beatsPerBar));
+    expect(chordSection?.measureAt(0), Measure.parseString('F', beatsPerBar));
     expect(chordSection?.measureAt(7), Measure.parseString('F', beatsPerBar));
   });
 

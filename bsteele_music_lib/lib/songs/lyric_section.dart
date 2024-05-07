@@ -58,7 +58,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
 
         //  keep track of the current phrase and repeat for the next lyric row
         phraseRow++;
-        if (phraseRow >= phrase.rowCount(expanded: false)) {
+        if (phraseRow >= phrase.phraseRowCount) {
           phraseRow = 0;
           repeat++;
           if (repeat >= phrase.repeats && !identical(phrase, phrases.last)) {
@@ -89,7 +89,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
 
       //  keep track of the current phrase and repeat for the next lyric row
       phraseRow++;
-      if (phraseRow >= phrase.rowCount(expanded: false)) {
+      if (phraseRow >= phrase.repeatRowCount) {
         phraseRow = 0;
         repeat++;
         if (repeat >= phrase.repeats && !identical(phrase, phrases.last)) {
