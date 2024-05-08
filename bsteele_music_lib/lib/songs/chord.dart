@@ -1,12 +1,11 @@
 import 'dart:collection';
 
+import '../util/util.dart';
+import 'chord_anticipation_or_delay.dart';
+import 'key.dart';
 import 'pitch.dart';
 import 'scale_chord.dart';
 import 'scale_note.dart';
-import '../util/util.dart';
-
-import 'chord_anticipation_or_delay.dart';
-import 'key.dart';
 
 ///
 class Chord implements Comparable<Chord> {
@@ -214,12 +213,12 @@ class Chord implements Comparable<Chord> {
   }
 
   ScaleChord get scaleChord => _scaleChord;
-  late ScaleChord _scaleChord;
+  late final ScaleChord _scaleChord;
 
   late int beats;
 
   int get beatsPerBar => _beatsPerBar;
-  late int _beatsPerBar;
+  late final int _beatsPerBar;
 
   bool implicitBeats = true; //  chord has fewer beats than the beats per bar
   ScaleNote? slashScaleNote;

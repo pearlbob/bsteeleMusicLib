@@ -74,7 +74,6 @@ class SongMoment implements Comparable<SongMoment> {
   }
 
   final int momentNumber;
-  ChordSectionLocation? chordSectionLocation;
 
   ///  total beat count from start of song to the start of the moment
   final int beatNumber;
@@ -99,6 +98,7 @@ class SongMoment implements Comparable<SongMoment> {
   final int chordSectionSongMomentNumber;
 
   String? lyrics;
+  ChordSectionLocation? chordSectionLocation;
   int? row; //  fixme: this is likely useless.  Only valid if display is expanded.
   int? col;
 }

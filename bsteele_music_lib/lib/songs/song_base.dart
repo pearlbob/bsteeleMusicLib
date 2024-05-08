@@ -236,6 +236,7 @@ class SongBase {
         //  increment the row based on the chord section change
         GridCoordinate? gridCoordinate = getGridCoordinate(songMoment.getChordSectionLocation());
         if (gridCoordinate == null) {
+          assert(false);
           continue; //  fixme: declare error here?
         }
         if (lastGridCoordinate != null &&

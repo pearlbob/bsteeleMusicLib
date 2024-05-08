@@ -479,9 +479,7 @@ class MeasureRepeat extends Phrase {
 
   @override
   int get hashCode {
-    int ret = super.hashCode;
-    ret = ret * 17 + _repeatMarker.hashCode;
-    return ret;
+    return Object.hash(super.hashCode, _repeatMarker.hashCode);
   }
 
   final MeasureRepeatMarker _repeatMarker;

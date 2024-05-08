@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:meta/meta.dart';
+
 import '../app_logger.dart';
 import '../util/util.dart';
 import 'chord_component.dart';
@@ -10,6 +12,7 @@ import 'music_constants.dart';
 /// Typical values are major, minor, dominant7, etc.
 ///
 /// For piano chords, try: https://www.scales-chords.com/chord/
+@immutable
 class ChordDescriptor implements Comparable<ChordDescriptor> {
   //  longest short names must come first!
   //  avoid starting descriptors with b, #, s to avoid confusion with scale notes
@@ -325,22 +328,16 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   final ChordDescriptor? _alias;
 
   ChordDescriptor get simplified {
-    if (_simplified != null) {
-      return _simplified!;
-    }
-
     //  major, minor or dominant7
     if (chordComponents.contains(ChordComponent.minorThird)) {
-      _simplified = _minor;
+      return _minor;
     } else if (chordComponents.contains(ChordComponent.minorSeventh)) {
-      _simplified = _dominant7;
+      return _dominant7;
     } else {
-      _simplified = _major;
+      return _major;
     }
-    return _simplified!;
   }
 
-  ChordDescriptor? _simplified;
 
   static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [

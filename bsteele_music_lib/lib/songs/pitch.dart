@@ -2,6 +2,8 @@
 
 import 'dart:math';
 
+import 'package:meta/meta.dart';
+
 import 'music_constants.dart';
 import 'scale_note.dart';
 
@@ -177,6 +179,7 @@ enum PitchEnum {
   C8,
 }
 
+@immutable
 class Pitch implements Comparable<Pitch> {
   Pitch._(this._pitchEnum) {
     //  initialize the final values
@@ -414,10 +417,10 @@ class Pitch implements Comparable<Pitch> {
   final PitchEnum _pitchEnum;
 
   String get name => _name;
-  late String _name;
+  late final String _name;
 
   ScaleNote get scaleNote => _scaleNote;
-  late ScaleNote _scaleNote;
+  late final ScaleNote _scaleNote;
 
   int get scaleNumber => _scaleNote.scaleNumber;
 
@@ -425,16 +428,16 @@ class Pitch implements Comparable<Pitch> {
 
   /// A number identifying the pitch's octave.  They range from 0 to 8 based on a piano's range.
   int get octaveNumber => _octaveNumber;
-  late int _octaveNumber;
+  late final int _octaveNumber;
 
   /// A number representing the pitch's halfStep count offset from A0.
   /// Thus A0's number is 0, C8's number is 87.
   int get number => _number;
-  late int _number;
+  late final int _number;
 
   /// Return the frequency of the pitch in cycles per second (Hertz).
   double get frequency => _frequency;
-  late double _frequency;
+  late final double _frequency;
 
   /// return matching sharp accidental
   /// Naturals and sharps return themselves
@@ -442,7 +445,7 @@ class Pitch implements Comparable<Pitch> {
     return _asSharp;
   }
 
-  late Pitch _asSharp;
+  late final Pitch _asSharp;
 
   /// return matching flat accidental
   /// Naturals and flats return themselves
@@ -450,7 +453,7 @@ class Pitch implements Comparable<Pitch> {
     return _asFlat;
   }
 
-  late Pitch _asFlat;
+  late final Pitch _asFlat;
 
   static final RegExp pitchRegExp = RegExp(r'^PitchEnum\.([A-G][sb]?)([0-8])$');
 }

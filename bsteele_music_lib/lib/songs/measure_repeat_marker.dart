@@ -52,7 +52,7 @@ class MeasureRepeatMarker extends Measure {
 
   @override
   int get hashCode {
-    return repeats.hashCode;
+    return Object.hash(repeats, repetition);
   }
 
   int? repetition; //  the cycle count of the repeats, starting at 1

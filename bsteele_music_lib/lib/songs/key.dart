@@ -2,6 +2,8 @@
 
 import 'dart:collection';
 
+import 'package:meta/meta.dart';
+
 import 'pitch.dart';
 import 'scale_chord.dart';
 import 'scale_note.dart';
@@ -58,11 +60,33 @@ enum KeyEnum {
   Fs
 }
 
+//  local private universal values
+Map<KeyEnum, Key> _keyMap = {};
+List<Key> _keysByHalfStep = [];
+final List<dynamic> _initialization = [
+  //  KeyEnum, keyValue, key halfSteps from A
+  [KeyEnum.Gb, -6, 9],
+  [KeyEnum.Db, -5, 4],
+  [KeyEnum.Ab, -4, 11],
+  [KeyEnum.Eb, -3, 6],
+  [KeyEnum.Bb, -2, 1],
+  [KeyEnum.F, -1, 8],
+  [KeyEnum.C, 0, 3],
+  [KeyEnum.G, 1, 10],
+  [KeyEnum.D, 2, 5],
+  [KeyEnum.A, 3, 0],
+  [KeyEnum.E, 4, 7],
+  [KeyEnum.B, 5, 2],
+  [KeyEnum.Fs, 6, 9]
+];
+Map<String, KeyEnum> _keyEnumMap = {};
+
 ///
 /// Representation of the song key used generate the expression of the proper scales.
 ///
 /// Six flats (G♭) and six sharps (F♯) are labeled differently but are otherwise the same key.
 /// Seven flats and seven sharps are not included.
+@immutable
 class Key implements Comparable<Key> {
   Key._(this._keyEnum, this._keyValue, this._halfStep, this._capoLocation)
       : _name = _keyEnumToString(_keyEnum),
@@ -85,26 +109,6 @@ class Key implements Comparable<Key> {
   static String _keyEnumToString(KeyEnum ke) {
     return ke.toString().split('.').last;
   }
-
-  static Map<KeyEnum, Key> _keyMap = {};
-  static List<Key> _keysByHalfStep = [];
-  static final List<dynamic> _initialization = [
-    //  KeyEnum, keyValue, key halfSteps from A
-    [KeyEnum.Gb, -6, 9],
-    [KeyEnum.Db, -5, 4],
-    [KeyEnum.Ab, -4, 11],
-    [KeyEnum.Eb, -3, 6],
-    [KeyEnum.Bb, -2, 1],
-    [KeyEnum.F, -1, 8],
-    [KeyEnum.C, 0, 3],
-    [KeyEnum.G, 1, 10],
-    [KeyEnum.D, 2, 5],
-    [KeyEnum.A, 3, 0],
-    [KeyEnum.E, 4, 7],
-    [KeyEnum.B, 5, 2],
-    [KeyEnum.Fs, 6, 9]
-  ];
-  static Map<String, KeyEnum> _keyEnumMap = {};
 
   static List<Key> keysByHalfStep() {
     if (_keysByHalfStep.isEmpty) {
@@ -224,8 +228,8 @@ class Key implements Comparable<Key> {
 
   static double _staffSpacesFromA0(Pitch pitch) {
     return (pitch.scaleNumber +
-        (pitch.scaleNumber >= _notesFromAtoC ? pitch.octaveNumber - 1 : pitch.octaveNumber) *
-            MusicConstants.notesPerScale) /
+            (pitch.scaleNumber >= _notesFromAtoC ? pitch.octaveNumber - 1 : pitch.octaveNumber) *
+                MusicConstants.notesPerScale) /
         2;
   }
 
@@ -360,7 +364,7 @@ class Key implements Comparable<Key> {
     int minKeyValue = 2 ^ 63 - 1;
 
     //  find the key with the greatest parse to it's diatonic chords
-        {
+    {
       int? count;
       ScaleChord? diatonic;
       ScaleNote diatonicScaleNote;
@@ -746,12 +750,12 @@ class Key implements Comparable<Key> {
   /// Guitar key that should be played for this key when the guitar capo is placed on the capo location.
   /// Typically this will be either the key of C or G.
   Key get capoKey => _capoKey;
-  late Key _capoKey;
+  late final Key _capoKey;
 
   //  have to be set after initialization of all keys
-  late ScaleNote _keyMinorScaleNote;
-  List<ScaleChord> _majorDiatonics = [];
-  List<ScaleChord> _minorDiatonics = [];
+  late final ScaleNote _keyMinorScaleNote;
+  late final List<ScaleChord> _majorDiatonics;
+  late final List<ScaleChord> _minorDiatonics;
 }
 
 /*                     1  2  3  4  5  6  7                 I    II   III  IV   V    VI   VII               0  1  2  3  4  5  6  7  8  9  10 11
