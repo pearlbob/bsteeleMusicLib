@@ -72,6 +72,7 @@ enum BannerColumn {
 
 const Level _logGrid = Level.debug;
 const Level _logGridDetails = Level.debug;
+const Level _logDisplayRanges = Level.debug;
 const Level _logSongMomentToGrid = Level.debug;
 
 /// A piece of music to be played according to the structure it contains.
@@ -3775,13 +3776,72 @@ class SongBase {
     logger.log(_logSongMomentToGrid, _songMomentsToString());
     logger.log(_logSongMomentToGrid, _songMomentToGridCoordinateToString());
 
-    if (songMoments.length != _songMomentToGridCoordinate.length) {
-      logger.i('break; here.'); //!!!!!!!!!!!!!!!!!!!!!!!!
-    }
-
     assert(songMoments.length == _songMomentToGridCoordinate.length);
 
+    {
+      var lastRow = _songMomentToGridCoordinate[songMoments.length - 1].row;
+      _songMomentNumberToRowRangeList = List<(int, int)>.generate(songMoments.length, (momentNumber) => (0, lastRow));
+
+      for (var songMoment in songMoments) {
+        switch (songMoment.phrase.measureNodeType) {
+          case MeasureNodeType.repeat:
+            //  compute the first and last moment number for this repetition
+            var first = songMoment.momentNumber - songMoment.measureIndex;
+            var last = first + songMoment.phrase.length - 1;
+            _songMomentNumberToRowRangeList[songMoment.momentNumber] =
+                (_songMomentToGridCoordinate[first].row, _songMomentToGridCoordinate[last].row);
+            logger.log(
+                _logGridDetails,
+                '$songMoment: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}'
+                ', measureIndex: ${songMoment.measureIndex}'
+                ', first: $first, last: $last');
+            break;
+          default:
+            break;
+        }
+      }
+      for (var songMoment in songMoments) {
+        logger.log(_logDisplayRanges, '$songMoment: rows: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}');
+      }
+    }
+
     return grid;
+  }
+
+  (int, int) songMomentToRepeatMomentRange(final UserDisplayStyle userDisplayStyle, final int momentNumber) {
+    int min = momentNumber;
+    int max = momentNumber;
+    switch (userDisplayStyle) {
+      case UserDisplayStyle.both:
+      case UserDisplayStyle.player:
+        var songMoment = getSongMoment(momentNumber);
+        if (songMoment == null) {
+          break;
+        }
+        switch (songMoment.phrase.measureNodeType) {
+          case MeasureNodeType.repeat:
+            // logger.i('          repeat: ${songMoment.phrase}.${songMoment.measureIndex}: ${songMoment.measure}');
+            min -= songMoment.measureIndex;
+            max += songMoment.phrase.length - 1 - songMoment.measureIndex;
+            break;
+          default:
+            break;
+        }
+        break;
+      default:
+        break;
+    }
+    assert(min <= max);
+    return (min, max);
+  }
+
+  (int, int) songMomentToRepeatRowRange(final int momentNumber) {
+    if (_songMomentNumberToRowRangeList.isNotEmpty &&
+        momentNumber >= 0 &&
+        momentNumber < _songMomentNumberToRowRangeList.length) {
+      return _songMomentNumberToRowRangeList[momentNumber];
+    }
+    return (0, 0);
   }
 
   _songMomentsToString() {
@@ -3808,7 +3868,7 @@ class SongBase {
   /// Note that the output is in terms of measure nodes
   /// but the node grid is still difficult enough to do without
   /// complications from the flutter widgets.
-  Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle) {
+  Grid<MeasureNode> toDisplayGrid(final UserDisplayStyle userDisplayStyle) {
     _songMomentToGridCoordinate = [];
     _measureNodeIdToGridCoordinate = {};
 
@@ -4274,6 +4334,7 @@ class SongBase {
 
   List<GridCoordinate> get songMomentToGridCoordinate => _songMomentToGridCoordinate;
   List<GridCoordinate> _songMomentToGridCoordinate = [];
+  List<(int, int)> _songMomentNumberToRowRangeList = [];
 
   GridCoordinate? measureNodeIdToGridCoordinate(int id) => _measureNodeIdToGridCoordinate[id];
   Map<int, GridCoordinate> _measureNodeIdToGridCoordinate = {};
