@@ -3788,8 +3788,12 @@ class SongBase {
             //  compute the first and last moment number for this repetition
             var first = songMoment.momentNumber - songMoment.measureIndex;
             var last = first + songMoment.phrase.length - 1;
-            _songMomentNumberToRowRangeList[songMoment.momentNumber] =
-                (_songMomentToGridCoordinate[first].row, _songMomentToGridCoordinate[last].row);
+            _songMomentNumberToRowRangeList[songMoment.momentNumber] = (
+              //  first row on if current row is less than or equal to the first repeat row
+              songMoment.repeat == 0 ? 0 : _songMomentToGridCoordinate[first].row,
+              //  first row on if current row is greater than or equal to the last repeat row
+              songMoment.repeat == songMoment.repeatMax - 1 ? lastRow : _songMomentToGridCoordinate[last].row
+            );
             logger.log(
                 _logGridDetails,
                 '$songMoment: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}'

@@ -4920,7 +4920,7 @@ Grid{
     const bool printOnly = false;
     bool first = true;
     Song a;
-    Grid<MeasureNode> grid = Grid();
+    Grid<MeasureNode> displayGrid = Grid();
 
     for (int rows = 2; rows <= 3; rows++) {
       for (int repeat = 3; repeat <= 5; repeat++) {
@@ -4952,6 +4952,7 @@ Grid{
                   '$v o: C C G G',
               rawLyrics: //'i: (instrumental)\n'
                   'v: ${sb.toString()}\no:\n');
+          displayGrid = a.toDisplayGrid(UserDisplayStyle.both);
 
           if (printOnly) {
             if (first) {
@@ -4964,9 +4965,9 @@ Grid{
           } else {
             logger.i('');
             logger.i('title: ${a.title}');
-            grid = a.toDisplayGrid(UserDisplayStyle.both);
-            logger.i(grid.toString());
-            expect(grid.getRowCount(), 1 + min(rows * ((lyricsLines / rows).ceil() + 1), rows * repeat) + 2);
+
+            logger.i(displayGrid.toString());
+            expect(displayGrid.getRowCount(), 1 + min(rows * ((lyricsLines / rows).ceil() + 1), rows * repeat) + 2);
           }
 
           //  songMoment moment ranges
@@ -4985,21 +4986,25 @@ Grid{
             var (rowMin, rowMax) = a.songMomentToRepeatRowRange(songMoment.momentNumber);
             // logger.i('${songMoment.momentNumber}: rows: ${(rowMin, rowMax)}');
             assert(rowMin >= 0);
-            assert(rowMin < grid.getRowCount());
+            assert(rowMin < displayGrid.getRowCount());
             assert(rowMax >= 0);
-            assert(rowMax < grid.getRowCount());
+            assert(rowMax < displayGrid.getRowCount());
             switch (songMoment.phrase.measureNodeType) {
               case MeasureNodeType.repeat:
                 var row = a.songMomentToGridCoordinate[songMoment.momentNumber].row;
                 assert(rowMin <= row);
                 assert(rowMax <= row + songMoment.phrase.length); //  rough estimate only
                 var firstRow = a.songMomentToGridCoordinate[songMoment.momentNumber - songMoment.measureIndex].row;
-                assert(rowMin == firstRow);
-                assert(rowMax == firstRow + songMoment.phrase.phraseRowCount - 1);
+                expect(rowMin, songMoment.repeat == 0 ? 0 : firstRow);
+                var lastRow = a
+                    .songMomentToGridCoordinate[
+                        songMoment.momentNumber - songMoment.measureIndex + songMoment.phrase.length - 1]
+                    .row;
+                expect(rowMax, songMoment.repeat == songMoment.repeatMax - 1 ? displayGrid.getRowCount() - 1 : lastRow);
                 break;
               default:
                 assert(rowMin == 0);
-                assert(rowMax == grid.getRowCount() - 1);
+                assert(rowMax == displayGrid.getRowCount() - 1);
                 break;
             }
             logger.i('moment ${songMoment.momentNumber.toString().padLeft(3)}:'
