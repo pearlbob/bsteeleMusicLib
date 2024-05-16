@@ -3796,31 +3796,33 @@ class SongBase {
       for (var songMoment in songMoments) {
         switch (songMoment.phrase.measureNodeType) {
           case MeasureNodeType.repeat:
-            //  compute the first and last moment number for this repetition
-            var first = songMoment.momentNumber -
+            //  compute the first and last moment number for this repeat
+            var firstRepeat = songMoment.momentNumber -
                 songMoment.measureIndex -
                 songMoment.repeat * songMoment.phrase.phraseMeasureCount;
-            var last = first + songMoment.phrase.phraseMeasureCount * songMoment.phrase.repeats - 1;
-            if (last > _songMomentToGridCoordinate.length) {
-              logger.i('break here');
-            }
+            var lastRepeat = firstRepeat + songMoment.phrase.phraseMeasureCount * songMoment.phrase.repeats - 1;
 
             //  look for single grid row ranges
-            var firstRow = _songMomentToGridCoordinate[first].row;
-            var lastRow = _songMomentToGridCoordinate[last].row;
-            if (lastRow - firstRow > songMoment.phrase.phraseRowCount - 1) {
+            var firstRepeatRow = _songMomentToGridCoordinate[firstRepeat].row;
+            var lastRepeatRow = _songMomentToGridCoordinate[lastRepeat].row;
+            if (lastRepeatRow - firstRepeatRow > songMoment.phrase.phraseRowCount - 1) {
+              //  measures in this repetition
+              int first = songMoment.momentNumber - songMoment.measureIndex;
+              var last = first + songMoment.phrase.phraseMeasureCount - 1;
+
               _songMomentNumberToRowRangeList[songMoment.momentNumber] = (
                 //  first row on if current row is less than or equal to the first repeat row
                 songMoment.repeat == 0 ? 0 : _songMomentToGridCoordinate[first].row,
                 //  first row on if current row is greater than or equal to the last repeat row
                 songMoment.repeat == songMoment.repeatMax - 1 ? lastListRow : _songMomentToGridCoordinate[last].row
               );
+              logger.log(
+                  _logGridDetails,
+                  'rowRangeList: $songMoment: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}'
+                  ', measureIndex: ${songMoment.measureIndex}'
+                  ', first: $first, last: $last');
             }
-            logger.log(
-                _logGridDetails,
-                'rowRangeList: $songMoment: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}'
-                ', measureIndex: ${songMoment.measureIndex}'
-                ', first: $first, last: $last');
+
             break;
           default:
             break;

@@ -4683,13 +4683,13 @@ Grid{
 }''');
 
       for (var i = 0; i < 4; i++) {
-        expect(a.songMomentToRepeatRowRange(i), (0, 3));
+        expect(a.songMomentToRepeatRowRange(i), (0, 1));
       }
       for (var i = 4; i < 8; i++) {
-        expect(a.songMomentToRepeatRowRange(i), (1, 3));
+        expect(a.songMomentToRepeatRowRange(i), (2, 2));
       }
       for (var i = 8; i < 12; i++) {
-        expect(a.songMomentToRepeatRowRange(i), (1, 5));
+        expect(a.songMomentToRepeatRowRange(i), (3, 5));
       }
       for (var i = 12; i < 16; i++) {
         expect(a.songMomentToRepeatRowRange(i), (0, 5));
@@ -5075,11 +5075,11 @@ Grid{
               case MeasureNodeType.repeat:
                 var row = a.songMomentToGridCoordinate[songMoment.momentNumber].row;
                 assert(rowMin <= row);
-                var first =
-                    songMoment.momentNumber - songMoment.measureIndex - songMoment.repeat * songMoment.phrase.length;
+                //  fixme: this doesn't deal with complex situations or instrumental exceptions!
+                var first = songMoment.momentNumber - songMoment.measureIndex;
                 var firstRow = a.songMomentToGridCoordinate[first].row;
                 expect(rowMin, songMoment.repeat == 0 ? 0 : firstRow);
-                var last = first + songMoment.repeatMax * songMoment.phrase.length - 1;
+                var last = first + songMoment.phrase.length - 1;
                 var lastRow = a.songMomentToGridCoordinate[last].row;
                 expect(rowMax, songMoment.repeat == songMoment.repeatMax - 1 ? displayGrid.getRowCount() - 1 : lastRow);
                 break;
@@ -5088,9 +5088,9 @@ Grid{
                 assert(rowMax == displayGrid.getRowCount() - 1);
                 break;
             }
-            logger.i('moment ${songMoment.momentNumber.toString().padLeft(3)}:'
-                ' moment range:({${min.toString().padLeft(3)},${max.toString().padLeft(3)}), rows:'
-                ' ${a.songMomentToGridCoordinate[min].row} to ${a.songMomentToGridCoordinate[max].row}');
+            // logger.i('moment ${songMoment.momentNumber.toString().padLeft(3)}:'
+            //     ' moment range:({${min.toString().padLeft(3)},${max.toString().padLeft(3)}), rows:'
+            //     ' ${a.songMomentToGridCoordinate[min].row} to ${a.songMomentToGridCoordinate[max].row}');
           }
         }
       }
