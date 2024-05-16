@@ -3610,6 +3610,12 @@ class SongBase {
           if (phrase.repeats > 1) {
             var phraseGrid = phrase.toGrid(chordColumns: lastColumn);
 
+            //  look for the "(instrumental)" exception
+            logger.log(
+                _logGridDetails,
+                'instrumental?: ${lyrics.length}: ${lyrics.isNotEmpty ? lyrics[0] : ''}'
+                ', match: ${lyrics.isNotEmpty ? instrumentalRegex.hasMatch(lyrics[0].line) : ''}');
+
             var phraseRowIndex = 0;
             for (var repeat = 0; repeat < phrase.repeats; repeat++) {
               logger.log(
@@ -3620,8 +3626,12 @@ class SongBase {
               if (lyricsIndex < lyrics.length) {
                 //  lyrics to add
 
-                //  gather all the rows for a repeat
+                //  make an exception for the instrumental annotation
+                if (lyrics.length == 1 && instrumentalRegex.hasMatch(lyrics[0].line)) {
+                  firstBlankSectionRow = sectionRowIndex;
+                }
 
+                //  gather all the rows for a repeat
                 while (lyricsIndex < lyrics.length) {
                   var lyric = lyrics[lyricsIndex];
                   if (phrase.phraseIndex == lyric.phraseIndex && repeat == lyric.repeat) {
@@ -3779,24 +3789,36 @@ class SongBase {
     assert(songMoments.length == _songMomentToGridCoordinate.length);
 
     {
-      var lastRow = _songMomentToGridCoordinate[songMoments.length - 1].row;
-      _songMomentNumberToRowRangeList = List<(int, int)>.generate(songMoments.length, (momentNumber) => (0, lastRow));
+      var lastListRow = _songMomentToGridCoordinate[songMoments.length - 1].row;
+      _songMomentNumberToRowRangeList =
+          List<(int, int)>.generate(songMoments.length, (momentNumber) => (0, lastListRow));
 
       for (var songMoment in songMoments) {
         switch (songMoment.phrase.measureNodeType) {
           case MeasureNodeType.repeat:
             //  compute the first and last moment number for this repetition
-            var first = songMoment.momentNumber - songMoment.measureIndex;
-            var last = first + songMoment.phrase.length - 1;
-            _songMomentNumberToRowRangeList[songMoment.momentNumber] = (
-              //  first row on if current row is less than or equal to the first repeat row
-              songMoment.repeat == 0 ? 0 : _songMomentToGridCoordinate[first].row,
-              //  first row on if current row is greater than or equal to the last repeat row
-              songMoment.repeat == songMoment.repeatMax - 1 ? lastRow : _songMomentToGridCoordinate[last].row
-            );
+            var first = songMoment.momentNumber -
+                songMoment.measureIndex -
+                songMoment.repeat * songMoment.phrase.phraseMeasureCount;
+            var last = first + songMoment.phrase.phraseMeasureCount * songMoment.phrase.repeats - 1;
+            if (last > _songMomentToGridCoordinate.length) {
+              logger.i('break here');
+            }
+
+            //  look for single grid row ranges
+            var firstRow = _songMomentToGridCoordinate[first].row;
+            var lastRow = _songMomentToGridCoordinate[last].row;
+            if (lastRow - firstRow > songMoment.phrase.phraseRowCount - 1) {
+              _songMomentNumberToRowRangeList[songMoment.momentNumber] = (
+                //  first row on if current row is less than or equal to the first repeat row
+                songMoment.repeat == 0 ? 0 : _songMomentToGridCoordinate[first].row,
+                //  first row on if current row is greater than or equal to the last repeat row
+                songMoment.repeat == songMoment.repeatMax - 1 ? lastListRow : _songMomentToGridCoordinate[last].row
+              );
+            }
             logger.log(
                 _logGridDetails,
-                '$songMoment: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}'
+                'rowRangeList: $songMoment: ${_songMomentNumberToRowRangeList[songMoment.momentNumber]}'
                 ', measureIndex: ${songMoment.measureIndex}'
                 ', first: $first, last: $last');
             break;
@@ -3863,7 +3885,7 @@ class SongBase {
         sb.write('   $songMoment: Missing _songMomentToGridCoordinate!!!!\n');
         break;
       }
-      sb.write('   $songMoment: ${_songMomentToGridCoordinate[songMoment.momentNumber]}\n');
+      sb.write('_songMomentToGridCoordinate $songMoment: ${_songMomentToGridCoordinate[songMoment.momentNumber]}\n');
     }
     return sb.toString();
   }
@@ -4345,6 +4367,7 @@ class SongBase {
 
   static final RegExp _spaceRegexp = RegExp(r'[ \t]');
   static final RegExp theRegExp = RegExp('^ *(the +)(.*)', caseSensitive: false);
+  static final RegExp instrumentalRegex = RegExp(r'^ *\(instrumental.*\)', caseSensitive: false);
 
   //SplayTreeSet<Metadata> metadata = new SplayTreeSet();
   static const String defaultUser = 'Unknown';

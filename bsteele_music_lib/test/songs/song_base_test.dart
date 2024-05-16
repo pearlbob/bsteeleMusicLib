@@ -24,6 +24,8 @@ import 'package:bsteele_music_lib/songs/time_signature.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
+bool _printOnly = false; //  used to generate diagnostic data
+
 String chordSectionToMultiLineString(SongBase song) {
   Grid<ChordSectionGridData> grid = song.getChordSectionGrid();
   StringBuffer sb = StringBuffer('Grid{\n');
@@ -4615,6 +4617,86 @@ Grid{
     }
   });
 
+  test('test songBase toDisplayGrid() instrumental exception', () {
+    int beatsPerBar = 4;
+    Song a;
+    var userDisplayStyle = UserDisplayStyle.proPlayer;
+    Grid<MeasureNode> grid;
+    Logger.level = Level.info;
+
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: (instrumental)\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "(instrumental)"
+	V:#1
+	D       C       G       G       (3,4)   "one verse lyric line"
+}''');
+
+      for (var i = 0; i < 16; i++) {
+        expect(a.songMomentToRepeatRowRange(i), (0, 3));
+      }
+    }
+    {
+      userDisplayStyle = UserDisplayStyle.both;
+
+      a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: 'bob',
+          key: music_key.Key.get(music_key.KeyEnum.C),
+          beatsPerMinute: 104,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D x3 v: D C G G',
+          rawLyrics: 'i: line 1\nline 2\n'
+              'v: one verse lyric line');
+
+      grid = a.toDisplayGrid(userDisplayStyle);
+      logger.i(grid.toString());
+      expect(grid.toString(), '''
+Grid{
+	I:#0
+	A       B       C       D       x1/3    "line 1"
+\tA       B       C       D       x2/3    "line 2"
+\tA       B       C       D       x3/3    (3,5)
+	V:#1
+	D       C       G       G       (5,4)   "one verse lyric line"
+}''');
+
+      for (var i = 0; i < 4; i++) {
+        expect(a.songMomentToRepeatRowRange(i), (0, 3));
+      }
+      for (var i = 4; i < 8; i++) {
+        expect(a.songMomentToRepeatRowRange(i), (1, 3));
+      }
+      for (var i = 8; i < 12; i++) {
+        expect(a.songMomentToRepeatRowRange(i), (1, 5));
+      }
+      for (var i = 12; i < 16; i++) {
+        expect(a.songMomentToRepeatRowRange(i), (0, 5));
+      }
+    }
+  });
+
   test('test more songBase toDisplayGrid()', () {
     int beatsPerBar = 4;
     Song a;
@@ -4917,7 +4999,7 @@ Grid{
 
   test('generate song repeat tests', () {
     int beatsPerBar = 4;
-    const bool printOnly = false;
+
     bool first = true;
     Song a;
     Grid<MeasureNode> displayGrid = Grid();
@@ -4954,7 +5036,7 @@ Grid{
                   'v: ${sb.toString()}\no:\n');
           displayGrid = a.toDisplayGrid(UserDisplayStyle.both);
 
-          if (printOnly) {
+          if (_printOnly) {
             if (first) {
               first = false;
               logger.i('[');
@@ -4993,13 +5075,12 @@ Grid{
               case MeasureNodeType.repeat:
                 var row = a.songMomentToGridCoordinate[songMoment.momentNumber].row;
                 assert(rowMin <= row);
-                assert(rowMax <= row + songMoment.phrase.length); //  rough estimate only
-                var firstRow = a.songMomentToGridCoordinate[songMoment.momentNumber - songMoment.measureIndex].row;
+                var first =
+                    songMoment.momentNumber - songMoment.measureIndex - songMoment.repeat * songMoment.phrase.length;
+                var firstRow = a.songMomentToGridCoordinate[first].row;
                 expect(rowMin, songMoment.repeat == 0 ? 0 : firstRow);
-                var lastRow = a
-                    .songMomentToGridCoordinate[
-                        songMoment.momentNumber - songMoment.measureIndex + songMoment.phrase.length - 1]
-                    .row;
+                var last = first + songMoment.repeatMax * songMoment.phrase.length - 1;
+                var lastRow = a.songMomentToGridCoordinate[last].row;
                 expect(rowMax, songMoment.repeat == songMoment.repeatMax - 1 ? displayGrid.getRowCount() - 1 : lastRow);
                 break;
               default:
@@ -5014,7 +5095,7 @@ Grid{
         }
       }
     }
-    if (printOnly) {
+    if (_printOnly) {
       logger.i(']');
     }
   });
