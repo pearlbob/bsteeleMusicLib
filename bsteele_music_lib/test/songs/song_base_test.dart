@@ -5099,6 +5099,33 @@ Grid{
       logger.i(']');
     }
   });
+
+  test('test rowBeats()', () {
+    int beatsPerBar = 4;
+    var userDisplayStyle = UserDisplayStyle.both;
+    Song a;
+
+    a = Song(
+        title: 'ive go the blanks',
+        artist: 'bob',
+        copyright: 'bob',
+        key: music_key.Key.get(music_key.KeyEnum.C),
+        beatsPerMinute: 106,
+        beatsPerBar: beatsPerBar,
+        unitsPerMeasure: 4,
+        user: 'pearl bob',
+        chords: 'i: 1A, 2B 3C, 3DEF, A B C D  v: G G G G, C C G G x3 o: C C G G',
+        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
+    Grid<MeasureNode> displayGrid = a.toDisplayGrid(userDisplayStyle);
+    logger.i(displayGrid.toString());
+
+    for (int r = 0; r < displayGrid.getRowCount(); r++) {
+      var beats = a.displayRowBeats(r);
+      logger.i('row $r: $beats');
+      expect(beats, [0, 1, 5, 3, 16, 0, 16, 16, 0, 16][r]);
+    }
+  });
 }
 
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {

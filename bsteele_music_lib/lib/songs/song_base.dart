@@ -3370,22 +3370,24 @@ class SongBase {
     return ret;
   }
 
-  int rowBeats(int rowIndex) {
+  int displayRowBeats(final int row) {
+    if (_displayGrid.isEmpty) {
+      return 0;
+    }
     int ret = 0;
-    SongMoment? songMoment = getFirstSongMomentAtRow(rowIndex);
-    if (songMoment != null) {
-      for (int i = songMoment.momentNumber; i < _songMoments.length; i++) {
-        try {
-          songMoment = _songMoments[i];
-          if (songMoment.row != rowIndex) {
+
+    for (MeasureNode? node in _displayGrid.getRow(row) ?? []) {
+      if (node != null) {
+        switch (node.runtimeType) {
+          case const (Measure):
+            ret += (node as Measure).beatCount;
             break;
-          }
-          ret += songMoment.measure.beatCount;
-        } catch (e) {
-          continue;
+          default:
+            break;
         }
       }
     }
+
     return ret;
   }
 
@@ -3900,7 +3902,7 @@ class SongBase {
     _songMomentToGridCoordinate = [];
     _measureNodeIdToGridCoordinate = {};
 
-    var grid = Grid<MeasureNode>();
+    _displayGrid = Grid<MeasureNode>();
     switch (userDisplayStyle) {
       case UserDisplayStyle.proPlayer:
         {
@@ -3910,7 +3912,7 @@ class SongBase {
             var chordSection = findChordSectionByLyricSection(lyricSection);
             assert(chordSection != null);
             GridCoordinate gc = GridCoordinate(0, c++);
-            grid.setAt(gc, chordSection);
+            _displayGrid.setAt(gc, chordSection);
             _measureNodeIdToGridCoordinate[lyricSection.id] = gc;
           }
           //  rows of chord section measures
@@ -3920,12 +3922,12 @@ class SongBase {
             r++;
             //  for the label
             GridCoordinate gc = GridCoordinate(r, 0);
-            grid.setAt(gc, chordSection);
+            _displayGrid.setAt(gc, chordSection);
             _measureNodeIdToGridCoordinate[chordSection.id] = gc;
 
             //  for the chords, use phrasesToMarkup()
             gc = GridCoordinate(r, 1);
-            grid.setAt(gc, chordSection);
+            _displayGrid.setAt(gc, chordSection);
             _measureNodeIdToGridCoordinate[chordSection.id] = gc;
           }
           var chordSectionsList = chordSections.toList(growable: false);
@@ -3946,12 +3948,12 @@ class SongBase {
             var chordSection = findChordSectionByLyricSection(lyricSection);
             assert(chordSection != null);
             chordSection = chordSection!;
-            grid.set(r, 0, lyricSection); //  for the label
-            grid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
+            _displayGrid.set(r, 0, lyricSection); //  for the label
+            _displayGrid.set(r, 1, chordSection); //  for the chords, use phrasesToMarkup()
             r++;
             for (var lyric in lyricSection.asBundledLyrics(chordSection, lyricSection.lyricsLines.length)) {
               GridCoordinate gc = GridCoordinate(r++, 1);
-              grid.setAt(gc, lyric);
+              _displayGrid.setAt(gc, lyric);
               _measureNodeIdToGridCoordinate[lyric.id] = gc;
             }
           }
@@ -3970,7 +3972,7 @@ class SongBase {
           for (var m in songMoments) {
             var chordSection = m.chordSection;
             var gc = GridCoordinate(BannerColumn.chordSections.index, m.momentNumber);
-            grid.setAt(gc, chordSection == lastChordSection ? null : chordSection);
+            _displayGrid.setAt(gc, chordSection == lastChordSection ? null : chordSection);
             lastChordSection = chordSection;
 
             var marker = m.phrase is MeasureRepeat ? MeasureRepeatMarker(m.repeatMax, repetition: m.repeat) : null;
@@ -3981,13 +3983,13 @@ class SongBase {
             }
             logger.t('banner marker: $lastMarker  $marker');
             gc = GridCoordinate(BannerColumn.repeats.index, m.momentNumber);
-            grid.setAt(gc, marker);
+            _displayGrid.setAt(gc, marker);
 
             gc = GridCoordinate(BannerColumn.lyrics.index, m.momentNumber);
-            grid.setAt(gc, Lyric(m.lyrics ?? ''));
+            _displayGrid.setAt(gc, Lyric(m.lyrics ?? ''));
 
             gc = GridCoordinate(BannerColumn.chords.index, m.momentNumber);
-            grid.setAt(gc, m.measure);
+            _displayGrid.setAt(gc, m.measure);
             _songMomentToGridCoordinate.add(gc); //  only row likely to always have an entry
           }
         }
@@ -3995,11 +3997,11 @@ class SongBase {
       case UserDisplayStyle.player:
       case UserDisplayStyle.both:
         //  the play and both display styles only differ by the display of the lyrics
-        grid = _toBothGrid();
+        _displayGrid = _toBothGrid();
         break;
     }
 
-    return grid;
+    return _displayGrid;
   }
 
   //  preferred sections by order of priority
@@ -4359,6 +4361,8 @@ class SongBase {
   List<SongMoment> _songMoments = [];
   List<int> _lyricSectionIndexToMomentNumber = [];
   HashMap<int, SongMoment> _beatsToMoment = HashMap();
+
+  var _displayGrid = Grid<MeasureNode>();
 
   List<GridCoordinate> get songMomentToGridCoordinate => _songMomentToGridCoordinate;
   List<GridCoordinate> _songMomentToGridCoordinate = [];
