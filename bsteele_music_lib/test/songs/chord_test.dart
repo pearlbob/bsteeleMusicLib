@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/chord.dart';
@@ -276,6 +277,33 @@ void main() {
     logger.i('${'chord'.padLeft(7)}: simplified');
     for (var descriptor in ChordDescriptor.values) {
       logger.i('${descriptor.toString().padLeft(7)}: ${descriptor.simplified.name}');
+    }
+  });
+
+  test('chord serialization', () {
+    Logger.level = Level.info;
+
+    ChordAnticipationOrDelay anticipationOrDelay = ChordAnticipationOrDelay.defaultValue;
+
+    for (int beatsPerBar in [2, 3, 4, 6]) {
+      for (var beats = 1; beats <= beatsPerBar; beats++) {
+        bool implicitBeats = beats < beatsPerBar; //  chord has fewer beats than the beats per bar
+        for (ScaleNote? slashScaleNote in [null, ScaleNote.A, ScaleNote.C]) {
+          for (ScaleNote scaleNote in ScaleNote.values) {
+            for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
+              ScaleChord scaleChord = ScaleChord(scaleNote, chordDescriptor);
+
+              Chord chord = Chord(scaleChord, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
+              final encoded = jsonEncode(chord);
+              logger.i('chord($scaleChord, $beats, $beatsPerBar, $slashScaleNote, $anticipationOrDelay, $implicitBeats)'
+                  ': \n$encoded');
+
+              final copy = Chord.fromJson(jsonDecode(encoded));
+              expect(copy, chord);
+            }
+          }
+        }
+      }
     }
   });
 }

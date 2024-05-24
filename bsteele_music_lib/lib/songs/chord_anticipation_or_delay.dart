@@ -39,7 +39,7 @@ enum ChordAnticipationOrDelayEnum {
 
 /// A small timing adjustment for a chord to change the feel of the chord.
 /// Units are fractions of a beat expressed assuming quarter note beat duration.
-@JsonSerializable()
+@JsonSerializable(constructor: '_')
 class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _delays = {};
   static final List<dynamic> _initialization = [
@@ -52,7 +52,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     [ChordAnticipationOrDelayEnum.delayTriplet, '>3'],
   ];
 
-  ChordAnticipationOrDelay._(this._chordAnticipationOrDelayEnum, this._shortName);
+  ChordAnticipationOrDelay._(this.chordAnticipationOrDelayEnum, this.shortName);
 
   static ChordAnticipationOrDelay? parse(MarkedString? markedString) {
     if (markedString == null) {
@@ -114,29 +114,37 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
 
   /// for JSON serialization only
   ChordAnticipationOrDelay()
-      : _shortName = '',
-        _chordAnticipationOrDelayEnum = ChordAnticipationOrDelayEnum.none;
+      : shortName = '',
+        chordAnticipationOrDelayEnum = ChordAnticipationOrDelayEnum.none;
 
   static ChordAnticipationOrDelay get defaultValue => ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
 
   @override
   int compareTo(ChordAnticipationOrDelay other) {
-    return _chordAnticipationOrDelayEnum.index - other._chordAnticipationOrDelayEnum.index;
+    return chordAnticipationOrDelayEnum.index - other.chordAnticipationOrDelayEnum.index;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChordAnticipationOrDelay &&
+          runtimeType == other.runtimeType &&
+          chordAnticipationOrDelayEnum.index == other.chordAnticipationOrDelayEnum.index;
+
+  @override
+  int get hashCode => shortName.hashCode;
 
   /// Returns the human name of this enum.
   @override
   String toString() {
-    return _shortName;
+    return shortName;
   }
 
   factory ChordAnticipationOrDelay.fromJson(Map<String, dynamic> json) => _$ChordAnticipationOrDelayFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChordAnticipationOrDelayToJson(this);
 
-  ChordAnticipationOrDelayEnum get chordAnticipationOrDelayEnum => _chordAnticipationOrDelayEnum;
-  final ChordAnticipationOrDelayEnum _chordAnticipationOrDelayEnum;
+  final ChordAnticipationOrDelayEnum chordAnticipationOrDelayEnum;
 
-  String get shortName => _shortName;
-  final String _shortName;
+  final String shortName;
 }
