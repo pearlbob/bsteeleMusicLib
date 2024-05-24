@@ -1,3 +1,4 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../util/util.dart';
@@ -6,20 +7,23 @@ import 'chord_descriptor.dart';
 import 'key.dart';
 import 'scale_note.dart';
 
+part 'scale_chord.g.dart';
+
 ///  A chord with a scale note and an optional chord descriptor and tension.
 @immutable
+@JsonSerializable()
 class ScaleChord implements Comparable<ScaleChord> {
-  ScaleChord(this._scaleNote, ChordDescriptor chordDescriptor) : _chordDescriptor = chordDescriptor.deAlias();
+  ScaleChord(this.scaleNote, ChordDescriptor chordDescriptor) : _chordDescriptor = chordDescriptor.deAlias();
 
   ScaleChord.fromScaleNoteEnum(ScaleNote scaleNoteEnum)
-      : _scaleNote = scaleNoteEnum,
+      : scaleNote = scaleNoteEnum,
         _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
 
   ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote scaleNoteEnum, ChordDescriptor chordDescriptor)
-      : _scaleNote = scaleNoteEnum,
+      : scaleNote = scaleNoteEnum,
         _chordDescriptor = chordDescriptor.deAlias();
 
-  ScaleChord.fromScaleNote(this._scaleNote) : _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
+  ScaleChord.fromScaleNote(this.scaleNote) : _chordDescriptor = ChordDescriptor.defaultChordDescriptor().deAlias();
 
   static ScaleChord? parseString(String s) {
     return parse(MarkedString(s));
@@ -60,7 +64,7 @@ class ScaleChord implements Comparable<ScaleChord> {
   }
 
   ScaleChord getAlias() {
-    ScaleNote alias = _scaleNote.alias;
+    ScaleNote alias = scaleNote.alias;
     return ScaleChord(alias, _chordDescriptor);
   }
 
@@ -105,13 +109,13 @@ class ScaleChord implements Comparable<ScaleChord> {
     }
     return runtimeType == other.runtimeType &&
         other is ScaleChord &&
-        _scaleNote == other._scaleNote &&
+        scaleNote == other.scaleNote &&
         _chordDescriptor == other._chordDescriptor;
   }
 
   @override
   int get hashCode {
-    int ret = Object.hash(_scaleNote, _chordDescriptor);
+    int ret = Object.hash(scaleNote, _chordDescriptor);
     return ret;
   }
 
@@ -131,10 +135,13 @@ class ScaleChord implements Comparable<ScaleChord> {
     return _easyGuitarChords;
   }
 
+  factory ScaleChord.fromJson(Map<String, dynamic> json) => _$ScaleChordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ScaleChordToJson(this);
+
 //
 //
-  ScaleNote get scaleNote => _scaleNote;
-  final ScaleNote _scaleNote;
+  final ScaleNote scaleNote;
 
   ChordDescriptor get chordDescriptor => _chordDescriptor;
   final ChordDescriptor _chordDescriptor;

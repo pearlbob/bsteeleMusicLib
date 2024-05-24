@@ -1,8 +1,8 @@
 //
-
 import '../util/util.dart';
 import 'key.dart';
 import 'music_constants.dart';
+
 // ignore_for_file: constant_identifier_names
 
 import 'nashville_note.dart';
@@ -11,7 +11,11 @@ import 'nashville_note.dart';
 enum Accidental {
   sharp,
   flat,
-  natural,
+  natural;
+
+  Map<String, dynamic> toJson() => {'name': name};
+
+  factory Accidental.fromJson(Map<String, dynamic> json) => Accidental.values.byName(json['name']);
 }
 
 /// Musical scale notes and their properties
@@ -231,6 +235,15 @@ enum ScaleNote implements Comparable<ScaleNote> {
   final bool isNatural;
   final Accidental accidental;
   final int scaleNumber;
+
+  Map<String, dynamic> toJson() => {
+        'name': name, //
+        'accidental': accidental.toJson() //  for restful api only?????
+      };
+
+  factory ScaleNote.fromJson(Map<String, dynamic> json) {
+    return ScaleNote.values.byName(json['name']);
+  }
 }
 
 /// ScaleNoteIntervals

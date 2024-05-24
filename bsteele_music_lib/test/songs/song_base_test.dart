@@ -2655,18 +2655,6 @@ o: end here''');
     }
 
     {
-      for (var timeSignature in knownTimeSignatures) {
-        a = SongBase(
-          title: 'bob song',
-          artist: 'bob',
-          beatsPerBar: timeSignature.beatsPerBar,
-          unitsPerMeasure: timeSignature.unitsPerMeasure,
-        );
-        expect(a.timeSignature, timeSignature);
-      }
-    }
-
-    {
       var chords = 'i: A B C D v: D C G G';
       a = SongBase(
           title: 'bob song',

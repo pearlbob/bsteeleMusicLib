@@ -1,0 +1,5 @@
+#!/bin/tcsh
+#set echo; set verbose
+
+cd ~/github/bsteeleMusicLib/bsteele_music_lib
+dart run build_runner watch --delete-conflicting-outputs

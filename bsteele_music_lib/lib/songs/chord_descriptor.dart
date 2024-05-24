@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../app_logger.dart';
@@ -7,12 +8,15 @@ import '../util/util.dart';
 import 'chord_component.dart';
 import 'music_constants.dart';
 
+part 'chord_descriptor.g.dart';
+
 ///
 /// The modifier to a chord specification that describes the basic type of chord.
 /// Typical values are major, minor, dominant7, etc.
 ///
 /// For piano chords, try: https://www.scales-chords.com/chord/
 @immutable
+@JsonSerializable(constructor: '_')
 class ChordDescriptor implements Comparable<ChordDescriptor> {
   //  longest short names must come first!
   //  avoid starting descriptors with b, #, s to avoid confusion with scale notes
@@ -197,11 +201,23 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static ChordDescriptor get major => _major;
   static final ChordDescriptor _major = ChordDescriptor._('major', '', 'R 3 5', nashville: '');
 
+  /// Default constructor for JSON only
+  static const String _defaultStructure = 'R 3 5';
+
+  ChordDescriptor()
+      : name = 'major',
+        shortName = '',
+        structure = _defaultStructure,
+        _chordComponents = ChordComponent.parse(_defaultStructure),
+        _nashville = '',
+        nashvilleRaise = false,
+        _alias = null;
+
   static ChordDescriptor defaultChordDescriptor() {
     return _major;
   }
 
-  ChordDescriptor._(this._name, this._shortName, String structure,
+  ChordDescriptor._(this.name, this.shortName, this.structure,
       {ChordDescriptor? alias, String? nashville, bool? nashvilleRaise})
       : _alias = alias,
         _nashville = nashville,
@@ -222,8 +238,8 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
       const int maxLength = 10;
       String match = markedString.remainingStringLimited(maxLength);
       for (ChordDescriptor cd in _parseOrderedChordDescriptorsOrdered) {
-        if (cd._shortName.isNotEmpty && match.startsWith(cd._shortName)) {
-          markedString.consume(cd._shortName.length);
+        if (cd.shortName.isNotEmpty && match.startsWith(cd.shortName)) {
+          markedString.consume(cd.shortName.length);
           return cd.deAlias();
         }
       }
@@ -270,17 +286,17 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   @override
   int get hashCode {
-    return _name.hashCode;
+    return name.hashCode;
   }
 
   @override
   bool operator ==(other) {
-    return runtimeType == other.runtimeType && other is ChordDescriptor && _name == other._name;
+    return runtimeType == other.runtimeType && other is ChordDescriptor && name == other.name;
   }
 
   @override
   int compareTo(ChordDescriptor other) {
-    return _name.compareTo(other._name);
+    return name.compareTo(other.name);
   }
 
   //public static final ChordDescriptor[] getOtherChordDescriptorsOrdered() {
@@ -307,13 +323,13 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   /// The name for the chord descriptor used internally in the software.
   /// This name will likely be understood by musicians but will not necessarily
   /// be used by them in written form.
-  String get name => _name;
-  final String _name;
+  @JsonKey(required: true)
+  final String name;
 
   /// The short name for the chord that typically gets used in human documentation such
   /// as in the song lyrics or sheet music.  The name will never be null but can be empty.
-  String get shortName => _shortName;
-  final String _shortName;
+  @JsonKey(required: true)
+  final String shortName;
 
   final String? _nashville;
   final bool nashvilleRaise;
@@ -321,6 +337,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   /// the list of components from the scale that make up the given chord.
   Set<ChordComponent> get chordComponents => _chordComponents;
   final Set<ChordComponent> _chordComponents;
+  final String structure;
 
   /// an optional alias often used by musicians.
   /// can be null.
@@ -337,7 +354,6 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
       return _major;
     }
   }
-
 
   static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [
@@ -514,6 +530,10 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     }
     return ret;
   }
+
+  Map<String, dynamic> toJson() => _$ChordDescriptorToJson(this);
+
+  factory ChordDescriptor.fromJson(Map<String, dynamic> json) => _$ChordDescriptorFromJson(json);
 
   static final SplayTreeSet<ChordDescriptor> _everyChordDescriptor = SplayTreeSet();
 }

@@ -1,7 +1,11 @@
 import 'dart:collection';
 import 'dart:core';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../util/util.dart';
+
+part 'chord_anticipation_or_delay.g.dart';
 
 enum ChordAnticipationOrDelayEnum {
   /// Play the chord on time.
@@ -25,11 +29,17 @@ enum ChordAnticipationOrDelayEnum {
   delay16th,
 
   /// Delay (pull) the chord by one triplet's duration.
-  delayTriplet,
+  delayTriplet;
+
+  Map<String, dynamic> toJson() => {'name': name};
+
+  factory ChordAnticipationOrDelayEnum.fromJson(Map<String, dynamic> json) =>
+      ChordAnticipationOrDelayEnum.values.byName(json['name']);
 }
 
 /// A small timing adjustment for a chord to change the feel of the chord.
 /// Units are fractions of a beat expressed assuming quarter note beat duration.
+@JsonSerializable()
 class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _delays = {};
   static final List<dynamic> _initialization = [
@@ -102,9 +112,12 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return _delays;
   }
 
+  /// for JSON serialization only
+  ChordAnticipationOrDelay()
+      : _shortName = '',
+        _chordAnticipationOrDelayEnum = ChordAnticipationOrDelayEnum.none;
 
-  static
-  ChordAnticipationOrDelay get defaultValue => ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
+  static ChordAnticipationOrDelay get defaultValue => ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
 
   @override
   int compareTo(ChordAnticipationOrDelay other) {
@@ -116,6 +129,10 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   String toString() {
     return _shortName;
   }
+
+  factory ChordAnticipationOrDelay.fromJson(Map<String, dynamic> json) => _$ChordAnticipationOrDelayFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChordAnticipationOrDelayToJson(this);
 
   ChordAnticipationOrDelayEnum get chordAnticipationOrDelayEnum => _chordAnticipationOrDelayEnum;
   final ChordAnticipationOrDelayEnum _chordAnticipationOrDelayEnum;

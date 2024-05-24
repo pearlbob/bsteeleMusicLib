@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:bsteele_music_lib/app_logger.dart';
@@ -199,6 +200,18 @@ void main() {
           [ScaleNote.Bs, ScaleNote.Es, ScaleNote.As, ScaleNote.Fb, ScaleNote.Cb, ScaleNote.Gb]
               .contains(scaleNote.asEasyRead()),
           isFalse);
+    }
+  });
+
+  test('scale note serialization', () {
+    Logger.level = Level.info;
+
+    for (ScaleNote scaleNote in ScaleNote.values) {
+      final encoded = jsonEncode(scaleNote);
+      logger.i('$scaleNote: $encoded');
+
+      final copy = ScaleNote.fromJson(jsonDecode(encoded));
+      expect(copy, scaleNote);
     }
   });
 }

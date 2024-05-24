@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/chord_component.dart';
 import 'package:bsteele_music_lib/songs/chord_descriptor.dart';
@@ -131,5 +133,20 @@ void main() {
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.dominant7).chordNotes(key).toString(), '[G, B, D, F]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.dominant9).chordNotes(key).toString(), '[G, B, D, F, B]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.minor7).chordNotes(key).toString(), '[G, B♭, D, F]');
+  });
+
+  test('scale chord serialization', () {
+    Logger.level = Level.info;
+
+    for (ScaleNote scaleNote in ScaleNote.values) {
+      for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
+        ScaleChord scaleChord = ScaleChord(scaleNote, chordDescriptor);
+        final encoded = jsonEncode(scaleChord);
+        logger.i('scaleChord($scaleNote,$chordDescriptor): $encoded');
+
+        final copy = ScaleChord.fromJson(jsonDecode(encoded));
+        expect(copy, scaleChord);
+      }
+    }
   });
 }

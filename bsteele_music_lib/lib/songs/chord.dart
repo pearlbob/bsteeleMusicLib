@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../util/util.dart';
 import 'chord_anticipation_or_delay.dart';
@@ -7,7 +8,10 @@ import 'pitch.dart';
 import 'scale_chord.dart';
 import 'scale_note.dart';
 
+part 'chord.g.dart';
+
 ///
+@JsonSerializable()
 class Chord implements Comparable<Chord> {
   Chord(ScaleChord scaleChord, this.beats, int beatsPerBar, this.slashScaleNote,
       ChordAnticipationOrDelay anticipationOrDelay, this.implicitBeats)
@@ -211,6 +215,10 @@ class Chord implements Comparable<Chord> {
   int get hashCode {
     return Object.hash(beats, _beatsPerBar, slashScaleNote, _anticipationOrDelay);
   }
+
+  factory Chord.fromJson(Map<String, dynamic> json) => _$ChordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChordToJson(this);
 
   ScaleChord get scaleChord => _scaleChord;
   late final ScaleChord _scaleChord;
