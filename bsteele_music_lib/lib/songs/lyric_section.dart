@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'chord_section.dart';
 import 'key.dart';
 import 'measure_node.dart';
@@ -10,11 +12,15 @@ import 'drum_section.dart';
 import 'lyric.dart';
 import 'section_version.dart';
 
-/// A _sectionVersion of a song that carries the lyrics, any special drum _sectionVersion,
+part 'lyric_section.g.dart';
+
+/// A sectionVersion of a song that carries the lyrics, any special drum sectionVersion,
 /// and the chord changes on a measure basis
 /// with ultimately beat resolution.
+
+@JsonSerializable()
 class LyricSection extends MeasureNode implements Comparable<LyricSection> {
-  LyricSection(this._sectionVersion, this._index);
+  LyricSection(this.sectionVersion, this.index);
 
   void addLine(String lyricsLine) {
     logger.t('LyricSection.add($lyricsLine)');
@@ -117,7 +123,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     // TODO: implement toJson
     throw UnimplementedError();
   }
@@ -144,7 +150,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
 
   @override
   String toString() {
-    return '${_sectionVersion.toString()}#$_index';
+    return '${sectionVersion.toString()}#$index';
   }
 
   @override
@@ -152,16 +158,16 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     return ''; //  no lyrics in Nashville!
   }
 
-  /// Get the song's default drum _sectionVersion.
-  /// The _sectionVersion will be played through all of its measures
-  /// and then repeated as required for the _sectionVersion's duration.
-  /// When done, the drums will default back to the song's default drum _sectionVersion.
+  /// Get the song's default drum sectionVersion.
+  /// The sectionVersion will be played through all of its measures
+  /// and then repeated as required for the sectionVersion's duration.
+  /// When done, the drums will default back to the song's default drum sectionVersion.
 
   DrumSection getDrumSection() {
     return drumSection;
   }
 
-  ///Set the song's default drum _sectionVersion
+  ///Set the song's default drum sectionVersion
   void setDrumSection(DrumSection drumSection) {
     this.drumSection = drumSection;
   }
@@ -171,7 +177,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   /// than, equal to, or greater than the specified object.
   @override
   int compareTo(LyricSection other) {
-    int ret = _sectionVersion.compareTo(other._sectionVersion);
+    int ret = sectionVersion.compareTo(other.sectionVersion);
     if (ret != 0) {
       return ret;
     }
@@ -198,7 +204,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     if (ret != 0) {
       return ret;
     }
-    ret = _sectionVersion.compareTo(other._sectionVersion);
+    ret = sectionVersion.compareTo(other.sectionVersion);
     if (ret != 0) {
       return ret;
     }
@@ -231,23 +237,26 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     }
     return runtimeType == other.runtimeType &&
         other is LyricSection &&
-        _sectionVersion == other._sectionVersion &&
-        _index == other._index &&
+        sectionVersion == other.sectionVersion &&
+        index == other.index &&
         drumSection == other.drumSection &&
         listsEqual(_lyricsLines, other._lyricsLines);
   }
 
   @override
   int get hashCode {
-    int ret = Object.hash(_sectionVersion, drumSection, _lyricsLines);
+    int ret = Object.hash(sectionVersion, drumSection, _lyricsLines);
     return ret;
   }
 
-  SectionVersion get sectionVersion => _sectionVersion;
-  final SectionVersion _sectionVersion;
+  factory LyricSection.fromJson(Map<String, dynamic> json) => _$LyricSectionFromJson(json);
 
-  int get index => _index;
-  final int _index;
+  @override
+  Map<String, dynamic> toJson() => _$LyricSectionToJson(this);
+
+  final SectionVersion sectionVersion;
+
+  final int index;
   DrumSection drumSection = DrumSection();
 
   List<String> get lyricsLines => _lyricsLines;

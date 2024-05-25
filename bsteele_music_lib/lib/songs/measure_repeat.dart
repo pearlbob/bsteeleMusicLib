@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'measure_repeat_extension.dart';
 
 import '../app_logger.dart';
@@ -14,6 +16,9 @@ import 'measure_repeat_marker.dart';
 import 'phrase.dart';
 import 'section.dart';
 
+part 'measure_repeat.g.dart';
+
+@JsonSerializable()
 class MeasureRepeat extends Phrase {
   MeasureRepeat(super.measures, super.phraseIndex, int repeats) : _repeatMarker = MeasureRepeatMarker(repeats);
 
@@ -340,7 +345,7 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     if (measures.isEmpty) {
       return ' ';
     }
@@ -351,7 +356,7 @@ class MeasureRepeat extends Phrase {
       int i = 0;
       int last = measures.length - 1;
       for (Measure measure in measures) {
-        sb.write(measure.toJson());
+        sb.write(measure.toJsonString());
         if (i == last) {
           if (rowCount > 0) {
             sb.write(' |');
@@ -480,6 +485,15 @@ class MeasureRepeat extends Phrase {
   @override
   int get hashCode {
     return Object.hash(super.hashCode, _repeatMarker.hashCode);
+  }
+
+  factory MeasureRepeat.fromJson(Map<String, dynamic> json) => _$MeasureRepeatFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    var ret = _$MeasureRepeatToJson(this);
+    ret['runtimeType'] = runtimeType.toString();
+    return ret;
   }
 
   final MeasureRepeatMarker _repeatMarker;

@@ -231,10 +231,11 @@ void main() {
       expect(dm.isSilent(), false);
       logger.log(debugLog, 'dm: $dm');
       expect(dm.length, 1);
-      for (var part in dm.parts) {
-        if (part.drumType == DrumTypeEnum.closedHighHat) {
-          logger.log(debugLog, 'timings: ${part.timings(t0, bpm, beats)}');
-          expect(part.timings(t0, bpm, beats), [0.5, 1.5]);
+      for (var key in dm.parts.keys) {
+        final part = dm.parts[key];
+        if (part?.drumType == DrumTypeEnum.closedHighHat) {
+          logger.log(debugLog, 'timings: ${part?.timings(t0, bpm, beats)}');
+          expect(part?.timings(t0, bpm, beats), [0.5, 1.5]);
         }
       }
 
@@ -261,7 +262,7 @@ void main() {
     {
       DrumParts drumParts = DrumParts();
 
-      logger.i(drumParts.toJson());
+      logger.i(drumParts.toJsonString());
 
       DrumTypeEnum drumType = DrumTypeEnum.closedHighHat;
       drumParts.name = 'bob stuff';
@@ -277,11 +278,11 @@ void main() {
       //  logger.i(drumParts.toString());
       expect(drumParts == drumParts, true);
 
-      var drumPart = drumParts.parts.first;
+      var drumPart = drumParts.parts.values.first;
       // logger.i(drumPart.toString());
-      logger.i(drumPart.toJson());
-      var drumPartFromJson = DrumPart.fromJson(drumPart.toJson());
-      logger.i(drumPartFromJson?.toJson());
+      logger.i(drumPart.toJsonString());
+      var drumPartFromJson = DrumPart.fromJsonString(drumPart.toJsonString());
+      logger.i(drumPartFromJson?.toJsonString());
       expect(drumPart == drumPartFromJson, isTrue);
 
       drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeat, true);
@@ -289,9 +290,9 @@ void main() {
       drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatAnd, true);
       drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatAndA, true);
 
-      var drumPartsFromJson = DrumParts.fromJson(drumParts.toJson());
-      logger.i(drumParts.toJson());
-      logger.i(drumPartsFromJson?.toJson());
+      var drumPartsFromJson = DrumParts.fromJsonString(drumParts.toJsonString());
+      logger.i(drumParts.toJsonString());
+      logger.i(drumPartsFromJson?.toJsonString());
       expect(drumParts == drumPartsFromJson, isTrue);
       drumParts.at(DrumTypeEnum.closedHighHat).setBeatSelection(DrumBeat.beat2, DrumSubBeatEnum.subBeatAndA, false);
       expect(drumParts == drumPartsFromJson, isFalse);
@@ -313,14 +314,14 @@ void main() {
 
               drumParts.addPart(drumPart);
 
-              var drumPartsFromJson = DrumParts.fromJson(drumParts.toJson());
-              logger.t(drumParts.toJson());
-              logger.t(drumPartsFromJson?.toJson());
+              var drumPartsFromJson = DrumParts.fromJsonString(drumParts.toJsonString());
+              logger.t(drumParts.toJsonString());
+              logger.t(drumPartsFromJson?.toJsonString());
               expect(drumParts == drumPartsFromJson, isTrue);
             }
           }
         }
-        logger.i(drumParts.toJson());
+        logger.i(drumParts.toJsonString());
       }
     }
   });

@@ -1,6 +1,8 @@
 import 'dart:core';
 import 'dart:math';
 
+import 'package:bsteele_music_lib/songs/measure_repeat.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -13,6 +15,9 @@ import 'measure_node.dart';
 import 'music_constants.dart';
 import 'section.dart';
 
+part 'phrase.g.dart';
+
+@JsonSerializable()
 class Phrase extends MeasureNode {
   Phrase(List<Measure> measures, int phraseIndex, {bool allowEndOfRow = false}) : _phraseIndex = phraseIndex {
     _measures = [];
@@ -769,7 +774,7 @@ class Phrase extends MeasureNode {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     if (_measures.isEmpty) {
       return ' ';
     }
@@ -779,7 +784,7 @@ class Phrase extends MeasureNode {
       int i = 0;
       int last = _measures.length - 1;
       for (Measure measure in _measures) {
-        sb.write(measure.toJson());
+        sb.write(measure.toJsonString());
         if (i == last) {
           sb.write('\n');
           break;
@@ -864,6 +869,23 @@ class Phrase extends MeasureNode {
   int get hashCode {
     int ret = _phraseIndex.hashCode;
     ret = ret * 17 + hashObjects(_measures);
+    return ret;
+  }
+
+  factory Phrase.fromJson(Map<String, dynamic> json) {
+    //  manually deal with inheritance!!!! fixme: json_serializable is broken!
+    switch (json['runtimeType']) {
+      case 'MeasureRepeat':
+        return MeasureRepeat.fromJson(json);
+      default:
+        return _$PhraseFromJson(json);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    var ret = _$PhraseToJson(this);
+    ret['runtimeType'] = runtimeType.toString();
     return ret;
   }
 

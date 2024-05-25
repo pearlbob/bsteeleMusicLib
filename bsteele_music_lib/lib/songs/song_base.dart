@@ -1401,7 +1401,7 @@ class SongBase {
     SplayTreeSet<ChordSection> set = SplayTreeSet();
     set.addAll(_getChordSectionMap().values);
     for (ChordSection chordSection in set) {
-      sb.write(chordSection.toJson());
+      sb.write(chordSection.toJsonString());
     }
     return sb.toString();
   }

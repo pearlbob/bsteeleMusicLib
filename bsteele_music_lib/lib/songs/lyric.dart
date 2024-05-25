@@ -1,9 +1,14 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'key.dart';
 
 import 'measure_node.dart';
 
+part 'lyric.g.dart';
+
+@JsonSerializable()
 class Lyric extends MeasureNode {
   Lyric(this.line, {this.phraseIndex = 0, this.repeat = 0});
 
@@ -21,7 +26,7 @@ class Lyric extends MeasureNode {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     return '"line": "${jsonEncode(line)}"';
   }
 
@@ -54,6 +59,11 @@ class Lyric extends MeasureNode {
   String toNashville(Key key) {
     return ''; //  no lyrics in Nashville!
   }
+
+  factory Lyric.fromJson(Map<String, dynamic> json) => _$LyricFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$LyricToJson(this);
 
   final String line;
   final int phraseIndex;

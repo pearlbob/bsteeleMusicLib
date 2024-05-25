@@ -1,13 +1,18 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
 import 'drum_measure.dart';
 
+part 'drum_section.g.dart';
+
 /// Definition of drum section for one or more measures
 /// to be used either as the song's default drums or
 /// the special drums for a given section.
-
+@JsonSerializable()
 class DrumSection implements Comparable<DrumSection> {
+  DrumSection();
+
   @override
   int compareTo(DrumSection o) {
     if (!listsEqual(drumMeasures, o.drumMeasures)) {
@@ -46,6 +51,10 @@ class DrumSection implements Comparable<DrumSection> {
     }
     return hashObjects(drumMeasures ?? []);
   }
+
+  factory DrumSection.fromJson(Map<String, dynamic> json) => _$DrumSectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DrumSectionToJson(this);
 
   List<DrumParts>? drumMeasures;
 }

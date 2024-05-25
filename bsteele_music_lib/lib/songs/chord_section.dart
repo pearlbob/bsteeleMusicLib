@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../grid.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
@@ -15,12 +17,14 @@ import 'phrase.dart';
 import 'section.dart';
 import 'section_version.dart';
 
+part 'chord_section.g.dart';
+
 /// A chord section of a song is typically a collection of measures
 /// that constitute a portion of the song that is considered musically a unit.
 /// Immutable.
-
+@JsonSerializable()
 class ChordSection extends MeasureNode implements Comparable<ChordSection> {
-  ChordSection(this._sectionVersion, List<Phrase>? phrases) : _phrases = (phrases ?? []);
+  ChordSection(this.sectionVersion, List<Phrase>? phrases) : _phrases = (phrases ?? []);
 
   static ChordSection getDefault() {
     return ChordSection(SectionVersion.defaultInstance, null);
@@ -501,7 +505,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     for (Phrase phrase in _phrases) {
       newPhrases.add(phrase.transposeToKey(key) as Phrase);
     }
-    return ChordSection(_sectionVersion, newPhrases);
+    return ChordSection(sectionVersion, newPhrases);
   }
 
   String toMarkupInRows(int lines) // fixme: worry about this is being complex and fragile
@@ -617,7 +621,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     StringBuffer sb = StringBuffer();
     sb.write(sectionVersion.toString());
     sb.write('\n');
@@ -625,7 +629,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       sb.write('[]');
     } else {
       for (Phrase phrase in _phrases) {
-        String s = phrase.toJson();
+        String s = phrase.toJsonString();
         sb.write(s);
         if (!s.endsWith('\n')) {
           sb.write('\n');
@@ -650,7 +654,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   Section getSection() {
-    return _sectionVersion.section;
+    return sectionVersion.section;
   }
 
   Phrase? getPhrase(int index) {
@@ -799,7 +803,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   /// than, equal to, or greater than the specified object.
   @override
   int compareTo(ChordSection o) {
-    int ret = _sectionVersion.compareTo(o._sectionVersion);
+    int ret = sectionVersion.compareTo(o.sectionVersion);
     if (ret != 0) {
       return ret;
     }
@@ -824,7 +828,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
     if (!(runtimeType == other.runtimeType &&
         other is ChordSection &&
-        _sectionVersion == other._sectionVersion &&
+        sectionVersion == other.sectionVersion &&
         repeatMeasureCount == other.repeatMeasureCount)) {
       return false;
     }
@@ -838,13 +842,17 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
 
   @override
   int get hashCode {
-    int ret = _sectionVersion.hashCode;
+    int ret = sectionVersion.hashCode;
     ret = ret * 17 + hashObjects(_phrases);
     return ret;
   }
 
-  SectionVersion get sectionVersion => _sectionVersion;
-  final SectionVersion _sectionVersion;
+  factory ChordSection.fromJson(Map<String, dynamic> json) => _$ChordSectionFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ChordSectionToJson(this);
+
+  final SectionVersion sectionVersion;
 
   List<Phrase> get phrases => _phrases;
   List<Phrase> _phrases;

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bsteele_music_lib/songs/music_constants.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -11,25 +12,27 @@ import 'measure_node.dart';
 import 'nashville_note.dart';
 import 'section.dart';
 
+part 'measure.g.dart';
+
 /// A measure in a section of a song.
 /// Holds the lyrics, the chord changes and their beats.
 ///
 /// When added, chord beat durations exceeding the measure beat count will be ignored on playback.
+@JsonSerializable()
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
-  Measure(this._beatCount, this.chords, {int? beatsPerBar, int? maxBeatCount})
-      : _beatsPerBar = beatsPerBar ?? _beatCount {
-    _allocateTheBeats(maxBeatCount ?? _beatCount);
+  Measure(this.beatCount, this.chords, {int? beatsPerBar, int? maxBeatCount}) : beatsPerBar = beatsPerBar ?? beatCount {
+    _allocateTheBeats(maxBeatCount ?? beatCount);
   }
 
   Measure deepCopy() {
-    return Measure.parseString(toMarkup(), _beatCount, endOfRow: endOfRow); //  fixme: efficiency?  stability?
+    return Measure.parseString(toMarkup(), beatCount, endOfRow: endOfRow); //  fixme: efficiency?  stability?
   }
 
   /// for subclasses
   Measure.zeroArgs()
-      : _beatCount = MusicConstants.defaultBeatsPerBar,
-        _beatsPerBar = MusicConstants.defaultBeatsPerBar,
+      : beatCount = MusicConstants.defaultBeatsPerBar,
+        beatsPerBar = MusicConstants.defaultBeatsPerBar,
         chords = [];
 
   /// Convenience method for testing only
@@ -140,7 +143,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
     //  verify not over specified
     if (totalBeats > maxBeatCount) {
-      _beatCount = maxBeatCount;
+      beatCount = maxBeatCount;
       //  fixme: limit the total beats???
       return; //  too many beats!  even if the implicit chords only got 1 beat
     }
@@ -150,13 +153,13 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       var first = chords.first;
       if (first.implicitBeats == false) {
         //  use the explicit beat count
-        _beatCount = first.beats;
+        beatCount = first.beats;
       } else {
         //  imply the beat count from the measure count
         first.beats = maxBeatCount;
       }
       first.implicitBeats = first.beats == beatsPerBar; //  alter based on the measure
-      _beatCount = first.beats;
+      beatCount = first.beats;
       return;
     }
 
@@ -165,7 +168,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       for (Chord c in chords) {
         c.implicitBeats = true;
       }
-      _beatCount = beatsPerBar;
+      beatCount = beatsPerBar;
       return;
     }
 
@@ -183,7 +186,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       for (Chord c in chords) {
         c.implicitBeats = false;
       }
-      _beatCount = totalBeats;
+      beatCount = totalBeats;
       return;
     }
 
@@ -195,7 +198,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         c.beats += additionalBeatsPerChord;
         unallocatedBeats -= additionalBeatsPerChord;
       }
-      _beatCount = maxBeatCount;
+      beatCount = maxBeatCount;
       return;
     }
 
@@ -203,7 +206,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       for (Chord c in chords) {
         c.implicitBeats = false;
       }
-      _beatCount = totalBeats;
+      beatCount = totalBeats;
       return;
     }
 
@@ -211,7 +214,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     for (Chord c in chords) {
       c.implicitBeats = false;
     }
-    _beatCount = totalBeats;
+    beatCount = totalBeats;
   }
 
   Chord? getChordAtBeat(int beat) {
@@ -292,7 +295,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
@@ -300,7 +303,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         sb.write(chord.beatsToString());
       }
       if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
-        return '$_beatCount${sb.toString()}';
+        return '$beatCount${sb.toString()}';
       }
       return sb.toString();
     }
@@ -322,7 +325,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         sb.write(endOfRowChar);
       }
       if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
-        return '$_beatCount${sb.toString()}';
+        return '$beatCount${sb.toString()}';
       }
 
       return sb.toString();
@@ -454,18 +457,21 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   @override
   int get hashCode {
-    int ret = Object.hash(_beatCount, endOfRow, _beatsPerBar, hashObjects(chords));
+    int ret = Object.hash(beatCount, endOfRow, beatsPerBar, hashObjects(chords));
     return ret;
   }
+
+  factory Measure.fromJson(Map<String, dynamic> json) => _$MeasureFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$MeasureToJson(this);
 
   /// The beat count for the measure should be set prior to chord additions
   /// to avoid awkward behavior when chords are added without a count.
   /// Defaults to 4.
-  int get beatCount => _beatCount;
-  int _beatCount = 4; //  default only
+  int beatCount = 4; //  default only   fixme: should not be public, but required for json
 
-  int get beatsPerBar => _beatsPerBar;
-  final int _beatsPerBar;
+  final int beatsPerBar;
 
   /// indicate that the measure is at the end of it's row of measures in the phrase
   bool endOfRow = false;

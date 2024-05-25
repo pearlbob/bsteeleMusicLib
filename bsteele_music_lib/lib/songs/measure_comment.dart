@@ -80,7 +80,7 @@ class MeasureComment extends Measure {
   }
 
   @override
-  String toJson() {
+  String toJsonString() {
     return toString();
   }
 

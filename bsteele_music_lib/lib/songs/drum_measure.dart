@@ -1,9 +1,13 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../app_logger.dart';
 import '../util/util.dart';
 import 'song.dart';
+
+part 'drum_measure.g.dart';
 
 enum DrumSubBeatEnum {
   subBeat,
@@ -48,9 +52,9 @@ enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
 }
 
 /// Descriptor of a single drum in the measure.
-
+@JsonSerializable()
 class DrumPart implements Comparable<DrumPart> {
-  DrumPart(this._drumType, {required beats})
+  DrumPart(this.drumType, {required beats})
       : _beats = beatsLimit(beats),
         _beatSelection = List.filled(maxDrumBeatsPerBar * drumSubBeatsPerBeat, false, growable: false) {
     assert(beats >= 2);
@@ -58,7 +62,7 @@ class DrumPart implements Comparable<DrumPart> {
   }
 
   DrumPart copyWith() {
-    var ret = DrumPart(_drumType, beats: _beats);
+    var ret = DrumPart(drumType, beats: _beats);
     for (var s = 0; s < _beatSelection.length; s++) {
       if (_beatSelection[s]) {
         ret._beatSelection[s] = true;
@@ -140,10 +144,10 @@ class DrumPart implements Comparable<DrumPart> {
         }
       }
     }
-    return '${_drumType.name}:${sb.toString()}';
+    return '${drumType.name}:${sb.toString()}';
   }
 
-  String toJson() {
+  String toJsonString() {
     StringBuffer sb = StringBuffer();
     sb.write('{');
     sb.write(' "drumType": "${drumType.name}"');
@@ -166,7 +170,7 @@ class DrumPart implements Comparable<DrumPart> {
     return sb.toString();
   }
 
-  static DrumPart? fromJson(String jsonString) {
+  static DrumPart? fromJsonString(String jsonString) {
     return fromJsonDecoderConvert(_jsonDecoder.convert(jsonString));
   }
 
@@ -232,6 +236,10 @@ class DrumPart implements Comparable<DrumPart> {
     return 0;
   }
 
+  factory DrumPart.fromJson(Map<String, dynamic> json) => _$DrumPartFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DrumPartToJson(this);
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -239,10 +247,10 @@ class DrumPart implements Comparable<DrumPart> {
           runtimeType == other.runtimeType &&
           deepCollectionEquality.equals(_beatSelection, other._beatSelection) &&
           _beats == other._beats &&
-          _drumType == other._drumType;
+          drumType == other.drumType;
 
   @override
-  int get hashCode => Object.hash(_beats, _drumType, _beatSelection);
+  int get hashCode => Object.hash(_beats, drumType, _beatSelection);
 
   late final List<bool> _beatSelection;
 
@@ -253,12 +261,12 @@ class DrumPart implements Comparable<DrumPart> {
   int get beats => _beats;
   int _beats = 4; //  default
 
-  DrumTypeEnum get drumType => _drumType;
-  final DrumTypeEnum _drumType;
+  final DrumTypeEnum drumType;
 }
 
 /// Descriptor of the drums to be played for the given measure and
 /// likely subsequent measures.
+@JsonSerializable()
 class DrumParts implements Comparable<DrumParts> {
   DrumParts({this.name = 'unknown', beats = 4, List<DrumPart>? parts}) : _beats = beats {
     for (var part in parts ?? []) {
@@ -269,8 +277,11 @@ class DrumParts implements Comparable<DrumParts> {
 
   DrumParts copyWith() {
     List<DrumPart> copyParts = [];
-    for (var part in parts) {
-      copyParts.add(part.copyWith());
+    for (var key in parts.keys) {
+      final value = parts[key];
+      if (value != null) {
+        copyParts.add(value.copyWith());
+      }
     }
     return DrumParts(name: name, beats: beats, parts: copyParts);
   }
@@ -278,40 +289,38 @@ class DrumParts implements Comparable<DrumParts> {
   clear() {
     if (parts.isNotEmpty) {
       hasChanged = true;
-      for (var part in parts) {
-        part.clear();
-      }
+      parts.clear();
     }
   }
 
   /// Set an individual drum's part.
   DrumPart addPart(DrumPart part) {
-    if (_parts[part.drumType] != part) {
+    if (parts[part.drumType] != part) {
       hasChanged = true;
-      _parts[part.drumType] = part;
+      parts[part.drumType] = part;
     }
     return part;
   }
 
   void removePart(DrumPart part) {
-    if (_parts.keys.contains(part.drumType)) {
+    if (parts.keys.contains(part.drumType)) {
       hasChanged = true;
-      _parts.remove(part.drumType);
+      parts.remove(part.drumType);
     }
   }
 
   DrumPart at(DrumTypeEnum drumType) {
-    return _parts[drumType] ?? addPart(DrumPart(drumType, beats: beats));
+    return parts[drumType] ?? addPart(DrumPart(drumType, beats: beats));
   }
 
-  int get length => _parts.keys.length;
+  int get length => parts.keys.length;
 
   bool? isSilent() {
-    if (_parts.isEmpty) {
+    if (parts.isEmpty) {
       return true;
     }
-    for (var part in _parts.keys) {
-      if (!(_parts[part]?.isEmpty ?? true)) {
+    for (var part in parts.keys) {
+      if (!(parts[part]?.isEmpty ?? true)) {
         return false;
       }
     }
@@ -326,8 +335,8 @@ class DrumParts implements Comparable<DrumParts> {
   String partsToString() {
     var sb = StringBuffer();
     var first = true;
-    for (var type in _parts.keys) {
-      var part = _parts[type]!;
+    for (var type in parts.keys) {
+      var part = parts[type]!;
       if (part.isEmpty) {
         continue;
       }
@@ -342,7 +351,7 @@ class DrumParts implements Comparable<DrumParts> {
     return sb.toString();
   }
 
-  String toJson() {
+  String toJsonString() {
     StringBuffer sb = StringBuffer();
 
     sb.write('{\n');
@@ -352,8 +361,8 @@ class DrumParts implements Comparable<DrumParts> {
     sb.write(' "volume": $_volume,');
     sb.write('\n "parts": [');
     bool first = true;
-    for (var key in SplayTreeSet<DrumTypeEnum>()..addAll(_parts.keys)) {
-      var part = _parts[key]!;
+    for (var key in SplayTreeSet<DrumTypeEnum>()..addAll(parts.keys)) {
+      var part = parts[key]!;
       if (part.isEmpty) {
         continue;
       }
@@ -362,14 +371,14 @@ class DrumParts implements Comparable<DrumParts> {
       } else {
         sb.write(',\n   ');
       }
-      sb.write(part.toJson());
+      sb.write(part.toJsonString());
     }
     sb.write(']\n');
     sb.write('}');
     return sb.toString();
   }
 
-  static DrumParts? fromJson(String jsonString) {
+  static DrumParts? fromJsonString(String jsonString) {
     dynamic json = _jsonDecoder.convert(jsonString);
     if (json is Map) {
       return fromJsonMap(json);
@@ -419,7 +428,7 @@ class DrumParts implements Comparable<DrumParts> {
       ret.subBeats = subBeats;
       ret.volume = volume;
       for (var key in parts.keys) {
-        ret._parts[key] = parts[key]!;
+        ret.parts[key] = parts[key]!;
       }
       return ret;
     }
@@ -435,9 +444,9 @@ class DrumParts implements Comparable<DrumParts> {
     if (ret != 0) {
       return ret;
     }
-    for (var type in _parts.keys) {
-      var thisPart = _parts[type];
-      var otherPart = other._parts[type];
+    for (var type in parts.keys) {
+      var thisPart = parts[type];
+      var otherPart = other.parts[type];
 
       //  empty and null parts match
       if (otherPart == null || otherPart.isEmpty) {
@@ -452,10 +461,6 @@ class DrumParts implements Comparable<DrumParts> {
     return 0;
   }
 
-  Iterable<DrumPart> get parts {
-    return _parts.values;
-  }
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -467,15 +472,15 @@ class DrumParts implements Comparable<DrumParts> {
             _beats == other._beats &&
             _volume == other._volume
         //  doesn't cope with matching empty part with a null part
-        //&& deepUnorderedCollectionEquality.equals(_parts.keys, other._parts.keys)
+        //&& deepUnorderedCollectionEquality.equals(parts.keys, other.parts.keys)
         )) {
       return false;
     }
 
     //  see that the parts match.  Note: a null part should match an empty part
-    for (var key in _parts.keys) {
-      var part = _parts[key];
-      var otherPart = other._parts[key];
+    for (var key in parts.keys) {
+      var part = parts[key];
+      var otherPart = other.parts[key];
       if ((part == null || part.isEmpty) && (otherPart == null || otherPart.isEmpty)) {
         continue;
       }
@@ -488,18 +493,22 @@ class DrumParts implements Comparable<DrumParts> {
   }
 
   @override
-  int get hashCode => name.hashCode ^ _beats.hashCode ^ _volume.hashCode ^ _parts.hashCode;
+  int get hashCode => name.hashCode ^ _beats.hashCode ^ _volume.hashCode ^ parts.hashCode;
 
   set beats(int value) {
     var beats = Util.intLimit(value, 2, maxDrumBeatsPerBar);
     if (_beats != beats) {
       _beats = beats;
       hasChanged = true;
-      for (var key in _parts.keys) {
-        _parts[key]!.beats = beats;
+      for (var key in parts.keys) {
+        parts[key]!.beats = beats;
       }
     }
   }
+
+  factory DrumParts.fromJson(Map<String, dynamic> json) => _$DrumPartsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DrumPartsToJson(this);
 
   String name;
 
@@ -519,7 +528,7 @@ class DrumParts implements Comparable<DrumParts> {
 
   bool hasChanged = false;
 
-  final HashMap<DrumTypeEnum, DrumPart> _parts = HashMap();
+  final HashMap<DrumTypeEnum, DrumPart> parts = HashMap();
 }
 
 /// system metadata registry that is a set of id metadata
@@ -647,7 +656,7 @@ class DrumPartsList {
       } else {
         partsBuffer.write(',\n');
       }
-      partsBuffer.write(dp.toJson());
+      partsBuffer.write(dp.toJsonString());
     }
 
     StringBuffer matchesBuffer = StringBuffer();

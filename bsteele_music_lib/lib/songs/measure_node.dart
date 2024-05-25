@@ -95,8 +95,11 @@ abstract class MeasureNode {
 
   int get id => identityHashCode(this); //  unique id for this measure node
 
-  ///  Export to JSON
-  String toJson();
+  ///  Export to dart JSON
+  String toJsonString();
+
+  //  Export to restful JSON
+  Map<String, dynamic> toJson();
 
   MeasureNodeType get measureNodeType;
 }

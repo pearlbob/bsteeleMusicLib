@@ -1,16 +1,20 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import '../util/util.dart';
 import 'section.dart';
 
+part 'section_version.g.dart';
+
 /// A version identifier for multiple numerical variations of a given section.
+@JsonSerializable()
 class SectionVersion implements Comparable<SectionVersion> {
   /// A convenience constructor for a section without numerical variation.
-  SectionVersion.bySection(this._section)
-      : _version = 0,
-        _name = _section.abbreviation;
+  SectionVersion.bySection(this.section)
+      : version = 0,
+        _name = section.abbreviation;
 
   /// A constructor for the section version variation's representation.
-  SectionVersion(this._section, this._version)
-      : _name = _section.abbreviation + (_version > 0 ? _version.toString() : '');
+  SectionVersion(this.section, this.version) : _name = section.abbreviation + (version > 0 ? version.toString() : '');
 
   static final SectionVersion defaultInstance = SectionVersion.bySection(Section.defaultInstance);
 
@@ -62,7 +66,7 @@ class SectionVersion implements Comparable<SectionVersion> {
   ///Gets a more formal name for the section version that can be presented to the user.
   String getFormalName() {
     //  note: designed to go to the user display
-    return '${_section.formalName}${_version > 0 ? _version.toString() : ''}:';
+    return '${section.formalName}${version > 0 ? version.toString() : ''}:';
   }
 
   @override
@@ -72,41 +76,41 @@ class SectionVersion implements Comparable<SectionVersion> {
     }
     return runtimeType == other.runtimeType &&
         other is SectionVersion &&
-        _section == other._section &&
-        _version == other._version;
+        section == other.section &&
+        version == other.version;
   }
 
   @override
   int compareTo(SectionVersion o) {
-    int ret = _section.compareTo(o._section);
+    int ret = section.compareTo(o.section);
     if (ret != 0) {
       return ret;
     }
 
-    if (_version != o._version) {
-      return _version < o._version ? -1 : 1;
+    if (version != o.version) {
+      return version < o.version ? -1 : 1;
     }
     return 0;
   }
 
   @override
   int get hashCode {
-    return Object.hash(_section, _version);
+    return Object.hash(section, version);
   }
 
-  /// Return the generic section for this section version.
-  Section get section => _section;
-  final Section _section;
+  factory SectionVersion.fromJson(Map<String, dynamic> json) => _$SectionVersionFromJson(json);
 
-  /// Return the numeric count for this section version.
-  int get version => _version;
-  final int _version;
+  Map<String, dynamic> toJson() => _$SectionVersionToJson(this);
+
+  final Section section;
+
+  final int version;
 
   //  computed values
   String get name => _name;
   final String _name;
 
-  int get weight => _section.weight + (10 - _version);
+  int get weight => section.weight + (10 - version);
 
   static final RegExp sectionRegexp = RegExp(r'^([a-zA-Z]+)([\d]*):');
 }

@@ -1,8 +1,13 @@
 import 'dart:collection';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '../util/util.dart';
 import 'section_version.dart';
 
+part 'section.g.dart';
+
+@JsonEnum()
 enum SectionEnum {
   /// A section that introduces the song.
   intro,
@@ -62,14 +67,14 @@ Map<SectionEnum, int> _sectionWeights = {
 ///
 /// Sections do not imply semantics but their proper suggested use
 /// will aid in song structure readability.
-
+@JsonSerializable(constructor: '_')
 class Section implements Comparable<Section> {
-  Section._(this._sectionEnum, this._abbreviation, this._alternateAbbreviation, this._description)
-      : //_lowerCaseName = _sectionEnumToString(_sectionEnum).toLowerCase(),
-        _formalName = Util.firstToUpper(_sectionEnumToString(_sectionEnum).toLowerCase()),
-        _originalAbbreviation = _abbreviation;
+  Section._(this.sectionEnum, this.abbreviation, this.alternateAbbreviation, this.description)
+      : //_lowerCaseName = sectionEnumToString(sectionEnum).toLowerCase(),
+        _formalName = Util.firstToUpper(sectionEnumToString(sectionEnum).toLowerCase()),
+        _originalAbbreviation = abbreviation;
 
-  static String _sectionEnumToString(SectionEnum se) {
+  static String sectionEnumToString(SectionEnum se) {
     return se.toString().split('.').last;
   }
 
@@ -133,9 +138,9 @@ class Section implements Comparable<Section> {
     if (mapStringToSection.isEmpty) {
       for (Section section in _getSections().values) {
         mapStringToSection[section._formalName.toLowerCase()] = section;
-        mapStringToSection[section._abbreviation.toLowerCase()] = section;
-        if (section._alternateAbbreviation != null) {
-          mapStringToSection[section._alternateAbbreviation.toLowerCase()] = section;
+        mapStringToSection[section.abbreviation.toLowerCase()] = section;
+        if (section.alternateAbbreviation != null) {
+          mapStringToSection[section.alternateAbbreviation!.toLowerCase()] = section;
         }
       }
       //  additions:
@@ -153,23 +158,23 @@ class Section implements Comparable<Section> {
     return _sectionsList;
   }
 
-  // static late final HashMap<String, SectionEnum> _sectionEnums = HashMap.identity();
+  // static late final HashMap<String, SectionEnum> sectionEnums = HashMap.identity();
 
   // static SectionEnum? _getSectionEnum(String s) {
   //   //  lazy eval
-  //   if (_sectionEnums.isEmpty) {
+  //   if (sectionEnums.isEmpty) {
   //     for (SectionEnum se in SectionEnum.values) {
-  //       _sectionEnums[_sectionEnumToString(se).toLowerCase()] = se;
+  //       sectionEnums[sectionEnumToString(se).toLowerCase()] = se;
   //
   //       //  add abbreviations
   //       Section section = get(se);
-  //       _sectionEnums[section._abbreviation.toLowerCase()] = se;
-  //       if (section._alternateAbbreviation != null) {
-  //         _sectionEnums[section._alternateAbbreviation!.toLowerCase()] = se;
+  //       sectionEnums[section.abbreviation.toLowerCase()] = se;
+  //       if (section.alternateAbbreviation != null) {
+  //         sectionEnums[section.alternateAbbreviation!.toLowerCase()] = se;
   //       }
   //     }
   //   }
-  //   return _sectionEnums[s];
+  //   return sectionEnums[s];
   // }
 
   static Section? parseString(String s) {
@@ -197,7 +202,7 @@ class Section implements Comparable<Section> {
 
   @override
   int compareTo(Section other) {
-    return _sectionEnum.index - other._sectionEnum.index;
+    return sectionEnum.index - other.sectionEnum.index;
   }
 
   /// Utility to return the default section.
@@ -208,33 +213,33 @@ class Section implements Comparable<Section> {
 
   @override
   String toString() {
-    return _abbreviation;
+    return abbreviation;
   }
 
   @override
   bool operator ==(other) {
-    return runtimeType == other.runtimeType && other is Section && _sectionEnum == other._sectionEnum;
+    return runtimeType == other.runtimeType && other is Section && sectionEnum == other.sectionEnum;
   }
 
   @override
   int get hashCode {
-    return _sectionEnum.hashCode;
+    return sectionEnum.hashCode;
   }
+
+  factory Section.fromJson(Map<String, dynamic> json) => _$SectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SectionToJson(this);
 
   static final HashMap<SectionEnum, Section> _sections = HashMap.identity();
   static final List<Section> _sectionsList = [];
 
-  SectionEnum get sectionEnum => _sectionEnum;
-  final SectionEnum _sectionEnum;
+  final SectionEnum sectionEnum;
 
-  String get abbreviation => _abbreviation;
-  final String _abbreviation;
+  final String abbreviation;
 
-  String? get alternateAbbreviation => _alternateAbbreviation;
-  final String? _alternateAbbreviation;
+  final String? alternateAbbreviation;
 
-  String get description => _description;
-  final String _description;
+  final String description;
 
   //final String _lowerCaseName;
 
@@ -244,7 +249,7 @@ class Section implements Comparable<Section> {
   String get originalAbbreviation => _originalAbbreviation;
   final String _originalAbbreviation;
 
-  int get weight => _sectionWeights[_sectionEnum] ?? 0;
+  int get weight => _sectionWeights[sectionEnum] ?? 0;
 
   static HashMap<String, Section> mapStringToSection = HashMap();
 

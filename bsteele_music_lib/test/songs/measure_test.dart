@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/chord.dart';
 import 'package:bsteele_music_lib/songs/chord_anticipation_or_delay.dart';
@@ -28,6 +30,7 @@ void main() {
     {
       m = Measure.parseString('B', beats);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       Chord chord = chordByScaleChordAndBeats(ScaleChord(ScaleNote.B, ChordDescriptor.major), beats, beatsPerBar);
       ref = Measure(beats, [chord]);
       logger.i('m:   ${m.toMarkup()}');
@@ -54,6 +57,7 @@ void main() {
       s = 'GD.C';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect('GD.C', m.toMarkup());
     }
@@ -62,6 +66,7 @@ void main() {
 
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect('AX', m.toMarkup());
     }
@@ -70,6 +75,7 @@ void main() {
 
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect('AX..', m.toMarkup());
     }
@@ -78,6 +84,7 @@ void main() {
 
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect('X', m.toMarkup());
     }
@@ -86,6 +93,7 @@ void main() {
       s = 'A.B.';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(m.toMarkup(), 'AB');
     }
 
@@ -94,6 +102,7 @@ void main() {
 
       m = Measure.parseString(s, 6);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect(m.toMarkup(), '4A.B.');
     }
@@ -102,6 +111,7 @@ void main() {
 
       m = Measure.parseString(s, 6);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect(m.toMarkup(), '4A.B.');
     }
@@ -109,11 +119,13 @@ void main() {
       s = 'AB';
       m = Measure.parseString(s, 6);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       //  5/4 split across two chords, first one gets the extra beat
       expect(m.toMarkup(), 'AB');
     }
     {
       s = 'A.B.';
+      _restfulJsonMeasureTest(m);
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
       //  default to simplest expression
@@ -121,14 +133,17 @@ void main() {
     }
     {
       s = 'A/GA/F♯';
+
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(m.toMarkup(), 'A/GA/F#');
     }
     {
       s = 'A/G';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
       expect(m.beatCount, 4);
     }
@@ -136,6 +151,7 @@ void main() {
       s = 'F.';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
       expect(m.beatCount, 2);
     }
@@ -143,6 +159,7 @@ void main() {
       s = 'F.';
       m = Measure.parseString(s, 2);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect('F', m.toMarkup());
       expect(m.beatCount, 2);
     }
@@ -150,6 +167,7 @@ void main() {
       s = 'F..';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
       expect(m.beatCount, 3);
     }
@@ -157,6 +175,7 @@ void main() {
       s = 'F...';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect('F', m.toMarkup());
       expect(m.beatCount, 4);
     }
@@ -164,6 +183,7 @@ void main() {
       s = 'A..B';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
       expect(m.beatCount, 4);
     }
@@ -171,18 +191,21 @@ void main() {
       s = 'AB..';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
     }
     {
       s = 'ABC.';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
     }
     {
       s = 'A.BC';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(s, m.toMarkup());
     }
 
@@ -190,60 +213,74 @@ void main() {
       s = 'E♭F';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(m.toMarkup(), 'EbF');
     }
     {
       s = 'E♭.F';
       m = Measure.parseString(s, 3);
       expect(m, isNotNull);
+      _restfulJsonMeasureTest(m);
       expect(m.toMarkup(), 'Eb.F');
     }
     {
       //  test beat allocation
       m = Measure.parseString('EAB', 4);
+      _restfulJsonMeasureTest(m);
       expect(m.chords.length, 3);
       expect(m.chords[0].beats, 1);
       expect(m.chords[1].beats, 1);
       expect(m.chords[2].beats, 1);
 
       m = Measure.parseString('EA', 4);
-
+      _restfulJsonMeasureTest(m);
       expect(2, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(2, m.chords[1].beats);
+
       m = Measure.parseString('E..A', 4);
+      _restfulJsonMeasureTest(m);
       expect(2, m.chords.length);
       expect(3, m.chords[0].beats);
       expect(1, m.chords[1].beats);
 
       m = Measure.parseString('E.A', 4);
+      _restfulJsonMeasureTest(m);
       expect(m.chords.length, 2);
       expect(m.chords[0].beats, 2);
       expect(m.chords[1].beats, 1);
+
       m = Measure.parseString('E.A.', 4);
+      _restfulJsonMeasureTest(m);
       expect(2, m.chords.length);
       expect(2, m.chords[0].beats);
       expect(2, m.chords[1].beats);
+
       m = Measure.parseString('EA.', 4);
+      _restfulJsonMeasureTest(m);
       expect(m.chords.length, 2);
       expect(m.chords[0].beats, 1);
       expect(m.chords[1].beats, 2);
       m = Measure.parseString('EA.', 6);
+      _restfulJsonMeasureTest(m);
       expect(m.chords.length, 2);
       expect(m.chords[0].beats, 1);
       expect(m.chords[1].beats, 2);
 
       //  too many specific beats
       m = Measure.parseString('E..A.', 4);
+      _restfulJsonMeasureTest(m);
       expect(m, isNotNull); //  fixme: Measure.parseString() on errors
 
       //  too few specific beats
       m = Measure.parseString('E..A.', 6);
+      _restfulJsonMeasureTest(m);
       expect(m, isNotNull); //  fixme: Measure.parseString() on errors
     }
 
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('A', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(beatsPerBar, m.beatCount);
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
@@ -253,6 +290,7 @@ void main() {
 
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('BC', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(2 * beatsPerBar ~/ 2, beatsPerBar);
       expect(m.chords.length, 2);
       Chord chord0 = m.chords[0];
@@ -265,6 +303,7 @@ void main() {
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('E#m7. ', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(m, isNotNull);
       expect(2, m.beatCount);
       expect(1, m.chords.length);
@@ -276,6 +315,7 @@ void main() {
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar += 2) {
       m = Measure.parseString('E#m7Gb7', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(beatsPerBar, m.beatCount);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -297,6 +337,7 @@ void main() {
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('F#m7.Asus4', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(m.beatCount, 3);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -318,6 +359,7 @@ void main() {
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('F#m7.A9sus4', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(m.beatCount, 3);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
@@ -341,6 +383,7 @@ void main() {
     ChordAnticipationOrDelay delayNone = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('A/G#', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(beatsPerBar, m.beatCount);
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
@@ -351,6 +394,7 @@ void main() {
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('C/F#.G', beatsPerBar);
+      _restfulJsonMeasureTest(m);
       expect(
         m.beatCount,
         3,
@@ -370,7 +414,9 @@ void main() {
     {
       for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
         Measure? m0 = Measure.parseString('C', beatsPerBar);
+        _restfulJsonMeasureTest(m0);
         m = Measure.parse(MarkedString('-'), beatsPerBar, m0);
+        _restfulJsonMeasureTest(m);
         expect(beatsPerBar, m.beatCount);
         expect(1, m.chords.length);
         expect(m0.chords, m.chords);
@@ -379,12 +425,14 @@ void main() {
     {
       for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
         m = Measure.parseString('X', beatsPerBar);
+        _restfulJsonMeasureTest(m);
         expect(beatsPerBar, m.beatCount);
         expect(1, m.chords.length);
       }
     }
     {
       m = Measure.parseString('E#m7. ', 3);
+      _restfulJsonMeasureTest(m);
       expect(m, isNotNull);
       expect('E#m7.', m.toMarkup());
     }
@@ -402,6 +450,7 @@ void main() {
       int beatsPerBar = 4;
       try {
         m = Measure.parseString(' .G ', beatsPerBar);
+        _restfulJsonMeasureTest(m);
         fail('should fail on stupid entry: .G');
       } catch (e) {
         //  expected
@@ -412,12 +461,14 @@ void main() {
       logger.d('beatsPerBar: $beatsPerBar');
       try {
         m = Measure.parseString(' .G ', beatsPerBar);
+        _restfulJsonMeasureTest(m);
         fail('should fail on stupid entry: .G');
       } catch (e) {
         //  expected
       }
       try {
         m = Measure.parseString('E#m7... ', beatsPerBar);
+        _restfulJsonMeasureTest(m);
         fail('should be exception on too many beats in measure');
       } catch (e) {
         //  expected
@@ -426,6 +477,7 @@ void main() {
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       try {
         m = Measure.parseString('E#m7.. ', beatsPerBar);
+        _restfulJsonMeasureTest(m);
         expect(3, m.beatCount);
         expect(1, m.chords.length);
         Chord chord0 = m.chords[0];
@@ -453,6 +505,7 @@ void main() {
           logger.i('beatsPerBar: $beatsPerBar');
           m = Measure.parseString(scaleNote.toString(), beatsPerBar);
           m = m.transposeToKey(key) as Measure;
+          _restfulJsonMeasureTest(m);
           for (Chord chord in m.chords) {
             var sn = chord.scaleChord.scaleNote;
 
@@ -470,6 +523,7 @@ void main() {
               chord.slashScaleNote = sourceSlash;
               m = Measure.parseString(chord.toString(), beatsPerBar);
               m = m.transposeToKey(key) as Measure;
+              _restfulJsonMeasureTest(m);
               if (m.chords.isEmpty) throw TestFailure('transposeToKey result is empty');
               ScaleNote? slashScaleNote = m.chords[0].slashScaleNote;
               if (slashScaleNote == null) throw TestFailure('transposeToKey result is null');
@@ -1027,7 +1081,7 @@ void main() {
     testShortMeasures();
   });
 
-  test('test short measure JSON', () {
+  test('test short measure JSON string', () {
     int beatsPerBar;
 
     // Logger.level = Level.info;
@@ -1115,11 +1169,23 @@ Measure _shortMeasureTest(int beatsPerBar, int beats, String input, String expec
   for (var chord in measure.chords) {
     logger.i('    $chord: beats: ${chord.beats}/${measure.beatCount}/$beatsPerBar, implicit: ${chord.implicitBeats}');
   }
+
   return measure;
 }
 
 _shortMeasureTestJSON(int beatsPerBar, String input, String expected) {
-  var measure = Measure.parseString(input, beatsPerBar);
-  logger.i('$measure => ${measure.toJson()}');
-  expect(measure.toJson(), expected);
+  //  storage json
+  final measure = Measure.parseString(input, beatsPerBar);
+  logger.i('$measure => ${measure.toJsonString()}');
+  expect(measure.toJsonString(), expected);
+
+  _restfulJsonMeasureTest(measure);
+}
+
+_restfulJsonMeasureTest(final Measure measure) {
+  //  test the restful json
+  final encoded = jsonEncode(measure);
+  // logger.i('$measure: \n$encoded');
+  final copy = Measure.fromJson(jsonDecode(encoded));
+  expect(copy, measure);
 }
