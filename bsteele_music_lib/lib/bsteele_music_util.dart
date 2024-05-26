@@ -1249,14 +1249,6 @@ coerced to reflect the songlist's last modification for that song.
             var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
             allSongPerformances.loadSongs(songs);
 
-            //  assure all songs are present
-            for (var performance in allSongPerformances.allSongPerformanceHistory) {
-              if (performance.song == null) {
-                logger.e('missing song: ${performance.songIdAsString}');
-                assert(false);
-              }
-            }
-
             Map<Song, int> songCounts = {};
             for (var performance in allSongPerformances.allSongPerformanceHistory) {
               var song = performance.song;

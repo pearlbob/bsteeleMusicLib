@@ -2,6 +2,7 @@
 
 import 'dart:collection';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'pitch.dart';
@@ -10,8 +11,11 @@ import 'scale_note.dart';
 
 import 'music_constants.dart';
 
+part 'key.g.dart';
+
 /// An enumeration of all major keys.
 
+@JsonEnum()
 enum KeyEnum {
   // ignore: constant_identifier_names
   /// G flat
@@ -79,18 +83,20 @@ final List<dynamic> _initialization = [
   [KeyEnum.B, 5, 2],
   [KeyEnum.Fs, 6, 9]
 ];
-Map<String, KeyEnum> _keyEnumMap = {};
+Map<String, KeyEnum> keyEnumMap = {};
 
 ///
 /// Representation of the song key used generate the expression of the proper scales.
+/// NOTE: since this is dart, they key here is the musical key and not a flutter widget key.
 ///
 /// Six flats (G♭) and six sharps (F♯) are labeled differently but are otherwise the same key.
 /// Seven flats and seven sharps are not included.
 @immutable
+@JsonSerializable(constructor: '_')
 class Key implements Comparable<Key> {
-  Key._(this._keyEnum, this._keyValue, this._halfStep, this._capoLocation)
-      : _name = _keyEnumToString(_keyEnum),
-        _keyScaleNote = ScaleNote.valueOf(_keyEnumToString(_keyEnum))!;
+  Key._(this.keyEnum, this.keyValue, this.halfStep, this.capoLocation)
+      : _name = keyEnumToString(keyEnum),
+        keyScaleNote = ScaleNote.valueOf(keyEnumToString(keyEnum))!;
 
   static final Gb = get(KeyEnum.Gb);
   static final Db = get(KeyEnum.Db);
@@ -106,14 +112,14 @@ class Key implements Comparable<Key> {
   static final B = get(KeyEnum.B);
   static final Fs = get(KeyEnum.Fs);
 
-  static String _keyEnumToString(KeyEnum ke) {
+  static String keyEnumToString(KeyEnum ke) {
     return ke.toString().split('.').last;
   }
 
   static List<Key> keysByHalfStep() {
     if (_keysByHalfStep.isEmpty) {
       SplayTreeSet<Key> sortedSet = SplayTreeSet((a1, a2) {
-        return a1._halfStep.compareTo(a2._halfStep);
+        return a1.halfStep.compareTo(a2.halfStep);
       });
       sortedSet.addAll(_getKeys().values);
       _keysByHalfStep = List.unmodifiable(sortedSet.toList());
@@ -122,8 +128,8 @@ class Key implements Comparable<Key> {
   }
 
   static Key byHalfStep({int offset = 0}) {
-    var off = offset % _halfStepsPerOctave;
-    if (offset > 0 && off == MusicConstants.halfStepsFromAtoC + _halfStepsPerOctave / 2) {
+    var off = offset % halfStepsPerOctave;
+    if (offset > 0 && off == MusicConstants.halfStepsFromAtoC + halfStepsPerOctave / 2) {
       //  the F# vs Gb split
       return Key.Fs;
     }
@@ -131,8 +137,8 @@ class Key implements Comparable<Key> {
   }
 
   static List<Key> keysByHalfStepFrom(Key key) {
-    return List.generate(_halfStepsPerOctave + 1, (i) {
-      return byHalfStep(offset: key._halfStep + i);
+    return List.generate(halfStepsPerOctave + 1, (i) {
+      return byHalfStep(offset: key.halfStep + i);
     });
   }
 
@@ -199,13 +205,13 @@ class Key implements Comparable<Key> {
 
   static KeyEnum? _getKeyEnum(String s) {
     //  lazy eval
-    if (_keyEnumMap.isEmpty) {
-      _keyEnumMap = <String, KeyEnum>{};
+    if (keyEnumMap.isEmpty) {
+      keyEnumMap = <String, KeyEnum>{};
       for (KeyEnum ke in KeyEnum.values) {
-        _keyEnumMap[_keyEnumToString(ke)] = ke;
+        keyEnumMap[keyEnumToString(ke)] = ke;
       }
     }
-    return _keyEnumMap[s];
+    return keyEnumMap[s];
   }
 
   static final RegExp _hashSignRegExp = RegExp(r'[♯#]');
@@ -254,32 +260,32 @@ class Key implements Comparable<Key> {
 
   /// Return the next key that is one half step higher.
   Key nextKeyByHalfStep() {
-    return _getKeyByHalfStep(_halfStep + 1);
+    return _getKeyByHalfStep(halfStep + 1);
   }
 
   Key nextKeyByHalfSteps(int step) {
     if (step == 0) {
       return this; //  don't fool with the key if we don't have to
     }
-    return _getKeyByHalfStep(_halfStep + step);
+    return _getKeyByHalfStep(halfStep + step);
   }
 
   Key nextKeyByFifth() {
-    return _getKeyByHalfStep(_halfStep + MusicConstants.notesPerScale);
+    return _getKeyByHalfStep(halfStep + MusicConstants.notesPerScale);
   }
 
   /// Return the next key that is one half step lower.
   Key previousKeyByHalfStep() {
-    return _getKeyByHalfStep(_halfStep - 1);
+    return _getKeyByHalfStep(halfStep - 1);
   }
 
   Key previousKeyByFifth() {
-    return _getKeyByHalfStep(_halfStep - MusicConstants.notesPerScale);
+    return _getKeyByHalfStep(halfStep - MusicConstants.notesPerScale);
   }
 
   Key _getKeyByHalfStep(int step) {
     step = step % _flatKeyEnumsByHalfStep.length;
-    if (isSharp && step == MusicConstants.halfStepsFromAtoC + _halfStepsPerOctave / 2) {
+    if (isSharp && step == MusicConstants.halfStepsFromAtoC + halfStepsPerOctave / 2) {
       //  the F# vs Gb split
       return Key.Fs;
     }
@@ -307,12 +313,12 @@ class Key implements Comparable<Key> {
 
   /// Return an integer value that represents the key.
   int getKeyValue() {
-    return _keyValue;
+    return keyValue;
   }
 
   /// Return the scale note of the key, i.e. the musician's label for the key.
   ScaleNote getKeyScaleNote() {
-    return _keyScaleNote;
+    return keyScaleNote;
   }
 
   ScaleNote getKeyMinorScaleNote() {
@@ -321,13 +327,13 @@ class Key implements Comparable<Key> {
 
   /// Return an integer value that represents the key's number of half steps from the key of A.
   int getHalfStep() {
-    return _keyScaleNote.halfStep;
+    return keyScaleNote.halfStep;
   }
 
   /// Return the key represented by the given integer value.
   static Key getKeyByValue(int keyValue) {
     for (Key key in _getKeys().values) {
-      if (key._keyValue == keyValue) {
+      if (key.keyValue == keyValue) {
         return key;
       }
     }
@@ -335,7 +341,7 @@ class Key implements Comparable<Key> {
   }
 
   static Key getKeyByHalfStep(int halfStep) {
-    return keysByHalfStep()[halfStep % _halfStepsPerOctave];
+    return keysByHalfStep()[halfStep % halfStepsPerOctave];
   }
 
   /// Return this major key representation as a minor key.
@@ -386,10 +392,10 @@ class Key implements Comparable<Key> {
         }
 
         //  find the max score with the minimum key value
-        if (score > maxScore || (score == maxScore && key._keyValue.abs() < minKeyValue)) {
+        if (score > maxScore || (score == maxScore && key.keyValue.abs() < minKeyValue)) {
           ret = key;
           maxScore = score;
-          minKeyValue = key._keyValue.abs();
+          minKeyValue = key.keyValue.abs();
         }
       }
     }
@@ -545,7 +551,7 @@ class Key implements Comparable<Key> {
 
   /// Counts from zero.
   ScaleNote getKeyScaleNoteByHalfStep(int halfStep) {
-    halfStep += _keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC;
+    halfStep += keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC;
     return getScaleNoteByHalfStep(halfStep);
   }
 
@@ -553,16 +559,16 @@ class Key implements Comparable<Key> {
   ScaleNote getScaleNoteByHalfStep(int halfSteps) {
     ScaleNote ret = _getScaleNoteByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
-    if (_keyValue == 6 && ret == ScaleNote.F) {
+    if (keyValue == 6 && ret == ScaleNote.F) {
       return ScaleNote.Es;
-    } else if (_keyValue == -6 && ret == ScaleNote.B) {
+    } else if (keyValue == -6 && ret == ScaleNote.B) {
       return ScaleNote.Cb;
     }
     return ret;
   }
 
   ScaleNote _getScaleNoteByHalfStepNoAdjustment(int halfSteps) {
-    halfSteps = halfSteps % _halfStepsPerOctave;
+    halfSteps = halfSteps % halfStepsPerOctave;
     ScaleNote ret = isSharp ? ScaleNote.getSharpByHalfStep(halfSteps) : ScaleNote.getFlatByHalfStep(halfSteps);
     return ret;
   }
@@ -571,16 +577,16 @@ class Key implements Comparable<Key> {
   ScaleNote getScaleNoteEnum3ByHalfStep(int halfSteps) {
     ScaleNote ret = _getScaleNoteEnum3ByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
-    if (_keyValue == 6 && ret == ScaleNote.F) {
+    if (keyValue == 6 && ret == ScaleNote.F) {
       return ScaleNote.Es;
-    } else if (_keyValue == -6 && ret == ScaleNote.B) {
+    } else if (keyValue == -6 && ret == ScaleNote.B) {
       return ScaleNote.Cb;
     }
     return ret;
   }
 
   ScaleNote _getScaleNoteEnum3ByHalfStepNoAdjustment(int halfSteps) {
-    halfSteps = halfSteps % _halfStepsPerOctave;
+    halfSteps = halfSteps % halfStepsPerOctave;
     ScaleNote ret = isSharp ? ScaleNote.getSharpByHalfStep(halfSteps) : ScaleNote.getFlatByHalfStep(halfSteps);
     return ret;
   }
@@ -593,11 +599,11 @@ class Key implements Comparable<Key> {
   /// Returns a string representing the number of sharps or flats associated with this key
   /// using their musical font character values ( ♭ or ♯ ) instead of b or #.
   String sharpsFlatsToString() {
-    if (_keyValue < 0) {
-      return _keyValue.abs().toString() + MusicConstants.flatChar;
+    if (keyValue < 0) {
+      return keyValue.abs().toString() + MusicConstants.flatChar;
     }
-    if (_keyValue > 0) {
-      return _keyValue.toString() + MusicConstants.sharpChar;
+    if (keyValue > 0) {
+      return keyValue.toString() + MusicConstants.sharpChar;
     }
     return '';
   }
@@ -605,32 +611,32 @@ class Key implements Comparable<Key> {
   /// Returns a string representing the number of sharps or flats associated with this key
   /// using the simpler b or # instead of their musical font character values ( ♭ or ♯ ).
   String sharpsFlatsToMarkup() {
-    if (_keyValue < 0) {
-      return '${_keyValue.abs()}b';
+    if (keyValue < 0) {
+      return '${keyValue.abs()}b';
     }
-    if (_keyValue > 0) {
-      return '$_keyValue#';
+    if (keyValue > 0) {
+      return '$keyValue#';
     }
     return '';
   }
 
   @override
   int compareTo(Key other) {
-    return _keyEnum.index - other._keyEnum.index;
+    return keyEnum.index - other.keyEnum.index;
   }
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Key && runtimeType == other.runtimeType && _keyEnum == other._keyEnum;
+      identical(this, other) || other is Key && runtimeType == other.runtimeType && keyEnum == other.keyEnum;
 
   @override
-  int get hashCode => _keyEnum.hashCode;
+  int get hashCode => keyEnum.hashCode;
 
   /// Return true if this key is a sharp key.
   /// That is, true if the key accidental is sharp.
-  bool get isSharp => _keyValue > 0;
+  bool get isSharp => keyValue > 0;
 
-  String toJson() {
+  String toJsonString() {
     return '"key":      $halfStep';
   }
 
@@ -639,12 +645,12 @@ class Key implements Comparable<Key> {
   /// values ( ♭ or ♯ ) instead of b or #.
   @override
   String toString() {
-    return _keyScaleNote.toString();
+    return keyScaleNote.toString();
   }
 
   /// Express the key name as markup.
   String toMarkup() {
-    return _keyScaleNote.toMarkup();
+    return keyScaleNote.toMarkup();
   }
 
   static Key fromMarkup(String s) {
@@ -653,7 +659,7 @@ class Key implements Comparable<Key> {
       return Key.C;
     }
     try {
-      return _getKeys().values.where((k) => k._keyScaleNote == sn).first;
+      return _getKeys().values.where((k) => k.keyScaleNote == sn).first;
     } catch (e) {
       return Key.C;
     }
@@ -661,18 +667,18 @@ class Key implements Comparable<Key> {
 
   /// Express the key name as a sharp note string.
   String toStringAsSharp() {
-    if (_keyScaleNote.isFlat) {
-      return _keyScaleNote.alias.toString();
+    if (keyScaleNote.isFlat) {
+      return keyScaleNote.alias.toString();
     }
-    return _keyScaleNote.toString();
+    return keyScaleNote.toString();
   }
 
   /// Express the key name as a flat note string.
   String toStringAsFlat() {
-    if (_keyScaleNote.isSharp) {
-      return _keyScaleNote.alias.toString();
+    if (keyScaleNote.isSharp) {
+      return keyScaleNote.alias.toString();
     }
-    return _keyScaleNote.toString();
+    return keyScaleNote.toString();
   }
 
   //                                   1  2  3  4  5  6  7
@@ -722,30 +728,31 @@ class Key implements Comparable<Key> {
     KeyEnum.Ab
   ];
 
-  static const int _halfStepsPerOctave = MusicConstants.halfStepsPerOctave;
+  static const int halfStepsPerOctave = MusicConstants.halfStepsPerOctave;
 
   //                                     1  2  3  4  5  6  7
   static const List<int> _guessWeights = [9, 1, 1, 4, 4, 1, 3];
   static const int _notesFromAtoC = 2;
 
+  factory Key.fromJson(Map<String, dynamic> json) => _$KeyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KeyToJson(this);
+
   /// The matching key enumeration.
-  KeyEnum get keyEnum => _keyEnum;
-  final KeyEnum _keyEnum;
+  final KeyEnum keyEnum;
 
   /// The key's name
   String get name => _name;
   final String _name;
-  final int _keyValue;
+  final int keyValue;
 
   /// The number of half steps from the key of C.
   /// Will be between -6 and +6 inclusive.
-  int get halfStep => _halfStep;
-  final int _halfStep;
-  final ScaleNote _keyScaleNote;
+  final int halfStep;
+  final ScaleNote keyScaleNote;
 
   /// The location of the guitar capo required to map this key to a simpler key to play.
-  int get capoLocation => _capoLocation;
-  final int _capoLocation;
+  final int capoLocation;
 
   /// Guitar key that should be played for this key when the guitar capo is placed on the capo location.
   /// Typically this will be either the key of C or G.

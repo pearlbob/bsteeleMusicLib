@@ -61,7 +61,7 @@ void main() {
 
         var songPerformanceFromJson = SongPerformance.fromJsonString(songPerformance.toJsonString());
         expect(songPerformanceFromJson, songPerformance);
-        allSongPerformances.addSongPerformance(songPerformanceFromJson);
+        songPerformanceFromJson = allSongPerformances.addSongPerformance(songPerformanceFromJson);
         expect(songPerformanceFromJson.song, song);
       }
     }
@@ -101,8 +101,8 @@ void main() {
       logger.i('String toJsonStringFor($singer1): \'${allSongPerformances.toJsonStringFor(singer1)}\'');
       expect(
           allSongPerformances.toJsonStringFor(singer1),
-          '[{"songId":"Song_A_by_bob","singer":"bodhi","key":"Gb","bpm":100,"lastSung":1639852279322},'
-          '\n{"songId":"Song_B_by_bob","singer":"bodhi","key":"Gb","bpm":120,"lastSung":1639852279322}]\n');
+          '[{"songIdAsString":"Song_A_by_bob","singer":"bodhi","key":"Gb","bpm":100,"lastSung":1639852279322},'
+          '\n{"songIdAsString":"Song_B_by_bob","singer":"bodhi","key":"Gb","bpm":120,"lastSung":1639852279322}]\n');
       logger.i('String toJsonStringFor($singer2): \'${allSongPerformances.toJsonStringFor(singer2)}\'');
       expect(allSongPerformances.toJsonStringFor(singer2),
           '[{"songId":"Song_A_by_bob","singer":"vicki","key":"A","bpm":120,"lastSung":1639852279322}]\n');
@@ -200,7 +200,7 @@ void main() {
         //  duplicate songs should not be duplicated
         allSongPerformances.addSongPerformance(songPerformance);
         expect(allSongPerformances.length, 1);
-        allSongPerformances.addSongPerformance(songPerformance.update());
+        allSongPerformances.addSongPerformance(songPerformance.copyWith());
         expect(allSongPerformances.length, 1);
         allSongPerformances.addSongPerformance(songPerformance);
         expect(allSongPerformances.length, 1);

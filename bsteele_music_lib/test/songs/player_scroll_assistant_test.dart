@@ -394,10 +394,9 @@ class CjLog {
 
   SongPerformance toSongPerformance(SongUpdate songUpdate, DateTime dateTime) {
     logger.log(_cjLogPerformances, 'output: $songUpdate');
-    var ret = SongPerformance(
-      songUpdate.song.songId.toString(),
+    var ret = SongPerformance.fromSong(
+      songUpdate.song,
       songUpdate.singer,
-      song: songUpdate.song,
       key: songUpdate.currentKey,
       bpm: songUpdate.currentBeatsPerMinute,
       lastSung: dateTime.millisecondsSinceEpoch,
