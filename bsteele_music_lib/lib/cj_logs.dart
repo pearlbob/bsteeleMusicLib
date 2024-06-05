@@ -27,9 +27,9 @@ final _now = DateTime.now();
 final _oldestValidDate = DateTime(_now.year - 2, _now.month, _now.day);
 final _firstValidDate = _oldestValidDate;
 
-const _cjLogFiles = Level.debug;
+const _cjLogFiles = Level.info;
 const _cjLogLines = Level.debug;
-const _cjLogWasSung = Level.info;
+const _cjLogWasSung = Level.debug;
 const _cjLogPerformances = Level.debug;
 const _cjLogDelete = Level.debug;
 
@@ -122,6 +122,13 @@ class CjLog {
       String data = file.readAsStringSync();
       allSongPerformances.updateFromJsonString(data);
     }
+
+    SplayTreeSet<SongPerformance> originalAllSongPerformances =
+        SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger)
+          ..addAll(allSongPerformances.allSongPerformanceHistory.map((perf) {
+            return perf.copyWith();
+          }));
+    logger.i('originalAllSongPerformances.length: ${originalAllSongPerformances.length}');
 
     logger.i('request count: ${allSongPerformances.allSongPerformanceRequests.length}');
 
@@ -286,7 +293,7 @@ class CjLog {
       for (var performance in allSongPerformances.allSongPerformanceHistory) {
         if (performance.song == null) {
           print('missing song: ${performance.lowerCaseSongIdAsString}');
-          assert(false);
+          // assert(false);
         } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
           logger.i('${performance.lowerCaseSongIdAsString}'
               ' vs ${performance.song!.songId.toString().toLowerCase()}');
@@ -317,6 +324,25 @@ class CjLog {
         logger.i('allSongPerformances location: ${localSongMetadata.path}');
       }
     }
+
+    SplayTreeSet<SongPerformance> processedAllSongPerformances =
+        SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger)
+          ..addAll(allSongPerformances.allSongPerformanceHistory.map((perf) {
+            return perf.copyWith();
+          }));
+    logger.i('processedAllSongPerformances.length: ${processedAllSongPerformances.length}');
+
+    logger.i('originalAllSongPerformances.difference(processedAllSongPerformances):');
+    (originalAllSongPerformances.difference(processedAllSongPerformances).toList()
+      ..forEach((perf) {
+        logger.i(perf.toString());
+      }));
+    logger.i('\n');
+    logger.i('processedAllSongPerformances.difference(originalAllSongPerformances):');
+    (processedAllSongPerformances.difference(originalAllSongPerformances).toList()
+      ..forEach((perf) {
+        logger.i(perf.toString());
+      }));
 
     //  write the corrected performances
     File localSongperformances = File('$downloadsDirString/allSongPerformances.songperformances');
@@ -420,4 +446,16 @@ class CjLog {
   final RegExp messageRegExp = RegExp(r'(\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) INFO .*'
       r' com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage'
       r' onMessage\("(.*)"\)\s*$');
+}
+
+int cjLogCompare(SongPerformance first, SongPerformance other) {
+  int ret = SongPerformance.compareBySongId(first, other);
+  if (ret != 0) {
+    return ret;
+  }
+  ret = first.singer.compareTo(other.singer);
+  if (ret != 0) {
+    return ret;
+  }
+  return 0;
 }

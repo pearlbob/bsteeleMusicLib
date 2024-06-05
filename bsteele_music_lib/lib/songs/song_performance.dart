@@ -51,17 +51,17 @@ class SongPerformance implements Comparable<SongPerformance> {
         _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance copyWith({final Song? song, int? lastSung, Key? key, int? bpm}) {
+  SongPerformance copyWith({final Song? song, int? firstSung, int? lastSung, Key? key, int? bpm}) {
     var ret = SongPerformance(songId, singer,
         key: key ?? this.key,
         bpm: bpm ?? _bpm,
-        firstSung: _firstSung,
-        lastSung: lastSung ?? this.lastSung,
+        firstSung: firstSung ?? _firstSung,
+        lastSung: lastSung ?? _lastSung,
         song: song ?? this.song);
     return ret;
   }
 
-  static int _compareBySongId(SongPerformance first, SongPerformance other) {
+  static int compareBySongId(SongPerformance first, SongPerformance other) {
     if (identical(first, other)) {
       return 0;
     }
@@ -69,7 +69,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   }
 
   static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
-    int ret = _compareBySongId(first, other);
+    int ret = compareBySongId(first, other);
     if (ret != 0) {
       return ret;
     }
@@ -86,7 +86,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       return ret;
     }
 
-    ret = _compareBySongId(first, other);
+    ret = compareBySongId(first, other);
     if (ret != 0) {
       return ret;
     }
@@ -107,13 +107,10 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   @override
   String toString() {
-    if (_firstSung == 0) {
-      logger.i('break here');
-    }
     return 'SongPerformance{song: $song, _songId: $songId, _singer: \'$_singer\', key: $key'
         ', _bpm: $_bpm'
         '${_firstSung < _lastSung ? ', first sung: $firstSungDateString' : ''}'
-        ', last sung: $lastSungDateString'
+        ', last sung: $lastSungDateTimeString'
         //' = $_lastSung'
         '}';
   }
@@ -177,16 +174,20 @@ class SongPerformance implements Comparable<SongPerformance> {
     var ret = _$SongPerformanceFromJson(json);
 
     //  deal with key as a special   fixme: This is due to original decision to store it as an int!
-    ret = ret.copyWith(key: Key.get(KeyEnum.values[json['key']]));
+    //  deal with F# key as a special!
+    ret = ret.copyWith(
+        key: json['key'] == null
+            ? Key.getDefault()
+            : json['key'] is int
+                ? Key.getKeyByHalfStep(json['key'])
+                : Key.get(KeyEnum.values.byName(json['key'] == 'F#' ? 'Fs' : json['key'])));
 
     return ret;
   }
 
   Map<String, dynamic> toJson() {
     var ret = _$SongPerformanceToJson(this);
-
-    //  deal with key as a special   fixme: This is due to original decision to store it as an int!
-    ret['key'] = key.keyEnum.index;
+    ret['key'] = key.keyEnum.name;
 
     return ret;
   }
@@ -217,6 +218,9 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   String get lastSungDateString =>
       _lastSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
+
+  String get lastSungDateTimeString =>
+      _lastSung == 0 ? '' : DateFormat.yMd().add_Hms().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
   DateTime get lastSungDateTime => DateTime.fromMillisecondsSinceEpoch(_lastSung);
 
@@ -482,6 +486,11 @@ class AllSongPerformances {
       _allSongPerformanceHistory.add(newPerformance);
       return newPerformance;
     }
+    if (_allSongPerformances.contains(songPerformance)) {
+      _allSongPerformances.remove(songPerformance);
+    }
+    _allSongPerformances.add(songPerformance);
+    _allSongPerformanceHistory.add(songPerformance);
     return songPerformance;
   }
 
@@ -509,12 +518,11 @@ class AllSongPerformances {
     if (newPerformance.lastSung <= original.lastSung) {
       //  use the original since it's the same or newer
       //  update first sung
-      original._firstSung = min(original._firstSung, songPerformance.lastSung);
+      addSongPerformance(original.copyWith(firstSung: min(original._firstSung, songPerformance.lastSung)));
       return false;
     }
-
-    songPerformance._firstSung = min(original._firstSung, songPerformance.lastSung);
-    addSongPerformance(songPerformance);
+    newPerformance = newPerformance.copyWith(firstSung: min(original._firstSung, songPerformance.lastSung));
+    addSongPerformance(newPerformance);
     return true;
   }
 
