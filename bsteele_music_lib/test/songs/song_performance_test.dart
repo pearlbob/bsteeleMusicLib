@@ -73,7 +73,7 @@ void main() {
       expect(
           songPerformance.toString(),
           'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
-          ' _singer: \'vicki\', key: A, _bpm: 120, last sung: 12/18/2021}');
+          ' _singer: \'vicki\', key: A, _bpm: 120, last sung: 12/18/2021 10:31:19}');
       expect(songPerformance.songId, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
       expect(songPerformance.key, Key.A);
@@ -93,10 +93,10 @@ void main() {
       allSongPerformances.loadSongs(songs);
       expect(
           allSongPerformances.bySinger(singer1).toString(),
-          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', key: G♭, _bpm: 100, last sung: 12/18/2021}'
-          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', key: G♭, _bpm: 120, last sung: 12/18/2021}]');
+          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', key: G♭, _bpm: 100, last sung: 12/18/2021 10:31:19}'
+          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', key: G♭, _bpm: 120, last sung: 12/18/2021 10:31:19}]');
       expect(allSongPerformances.bySinger(singer2).toString(),
-          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', key: A, _bpm: 120, last sung: 12/18/2021}]');
+          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', key: A, _bpm: 120, last sung: 12/18/2021 10:31:19}]');
 
       logger.i('String toJsonStringFor($singer1): \'${allSongPerformances.toJsonStringFor(singer1)}\'');
       expect(
