@@ -494,7 +494,6 @@ void main() {
 //                    logger.i(s);
 //                    if ( s.length() < 2)
 //                        logger.i(" ");
-
         }
       }
     }
@@ -959,6 +958,16 @@ void main() {
           expect(key.getMinorScaleNumberByHalfStep(halfSteps), isNull);
         }
       }
+    }
+  });
+
+  test('test JSON', () {
+    for (var keyEnum in KeyEnum.values) {
+      var key = Key.get(keyEnum);
+      var encoded = key.toJson();
+      var decoded = Key.fromJson(key.toJson());
+      logger.i('$key:  "$encoded" $decoded');
+      expect(decoded, key);
     }
   });
 }

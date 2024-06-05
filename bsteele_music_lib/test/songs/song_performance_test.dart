@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'package:compute/compute.dart';
 
 void main() {
-  Logger.level = Level.debug;
+  Logger.level = Level.info;
 
   test('song performance', () async {
     var a = Song(
@@ -73,8 +73,8 @@ void main() {
       expect(
           songPerformance.toString(),
           'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
-          ' _singer: \'vicki\', _key: A, _bpm: 120, last sung: 12/18/2021}');
-      expect(songPerformance.songIdAsString, 'Song_A_by_bob');
+          ' _singer: \'vicki\', key: A, _bpm: 120, last sung: 12/18/2021}');
+      expect(songPerformance.songId, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
       expect(songPerformance.key, Key.A);
       expect(songPerformance.bpm, 120);
@@ -93,10 +93,10 @@ void main() {
       allSongPerformances.loadSongs(songs);
       expect(
           allSongPerformances.bySinger(singer1).toString(),
-          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', _key: G♭, _bpm: 100, last sung: 12/18/2021}'
-          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', _key: G♭, _bpm: 120, last sung: 12/18/2021}]');
+          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer1\', key: G♭, _bpm: 100, last sung: 12/18/2021}'
+          ', SongPerformance{song: B by bob, _songId: Song_B_by_bob, _singer: \'bodhi\', key: G♭, _bpm: 120, last sung: 12/18/2021}]');
       expect(allSongPerformances.bySinger(singer2).toString(),
-          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', _key: A, _bpm: 120, last sung: 12/18/2021}]');
+          '[SongPerformance{song: A by bob, _songId: Song_A_by_bob, _singer: \'$singer2\', key: A, _bpm: 120, last sung: 12/18/2021}]');
 
       logger.i('String toJsonStringFor($singer1): \'${allSongPerformances.toJsonStringFor(singer1)}\'');
       expect(
@@ -232,7 +232,7 @@ void main() {
     expect(performance, isNotNull);
     expect(performance!.singer, singer);
     expect(performance.song, isNull);
-    expect(performance.songIdAsString, 'Song_Back_in_the_USSR_by_Beatles_The');
+    expect(performance.songId, 'Song_Back_in_the_USSR_by_Beatles_The');
     expect(allSongPerformances.length, 5);
 
     var a = Song(
@@ -309,7 +309,7 @@ void main() {
     ]);
 
     for (var p in allSongPerformances.allSongPerformances) {
-      logger.i('${p.singer} sings ${p.songIdAsString}');
+      logger.i('${p.singer} sings ${p.songId}');
     }
     expect(allSongPerformances.length, 6);
 
@@ -341,7 +341,7 @@ void main() {
       expect(allSongPerformances.allSongPerformances.length, 5);
       expect(allSongPerformances.allSongPerformanceHistory.length, 6);
       for (var p in allSongPerformances.bySinger(singer)) {
-        if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
+        if (p.songId == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
         }
@@ -353,7 +353,7 @@ void main() {
           ',"singer":"$singer","key":3,"bpm":110,"lastSung":1539854884818}'); //  older performance
       expect(allSongPerformances.updateSongPerformance(performance), false);
       for (var p in allSongPerformances.bySinger(singer)) {
-        if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
+        if (p.songId == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           //  not updated since update was older
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
@@ -808,7 +808,7 @@ void main() {
     for (var h in allSongPerformances.allSongPerformanceHistory) {
       logger.i('$h');
     }
-    logger.i('performance1 ${performance1.songIdAsString} vs performance2 ${performance2.songIdAsString}');
+    logger.i('performance1 ${performance1.songId} vs performance2 ${performance2.songId}');
     logger.i('performance1.lastSung ${performance1.lastSung} vs ${performance2.lastSung}');
     logger.i('performance1.compareTo(performance2): ${performance1.compareTo(performance2)}');
     expect(performance1.compareTo(performance2), isZero);

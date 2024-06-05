@@ -42,8 +42,8 @@ void main() {
       logger.d('perf: ${perf.lowerCaseSongIdAsString}');
       if (perf.song == null) {
         //  not all songs will get a match
-        logger.i('${perf.songIdAsString}: singer: ${perf.singer}, ${perf.lastSungDateTime}');
-        BestMatch bestMatch = StringSimilarity.findBestMatch(perf.songIdAsString, allSongIdList);
+        logger.i('${perf.songId}: singer: ${perf.singer}, ${perf.lastSungDateTime}');
+        BestMatch bestMatch = StringSimilarity.findBestMatch(perf.songId, allSongIdList);
         logger.i('       ${allSongList[bestMatch.bestMatchIndex]}, ${bestMatch.ratings.first.rating}');
       } else if (perf.lowerCaseSongIdAsString != perf.song?.songId.toString().toLowerCase()) {
         logger.i('Matched: $perf =>\n              ${perf.song}');

@@ -746,7 +746,7 @@ void main() {
 
           ChordSectionLocation? chordSectionLocation =
               ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: measureIndex);
-          logger.d('current: $currentChordSectionLocation, chord: $chordSectionLocation');
+          // logger.d('current: $currentChordSectionLocation, chord: $chordSectionLocation');
           a.setCurrentChordSectionLocation(currentChordSectionLocation);
           a.setRepeat(chordSectionLocation, 2);
           logger.i(a.toMarkup());

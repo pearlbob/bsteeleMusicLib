@@ -10,6 +10,16 @@ import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
+import 'package:csv/csv.dart';
+import 'package:english_words/english_words.dart';
+import 'package:excel/excel.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
+import 'package:quiver/collection.dart';
+import 'package:string_similarity/string_similarity.dart';
+
+import 'app_logger.dart';
 import 'songs/chord_descriptor.dart';
 import 'songs/chord_section.dart';
 import 'songs/key.dart';
@@ -23,16 +33,6 @@ import 'songs/song_performance.dart';
 import 'songs/song_update.dart';
 import 'util/us_timer.dart';
 import 'util/util.dart';
-import 'package:csv/csv.dart';
-import 'package:english_words/english_words.dart';
-import 'package:excel/excel.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
-import 'package:quiver/collection.dart';
-import 'package:string_similarity/string_similarity.dart';
-
-import 'app_logger.dart';
 
 const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
 const String _allSongPerformancesHistoricalDirectoryLocation = 'communityJams/cj/old_Downloads';
@@ -1073,7 +1073,7 @@ coerced to reflect the songlist's last modification for that song.
                 logger.i('performanceDelete:  length: ${performanceDelete.length}');
                 for (var performance in performanceDelete) {
                   logger.log(_logPerformanceDetails, 'delete: $performance');
-                  allSongPerformances.removeSingerSong(performance.singer, performance.songIdAsString);
+                  allSongPerformances.removeSingerSong(performance.singer, performance.songId);
                   assert(!allSongPerformances.allSongPerformances.contains(performance));
                 }
 
@@ -2025,7 +2025,7 @@ coerced to reflect the songlist's last modification for that song.
         logger.i('performanceDelete:  length: ${performanceDelete.length}');
         for (var performance in performanceDelete) {
           logger.log(_logPerformanceDetails, 'delete: $performance');
-          allSongPerformances.removeSingerSong(performance.singer, performance.songIdAsString);
+          allSongPerformances.removeSingerSong(performance.singer, performance.songId);
           assert(!allSongPerformances.allSongPerformances.contains(performance));
         }
 

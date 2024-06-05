@@ -1,13 +1,17 @@
 import 'dart:collection';
-import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'song_id.g.dart';
+
+@JsonSerializable()
 class SongId implements Comparable<SongId> {
-  SongId.noArgs() : _songId = 'UnknownSong';
+  SongId.noArgs() : songId = 'UnknownSong';
 
-  SongId(this._songId);
+  SongId(this.songId);
 
   SongId.computeSongId(String? title, String? artist, String? coverArtist)
-      : _songId = _findSongId('$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
+      : songId = _findSongId('$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
             '${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
 
   static String _toSongId(String? s) {
@@ -21,7 +25,7 @@ class SongId implements Comparable<SongId> {
   }
 
   String toUnderScorelessString() =>
-      _underScorelessId ??= _songId.replaceFirst(prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
+      _underScorelessId ??= songId.replaceFirst(prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
 
   static String asReadableString(String songIdAsString) {
     return songIdAsString.replaceFirst(prefix, '').replaceAll('_', ' ').replaceAll(' The', ', The');
@@ -29,43 +33,46 @@ class SongId implements Comparable<SongId> {
 
   @override
   String toString() {
-    return _songId;
-  }
-
-  String toJson() {
-    return jsonEncode(this);
+    return songId;
   }
 
   /// Compares this object with the specified object for order.
   @override
   int compareTo(SongId o) {
-    if (identical(_songId, o._songId)) {
+    if (identical(songId, o.songId)) {
       return 0;
     }
-    return _songId.compareTo(o._songId);
+    return songId.compareTo(o.songId);
   }
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SongId && runtimeType == other.runtimeType && _songId == other._songId;
+      identical(this, other) || other is SongId && runtimeType == other.runtimeType && songId == other.songId;
 
   @override
-  int get hashCode => _songId.hashCode;
+  int get hashCode => songId.hashCode;
 
   static const prefix = 'Song_';
 
-  String get songId => _songId;
-  final String _songId;
+  final String songId;
   String? _underScorelessId;
 
   static String _findSongId(String value) {
-    if (!_songIds.contains(value)) {
-      _songIds.add(value);
+    if (!songIds.contains(value)) {
+      songIds.add(value);
     }
     return value;
   }
 
-  static final SplayTreeSet<String> _songIds = SplayTreeSet();
+  // custom serialization: only the key enum need represent the id in a song id context
+  factory SongId.fromJson(String json) {
+    return SongId(json);
+  }
+
+  // custom serialization: only the key enum need represent the id in a song id context
+  String toJson() => songId;
+
+  static final SplayTreeSet<String> songIds = SplayTreeSet();
 
   static final RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
   static final RegExp dupUnderscoreOrSpaceRegExp = RegExp('[ _]+');

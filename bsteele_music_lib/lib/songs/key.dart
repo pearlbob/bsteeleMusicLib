@@ -5,11 +5,10 @@ import 'dart:collection';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import 'music_constants.dart';
 import 'pitch.dart';
 import 'scale_chord.dart';
 import 'scale_note.dart';
-
-import 'music_constants.dart';
 
 part 'key.g.dart';
 
@@ -734,9 +733,20 @@ class Key implements Comparable<Key> {
   static const List<int> _guessWeights = [9, 1, 1, 4, 4, 1, 3];
   static const int _notesFromAtoC = 2;
 
-  factory Key.fromJson(Map<String, dynamic> json) => _$KeyFromJson(json);
+  // custom serialization: only the key enum need represent the key in a key context
+  factory Key.fromJson(String json) {
+    try {
+      var index = int.parse(json);
+      return get(KeyEnum.values[index]);
+    } catch (e) {
+      return get($enumDecode(_$KeyEnumEnumMap, json));
+    }
+  }
 
-  Map<String, dynamic> toJson() => _$KeyToJson(this);
+  // custom serialization: only the key enum need represent the key in a key context
+  String toJson() {
+    return _$KeyEnumEnumMap[keyEnum]!;
+  }
 
   /// The matching key enumeration.
   final KeyEnum keyEnum;
