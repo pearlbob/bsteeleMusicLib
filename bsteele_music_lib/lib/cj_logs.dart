@@ -325,23 +325,40 @@ class CjLog {
       }
     }
 
+    {
+      //  song check... not strictly required
+      int count = 0;
+      for (var perf in originalAllSongPerformances) {
+        count += perf.song == null ? 1 : 0;
+      }
+      logger.i('original missing songs: $count');
+    }
+
     SplayTreeSet<SongPerformance> processedAllSongPerformances =
         SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger)
           ..addAll(allSongPerformances.allSongPerformanceHistory.map((perf) {
             return perf.copyWith();
           }));
     logger.i('processedAllSongPerformances.length: ${processedAllSongPerformances.length}');
+    {
+      //  song check... not strictly required
+      int count = 0;
+      for (var perf in processedAllSongPerformances) {
+        count += perf.song == null ? 1 : 0;
+      }
+      logger.i('     missing songs: $count');
+    }
 
     logger.i('originalAllSongPerformances.difference(processedAllSongPerformances):');
     (originalAllSongPerformances.difference(processedAllSongPerformances).toList()
       ..forEach((perf) {
-        logger.i(perf.toString());
+        logger.i(perf.toShortString());
       }));
     logger.i('\n');
     logger.i('processedAllSongPerformances.difference(originalAllSongPerformances):');
     (processedAllSongPerformances.difference(originalAllSongPerformances).toList()
       ..forEach((perf) {
-        logger.i(perf.toString());
+        logger.i(perf.toShortString());
       }));
 
     //  write the corrected performances

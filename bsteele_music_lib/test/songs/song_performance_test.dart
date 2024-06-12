@@ -274,7 +274,7 @@ void main() {
           chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
           rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
       Song(
-          title: 'back in the USSR',
+          title: 'Back in the USSR',
           artist: 'The Beatles',
           copyright: 'bsteele.com',
           key: Key.getDefault(),
@@ -285,7 +285,7 @@ void main() {
           chords: 'i: A B C D V: D E F F# [ D C B A ]x2 c: D C G G',
           rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
       Song(
-          title: 'don\'t let me down',
+          title: 'Don\'t Let Me Down',
           artist: 'The Beatles',
           copyright: 'bsteele.com',
           key: Key.getDefault(),
@@ -297,7 +297,7 @@ void main() {
           rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here'),
       Song(
           title: 'Angie',
-          artist: 'The Stones',
+          artist: 'The Rolling Stones',
           copyright: 'bsteele.com',
           key: Key.getDefault(),
           beatsPerMinute: 100,
@@ -804,61 +804,125 @@ void main() {
     var lastSung = DateTime.now().millisecondsSinceEpoch;
 
     var allSongPerformances = AllSongPerformances.test();
-    var a = Song(
-        title: 'ive go the blanks',
-        artist: 'bob',
-        copyright: '2022 bsteele.com',
-        key: Key.C,
-        beatsPerMinute: bpm,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        user: 'pearl bob',
-        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
-        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+    {
+      var a = Song(
+          title: 'ive go the blanks',
+          artist: 'bob',
+          copyright: '2022 bsteele.com',
+          key: Key.C,
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
-    var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
-    allSongPerformances.addSongPerformance(performance1);
-    allSongPerformances.loadSongs([a]);
-    var performanceA = allSongPerformances.findBySingerSongId(songIdAsString: a.songId.toString(), singer: singer);
-    expect(performanceA, isNotNull);
-    expect(performanceA!.song, isNotNull);
+      var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+      allSongPerformances.addSongPerformance(performance1);
+      allSongPerformances.loadSongs([a]);
+      var performanceA = allSongPerformances.findBySingerSongId(songIdAsString: a.songId.toString(), singer: singer);
+      expect(performanceA, isNotNull);
+      expect(performanceA!.song, isNotNull);
 
-    var b = Song(
-        title: 'Ive Got The Blanks',
-        artist: 'bob',
-        copyright: '2022 bsteele.com',
-        key: Key.C,
-        beatsPerMinute: bpm,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        user: 'pearl bob',
-        chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
-        rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+      var b = Song(
+          title: 'Ive Got The Blanks',
+          artist: 'bob',
+          copyright: '2022 bsteele.com',
+          key: Key.C,
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
-    var performance2 = SongPerformance(b.songId.toString(), singer,
-        key: Key.D, bpm: bpm, lastSung: lastSung + Duration.millisecondsPerDay);
-    performance2 = allSongPerformances.addSongPerformance(performance2);
-    expect(allSongPerformances.allSongPerformances.length, 2);
-    expect(allSongPerformances.allSongPerformanceHistory.length, 2);
-    for (var h in allSongPerformances.allSongPerformanceHistory) {
-      logger.i('$h');
+      //  note: these two song titles are close to be considered different!
+      var performance2 = SongPerformance(b.songId.toString(), singer,
+          key: Key.D, bpm: bpm, lastSung: lastSung + Duration.millisecondsPerDay);
+      performance2 = allSongPerformances.addSongPerformance(performance2);
+      expect(
+          allSongPerformances.allSongPerformances.length, 1); //  song titles are too close to be considered different!
+      expect(allSongPerformances.allSongPerformanceHistory.length, 2);
+      for (var h in allSongPerformances.allSongPerformanceHistory) {
+        logger.i('$h');
+      }
+      logger.i('performanceA ${performanceA.songId} vs performance2 ${performance2.songId}');
+      logger.i('performanceA.lastSung ${performanceA.lastSung} vs ${performance2.lastSung}');
+      logger.i('performanceA.compareTo(performance2): ${performance1.compareTo(performance2)}');
+      expect(performanceA.song?.compareTo(performance2.song!), isZero);
+
+      logger.i('allSongPerformances:');
+      for (var performance in allSongPerformances.allSongPerformances) {
+        logger.i('  $performance');
+      }
+      expect(
+          allSongPerformances.allSongPerformances.length, 1); //  song titles are too close to be considered different!
+      expect(allSongPerformances.allSongPerformanceHistory.length, 2);
+      allSongPerformances.removeSingerSong(singer, a.songId.toString());
+      expect(allSongPerformances.allSongPerformances.length, 0);
+      allSongPerformances.removeSingerSong(singer, b.songId.toString());
+      expect(allSongPerformances.allSongPerformances.length, 0);
+      expect(allSongPerformances.allSongPerformanceHistory.length, 2);
     }
-    logger.i('performanceA ${performanceA.songId} vs performance2 ${performance2.songId}');
-    logger.i('performanceA.lastSung ${performanceA.lastSung} vs ${performance2.lastSung}');
-    logger.i('performanceA.compareTo(performance2): ${performance1.compareTo(performance2)}');
-    expect(performanceA.song?.compareTo(performance2.song!), isZero);
 
-    logger.i('allSongPerformances:');
-    for (var performance in allSongPerformances.allSongPerformances) {
-      logger.i('  $performance');
+    {
+      //  second pass, significantly different song titles
+      var a = Song(
+          title: 'This is not the same song!',
+          artist: 'bob',
+          copyright: '2022 bsteele.com',
+          key: Key.C,
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
+      var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+      allSongPerformances.addSongPerformance(performance1);
+      allSongPerformances.loadSongs([a]);
+      var performanceA = allSongPerformances.findBySingerSongId(songIdAsString: a.songId.toString(), singer: singer);
+      expect(performanceA, isNotNull);
+      expect(performanceA!.song, isNotNull);
+
+      var b = Song(
+          title: 'Ive Got The Blanks',
+          artist: 'bob',
+          copyright: '2022 bsteele.com',
+          key: Key.C,
+          beatsPerMinute: bpm,
+          beatsPerBar: beatsPerBar,
+          unitsPerMeasure: 4,
+          user: 'pearl bob',
+          chords: 'i: A B C D  v: G G G G, C C G G o: C C G G',
+          rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
+
+      var performance2 = SongPerformance(b.songId.toString(), singer,
+          key: Key.D, bpm: bpm, lastSung: lastSung + Duration.millisecondsPerDay, song: b);
+      performance2 = allSongPerformances.addSongPerformance(performance2);
+      expect(allSongPerformances.allSongPerformances.length, 2);
+      expect(allSongPerformances.allSongPerformanceHistory.length, 4);
+      for (var h in allSongPerformances.allSongPerformanceHistory) {
+        logger.i('$h');
+      }
+      logger.i('performanceA ${performanceA.songId} vs performance2 ${performance2.songId}');
+      logger.i('performanceA.lastSung ${performanceA.lastSung} vs ${performance2.lastSung}');
+      logger.i('performanceA.compareTo(performance2): ${performance1.compareTo(performance2)}');
+      expect(performanceA.song?.compareTo(performance2.song!), isNonZero);
+
+      logger.i('allSongPerformances:');
+      for (var performance in allSongPerformances.allSongPerformances) {
+        logger.i('  $performance');
+      }
+      expect(allSongPerformances.allSongPerformances.length, 2);
+      expect(allSongPerformances.allSongPerformanceHistory.length, 4);
+      allSongPerformances.removeSingerSong(singer, a.songId.toString());
+      expect(allSongPerformances.allSongPerformances.length, 1);
+      allSongPerformances.removeSingerSong(singer, b.songId.toString());
+      expect(allSongPerformances.allSongPerformances.length, 0);
+      expect(allSongPerformances.allSongPerformanceHistory.length, 4);
     }
-    expect(allSongPerformances.allSongPerformances.length, 2);
-    expect(allSongPerformances.allSongPerformanceHistory.length, 2);
-    allSongPerformances.removeSingerSong(singer, a.songId.toString());
-    expect(allSongPerformances.allSongPerformances.length, 1);
-    allSongPerformances.removeSingerSong(singer, b.songId.toString());
-    expect(allSongPerformances.allSongPerformances.length, 0);
-    expect(allSongPerformances.allSongPerformanceHistory.length, 2);
   });
 
   test('song performance performedSong', () async {

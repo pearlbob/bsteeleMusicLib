@@ -22,6 +22,7 @@ const Level _logPerformance = Level.debug;
 const Level _logMatchDetails = Level.debug;
 const Level _logLostSongs = Level.debug;
 const Level _logListAllSongs = Level.debug;
+const Level _logHistory = Level.debug;
 
 final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
@@ -52,12 +53,16 @@ class SongPerformance implements Comparable<SongPerformance> {
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
   SongPerformance copyWith({final Song? song, int? firstSung, int? lastSung, Key? key, int? bpm}) {
-    var ret = SongPerformance(songId, singer,
+    var id = song?.songId.toString() ?? songId;
+    var ret = SongPerformance(id, singer,
         key: key ?? this.key,
         bpm: bpm ?? _bpm,
         firstSung: firstSung ?? _firstSung,
         lastSung: lastSung ?? _lastSung,
         song: song ?? this.song);
+    if (song != null) {
+      assert(song.songId.toString() == ret.songId);
+    }
     return ret;
   }
 
@@ -113,6 +118,10 @@ class SongPerformance implements Comparable<SongPerformance> {
         ', last sung: $lastSungDateTimeString'
         //' = $_lastSung'
         '}';
+  }
+
+  String toShortString() {
+    return '"${song ?? songId}" sung by \'$_singer\' in $key, $_bpm bpm, $lastSungDateTimeString';
   }
 
   @override
@@ -197,6 +206,7 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   Song get performedSong => song ?? (Song.theEmptySong.copySong()..title = _prepIdAsTitle());
 
+  String get songIdAsString => songId; //  short name only for json... despite the confusion it generates
   final String songId;
 
   String get lowerCaseSongIdAsString => _lowerCaseSongIdAsString;
@@ -444,7 +454,9 @@ class AllSongPerformances {
           // assert(false);
         }
       }
-      logger.d('history: ${usTimer.deltaToString()} ${_allSongPerformanceHistory.length}'
+      logger.log(
+          _logHistory,
+          'history: ${usTimer.deltaToString()} ${_allSongPerformanceHistory.length}'
           ', removals: ${removals.length}, additions: ${additions.length}');
       _allSongPerformanceHistory.removeAll(removals);
       _allSongPerformanceHistory.addAll(additions);
