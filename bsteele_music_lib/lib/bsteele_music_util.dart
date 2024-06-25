@@ -97,6 +97,7 @@ arguments:
 -similar            list similar titled/artist/coverArtist songs
 -spreadsheet        generate history spreadsheet in excel
 -stat               statistics
+-tempo              tempo test
 -tomcat {catalina_base}  read the tomcat logs
 -url {url}          read the given url into the utility's allSongs list
 -user               list contributing users
@@ -1381,6 +1382,75 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
+        case '-tempo':
+          {
+            logger.i('tempo:');
+            SplayTreeSet<TempoMoment> tempoMoments = SplayTreeSet();
+            String tempoPath = '${Util.homePath()}/communityJams/cj/bsteele_music_tempo';
+
+            {
+              File logFile = File('$tempoPath/catalina.2024-06-20.log');
+              //  20-Jun-2024 21:10:56.732 INFO [http-nio-8080-exec-4] com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage onMessage("{ "momentNumber": -3 }")
+              DateFormat dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS');
+              final messagePattern = RegExp(r'(.*)\s+INFO\s+.*onMessage\("\s*(.*)\s*"\)');
+              Song song = Song.theEmptySong;
+              String state = 'unknown';
+              int lastMomentNumber = 0;
+              DateTime lastDateTime = DateTime.now();
+              for (var m in messagePattern.allMatches(logFile.readAsStringSync())) {
+                var dateTime = dateFormat.parse(m.group(1)!);
+                Map<String, dynamic> decoded = json.decode(m.group(2)!) as Map<String, dynamic>;
+                var momentNumber = decoded['momentNumber'] ?? 0;
+                if (decoded['state'] != null) {
+                  state = decoded['state'].toString();
+                }
+                if (decoded['song'] != null) {
+                  song = Song.fromJson(decoded['song']);
+                }
+
+                // logger.i('$dateTime: $state: momentNumber: $momentNumber, song: ${song.toString()}');
+                // logger.i('   momentNumber from $lastMomentNumber to $momentNumber');
+                if (lastMomentNumber >= 0 && momentNumber > lastMomentNumber) {
+                  double deltaS = (dateTime.microsecondsSinceEpoch - lastDateTime.microsecondsSinceEpoch) /
+                      Duration.microsecondsPerSecond;
+                  int beats = song.songMoments[momentNumber].beatNumber - song.songMoments[lastMomentNumber].beatNumber;
+                  var bpm = 60 * beats / (deltaS == 0 ? 1 : deltaS);
+                  // logger.i('   beat from ${song.songMoments[lastMomentNumber].beatNumber}'
+                  //     ' to ${song.songMoments[momentNumber].beatNumber} = $beats beats in $deltaS s'
+                  //     ' = $bpm bpm');
+                  tempoMoments.add(TempoMoment(dateTime, state, song, momentNumber: momentNumber, bpm: bpm));
+                }
+
+                lastMomentNumber = momentNumber;
+                lastDateTime = dateTime;
+              }
+            }
+
+            {
+              const sampleRate = 48000;
+              File tempoFile = File('$tempoPath/tempo_log_20240620');
+              DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS');
+              // logger.i(tempoFile.readAsStringSync());
+              // 2024-06-20 19:20:06.654485: 63246 =  1.318s =  0.759 hz = 45.536 bpm @  7911, consistent: false
+              final tempoPattern =
+                  RegExp(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}):\s+(\d+).*consistent:\s+(true|false)');
+              for (var m in tempoPattern.allMatches(tempoFile.readAsStringSync())) {
+                //logger.i(m.group(0)!);
+                var dateTime = dateFormat.parse(m.group(1)!);
+                var samples = int.parse(m.group(2)!);
+                var consistent = m.group(3)!;
+                double bpm = samples * 60 / sampleRate;
+                //  logger.i('${dateTime.toString()}:  $samples = $bpm, $consistent');
+                tempoMoments.add(TempoMoment.fromBpm(dateTime, bpm, consistent == 'true'));
+              }
+            }
+
+            for (TempoMoment tempoMoment in tempoMoments) {
+              logger.i('$tempoMoment');
+            }
+          }
+          break;
+
         case '-tomcat':
           //  insist there is another arg
           if (argCount >= args.length - 1) {
@@ -2427,4 +2497,49 @@ testAutoScrollAlgorithm() {
       }
     }
   }
+}
+
+class TempoMoment implements Comparable<TempoMoment> {
+  TempoMoment(this.dateTime, this.state, this.song, {this.momentNumber = 0, double? bpm})
+      : bpm = bpm ?? song?.beatsPerMinute.toDouble() ?? 0,
+        consistent = false;
+
+  TempoMoment.fromBpm(this.dateTime, this.bpm, this.consistent)
+      : state = '',
+        song = null,
+        momentNumber = 0;
+
+  @override
+  int compareTo(TempoMoment other) {
+    int ret = dateTime.compareTo(other.dateTime);
+    if (ret != 0) return ret;
+    ret = state.compareTo(other.state);
+    if (ret != 0) return ret;
+    ret = momentNumber.compareTo(other.momentNumber);
+    if (ret != 0) return ret;
+    if (song != null) {
+      if (other.song == null) {
+        return -1;
+      } else {
+        ret = song!.compareTo(other.song!);
+      }
+    }
+    if (ret != 0) return ret;
+    return 0;
+  }
+
+  @override
+  String toString() {
+    return '$dateTime: ${state.toString().padLeft(10)}'
+        ', bpm: ${bpm.toStringAsFixed(3).padLeft(7)}, ${consistent.toString().padLeft(5)}'
+        ', @${momentNumber.toString().padLeft(3)}: $song'
+        '${song == null ? '' : ', beatsPerBar: ${song!.beatsPerBar}'}';
+  }
+
+  final DateTime dateTime;
+  final String state;
+  final Song? song;
+  final int momentNumber;
+  final double bpm;
+  final bool? consistent;
 }

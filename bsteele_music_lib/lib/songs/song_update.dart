@@ -285,7 +285,7 @@ class SongUpdate {
             setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
             break;
           case 'song':
-            setSong(Song.songFromJson(jv));
+            setSong(Song.fromJson(jv));
             break;
           //  momentNumber sequencing details should be found by local processing
           case 'momentNumber':

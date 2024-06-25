@@ -3,7 +3,6 @@
 import '../util/util.dart';
 import 'key.dart';
 import 'music_constants.dart';
-
 // ignore_for_file: constant_identifier_names
 
 import 'nashville_note.dart';
@@ -245,7 +244,6 @@ enum ScaleNote implements Comparable<ScaleNote> {
   final bool isNatural;
   final Accidental accidental;
   final int scaleNumber;
-
 }
 
 /// ScaleNoteIntervals

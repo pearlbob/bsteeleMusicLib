@@ -128,13 +128,13 @@ class Song extends SongBase implements Comparable<Song> {
       dynamic json = _jsonDecoder.convert(jsonString);
       if (json is List) {
         //  a list of songs
-        for (Map jsonMap in json) {
-          Song song = songFromJson(jsonMap);
+        for (Map<String, dynamic> jsonMap in json) {
+          Song song = fromJson(jsonMap);
           songList.add(song);
         }
-      } else if (json is Map) {
+      } else if (json is Map<String, dynamic>) {
         //  a single song
-        Song song = songFromJson(json);
+        Song song = fromJson(json);
         songList.add(song);
       }
     }
@@ -142,15 +142,15 @@ class Song extends SongBase implements Comparable<Song> {
   }
 
   /// Read a single song from a JSON map
-  static Song songFromJson(Map jsonSongFile) {
+  static Song fromJson(Map<String, dynamic> json) {
     Song song = Song.createEmptySong(); //  fixme: better error modes on parse failures
 
-    Map? jsonSong = jsonSongFile['song'];
-    jsonSong ??= jsonSongFile;
+    Map? jsonSong = json['song'];
+    jsonSong ??= json;
 
     var fileDateTime = DateTime.fromMillisecondsSinceEpoch(jsonSong['lastModifiedDate'] ?? 0);
     song.lastModifiedTime = fileDateTime.millisecondsSinceEpoch;
-    song.setFileName(jsonSongFile['file']);
+    song.setFileName(json['file']);
 
     for (String name in jsonSong.keys) {
       switch (name) {
