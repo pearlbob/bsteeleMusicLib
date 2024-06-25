@@ -2,7 +2,6 @@
 
 import 'dart:collection';
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'music_constants.dart';
@@ -10,11 +9,8 @@ import 'pitch.dart';
 import 'scale_chord.dart';
 import 'scale_note.dart';
 
-part 'key.g.dart';
-
 /// An enumeration of all major keys.
 
-@JsonEnum()
 enum KeyEnum {
   // ignore: constant_identifier_names
   /// G flat
@@ -91,7 +87,6 @@ Map<String, KeyEnum> keyEnumMap = {};
 /// Six flats (G♭) and six sharps (F♯) are labeled differently but are otherwise the same key.
 /// Seven flats and seven sharps are not included.
 @immutable
-@JsonSerializable(constructor: '_')
 class Key implements Comparable<Key> {
   Key._(this.keyEnum, this.keyValue, this.halfStep, this.capoLocation)
       : _name = keyEnumToString(keyEnum),
@@ -732,21 +727,6 @@ class Key implements Comparable<Key> {
   //                                     1  2  3  4  5  6  7
   static const List<int> _guessWeights = [9, 1, 1, 4, 4, 1, 3];
   static const int _notesFromAtoC = 2;
-
-  // custom serialization: only the key enum need represent the key in a key context
-  factory Key.fromJson(String json) {
-    try {
-      var index = int.parse(json);
-      return get(KeyEnum.values[index]);
-    } catch (e) {
-      return get($enumDecode(_$KeyEnumEnumMap, json));
-    }
-  }
-
-  // custom serialization: only the key enum need represent the key in a key context
-  String toJson() {
-    return _$KeyEnumEnumMap[keyEnum]!;
-  }
 
   /// The matching key enumeration.
   final KeyEnum keyEnum;

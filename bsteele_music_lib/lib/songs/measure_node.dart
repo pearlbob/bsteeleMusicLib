@@ -98,8 +98,5 @@ abstract class MeasureNode {
   ///  Export to dart JSON
   String toJsonString();
 
-  //  Export to restful JSON
-  Map<String, dynamic> toJson();
-
   MeasureNodeType get measureNodeType;
 }

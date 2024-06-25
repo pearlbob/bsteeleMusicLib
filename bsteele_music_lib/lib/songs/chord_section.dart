@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import '../grid.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
@@ -17,12 +15,10 @@ import 'phrase.dart';
 import 'section.dart';
 import 'section_version.dart';
 
-part 'chord_section.g.dart';
 
 /// A chord section of a song is typically a collection of measures
 /// that constitute a portion of the song that is considered musically a unit.
 /// Immutable.
-@JsonSerializable()
 class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   ChordSection(this.sectionVersion, List<Phrase>? phrases) : _phrases = (phrases ?? []);
 
@@ -846,11 +842,6 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     ret = ret * 17 + hashObjects(_phrases);
     return ret;
   }
-
-  factory ChordSection.fromJson(Map<String, dynamic> json) => _$ChordSectionFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$ChordSectionToJson(this);
 
   final SectionVersion sectionVersion;
 

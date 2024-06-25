@@ -1,13 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import '../app_logger.dart';
 import '../util/util.dart';
 import 'song.dart';
-
-part 'drum_measure.g.dart';
 
 enum DrumSubBeatEnum {
   subBeat,
@@ -52,7 +48,6 @@ enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
 }
 
 /// Descriptor of a single drum in the measure.
-@JsonSerializable()
 class DrumPart implements Comparable<DrumPart> {
   DrumPart(this.drumType, {required beats})
       : _beats = beatsLimit(beats),
@@ -236,10 +231,6 @@ class DrumPart implements Comparable<DrumPart> {
     return 0;
   }
 
-  factory DrumPart.fromJson(Map<String, dynamic> json) => _$DrumPartFromJson(json);
-
-  Map<String, dynamic> toJson() => _$DrumPartToJson(this);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -266,7 +257,6 @@ class DrumPart implements Comparable<DrumPart> {
 
 /// Descriptor of the drums to be played for the given measure and
 /// likely subsequent measures.
-@JsonSerializable()
 class DrumParts implements Comparable<DrumParts> {
   DrumParts({this.name = 'unknown', beats = 4, List<DrumPart>? parts}) : _beats = beats {
     for (var part in parts ?? []) {
@@ -505,10 +495,6 @@ class DrumParts implements Comparable<DrumParts> {
       }
     }
   }
-
-  factory DrumParts.fromJson(Map<String, dynamic> json) => _$DrumPartsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$DrumPartsToJson(this);
 
   String name;
 

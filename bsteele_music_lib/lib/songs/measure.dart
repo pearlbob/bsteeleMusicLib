@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:bsteele_music_lib/songs/music_constants.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -12,13 +11,10 @@ import 'measure_node.dart';
 import 'nashville_note.dart';
 import 'section.dart';
 
-part 'measure.g.dart';
-
 /// A measure in a section of a song.
 /// Holds the lyrics, the chord changes and their beats.
 ///
 /// When added, chord beat durations exceeding the measure beat count will be ignored on playback.
-@JsonSerializable()
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
   Measure(this.beatCount, this.chords, {int? beatsPerBar, int? maxBeatCount}) : beatsPerBar = beatsPerBar ?? beatCount {
@@ -460,11 +456,6 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     int ret = Object.hash(beatCount, endOfRow, beatsPerBar, hashObjects(chords));
     return ret;
   }
-
-  factory Measure.fromJson(Map<String, dynamic> json) => _$MeasureFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$MeasureToJson(this);
 
   /// The beat count for the measure should be set prior to chord additions
   /// to avoid awkward behavior when chords are added without a count.

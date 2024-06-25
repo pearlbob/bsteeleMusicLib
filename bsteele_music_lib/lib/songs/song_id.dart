@@ -1,26 +1,21 @@
 import 'dart:collection';
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'song_id.g.dart';
-
 ///  Generate a unique song identification string from a song's title, artist, and cover artist.
 ///
 ///  Special characters are eliminated.
 ///  Spaces are replaced with underscores.
 ///  Names starting with "The" have the "The" moved to the end.
-@JsonSerializable()
 class SongId implements Comparable<SongId> {
   /// For uninitialized values
-  SongId.noArgs() : songId = 'UnknownSong';
+  SongId.noArgs() : songIdAsString = 'UnknownSong';
 
   /// Copy constructor
-  SongId(this.songId);
+  SongId(this.songIdAsString);
 
   /// Generated song id from input [title], [artist], [coverArtist].
   /// Previously generated id's will be reused.
   SongId.computeSongId(String? title, String? artist, String? coverArtist)
-      : songId = _findSongId('$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
+      : songIdAsString = _findSongId('$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
             '${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
 
   /// Eliminate special characters. Replace spaces with an underscore.
@@ -35,7 +30,7 @@ class SongId implements Comparable<SongId> {
   }
 
   String toUnderScorelessString() =>
-      _underScorelessId ??= songId.replaceFirst(prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
+      _underScorelessId ??= songIdAsString.replaceFirst(prefix, '').replaceAll('_', ' '); //  note the lazy eval at ??=
 
   static String asReadableString(String songIdAsString) {
     return songIdAsString.replaceFirst(prefix, '').replaceAll('_', ' ').replaceAll(' The', ', The');
@@ -43,30 +38,31 @@ class SongId implements Comparable<SongId> {
 
   @override
   String toString() {
-    return songId;
+    return songIdAsString;
   }
 
   /// Compares this object with the specified object for order.
   @override
   int compareTo(SongId o) {
-    if (identical(songId, o.songId)) {
+    if (identical(songIdAsString, o.songIdAsString)) {
       return 0;
     }
-    return songId.compareTo(o.songId);
+    return songIdAsString.compareTo(o.songIdAsString);
   }
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SongId && runtimeType == other.runtimeType && songId == other.songId;
+      identical(this, other) ||
+      other is SongId && runtimeType == other.runtimeType && songIdAsString == other.songIdAsString;
 
   @override
-  int get hashCode => songId.hashCode;
+  int get hashCode => songIdAsString.hashCode;
 
   /// A prefix for all song id's to identify them as such.
   static const prefix = 'Song_';
 
   /// The song id as a generated string.
-  final String songId;
+  final String songIdAsString;
   String? _underScorelessId;
 
   /// Method used to minimize the number of song id's generated
@@ -83,7 +79,7 @@ class SongId implements Comparable<SongId> {
   }
 
   /// custom serialization: only the song id as string is needed to represent the id
-  String toJson() => songId;
+  String toJson() => songIdAsString;
 
   static final SplayTreeSet<String> songIds = SplayTreeSet();
 

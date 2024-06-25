@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../app_logger.dart';
@@ -8,7 +7,6 @@ import '../util/util.dart';
 import 'chord_component.dart';
 import 'music_constants.dart';
 
-part 'chord_descriptor.g.dart';
 
 ///
 /// The modifier to a chord specification that describes the basic type of chord.
@@ -16,7 +14,6 @@ part 'chord_descriptor.g.dart';
 ///
 /// For piano chords, try: https://www.scales-chords.com/chord/
 @immutable
-@JsonSerializable(constructor: '_')
 class ChordDescriptor implements Comparable<ChordDescriptor> {
   //  longest short names must come first!
   //  avoid starting descriptors with b, #, s to avoid confusion with scale notes
@@ -299,6 +296,14 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     return name.compareTo(other.name);
   }
 
+  Map<String, dynamic> toJson() => {
+        'name': name, //
+      };
+
+  factory ChordDescriptor.fromJson(Map<String, dynamic> json) {
+    return ChordDescriptor.values.firstWhere((v) => v.name == json['name']);
+  }
+
   //public static final ChordDescriptor[] getOtherChordDescriptorsOrdered() {
 //  return otherChordDescriptorsOrdered;
 //}
@@ -323,12 +328,10 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   /// The name for the chord descriptor used internally in the software.
   /// This name will likely be understood by musicians but will not necessarily
   /// be used by them in written form.
-  @JsonKey(required: true)
   final String name;
 
   /// The short name for the chord that typically gets used in human documentation such
   /// as in the song lyrics or sheet music.  The name will never be null but can be empty.
-  @JsonKey(required: true)
   final String shortName;
 
   final String? _nashville;
@@ -530,10 +533,6 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     }
     return ret;
   }
-
-  Map<String, dynamic> toJson() => _$ChordDescriptorToJson(this);
-
-  factory ChordDescriptor.fromJson(Map<String, dynamic> json) => _$ChordDescriptorFromJson(json);
 
   static final SplayTreeSet<ChordDescriptor> _everyChordDescriptor = SplayTreeSet();
 }

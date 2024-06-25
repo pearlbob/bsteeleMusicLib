@@ -295,11 +295,11 @@ void main() {
 
               Chord chord = Chord(scaleChord, beats, beatsPerBar, slashScaleNote, anticipationOrDelay, implicitBeats);
               final encoded = jsonEncode(chord);
-              logger.i('chord($scaleChord, $beats, $beatsPerBar, $slashScaleNote, $anticipationOrDelay, $implicitBeats)'
-                  ': \n$encoded');
-
-              final copy = Chord.fromJson(jsonDecode(encoded));
-              expect(copy, chord);
+              // logger.i('chord($scaleChord, $beats, $beatsPerBar, $slashScaleNote, $anticipationOrDelay, $implicitBeats)'
+              //     ': \n$encoded');
+              //
+              // final copy = Chord.fromJson(jsonDecode(encoded));
+              // expect(copy, chord);
             }
           }
         }

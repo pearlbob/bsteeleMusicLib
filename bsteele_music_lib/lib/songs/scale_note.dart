@@ -1,4 +1,5 @@
 //
+
 import '../util/util.dart';
 import 'key.dart';
 import 'music_constants.dart';
@@ -213,6 +214,15 @@ enum ScaleNote implements Comparable<ScaleNote> {
     }
   }
 
+  Map<String, dynamic> toJson() => {
+        'name': name, //
+        'accidental': accidental.toJson() //  for restful api only?????
+      };
+
+  factory ScaleNote.fromJson(Map<String, dynamic> json) {
+    return ScaleNote.values.byName(json['name']);
+  }
+
   @override
   int compareTo(ScaleNote other) {
     return index - other.index;
@@ -236,14 +246,6 @@ enum ScaleNote implements Comparable<ScaleNote> {
   final Accidental accidental;
   final int scaleNumber;
 
-  Map<String, dynamic> toJson() => {
-        'name': name, //
-        'accidental': accidental.toJson() //  for restful api only?????
-      };
-
-  factory ScaleNote.fromJson(Map<String, dynamic> json) {
-    return ScaleNote.values.byName(json['name']);
-  }
 }
 
 /// ScaleNoteIntervals

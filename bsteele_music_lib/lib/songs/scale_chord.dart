@@ -1,4 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../util/util.dart';
@@ -7,11 +6,8 @@ import 'chord_descriptor.dart';
 import 'key.dart';
 import 'scale_note.dart';
 
-part 'scale_chord.g.dart';
-
 ///  A chord with a scale note and an optional chord descriptor and tension.
 @immutable
-@JsonSerializable()
 class ScaleChord implements Comparable<ScaleChord> {
   ScaleChord(this.scaleNote, ChordDescriptor chordDescriptor) : _chordDescriptor = chordDescriptor.deAlias();
 
@@ -102,6 +98,12 @@ class ScaleChord implements Comparable<ScaleChord> {
     return 0;
   }
 
+  ScaleChord.fromJson(Map<String, dynamic> json)
+      : scaleNote = ScaleNote.fromJson(json['scaleNote']),
+        _chordDescriptor = ChordDescriptor.fromJson(json['chordDescriptor']);
+
+  Map<String, dynamic> toJson() => {'scaleNote': scaleNote.toJson(), 'chordDescriptor': chordDescriptor.toJson()};
+
   @override
   bool operator ==(other) {
     if (identical(this, other)) {
@@ -134,10 +136,6 @@ class ScaleChord implements Comparable<ScaleChord> {
     }
     return _easyGuitarChords;
   }
-
-  factory ScaleChord.fromJson(Map<String, dynamic> json) => _$ScaleChordFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ScaleChordToJson(this);
 
 //
 //

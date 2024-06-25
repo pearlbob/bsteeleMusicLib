@@ -1,15 +1,9 @@
 import 'dart:core';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'key.dart';
 import 'measure.dart';
 import 'measure_node.dart';
-import 'chord.dart';
 
-part 'measure_repeat_marker.g.dart';
-
-@JsonSerializable()
 class MeasureRepeatMarker extends Measure {
   MeasureRepeatMarker(this.repeats, {this.repetition}) : super.zeroArgs();
 
@@ -60,11 +54,6 @@ class MeasureRepeatMarker extends Measure {
   int get hashCode {
     return Object.hash(repeats, repetition);
   }
-
-  factory MeasureRepeatMarker.fromJson(Map<String, dynamic> json) => _$MeasureRepeatMarkerFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$MeasureRepeatMarkerToJson(this);
 
   int? repetition; //  the cycle count of the repeats, starting at 1
   int repeats;

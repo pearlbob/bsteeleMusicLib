@@ -960,16 +960,6 @@ void main() {
       }
     }
   });
-
-  test('test JSON', () {
-    for (var keyEnum in KeyEnum.values) {
-      var key = Key.get(keyEnum);
-      var encoded = key.toJson();
-      var decoded = Key.fromJson(key.toJson());
-      logger.i('$key:  "$encoded" $decoded');
-      expect(decoded, key);
-    }
-  });
 }
 
 /*

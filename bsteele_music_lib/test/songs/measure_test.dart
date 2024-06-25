@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/chord.dart';
 import 'package:bsteele_music_lib/songs/chord_anticipation_or_delay.dart';
@@ -40,7 +38,7 @@ void main() {
     }
   });
 
-  test('testparseString', () {
+  test('test parse String', () {
     String s;
     Measure? m;
 
@@ -1184,8 +1182,9 @@ _shortMeasureTestJSON(int beatsPerBar, String input, String expected) {
 
 _restfulJsonMeasureTest(final Measure measure) {
   //  test the restful json
-  final encoded = jsonEncode(measure);
-  // logger.i('$measure: \n$encoded');
-  final copy = Measure.fromJson(jsonDecode(encoded));
-  expect(copy, measure);
+  //  fixme: for future use!
+  // final encoded = jsonEncode(measure);
+  // // logger.i('$measure: \n$encoded');
+  // final copy = Measure.fromJson(jsonDecode(encoded));
+  // expect(copy, measure);
 }

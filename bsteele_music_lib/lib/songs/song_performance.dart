@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:intl/intl.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:string_similarity/string_similarity.dart';
 
@@ -15,8 +14,6 @@ import 'key.dart';
 import 'music_constants.dart';
 import 'song.dart';
 import 'song_id.dart';
-
-part 'song_performance.g.dart';
 
 const Level _logPerformance = Level.debug;
 const Level _logMatchDetails = Level.debug;
@@ -33,10 +30,10 @@ String _cleanPerformer(final String? value) {
   return value.trim().replaceAll(_multipleWhiteCharactersRegexp, ' ');
 }
 
-@JsonSerializable()
 class SongPerformance implements Comparable<SongPerformance> {
-  SongPerformance(this.songId, final String singer, {Key? key, int? bpm, int? firstSung, int? lastSung, this.song})
-      : _lowerCaseSongIdAsString = songId.toLowerCase(),
+  SongPerformance(this._songIdAsString, final String singer,
+      {Key? key, int? bpm, int? firstSung, int? lastSung, this.song})
+      : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
         _singer = _cleanPerformer(singer),
         key = key ?? Key.getDefault(),
         _bpm = bpm ?? MusicConstants.defaultBpm,
@@ -46,14 +43,14 @@ class SongPerformance implements Comparable<SongPerformance> {
   SongPerformance.fromSong(Song this.song, final String singer, {Key? key, int? bpm, int? firstSung, int? lastSung})
       : _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
         _singer = _cleanPerformer(singer),
-        songId = song.songId.toString(),
+        _songIdAsString = song.songId.toString(),
         key = key ?? song.key,
         _bpm = bpm ?? song.beatsPerMinute,
         _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
         _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
   SongPerformance copyWith({final Song? song, int? firstSung, int? lastSung, Key? key, int? bpm}) {
-    var id = song?.songId.toString() ?? songId;
+    var id = song?.songId.toString() ?? _songIdAsString;
     var ret = SongPerformance(id, singer,
         key: key ?? this.key,
         bpm: bpm ?? _bpm,
@@ -61,7 +58,7 @@ class SongPerformance implements Comparable<SongPerformance> {
         lastSung: lastSung ?? _lastSung,
         song: song ?? this.song);
     if (song != null) {
-      assert(song.songId.toString() == ret.songId);
+      assert(song.songId.toString() == ret._songIdAsString);
     }
     return ret;
   }
@@ -70,7 +67,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     if (identical(first, other)) {
       return 0;
     }
-    return first.songId.compareTo(other.songId);
+    return first._songIdAsString.compareTo(other._songIdAsString);
   }
 
   static int compareBySongIdAndSinger(SongPerformance first, SongPerformance other) {
@@ -112,7 +109,7 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   @override
   String toString() {
-    return 'SongPerformance{song: $song, _songId: $songId, _singer: \'$_singer\', key: $key'
+    return 'SongPerformance{song: $song, _songId: $_songIdAsString, _singer: \'$_singer\', key: $key'
         ', _bpm: $_bpm'
         '${_firstSung < _lastSung ? ', first sung: $firstSungDateString' : ''}'
         ', last sung: $lastSungDateTimeString'
@@ -121,7 +118,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   }
 
   String toShortString() {
-    return '"${song ?? songId}" sung by \'$_singer\' in $key, $_bpm bpm, $lastSungDateTimeString';
+    return '"${song ?? _songIdAsString}" sung by \'$_singer\' in $key, $_bpm bpm, $lastSungDateTimeString';
   }
 
   @override
@@ -129,7 +126,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       identical(this, other) ||
       other is SongPerformance &&
           runtimeType == other.runtimeType &&
-          songId == other.songId &&
+          _songIdAsString == other._songIdAsString &&
           _singer == other._singer &&
           key == other.key &&
           _bpm == other._bpm;
@@ -138,9 +135,34 @@ class SongPerformance implements Comparable<SongPerformance> {
     return SongPerformance.fromJson(jsonDecode(jsonString));
   }
 
+  SongPerformance.fromJson(Map<String, dynamic> json)
+      : _songIdAsString = json['songId'],
+        _lowerCaseSongIdAsString = json['songId'].toString().toLowerCase(),
+        _singer = _cleanPerformer(json['singer']),
+        key = json['key'] == null
+            ? Key.getDefault()
+            : json['key'] is int
+                ? Key.getKeyByHalfStep(json['key'])
+                : Key.fromMarkup(json['key']),
+        _bpm = json['bpm'] ?? MusicConstants.defaultBpm,
+        song = null,
+        _firstSung = json['firstSung'] ?? 0,
+        _lastSung = json['lastSung'] ?? 0 {
+    _firstSung = _lastSung; //  first sung are all relative the list contents so they are not stored.
+  }
+
   String toJsonString() {
     return jsonEncode(this);
   }
+
+  Map<String, dynamic> toJson() => {
+        'songId': _songIdAsString,
+        'singer': _singer,
+        'bpm': _bpm,
+        'firstSung': _firstSung,
+        'lastSung': _lastSung,
+        'key': key.toMarkup(),
+      };
 
   @override
   int compareTo(SongPerformance other) {
@@ -148,7 +170,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       return 0;
     }
 
-    int ret = songId.compareTo(other.songId); //  exact
+    int ret = _songIdAsString.compareTo(other._songIdAsString); //  exact
     if (ret != 0) {
       return ret;
     }
@@ -169,7 +191,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   }
 
   String _prepIdAsTitle() {
-    return Util.underScoresToSpaceUpperCase(songId.replaceAll(_songIdRegExp, ''))
+    return Util.underScoresToSpaceUpperCase(_songIdAsString.replaceAll(_songIdRegExp, ''))
         .replaceAll(' Cover By ', ' cover by ')
         .replaceAll(' By ', ' by ');
   }
@@ -177,37 +199,14 @@ class SongPerformance implements Comparable<SongPerformance> {
   static final _songIdRegExp = RegExp('^${SongId.prefix}');
 
   @override
-  int get hashCode => Object.hash(songId, _singer, key, _bpm);
+  int get hashCode => Object.hash(_songIdAsString, _singer, key, _bpm);
 
-  factory SongPerformance.fromJson(Map<String, dynamic> json) {
-    var ret = _$SongPerformanceFromJson(json);
-
-    //  deal with key as a special   fixme: This is due to original decision to store it as an int!
-    //  deal with F# key as a special!
-    ret = ret.copyWith(
-        key: json['key'] == null
-            ? Key.getDefault()
-            : json['key'] is int
-                ? Key.getKeyByHalfStep(json['key'])
-                : Key.get(KeyEnum.values.byName(json['key'] == 'F#' ? 'Fs' : json['key'])));
-
-    return ret;
-  }
-
-  Map<String, dynamic> toJson() {
-    var ret = _$SongPerformanceToJson(this);
-    ret['key'] = key.keyEnum.name;
-
-    return ret;
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final Song? song;
 
   Song get performedSong => song ?? (Song.theEmptySong.copySong()..title = _prepIdAsTitle());
 
-  String get songIdAsString => songId; //  short name only for json... despite the confusion it generates
-  final String songId;
+  String get songIdAsString => _songIdAsString;
+  final String _songIdAsString;
 
   String get lowerCaseSongIdAsString => _lowerCaseSongIdAsString;
   String _lowerCaseSongIdAsString;
@@ -215,7 +214,6 @@ class SongPerformance implements Comparable<SongPerformance> {
   String get singer => _singer;
   final String _singer;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final Key key;
 
   int get bpm => _bpm;
@@ -564,7 +562,7 @@ class AllSongPerformances {
     List<SongPerformance> ret = [];
     var lowerSongIdAsString = song.songId.toString().toLowerCase();
     ret.addAll(_allSongPerformances.where((songPerformance) {
-      return songPerformance.songId.toLowerCase() == lowerSongIdAsString;
+      return songPerformance.songIdAsString.toLowerCase() == lowerSongIdAsString;
     }));
     return ret;
   }
@@ -598,7 +596,7 @@ class AllSongPerformances {
   }
 
   bool isSongIdInSingersList(String singer, String songIdString) {
-    return _allSongPerformances.any((e) => e._singer == singer && e.songId == songIdString);
+    return _allSongPerformances.any((e) => e._singer == singer && e.songIdAsString == songIdString);
   }
 
   void removeSinger(String singer) {
@@ -607,8 +605,9 @@ class AllSongPerformances {
   }
 
   void removeSingerSong(String singer, String songIdAsString) {
-    var songPerformances =
-        _allSongPerformances.where((e) => e._singer == singer && e.songId == songIdAsString).toList(growable: false);
+    var songPerformances = _allSongPerformances
+        .where((e) => e._singer == singer && e.songIdAsString == songIdAsString)
+        .toList(growable: false);
     _allSongPerformances.removeAll(songPerformances);
   }
 

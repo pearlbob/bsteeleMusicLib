@@ -225,7 +225,7 @@ coerced to reflect the songlist's last modification for that song.
               int bpm = song.beatsPerMinute;
               var n = bpms[bpm];
               bpms[bpm] = (n ?? 0) == 0 ? 1 : n! + 1;
-              logger.i('"${song.songId.songId}", bpm: $bpm');
+              logger.i('"${song.songId.songIdAsString}", bpm: $bpm');
             }
             for (int n in SplayTreeSet<int>()
               ..addAll(bpms.keys)
@@ -283,10 +283,10 @@ coerced to reflect the songlist's last modification for that song.
             }
             SplayTreeSet<Song> cjSongs = SplayTreeSet();
             for (Song song in allSongs) {
-              var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'jam');
+              var meta = SongMetadata.where(idIs: song.songId.songIdAsString, nameIs: 'jam');
               if (meta.isNotEmpty) {
                 cjSongs.add(song);
-                logger.i('"${song.songId.songId}", cj:${meta.first.nameValues.first.value}');
+                logger.i('"${song.songId.songIdAsString}", cj:${meta.first.nameValues.first.value}');
               }
             }
 
@@ -1073,7 +1073,7 @@ coerced to reflect the songlist's last modification for that song.
                 logger.i('performanceDelete:  length: ${performanceDelete.length}');
                 for (var performance in performanceDelete) {
                   logger.log(_logPerformanceDetails, 'delete: $performance');
-                  allSongPerformances.removeSingerSong(performance.singer, performance.songId);
+                  allSongPerformances.removeSingerSong(performance.singer, performance.songIdAsString);
                   assert(!allSongPerformances.allSongPerformances.contains(performance));
                 }
 
@@ -1292,17 +1292,17 @@ coerced to reflect the songlist's last modification for that song.
             }
             Map<String, Song> map = {};
             for (Song song in allSongs) {
-              map[song.songId.songId] = song;
+              map[song.songId.songIdAsString] = song;
             }
             List<String> keys = [];
 
             keys.addAll(map.keys);
             List<String> listed = [];
             for (Song song in allSongs) {
-              if (listed.contains(song.songId.songId)) {
+              if (listed.contains(song.songId.songIdAsString)) {
                 continue;
               }
-              BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songId, keys);
+              BestMatch bestMatch = StringSimilarity.findBestMatch(song.songId.songIdAsString, keys);
 
               SplayTreeSet<Rating> ratingsOrdered = SplayTreeSet((Rating rating1, Rating rating2) {
                 var r1 = rating1.rating ?? 0;
@@ -1639,8 +1639,8 @@ coerced to reflect the songlist's last modification for that song.
           final RegExp christmasRegExp = RegExp(r'.*christmas.*', caseSensitive: false);
           SongMetadata.clear();
           for (Song song in allSongs) {
-            if (christmasRegExp.hasMatch(song.songId.songId)) {
-              SongMetadata.set(SongIdMetadata(song.songId.songId, metadata: [NameValue('christmas', '')]));
+            if (christmasRegExp.hasMatch(song.songId.songIdAsString)) {
+              SongMetadata.set(SongIdMetadata(song.songId.songIdAsString, metadata: [NameValue('christmas', '')]));
             }
           }
           logger.i(SongMetadata.toJson());
@@ -1874,9 +1874,9 @@ coerced to reflect the songlist's last modification for that song.
         ',ranking'
         '\n');
     for (Song song in allSongs) {
-      var meta = SongMetadata.where(idIs: song.songId.songId, nameIs: 'jam');
+      var meta = SongMetadata.where(idIs: song.songId.songIdAsString, nameIs: 'jam');
       if (meta.isNotEmpty) {
-        sb.write('"${song.songId.songId}","${meta.first.nameValues.first.value}"\n');
+        sb.write('"${song.songId.songIdAsString}","${meta.first.nameValues.first.value}"\n');
       }
     }
     return sb.toString();
@@ -2025,7 +2025,7 @@ coerced to reflect the songlist's last modification for that song.
         logger.i('performanceDelete:  length: ${performanceDelete.length}');
         for (var performance in performanceDelete) {
           logger.log(_logPerformanceDetails, 'delete: $performance');
-          allSongPerformances.removeSingerSong(performance.singer, performance.songId);
+          allSongPerformances.removeSingerSong(performance.singer, performance.songIdAsString);
           assert(!allSongPerformances.allSongPerformances.contains(performance));
         }
 

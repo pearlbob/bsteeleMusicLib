@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/grid.dart';
 import 'package:bsteele_music_lib/songs/chord_section.dart';
@@ -954,20 +952,10 @@ void main() {
 
     chordSection = ChordSection.parseString('I: A B C X x2, D C G G x3', beatsPerBar);
     logger.i(chordSection.phrasesToMarkup());
-    _restfulJsonChordSectionTest(chordSection);
     expect(chordSection.transpose(Key.C, 0), '[A B C X ] x2 [D C G G ] x3 ');
     expect(chordSection.transpose(Key.C, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
     expect(chordSection.transpose(Key.C, 2), '[B Db D X ] x2 [E D A A ] x3 ');
     expect(chordSection.transpose(Key.F, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
     expect(chordSection.transpose(Key.G, 1), '[A# C C# X ] x2 [D# C# G# G# ] x3 ');
   });
-}
-
-_restfulJsonChordSectionTest(final ChordSection chordSection) {
-  //  test the restful json
-  var encoder = const JsonEncoder.withIndent("  ");
-  final encoded = encoder.convert(chordSection);
-  logger.i('$chordSection: \n$encoded');
-  final copy = ChordSection.fromJson(jsonDecode(encoded));
-  expect(copy, chordSection);
 }

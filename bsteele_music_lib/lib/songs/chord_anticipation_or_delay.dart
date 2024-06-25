@@ -1,11 +1,6 @@
 import 'dart:collection';
 import 'dart:core';
-
-import 'package:json_annotation/json_annotation.dart';
-
 import '../util/util.dart';
-
-part 'chord_anticipation_or_delay.g.dart';
 
 enum ChordAnticipationOrDelayEnum {
   /// Play the chord on time.
@@ -39,7 +34,6 @@ enum ChordAnticipationOrDelayEnum {
 
 /// A small timing adjustment for a chord to change the feel of the chord.
 /// Units are fractions of a beat expressed assuming quarter note beat duration.
-@JsonSerializable(constructor: '_')
 class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   static Map<ChordAnticipationOrDelayEnum, ChordAnticipationOrDelay> _delays = {};
   static final List<dynamic> _initialization = [
@@ -124,6 +118,13 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
     return chordAnticipationOrDelayEnum.index - other.chordAnticipationOrDelayEnum.index;
   }
 
+  Map<String, dynamic> toJson() => {'chordAnticipationOrDelayEnum': chordAnticipationOrDelayEnum.name};
+
+  factory ChordAnticipationOrDelay.fromJson(Map<String, dynamic> json) {
+    return ChordAnticipationOrDelay.get(
+        ChordAnticipationOrDelayEnum.values.firstWhere((e) => e.name == json['chordAnticipationOrDelayEnum']));
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -139,10 +140,6 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   String toString() {
     return shortName;
   }
-
-  factory ChordAnticipationOrDelay.fromJson(Map<String, dynamic> json) => _$ChordAnticipationOrDelayFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ChordAnticipationOrDelayToJson(this);
 
   final ChordAnticipationOrDelayEnum chordAnticipationOrDelayEnum;
 

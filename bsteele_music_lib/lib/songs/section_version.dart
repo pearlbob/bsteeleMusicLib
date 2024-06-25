@@ -1,12 +1,8 @@
-import 'package:json_annotation/json_annotation.dart';
 
 import '../util/util.dart';
 import 'section.dart';
 
-part 'section_version.g.dart';
-
 /// A version identifier for multiple numerical variations of a given section.
-@JsonSerializable()
 class SectionVersion implements Comparable<SectionVersion> {
   /// A convenience constructor for a section without numerical variation.
   SectionVersion.bySection(this.section)
@@ -97,10 +93,6 @@ class SectionVersion implements Comparable<SectionVersion> {
   int get hashCode {
     return Object.hash(section, version);
   }
-
-  factory SectionVersion.fromJson(Map<String, dynamic> json) => _$SectionVersionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SectionVersionToJson(this);
 
   final Section section;
 

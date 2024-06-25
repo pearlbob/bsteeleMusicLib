@@ -1,6 +1,4 @@
-import 'package:json_annotation/json_annotation.dart';
 
-part 'time_signature.g.dart';
 
 const List<TimeSignature> knownTimeSignatures = [
   TimeSignature.defaultTimeSignature,
@@ -11,7 +9,6 @@ const List<TimeSignature> knownTimeSignatures = [
 ];
 
 /// beats per bar over units per measure ( 2, 4, 8 )
-@JsonSerializable()
 class TimeSignature {
   const TimeSignature(
     this.beatsPerBar,
@@ -41,10 +38,6 @@ class TimeSignature {
   String toString() {
     return '$beatsPerBar/$unitsPerMeasure';
   }
-
-  factory TimeSignature.fromJson(Map<String, dynamic> json) => _$TimeSignatureFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TimeSignatureToJson(this);
 
   static const TimeSignature commonTimeSignature = TimeSignature(4, 4);
   static const TimeSignature defaultTimeSignature = commonTimeSignature;

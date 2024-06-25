@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:logger/logger.dart';
 
 import '../app_logger.dart';
@@ -50,9 +51,15 @@ class NameValue implements Comparable<NameValue> {
     return NameValue(m.group(1) ?? ' ', m.group(2) ?? '');
   }
 
-  String toJson() {
+  String toJsonString() {
     return '{"name":${jsonEncode(name)},"value":${jsonEncode(value)}}';
   }
+
+  NameValue.fromJson(Map<String, dynamic> json)
+      : _name = json['name'],
+        _value = json['value'];
+
+  Map<String, dynamic> toJson() => {'name': _name, 'value': _value};
 
   @override
   int compareTo(NameValue other) {
@@ -73,7 +80,7 @@ class NameValue implements Comparable<NameValue> {
       other is NameValue && runtimeType == other.runtimeType && _name == other._name && _value == other._value;
 
   @override
-  int get hashCode => _name.hashCode ^ _value.hashCode;
+  int get hashCode => Object.hash(_name, _value);
 
   String get name => _name;
   final String _name;
@@ -100,7 +107,7 @@ class NameValueMatcher extends NameValue {
   bool testAll(final Iterable<NameValue> nameValues) {
     switch (type) {
       case NameValueType.value:
-      //  name and value match required
+        //  name and value match required
         for (var nv in nameValues) {
           if (nv.compareTo(this) == 0) {
             return true;
@@ -108,7 +115,7 @@ class NameValueMatcher extends NameValue {
         }
         break;
       case NameValueType.noValue:
-      //  name cannot match
+        //  name cannot match
         for (var nv in nameValues) {
           if (nv.name == name) {
             return false;
@@ -116,7 +123,7 @@ class NameValueMatcher extends NameValue {
         }
         return true;
       case NameValueType.anyValue:
-      //  any name match
+        //  any name match
         for (var nv in nameValues) {
           if (nv.name == name) {
             return true;
@@ -130,7 +137,7 @@ class NameValueMatcher extends NameValue {
   bool test(final NameValue nameValue) {
     switch (type) {
       case NameValueType.value:
-      //  name and value match required
+        //  name and value match required
         return nameValue.compareTo(this) == 0;
       case NameValueType.noValue:
         //  name cannot match
@@ -232,7 +239,7 @@ class NameValueFilter {
 
 /// name value pairs attached to a song id
 class SongIdMetadata implements Comparable<SongIdMetadata> {
-  SongIdMetadata(this._id, {Iterable<NameValue>? metadata}) {
+  SongIdMetadata(String id, {Iterable<NameValue>? metadata}) : _id = id {
     if (metadata != null) {
       for (NameValue nameValue in metadata) {
         add(nameValue);
@@ -241,15 +248,15 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
   }
 
   bool add(NameValue nameValue) {
-    if (!_nameValues.contains(nameValue)) {
-      _nameValues.add(nameValue);
+    if (!_metadata.contains(nameValue)) {
+      _metadata.add(nameValue);
       return true;
     }
     return false;
   }
 
   bool remove(NameValue nameValue) {
-    return _nameValues.remove(nameValue);
+    return _metadata.remove(nameValue);
   }
 
   Iterable<NameValue> where(bool Function(NameValue nameValue) matcher) {
@@ -269,7 +276,7 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
   String toString() {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (NameValue nv in _nameValues) {
+    for (NameValue nv in _metadata) {
       if (first) {
         first = false;
         sb.write('\n\t');
@@ -282,40 +289,46 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return '{ "id": "$id", "metadata": [$sb] }';
   }
 
-  String toJson() {
+  String toJsonString() {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (NameValue nv in _nameValues) {
+    for (NameValue nv in _metadata) {
       if (!SongMetadataGeneratedValue.isGenerated(nv)) {
         if (first) {
           first = false;
         } else {
           sb.write(',');
         }
-        sb.write(nv.toJson());
+        sb.write(nv.toJsonString());
       }
     }
     return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
   }
 
-  String toJsonAt(NameValue nameValue) {
-    StringBuffer sb = StringBuffer();
-    bool first = true;
-    for (NameValue nv in _nameValues) {
-      if (nv == nameValue) {
-        if (first) {
-          first = false;
-        } else {
-          sb.write(',');
-        }
-        sb.write(nv.toJson());
-      }
-    }
-    return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
+  SongIdMetadata.fromJson(Map<String, dynamic> json) : _id = json['id'] {
+    _metadata.addAll((json['metadata'] as List).map((i) => NameValue.fromJson(i)).toSet());
   }
+
+  Map<String, dynamic> toJson() => {'id': _id, 'metadata': _metadata.map((m) => m.toJson()).toList(growable: false)};
+
+  // String toJsonAt(NameValue nameValue) {
+  //   StringBuffer sb = StringBuffer();
+  //   bool first = true;
+  //   for (NameValue nv in _nameValues) {
+  //     if (nv == nameValue) {
+  //       if (first) {
+  //         first = false;
+  //       } else {
+  //         sb.write(',');
+  //       }
+  //       sb.write(nv.toJson());
+  //     }
+  //   }
+  //   return '{"id":${jsonEncode(id)},"metadata":[${sb.toString()}]}';
+  // }
 
   bool get hasNonGeneratedNameValues {
-    for (NameValue nv in _nameValues) {
+    for (NameValue nv in _metadata) {
       if (!SongMetadataGeneratedValue.isGenerated(nv)) {
         return true;
       }
@@ -323,28 +336,28 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
     return false;
   }
 
-  bool get isEmpty => _nameValues.isEmpty;
+  bool get isEmpty => _metadata.isEmpty;
 
-  bool get isNotEmpty => _nameValues.isNotEmpty;
+  bool get isNotEmpty => _metadata.isNotEmpty;
 
-  bool contains(NameValue nameValue) => _nameValues.contains(nameValue);
+  bool contains(NameValue nameValue) => _metadata.contains(nameValue);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SongIdMetadata &&
+      (other is SongIdMetadata &&
           runtimeType == other.runtimeType &&
           _id == other._id &&
-          _nameValues == other._nameValues;
+          const IterableEquality().equals(_metadata, other._metadata));
 
   @override
-  int get hashCode => _id.hashCode ^ _nameValues.hashCode;
+  int get hashCode => Object.hash(_id, _metadata);
 
   String get id => _id;
   final String _id;
 
-  SplayTreeSet<NameValue> get nameValues => _nameValues;
-  final SplayTreeSet<NameValue> _nameValues = SplayTreeSet();
+  SplayTreeSet<NameValue> get nameValues => _metadata;
+  final SplayTreeSet<NameValue> _metadata = SplayTreeSet();
 }
 
 String mapYearToDecade(int year) {
@@ -411,7 +424,7 @@ class SongMetadata {
   static void add(SongIdMetadata songIdMetadata) {
     SongIdMetadata? value;
     if ((value = _singleton._idMetadata.lookup(songIdMetadata)) != null) {
-      value!._nameValues.addAll(songIdMetadata._nameValues);
+      value!.nameValues.addAll(songIdMetadata.nameValues);
     } else {
       set(songIdMetadata);
     }
@@ -523,7 +536,7 @@ class SongMetadata {
     // assert(set.length == 1); fixme: why was this here?
     var ret = SplayTreeSet<NameValue>();
     for (var songIdMetadata in set) {
-      for (var nameValue in songIdMetadata._nameValues) {
+      for (var nameValue in songIdMetadata.nameValues) {
         if (nameValue.name == name) {
           ret.add(nameValue);
         }
@@ -630,11 +643,11 @@ class SongMetadata {
 
     loop:
     for (SongIdMetadata idm in _singleton._idMetadata) {
-      if (idIsLikeReg != null && !idIsLikeReg.hasMatch(idm._id)) {
+      if (idIsLikeReg != null && !idIsLikeReg.hasMatch(idm.id)) {
         continue loop;
       }
 
-      if (nameValue != null && !idm._nameValues.contains(nameValue)) {
+      if (nameValue != null && !idm.nameValues.contains(nameValue)) {
         continue loop;
       }
       if (idIs != null && idIs != idm.id.toString()) {
@@ -642,7 +655,7 @@ class SongMetadata {
       }
       if (nameIs != null) {
         bool hasMatch = false;
-        for (NameValue nv in idm._nameValues) {
+        for (NameValue nv in idm.nameValues) {
           if (nameIs == nv._name) {
             hasMatch = true;
             break;
@@ -654,7 +667,7 @@ class SongMetadata {
       }
       if (valueIs != null) {
         bool hasMatch = false;
-        for (NameValue nv in idm._nameValues) {
+        for (NameValue nv in idm.nameValues) {
           if (valueIs == nv.value) {
             hasMatch = true;
             break;
@@ -668,7 +681,7 @@ class SongMetadata {
       if (nameIsLikeReg != null) {
         if (valueIsLikeReg != null) {
           bool hasMatch = false;
-          for (NameValue nv in idm._nameValues) {
+          for (NameValue nv in idm.nameValues) {
             if (nameIsLikeReg.hasMatch(nv._name) && valueIsLikeReg.hasMatch(nv._value)) {
               hasMatch = true;
               break;
@@ -679,7 +692,7 @@ class SongMetadata {
           }
         } else {
           bool hasMatch = false;
-          for (NameValue nv in idm._nameValues) {
+          for (NameValue nv in idm.nameValues) {
             if (nameIsLikeReg.hasMatch(nv._name)) {
               hasMatch = true;
               break;
@@ -691,7 +704,7 @@ class SongMetadata {
         }
       } else if (valueIsLikeReg != null) {
         bool hasMatch = false;
-        for (NameValue nv in idm._nameValues) {
+        for (NameValue nv in idm.nameValues) {
           if (valueIsLikeReg.hasMatch(nv._value)) {
             hasMatch = true;
             break;
@@ -752,7 +765,7 @@ class SongMetadata {
         } else {
           sb.write(',\n');
         }
-        sb.write(songIdMetadata.toJson());
+        sb.write(songIdMetadata.toJsonString());
       }
     }
     return '[${sb.toString()}]';

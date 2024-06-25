@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import 'chord_section.dart';
 import 'key.dart';
 import 'measure_node.dart';
@@ -12,13 +10,10 @@ import 'drum_section.dart';
 import 'lyric.dart';
 import 'section_version.dart';
 
-part 'lyric_section.g.dart';
-
 /// A sectionVersion of a song that carries the lyrics, any special drum sectionVersion,
 /// and the chord changes on a measure basis
 /// with ultimately beat resolution.
 
-@JsonSerializable()
 class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   LyricSection(this.sectionVersion, this.index);
 
@@ -248,11 +243,6 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
     int ret = Object.hash(sectionVersion, drumSection, _lyricsLines);
     return ret;
   }
-
-  factory LyricSection.fromJson(Map<String, dynamic> json) => _$LyricSectionFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$LyricSectionToJson(this);
 
   final SectionVersion sectionVersion;
 

@@ -3139,7 +3139,7 @@ class SongBase {
 
   /// Return the song's identification string largely consisting of the title and artist name.
   String getSongId() {
-    return _songId.songId;
+    return _songId.songIdAsString;
   }
 
   /// Return the default beats per minute.

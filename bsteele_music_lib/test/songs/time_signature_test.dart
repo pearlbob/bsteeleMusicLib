@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/song_base.dart';
 import 'package:bsteele_music_lib/songs/time_signature.dart';
 import 'package:logger/logger.dart';
@@ -24,16 +22,4 @@ void main() {
     }
   });
 
-  test('time signature JSON serialization', () {
-    {
-      for (var timeSignature in knownTimeSignatures) {
-        final encoded = jsonEncode(timeSignature);
-        logger.i('$timeSignature: $encoded');
-
-        final decoded = jsonDecode(encoded) as Map<String, dynamic>;
-        final copy = TimeSignature.fromJson(decoded);
-        expect(copy, timeSignature);
-      }
-    }
-  });
 }

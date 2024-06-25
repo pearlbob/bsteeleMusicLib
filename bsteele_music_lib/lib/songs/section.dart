@@ -1,13 +1,8 @@
 import 'dart:collection';
 
-import 'package:json_annotation/json_annotation.dart';
-
 import '../util/util.dart';
 import 'section_version.dart';
 
-part 'section.g.dart';
-
-@JsonEnum()
 enum SectionEnum {
   /// A section that introduces the song.
   intro,
@@ -67,7 +62,6 @@ Map<SectionEnum, int> _sectionWeights = {
 ///
 /// Sections do not imply semantics but their proper suggested use
 /// will aid in song structure readability.
-@JsonSerializable(constructor: '_')
 class Section implements Comparable<Section> {
   Section._(this.sectionEnum, this.abbreviation, this.alternateAbbreviation, this.description)
       : //_lowerCaseName = sectionEnumToString(sectionEnum).toLowerCase(),
@@ -225,10 +219,6 @@ class Section implements Comparable<Section> {
   int get hashCode {
     return sectionEnum.hashCode;
   }
-
-  factory Section.fromJson(Map<String, dynamic> json) => _$SectionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SectionToJson(this);
 
   static final HashMap<SectionEnum, Section> _sections = HashMap.identity();
   static final List<Section> _sectionsList = [];

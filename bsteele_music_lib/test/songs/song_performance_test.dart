@@ -74,7 +74,7 @@ void main() {
           songPerformance.toString(),
           'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
           ' _singer: \'vicki\', key: A, _bpm: 120, last sung: 12/18/2021 10:31:19}');
-      expect(songPerformance.songId, 'Song_A_by_bob');
+      expect(songPerformance.songIdAsString, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
       expect(songPerformance.key, Key.A);
       expect(songPerformance.bpm, 120);
@@ -232,7 +232,7 @@ void main() {
     expect(performance, isNotNull);
     expect(performance!.singer, singer);
     expect(performance.song, isNull);
-    expect(performance.songId, 'Song_Back_in_the_USSR_by_Beatles_The');
+    expect(performance.songIdAsString, 'Song_Back_in_the_USSR_by_Beatles_The');
     expect(allSongPerformances.length, 5);
 
     var a = Song(
@@ -309,7 +309,7 @@ void main() {
     ]);
 
     for (var p in allSongPerformances.allSongPerformances) {
-      logger.i('${p.singer} sings ${p.songId}');
+      logger.i('${p.singer} sings ${p.songIdAsString}');
     }
     expect(allSongPerformances.length, 6);
 
@@ -341,7 +341,7 @@ void main() {
       expect(allSongPerformances.allSongPerformances.length, 5);
       expect(allSongPerformances.allSongPerformanceHistory.length, 6);
       for (var p in allSongPerformances.bySinger(singer)) {
-        if (p.songId == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
+        if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
         }
@@ -353,7 +353,7 @@ void main() {
           ',"singer":"$singer","key":3,"bpm":110,"lastSung":1539854884818}'); //  older performance
       expect(allSongPerformances.updateSongPerformance(performance), false);
       for (var p in allSongPerformances.bySinger(singer)) {
-        if (p.songId == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
+        if (p.songIdAsString == 'Song_All_I_Have_to_Do_Is_Dream_by_Everly_Brothers') {
           //  not updated since update was older
           expect(p.lastSung, 1639854884818);
           expect(p.bpm, 120);
@@ -846,7 +846,7 @@ void main() {
       for (var h in allSongPerformances.allSongPerformanceHistory) {
         logger.i('$h');
       }
-      logger.i('performanceA ${performanceA.songId} vs performance2 ${performance2.songId}');
+      logger.i('performanceA ${performanceA.songIdAsString} vs performance2 ${performance2.songIdAsString}');
       logger.i('performanceA.lastSung ${performanceA.lastSung} vs ${performance2.lastSung}');
       logger.i('performanceA.compareTo(performance2): ${performance1.compareTo(performance2)}');
       expect(performanceA.song?.compareTo(performance2.song!), isZero);
@@ -906,7 +906,7 @@ void main() {
       for (var h in allSongPerformances.allSongPerformanceHistory) {
         logger.i('$h');
       }
-      logger.i('performanceA ${performanceA.songId} vs performance2 ${performance2.songId}');
+      logger.i('performanceA ${performanceA.songIdAsString} vs performance2 ${performance2.songIdAsString}');
       logger.i('performanceA.lastSung ${performanceA.lastSung} vs ${performance2.lastSung}');
       logger.i('performanceA.compareTo(performance2): ${performance1.compareTo(performance2)}');
       expect(performanceA.song?.compareTo(performance2.song!), isNonZero);
