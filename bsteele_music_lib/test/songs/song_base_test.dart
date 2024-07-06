@@ -3797,7 +3797,7 @@ v:
           rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
       expect(
-          a.toJson().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
+          a.toJsonString().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
           '{\n'
           '"title": "ive go the blanks",\n'
           '"artist": "bob",\n'
@@ -3826,9 +3826,9 @@ v:
           '}\n'
           '');
       expect(a.toString(), 'ive go the blanks by bob');
-      Song b = Song.songListFromJson(a.toJson()).first;
+      Song b = Song.songListFromJson(a.toJsonString()).first;
       expect(a.toString(), b.toString());
-      expect(a.toJson(), b.toJson());
+      expect(a.toJsonString(), b.toJsonString());
       expect(a.compareBySongId(b), 0);
       expect(a.songBaseSameContent(b), true);
       expect(a.songBaseSameContent(b.copySong()), true);
@@ -3836,7 +3836,7 @@ v:
       a.coverArtist = 'Bob Marley';
       expect(a.toString(), 'ive go the blanks by bob, cover by Bob Marley');
       expect(
-          a.toJson().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
+          a.toJsonString().replaceAll(lastModifiedDateRegexp, 'lastModifiedDate was here\n'),
           '{\n'
           '"title": "ive go the blanks",\n'
           '"artist": "bob",\n'
@@ -3866,9 +3866,9 @@ v:
           '}\n'
           '');
       expect(a.songBaseSameContent(a.copySong()), true);
-      b = Song.songListFromJson(a.toJson()).first;
+      b = Song.songListFromJson(a.toJsonString()).first;
       expect(a.toString(), b.toString());
-      expect(a.toJson(), b.toJson());
+      expect(a.toJsonString(), b.toJsonString());
       expect(a.compareBySongId(b), 0);
       expect(a.songBaseSameContent(b), true);
       expect(a.songBaseSameContent(b.copySong()), true);
@@ -4982,7 +4982,7 @@ Grid{
         chords: 'i: 1A 2B 3C 3DEF  v: G G G G, C C G G o: C C G G',
         rawLyrics: 'i: (instrumental)\nv: line 1\no:\n');
 
-    logger.i(a.toJson());
+    logger.i(a.toJsonString());
   });
 
   test('generate song repeat tests', () {
@@ -5031,7 +5031,7 @@ Grid{
             } else {
               logger.i(',');
             }
-            logger.i(a.toJson());
+            logger.i(a.toJsonString());
           } else {
             logger.i('');
             logger.i('title: ${a.title}');

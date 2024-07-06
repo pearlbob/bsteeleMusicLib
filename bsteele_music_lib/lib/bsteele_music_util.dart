@@ -1388,17 +1388,27 @@ coerced to reflect the songlist's last modification for that song.
             SplayTreeSet<TempoMoment> tempoMoments = SplayTreeSet();
             String tempoPath = '${Util.homePath()}/communityJams/cj/bsteele_music_tempo';
 
+            //  {
+            //    DateFormat dateFormat =DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
+            //   var s = "2012-02-27 13:27:01.123";
+            ////  fixme: DateFormat won't parse microseconds
+            // var   dateTime = dateFormat.parse(s);
+            //    logger.i('$s equals? $dateTime');
+            //  }
+
             {
               File logFile = File('$tempoPath/catalina.2024-06-20.log');
               //  20-Jun-2024 21:10:56.732 INFO [http-nio-8080-exec-4] com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage onMessage("{ "momentNumber": -3 }")
               DateFormat dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS');
-              final messagePattern = RegExp(r'(.*)\s+INFO\s+.*onMessage\("\s*(.*)\s*"\)');
+              final messagePattern = RegExp(r'(.*):\s+INFO\s+.*onMessage\("\s*(.*)\s*"\)');
               Song song = Song.theEmptySong;
               String state = 'unknown';
               int lastMomentNumber = 0;
               DateTime lastDateTime = DateTime.now();
               for (var m in messagePattern.allMatches(logFile.readAsStringSync())) {
                 var dateTime = dateFormat.parse(m.group(1)!);
+                // logger.i('${m.group(1)!}:  $dateTime');
+                assert(dateTime.toString() == m.group(1)!);
                 Map<String, dynamic> decoded = json.decode(m.group(2)!) as Map<String, dynamic>;
                 var momentNumber = decoded['momentNumber'] ?? 0;
                 if (decoded['state'] != null) {
@@ -1429,19 +1439,28 @@ coerced to reflect the songlist's last modification for that song.
             {
               const sampleRate = 48000;
               File tempoFile = File('$tempoPath/tempo_log_20240620');
-              DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSSSSS');
+              DateFormat dateFormat =
+                  DateFormat('yyyy-MM-dd HH:mm:ss.SSS'); //  fixme: DateFormat won't parse microseconds
               // logger.i(tempoFile.readAsStringSync());
               // 2024-06-20 19:20:06.654485: 63246 =  1.318s =  0.759 hz = 45.536 bpm @  7911, consistent: false
-              final tempoPattern =
-                  RegExp(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}):\s+(\d+).*consistent:\s+(true|false)');
+              final tempoPattern = RegExp(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})'
+                  r'\d{3}' //  fixme: DateFormat won't parse microseconds
+                  r':\s+(\d+).*consistent:\s+(true|false)');
+              DateTime? lastDateTime;
               for (var m in tempoPattern.allMatches(tempoFile.readAsStringSync())) {
-                //logger.i(m.group(0)!);
+                // logger.i(m.group(0)!);
                 var dateTime = dateFormat.parse(m.group(1)!);
-                var samples = int.parse(m.group(2)!);
+                //logger.i('${m.group(1)!}:  $dateTime');
+                assert(dateTime.toString() == m.group(1)!);
+                //  var samples = int.parse(m.group(2)!);
                 var consistent = m.group(3)!;
-                double bpm = samples * 60 / sampleRate;
-                //  logger.i('${dateTime.toString()}:  $samples = $bpm, $consistent');
+                lastDateTime ??= dateTime;
+                var deltaTs = (dateTime.millisecondsSinceEpoch - lastDateTime.millisecondsSinceEpoch) /
+                    Duration.millisecondsPerSecond;
+                double bpm = deltaTs == 0 ? 0 : 2 * 60 / deltaTs;
+                // logger.i('${dateTime.toString()}:  $bpm, $consistent');
                 tempoMoments.add(TempoMoment.fromBpm(dateTime, bpm, consistent == 'true'));
+                lastDateTime = dateTime;
               }
             }
 

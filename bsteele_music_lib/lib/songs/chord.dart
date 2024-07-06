@@ -197,7 +197,7 @@ class Chord implements Comparable<Chord> {
         'scaleChord': scaleChord.toJson(),
         'beats': beats,
         'beatsPerBar': beatsPerBar,
-        'slashScaleNote': slashScaleNote,
+        'slashScaleNote': slashScaleNote?.toJson(),
         'anticipationOrDelay': anticipationOrDelay.toJson(),
         'implicitBeats': implicitBeats
       };

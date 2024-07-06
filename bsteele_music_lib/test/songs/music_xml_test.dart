@@ -260,7 +260,7 @@ void main() {
     String songAsMusicXml = musicXml.songAsMusicXml(a);
 
     Song b = MusicXml.songFromMusicXml(songAsMusicXml);
-    logger.i(b.toJson()); // fixme: complete this test
+    logger.i(b.toJsonString()); // fixme: complete this test
   });
 }
 

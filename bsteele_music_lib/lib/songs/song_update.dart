@@ -331,7 +331,7 @@ class SongUpdate {
     sb.write('",\n');
 
     sb.write('"song": ');
-    sb.write(song.toJson());
+    sb.write(song.toJsonString());
     sb.write(',\n');
 
     //  momentNumber sequencing details should be found by local processing

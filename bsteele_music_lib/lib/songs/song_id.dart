@@ -74,7 +74,7 @@ class SongId implements Comparable<SongId> {
   }
 
   /// custom serialization: only the song id as string is needed to represent the id
-  factory SongId.fromJson(String json) {
+  factory SongId.fromJsonString(String json) {
     return SongId(json);
   }
 

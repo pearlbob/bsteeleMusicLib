@@ -17,8 +17,8 @@ import 'section.dart';
 /// When added, chord beat durations exceeding the measure beat count will be ignored on playback.
 class Measure extends MeasureNode implements Comparable<Measure> {
   /// A convenience constructor to build a typical measure.
-  Measure(this.beatCount, this.chords, {int? beatsPerBar, int? maxBeatCount}) : beatsPerBar = beatsPerBar ?? beatCount {
-    _allocateTheBeats(maxBeatCount ?? beatCount);
+  Measure(this.beatCount, this.chords, {int? beatsPerBar}) : beatsPerBar = beatsPerBar ?? beatCount {
+    _allocateTheBeats(beatCount);
   }
 
   Measure deepCopy() {
@@ -107,7 +107,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     }
 
     assert(maxBeatCount <= beatsPerBar);
-    ret ??= Measure(maxBeatCount, chords, beatsPerBar: beatsPerBar, maxBeatCount: maxBeatCount);
+    ret ??= Measure(maxBeatCount, chords, beatsPerBar: beatsPerBar);
 
     //  process end of row markers
     RegExpMatch? mr = sectionRegexp.firstMatch(markedString.toString());
@@ -332,6 +332,20 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return 'X'; // no chords
   }
 
+  Map<String, dynamic> toJson() => {
+        'beatCount': beatCount,
+        'chords': chords.map((m) => m.toJson()).toList(growable: false),
+        'beatsPerBar': beatsPerBar
+      };
+
+  factory Measure.fromJson(Map<String, dynamic> json) {
+    return Measure(
+      json['beatCount'],
+      (json['chords'] as List).map((i) => Chord.fromJson(i)).toList(),
+      beatsPerBar: json['beatsPerBar'],
+    );
+  }
+
   @override
   bool get isEmpty {
     return false;
@@ -447,6 +461,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return runtimeType == other.runtimeType &&
         other is Measure &&
         beatCount == other.beatCount &&
+        beatsPerBar == other.beatsPerBar &&
         endOfRow == other.endOfRow &&
         listsEqual(chords, other.chords);
   }

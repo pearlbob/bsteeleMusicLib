@@ -109,7 +109,7 @@ void main() {
     ChordPro chordPro = ChordPro();
 
     Song song = chordPro.parse(_andILoveHer);
-    logger.i(song.toJson());
+    logger.i(song.toJsonString());
     expect(song.title, 'And I Love Her');
     expect(song.artist, 'Beatles, The');
     expect(song.copyright, '');
