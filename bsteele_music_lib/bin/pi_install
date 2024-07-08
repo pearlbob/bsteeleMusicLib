@@ -1,0 +1,42 @@
+#!/bin/tcsh
+set echo; set verbose
+
+echo $0\:
+
+set machine=pi@bobspi7.local
+
+set app=bsteeleMusicLib
+set bsDir=${app}
+set remoteDir=remotePi
+set src=${app}
+
+if ( `hostname` == 'bob' ) then
+	cd ~/github/${app}
+
+
+	ssh ${machine} rm -rf '~pi/junk/'$bsDir
+	ssh ${machine} 'mkdir -p  ~pi/junk/'$bsDir
+	scp -q -r *  ${machine}:junk/$bsDir
+
+	#	execute this script on the machine
+	ssh ${machine} "cd ~pi/junk/$bsDir; ./bsteele_music_lib/bin/$0:t"
+	set stat=$status
+	echo machine status $stat
+	exit $status
+else
+  # on the pi
+
+	echo on machine `hostname`
+	cd ~/junk/$bsDir/bsteele_music_lib
+
+	rm -rf .gradle
+	rm -rf linux
+	dart pub get
+ 	set stat=$status
+	if ( $stat != 0 ) exit $stat
+
+	exit $status
+endif
+
+
+

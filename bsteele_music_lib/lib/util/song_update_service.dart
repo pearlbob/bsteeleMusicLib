@@ -11,7 +11,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'app_log_message.dart';
 
 const Level _log = Level.debug;
-const Level _logMessage = Level.info;
+const Level _logMessage = Level.debug;
 const Level _logJson = Level.debug;
 const Level _logLeader = Level.debug;
 
@@ -44,23 +44,23 @@ class SongUpdateService extends ChangeNotifier {
 
     while (_isRunning) //  retry on a failure
     {
-      _closeWebSocketChannel();
+      try {
+        //  or re-try
+        _closeWebSocketChannel();
 
-      //  look back to the server to possibly find a websocket
-      host = _findTheHost();
-      _ipAddress = '';
+        //  look back to the server to possibly find a websocket
+        host = _findTheHost();
+        _ipAddress = '';
 
-      if (host.isEmpty) {
-        // do nothing
-        logger.log(_log, 'webSocket: empty _host');
-      } else {
-        //  assume that the authority is good, or at least worth trying
-        var url = 'ws://$host$_port/bsteeleMusicApp/bsteeleMusic';
-        logger.log(_log, 'trying: $url');
-        appLogMessage('webSocket try _host: "$host"');
+        if (host.isEmpty) {
+          // do nothing
+          logger.log(_log, 'webSocket: empty _host');
+        } else {
+          //  assume that the authority is good, or at least worth trying
+          var url = 'ws://$host$_port/bsteeleMusicApp/bsteeleMusic';
+          logger.log(_log, 'trying: $url');
+          appLogMessage('webSocket try _host: "$host"');
 
-        try {
-          //  or re-try
           Uri uri = Uri.parse(url);
           _responseCount = 0;
 
@@ -95,9 +95,9 @@ class SongUpdateService extends ChangeNotifier {
               }
             }
           }, onError: (Object error) {
-            logger.log(_log, 'webSocketChannel error: "$error" at "$uri"'); //  fixme: retry later
+            logger.log(_log, 'webSocketChannel onError: "$error" at "$uri"'); //  fixme: retry later
             _closeWebSocketChannel();
-            appLogMessage('webSocketChannel error: $error at $uri');
+            appLogMessage('webSocketChannel onError: $error at $uri');
           }, onDone: () {
             logger.log(_log, 'webSocketChannel onDone: at $uri');
             _closeWebSocketChannel();
@@ -142,10 +142,11 @@ class SongUpdateService extends ChangeNotifier {
               logger.log(_log, 'webSocketChannel open: $_isOpen, idleCount: $_idleCount');
             }
           }
-        } catch (e) {
-          logger.log(_log, 'webSocketChannel exception: $e');
-          _closeWebSocketChannel();
         }
+      } catch (e, stacktrace) {
+        logger.log(_log, 'webSocketChannel exception: $e');
+        print(stacktrace.toString());
+        _closeWebSocketChannel();
       }
 
       if (_delayMilliseconds > 0) {
