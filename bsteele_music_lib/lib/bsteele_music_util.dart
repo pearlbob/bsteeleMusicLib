@@ -1437,7 +1437,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             {
-              const sampleRate = 48000;
+              // const sampleRate = 48000;
               File tempoFile = File('$tempoPath/tempo_log_20240620');
               DateFormat dateFormat =
                   DateFormat('yyyy-MM-dd HH:mm:ss.SSS'); //  fixme: DateFormat won't parse microseconds

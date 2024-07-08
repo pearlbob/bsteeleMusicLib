@@ -24,6 +24,8 @@ dependencies:
   dotenv:
   tuple:
   collection:
+  web_socket_channel:
+  change_notifier:
   worker_manager:
   excel:
 
