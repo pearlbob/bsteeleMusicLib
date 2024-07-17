@@ -3,7 +3,7 @@ set echo; set verbose
 
 echo $0\:
 
-set machine=pi@bobspi7.local
+set machine=pi@bobspi9.local
 
 set app=bsteeleMusicLib
 set bsDir=${app}

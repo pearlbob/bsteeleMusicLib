@@ -15,23 +15,26 @@ enum SongUpdateState {
   playing, // song is in play mode
   idle, //  song is stopped
   pause, //  song play is paused
-  drumTempo, //  prior to play, drum the given tempo, temporarily
+  drumTempo; //  prior to play, drum the given tempo, temporarily
+
+  Map<String, dynamic> toJson() => {'name': name};
+
+  factory SongUpdateState.fromJson(Map<String, dynamic> json) {
+    return SongUpdateState.fromName(json['name']);
+  }
+
+  factory SongUpdateState.fromName(final String name) {
+    //  workaround for old historical value: manualPlay
+    if (name == 'manualPlay') return SongUpdateState.playing;
+    try {
+      return SongUpdateState.values.byName(name);
+    } catch (e) {
+      return SongUpdateState.none;
+    }
+  }
 }
 
 const unknownSinger = 'unknown';
-
-String songUpdateStateToString(SongUpdateState s) {
-  return s.toString().split('.').last;
-}
-
-SongUpdateState? _stateFromString(String s) {
-  for (var e in SongUpdateState.values) {
-    if (e.toString().endsWith(s)) {
-      return e;
-    }
-  }
-  return null;
-}
 
 const JsonDecoder _jsonDecoder = JsonDecoder();
 
@@ -277,9 +280,7 @@ class SongUpdate {
         var jv = json[name];
         switch (name) {
           case 'state':
-            state = (_stateFromString(jv) ??
-                //  workaround for old historical value: manualPlay
-                (jv == 'manualPlay' ? SongUpdateState.playing : SongUpdateState.none));
+            state = SongUpdateState.fromName(jv);
             break;
           case 'currentKey':
             setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
@@ -324,7 +325,7 @@ class SongUpdate {
     var sb = StringBuffer();
     sb.write('{\n');
     sb.write('"state": "');
-    sb.write(songUpdateStateToString(state));
+    sb.write(state.name);
     sb.write('",\n');
     sb.write('"currentKey": "');
     sb.write(getCurrentKey().name);
