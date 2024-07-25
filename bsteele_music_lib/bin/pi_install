@@ -5,6 +5,21 @@ echo $0\:
 
 set machine=pi@bobspi9.local
 
+while ( $#argv > 0 )
+	switch ( $1:q )
+	case '-pi=7':
+		set machine=pi@bobspi7.local
+		shift
+		continue;
+	default:
+	  echo unknown arg: $1
+	  exit -1
+		breaksw;
+	endsw
+
+	break;
+end
+
 set app=bsteeleMusicLib
 set bsDir=${app}
 set remoteDir=remotePi
