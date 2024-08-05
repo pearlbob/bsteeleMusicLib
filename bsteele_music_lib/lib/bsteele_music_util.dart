@@ -80,6 +80,7 @@ arguments:
 -cjcsvread {file}   read a cj csv format the song metadata file
 -cjgenre {file}     read the csv version of the CJ web genre file
 -cjgenrewrite {file}     write the csv version of the CJ web genre file
+-complexity         write songlist in order of complexity
 -expand {file}      expand a songlyrics list file to the output directory
 -floatnotes         list bass notes by float frequency
 -f                  force file writes over existing files
@@ -483,6 +484,12 @@ coerced to reflect the songlist's last modification for that song.
 
             logger.i('-cjgenrewrite: $outputFile');
           }
+          break;
+
+        case '-complexity':
+          var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
+
+          logger.i('-complexity: ');
           break;
 
         case '-exp':
