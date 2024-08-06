@@ -489,6 +489,11 @@ coerced to reflect the songlist's last modification for that song.
         case '-complexity':
           var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
 
+          SplayTreeSet<Song> songSet = SplayTreeSet(Song.getComparatorByType(SongComparatorType.complexity));
+          songSet.addAll(songs);
+          for (Song song in songSet) {
+            logger.i('${song.getComplexity().toString().padLeft(5)}: ${song.toString()}');
+          }
           logger.i('-complexity: ');
           break;
 
@@ -1472,8 +1477,8 @@ coerced to reflect the songlist's last modification for that song.
                 var deltaSamplesTs = samples / sampleRate;
                 var consistent = m.group(3)!;
                 lastDateTime ??= dateTime;
-                var deltaTs = (dateTime.millisecondsSinceEpoch - lastDateTime.millisecondsSinceEpoch) /
-                    Duration.millisecondsPerSecond;
+                // var deltaTs = (dateTime.millisecondsSinceEpoch - lastDateTime.millisecondsSinceEpoch) /
+                //     Duration.millisecondsPerSecond;
                 double bpm = deltaSamplesTs == 0 ? 0 : 60 / deltaSamplesTs;
                 // logger.i('$dateTime: deltaSamplesTs: ${deltaSamplesTs.toStringAsFixed(6)}'
                 //     ', deltaTs: ${deltaTs.toStringAsFixed(6)}'

@@ -4,8 +4,6 @@ import 'dart:collection';
 import 'dart:core';
 import 'dart:math';
 
-import 'lyric.dart';
-import 'time_signature.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:quiver/collection.dart';
@@ -20,6 +18,7 @@ import 'chord_section.dart';
 import 'chord_section_grid_data.dart';
 import 'chord_section_location.dart';
 import 'key.dart';
+import 'lyric.dart';
 import 'lyric_section.dart';
 import 'measure.dart';
 import 'measure_comment.dart';
@@ -35,6 +34,7 @@ import 'section_version.dart';
 import 'song.dart';
 import 'song_id.dart';
 import 'song_moment.dart';
+import 'time_signature.dart';
 
 enum UpperCaseState {
   initial,
@@ -3419,19 +3419,43 @@ class SongBase {
     if (_complexity == 0) {
       //  compute the complexity
       SplayTreeSet<Measure> differentChords = SplayTreeSet();
+      int maxChordSectionLength = 0;
       for (ChordSection chordSection in _getChordSectionMap().values) {
+        int chordSectionLength = 0;
         for (Phrase phrase in chordSection.phrases) {
+          chordSectionLength += phrase.measures.length;
+
           //  the more different measures, the greater the complexity
           differentChords.addAll(phrase.measures);
 
           //  weight measures by guitar complexity
           for (Measure measure in phrase.measures) {
             if (!measure.isEasyGuitarMeasure()) {
-              _complexity++;
+              //  more chords per measure are more complex
+              _complexity += measure.chords.length;
+
+              for (Chord chord in measure.chords) {
+                //  more complex chords are more complex
+                if (!ChordDescriptor.primaryChordDescriptorsOrdered.contains(chord.scaleChord.chordDescriptor)) {
+                  _complexity++;
+                }
+
+                //  inversions are more complex
+                if (chord.slashScaleNote != null) {
+                  _complexity++;
+                }
+              }
+
+              //  short beat measures are complex
+              if (measure.beatCount != beatsPerBar) {
+                _complexity += 3;
+              }
             }
           }
         }
+        maxChordSectionLength = max(maxChordSectionLength, chordSectionLength);
       }
+      _complexity += maxChordSectionLength;
       _complexity += _getChordSectionMap().values.length;
       _complexity += differentChords.length;
     }

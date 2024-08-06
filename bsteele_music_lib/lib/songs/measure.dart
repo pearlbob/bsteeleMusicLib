@@ -258,7 +258,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   bool isEasyGuitarMeasure() {
-    return chords.length == 1 && chords[0].scaleChord.isEasyGuitarChord();
+    return chords.length == 1 && beatCount == beatsPerBar && chords[0].scaleChord.isEasyGuitarChord();
   }
 
   @override

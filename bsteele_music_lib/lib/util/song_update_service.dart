@@ -145,6 +145,7 @@ class SongUpdateService extends ChangeNotifier {
         }
       } catch (e, stacktrace) {
         logger.log(_log, 'webSocketChannel exception: $e');
+        // ignore: avoid_print
         print(stacktrace.toString());
         _closeWebSocketChannel();
       }
