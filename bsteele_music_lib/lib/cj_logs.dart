@@ -217,7 +217,8 @@ class CjLog {
           // logger.log(_cjLogWasSung, '   from $startTime to $dateTime: ${dateTime.difference(startTime)}'
           //     ' vs ${lastSongUpdate.song.duration} s');
           var moments = song.songMoments;
-          var minimumMomentCount = moments.length - moments.last.chordSection.getTotalMoments();
+          var minimumMomentCount =
+              moments.length - (moments.isNotEmpty ? moments.last.chordSection.getTotalMoments() : 0);
           //  try to allow one section songs, e.g. the blues
           //  will be fooled by damaged songs
           if (song.lyricSections.length > 1) {

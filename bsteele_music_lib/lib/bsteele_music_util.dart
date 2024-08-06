@@ -1107,7 +1107,7 @@ coerced to reflect the songlist's last modification for that song.
               logger.i('allSongPerformances.length: ${allSongPerformances.length}');
               logger.i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
 
-              if (_verbose) {
+              if (_veryVerbose) {
                 for (var performance in allSongPerformances.allSongPerformanceHistory) {
                   logger.i('history:  ${performance.toString()}');
                 }
@@ -1197,9 +1197,9 @@ coerced to reflect the songlist's last modification for that song.
                   ', corrections: $corrections');
               assert(seconds < 0.25);
             }
-            if (_verbose) {
-              logger.i(allSongPerformances.toString());
-            }
+            // if (_verbose) {
+            //   logger.i(allSongPerformances.toString());
+            // }
           }
           break;
 
