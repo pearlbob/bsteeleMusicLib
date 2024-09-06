@@ -60,7 +60,7 @@ class SongUpdate {
         momentNumber = momentNumber ?? 0,
         rowNumber = rowNumber ?? 0,
         beat = beat ?? 0,
-        beatsPerMeasure = beatsPerMeasure ?? 4,
+        beatsPerMeasure = beatsPerMeasure ?? song?.beatsPerBar ?? 4,
         currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
         currentKey = currentKey ?? Key.getDefault() {
     //  notice assignSong() is not used to keep currentKey and currentBeatsPerMinute correct
@@ -389,7 +389,7 @@ class SongUpdate {
 
   // Beat number from start of the current measureNumber. Starts at zero and goes to beatsPerBar - 1
   int beat;
-  int beatsPerMeasure;
+  int beatsPerMeasure; //  fixme: this should be removed
   int currentBeatsPerMinute;
   Key currentKey;
 }
