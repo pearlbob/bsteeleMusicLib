@@ -1216,7 +1216,7 @@ coerced to reflect the songlist's last modification for that song.
             //  add the github version
             allSongPerformances.updateFromJsonString(
                 File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
-            print('performances: ${allSongPerformances.allSongPerformanceHistory.length}');
+            logger.i('performances: ${allSongPerformances.allSongPerformanceHistory.length}');
             SplayTreeMap<DateTime, SplayTreeSet<String>> dateSingersMap =
                 SplayTreeMap<DateTime, SplayTreeSet<String>>();
             for (var perf in allSongPerformances.allSongPerformanceHistory) {
@@ -1228,10 +1228,10 @@ coerced to reflect the songlist's last modification for that song.
               dateSingersMap[dateTime] = dateSingers;
             }
             var bracesRegex = RegExp(r'[{}]');
-            print('Date, Count, Singers');
+            logger.i('Date, Count, Singers');
             for (var dateTime in SplayTreeSet<DateTime>()..addAll(dateSingersMap.keys)) {
               var singers = dateSingersMap[dateTime];
-              print('${DateFormat('yyyy-MM-dd').format(dateTime)}, ${singers?.length}'
+              logger.i('${DateFormat('yyyy-MM-dd').format(dateTime)}, ${singers?.length}'
                   ', "${singers.toString().replaceAll(bracesRegex, '')}"');
             }
           }
@@ -1429,8 +1429,8 @@ coerced to reflect the songlist's last modification for that song.
             SplayTreeSet<TempoMoment> tempoMoments = SplayTreeSet();
             String tempoPath = '${Util.homePath()}/communityJams/cj/bsteele_music_tempo';
             const year = '2024';
-            const month = '08';
-            const day = '21';
+            const month = '09';
+            const day = '07';
 
             {
               DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
@@ -1487,7 +1487,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             {
-              const sampleRate = 48000;
+              // const sampleRate = 48000;
               File tempoFile = File('$tempoPath/tempo_log_$year$month$day');
               DateFormat dateFormat =
                   DateFormat('yyyy-MM-dd HH:mm:ss.SSS'); //  fixme: DateFormat won't parse microseconds
@@ -1505,7 +1505,7 @@ coerced to reflect the songlist's last modification for that song.
                 //logger.i('${m.group(1)!}:  $dateTime');
                 assert(dateTime.toString() == m.group(1)!);
                 var bpm = int.parse(m.group(2)!);
-                var amp = int.parse(m.group(3)!);
+                // var amp = int.parse(m.group(3)!);
                 var tpm = int.parse(m.group(4)!);
                 // var deltaSamplesTs = samples / sampleRate;
                 // var consistent = m.group(3)!;
@@ -1527,15 +1527,15 @@ coerced to reflect the songlist's last modification for that song.
             {
               int referenceBpm = 0;
               Song? lastSong;
-              int tempoBeatInitialOffset = 0;
-              DateTime tempoBeatInitialDateTime = DateTime(2024);
+              // int tempoBeatInitialOffset = 0;
+              // DateTime tempoBeatInitialDateTime = DateTime(2024);
               for (TempoMoment tempoMoment in tempoMoments) {
                 if (tempoMoment.song != null) {
                   Song song = tempoMoment.song!;
                   referenceBpm = song.beatsPerMinute;
                   if (lastSong?.songId != song.songId) {
-                    tempoBeatInitialOffset = song.songMoments[max(tempoMoment.momentNumber, 0)].beatNumber;
-                    tempoBeatInitialDateTime = tempoMoment.dateTime;
+                    // tempoBeatInitialOffset = song.songMoments[max(tempoMoment.momentNumber, 0)].beatNumber;
+                    // tempoBeatInitialDateTime = tempoMoment.dateTime;
                     // final DateTime dateTime;
                     // final String state;
                     // final Song? song;

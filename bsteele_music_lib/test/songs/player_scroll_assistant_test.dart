@@ -392,7 +392,7 @@ class CjLog {
     return s.substring(0, min(35, len));
   }
 
-  SongPerformance toSongPerformance(SongUpdate songUpdate, DateTime dateTime) {
+  SongPerformance toSongPerformance(final SongUpdate songUpdate, final DateTime dateTime) {
     logger.log(_cjLogPerformances, 'output: $songUpdate');
     var ret = SongPerformance.fromSong(
       songUpdate.song,

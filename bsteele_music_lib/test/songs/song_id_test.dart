@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:bsteele_music_lib/songs/key.dart';
 import 'package:bsteele_music_lib/songs/song.dart';
+import 'package:bsteele_music_lib/songs/song_id.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -42,6 +43,25 @@ void main() {
 
       expect(a.songId.toString(), 'Song_Ive_got_the_blanks_by_bob');
       expect(a.songId.toUnderScorelessString(), 'Ive got the blanks by bob');
+    }
+  });
+
+  test('test SongId format', () {
+    SongId.fromString('Song_ive_go_the_blanks_by_bob');
+    SongId.fromString('Song_ive_go_the_blanks_by_bob_cover_by_George');
+
+    try {
+      SongId.fromString('Song_i\'ve_go_the_blanks_by_bob_cover_by_George'); //  bad id
+      throw Exception('bad SongId format checking');
+    } on AssertionError catch (_) {
+      //  failure is correct
+    }
+
+    try {
+      SongId.fromString('song_ive_go_the_blanks_by_bob_cover_by_George'); //  bad id
+      throw Exception('bad SongId format checking');
+    } on AssertionError catch (_) {
+      //  failure is correct
     }
   });
 

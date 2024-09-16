@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
+
+import 'app_logger.dart';
 import 'songs/song.dart';
 import 'songs/song_metadata.dart';
 import 'songs/song_performance.dart';
 import 'songs/song_update.dart';
 import 'util/us_timer.dart';
 import 'util/util.dart';
-import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
-
-import 'app_logger.dart';
 
 // ignore_for_file: avoid_print
 
@@ -278,23 +278,23 @@ class CjLog {
       }
     }
 
-    //  Note:  intentionally leave in unknown singers.
-    //  These are songs sung from outside the singers screen.
+//  Note:  intentionally leave in unknown singers.
+//  These are songs sung from outside the singers screen.
 
-    //  read the new songs as source for song corrections
+//  read the new songs as source for song corrections
     var songs = Song.songListFromJson(_allSonglyricsGithubFile.readAsStringSync());
     var corrections = allSongPerformances.loadSongs(songs);
     print('postLoad: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
     print('corrections: $corrections');
 
-    // clean up the near misses in the history and performances due to song title, artist and cover artist changes
-    //  count the sloppy matched songs in history
+// clean up the near misses in the history and performances due to song title, artist and cover artist changes
+//  count the sloppy matched songs in history
     {
       var matches = 0;
       for (var performance in allSongPerformances.allSongPerformanceHistory) {
         if (performance.song == null) {
           print('missing song: ${performance.lowerCaseSongIdAsString}');
-          // assert(false);
+// assert(false);
         } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
           logger.i('${performance.lowerCaseSongIdAsString}'
               ' vs ${performance.song!.songId.toString().toLowerCase()}');
@@ -307,7 +307,7 @@ class CjLog {
           ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
     }
 
-    //  repair metadata song changes
+//  repair metadata song changes
     SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
     File localSongMetadata = File('$downloadsDirString/allSongs.songmetadata');
     logger.i('localSongMetadata: ${localSongMetadata.path}');
@@ -317,7 +317,7 @@ class CjLog {
         localSongMetadata.deleteSync();
       } catch (e) {
         logger.e(e.toString());
-        //assert(false);
+//assert(false);
       }
       localSongMetadata.writeAsStringSync(SongMetadata.toJson(), flush: true);
 
@@ -327,7 +327,7 @@ class CjLog {
     }
 
     {
-      //  song check... not strictly required
+//  song check... not strictly required
       int count = 0;
       for (var perf in originalAllSongPerformances) {
         count += perf.song == null ? 1 : 0;
@@ -342,7 +342,7 @@ class CjLog {
           }));
     logger.i('processedAllSongPerformances.length: ${processedAllSongPerformances.length}');
     {
-      //  song check... not strictly required
+//  song check... not strictly required
       int count = 0;
       for (var perf in processedAllSongPerformances) {
         count += perf.song == null ? 1 : 0;
@@ -362,22 +362,22 @@ class CjLog {
         logger.i(perf.toShortString());
       }));
 
-    //  write the corrected performances
+//  write the corrected performances
     File localSongperformances = File('$downloadsDirString/allSongPerformances.songperformances');
     {
       try {
         localSongperformances.deleteSync();
       } catch (e) {
         logger.e(e.toString());
-        //assert(false);
+//assert(false);
       }
       localSongperformances.writeAsStringSync(allSongPerformances.toJsonString(), flush: true);
     }
 
-    //  time the reload
+//  time the reload
     {
-      // allSongPerformances.clear();
-      // SongMetadata.clear();
+// allSongPerformances.clear();
+// SongMetadata.clear();
 
       print('\nreload:');
       var usTimer = UsTimer();
@@ -404,7 +404,7 @@ class CjLog {
       assert(seconds < 0.25);
     }
 
-    //  write the output file
+//  write the output file
     _writeSongPerformances(File('${processedLogs.path}/allSongPerformances.songperformances'), prettyPrint: false);
     logger.log(_cjLogPerformances, allSongPerformances.toJsonString(prettyPrint: false));
   }
@@ -420,7 +420,7 @@ class CjLog {
             oldest = p.lastSungDateTime;
           }
           if (p.lastSungDateTime.compareTo(_firstValidDate) < 0) {
-            // logger.i('      too early:  ${p.lastSungDateTime}');
+// logger.i('      too early:  ${p.lastSungDateTime}');
             count++;
           }
         }

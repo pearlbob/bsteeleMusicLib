@@ -243,6 +243,9 @@ class SongUpdate {
       }
       sb.write(', key: $currentKey');
     }
+    if (currentBeatsPerMinute > 0) {
+      sb.write(', currentBPM: $currentBeatsPerMinute');
+    }
     return sb.toString();
   }
 
@@ -258,7 +261,7 @@ class SongUpdate {
     return ret;
   }
 
-  static SongUpdate? fromJson(String jsonString) {
+  static SongUpdate? fromJson(final String jsonString) {
     logger.d(jsonString);
 
     if (jsonString.isEmpty) {
@@ -268,13 +271,13 @@ class SongUpdate {
     return fromJsonObject(_jsonDecoder.convert(jsonString));
   }
 
-  static SongUpdate? fromJsonObject(dynamic json) {
+  static SongUpdate? fromJsonObject(final dynamic json) {
     SongUpdate songUpdate = SongUpdate();
     songUpdate._updateFromJsonObject(json);
     return songUpdate;
   }
 
-  void _updateFromJsonObject(dynamic json) {
+  void _updateFromJsonObject(final dynamic json) {
     if (json is Map) {
       for (String name in json.keys) {
         var jv = json[name];
@@ -366,15 +369,13 @@ class SongUpdate {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType && other is SongUpdate && hashCode == other.hashCode;
+    return runtimeType == other.runtimeType && other is SongUpdate && hashCode == other.hashCode; // fixme
   }
 
   @override
   int get hashCode {
-    int hash = Object.hash(state, currentKey, song, momentNumber);
-    hash = 83 * hash + Object.hash(beat, beatsPerMeasure, currentBeatsPerMinute, user);
-    hash = 17 * hash + singer.hashCode;
-    return hash;
+    return Object.hash(
+        state, currentKey, song, momentNumber, beat, beatsPerMeasure, currentBeatsPerMinute, user, singer);
   }
 
   SongUpdateState state;

@@ -7,7 +7,11 @@ import 'dart:collection';
 ///  Names starting with "The" have the "The" moved to the end.
 class SongId implements Comparable<SongId> {
   /// For uninitialized values
-  SongId.noArgs() : songIdAsString = 'UnknownSong';
+  SongId.noArgs() : songIdAsString = '${prefix}Unknown_Song_by_Unknown';
+
+  SongId.fromString(final String s) : songIdAsString = s {
+    assert(songIdRegExp.hasMatch(songIdAsString));
+  }
 
   /// Copy constructor
   SongId(this.songIdAsString);
@@ -85,4 +89,5 @@ class SongId implements Comparable<SongId> {
 
   static final RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
   static final RegExp dupUnderscoreOrSpaceRegExp = RegExp('[ _]+');
+  static final RegExp songIdRegExp = RegExp('$prefix' r'[\w_]+_by_[\w_]+(_coverBy_[\w_]+)?$');
 }

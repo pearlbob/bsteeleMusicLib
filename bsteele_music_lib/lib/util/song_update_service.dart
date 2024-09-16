@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/song.dart';
+import 'package:bsteele_music_lib/songs/song_tempo_update.dart';
 import 'package:bsteele_music_lib/songs/song_update.dart';
 import 'package:change_notifier/change_notifier.dart';
 import 'package:logger/logger.dart';
@@ -78,9 +79,12 @@ class SongUpdateService extends ChangeNotifier {
             }
 
             if (message is String) {
-              if (message.startsWith(_timeRequest)) {
+              if (message.startsWith(timeRequest)) {
                 //  time
                 logger.i('time response: $message');
+              } else if (message.startsWith(tempoRequest)) {
+                //  tempo
+                logger.i('tempo response: $message');
               } else {
                 _songUpdate = SongUpdate.fromJson(message);
                 if (_songUpdate != null) {
@@ -89,7 +93,7 @@ class SongUpdateService extends ChangeNotifier {
                   _songUpdateCount++;
                   logger.log(
                       _logMessage,
-                      'received: song: ${_songUpdate?.song.title}'
+                      'received: song: ${_songUpdate!.song.songId}'
                       ' at moment: ${_songUpdate?.momentNumber}');
                 }
               }
@@ -190,10 +194,9 @@ class SongUpdateService extends ChangeNotifier {
     }
   }
 
-  static const _timeRequest = 't:';
 
   void _issueTimeRequest() {
-    _webSocketSink?.add(_timeRequest);
+    _webSocketSink?.add(timeRequest);
     logger.t('_issueTimeRequest()');
   }
 
@@ -206,6 +209,14 @@ class SongUpdateService extends ChangeNotifier {
       _songUpdateCount++;
       logger.log(_logLeader, "leader ${songUpdate.getUser()} issueSongUpdate #$_songUpdateCount: $songUpdate");
     }
+  }
+
+  void issueSongTempoUpdate(SongTempoUpdate songTempUpdate) {
+    var jsonText = songTempUpdate.toJson();
+    _webSocketSink?.add('$tempoRequest$jsonText');
+    logger.log(_logJson, jsonText);
+    _songTempoUpdateCount++;
+    logger.log(_logLeader, "issueSongTempoUpdate #$_songTempoUpdateCount: $songTempUpdate");
   }
 
   bool get _isOpen => _webSocketChannel != null;
@@ -238,6 +249,9 @@ class SongUpdateService extends ChangeNotifier {
   String get leaderName => (_songUpdate != null ? _songUpdate!.user : Song.defaultUser);
   WebSocketChannel? _webSocketChannel;
 
+  static const timeRequest = 't:';
+  static const tempoRequest = 'tempo:';
+
   String get ipAddress => _ipAddress;
   String _ipAddress = '';
 
@@ -245,6 +259,7 @@ class SongUpdateService extends ChangeNotifier {
   String user = 'unknown';
   static const String _port = ':8080';
   int _songUpdateCount = 0;
+  int _songTempoUpdateCount = 0;
   int _idleCount = 0;
   int _responseCount = 0;
   WebSocketSink? _webSocketSink;
