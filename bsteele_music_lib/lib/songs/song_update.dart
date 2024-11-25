@@ -13,6 +13,7 @@ import 'song_moment.dart';
 enum SongUpdateState {
   none, //  basically an initial condition
   playing, // song is in play mode
+  playHold, // song is in play but the autoscroll is holding still, expecting a continuation
   idle, //  song is stopped
   pause, //  song play is paused
   drumTempo; //  prior to play, drum the given tempo, temporarily
