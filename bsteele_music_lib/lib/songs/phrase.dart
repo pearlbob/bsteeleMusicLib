@@ -384,8 +384,6 @@ class Phrase extends MeasureNode {
           return true;
         }
         break;
-      default:
-        return false;
     }
 
     //  edit by type
@@ -456,8 +454,6 @@ class Phrase extends MeasureNode {
           }
         }
         break;
-      default:
-        return false;
     }
 
     return true;

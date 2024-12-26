@@ -159,6 +159,10 @@ class CjLog {
     logger.log(_cjLogFiles, 'logs: $logs');
     logger.log(_cjLogFiles, 'processedLogs: $processedLogs');
 
+    if (!processedLogs.parent.existsSync()) {
+      print('missing directory: ${processedLogs.parent}');
+      return;
+    }
     processedLogs.createSync();
 
     //  add the github version

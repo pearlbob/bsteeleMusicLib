@@ -301,7 +301,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
         _sectionVersion == other._sectionVersion &&
         _phraseIndex == other._phraseIndex &&
         _measureIndex == other._measureIndex &&
-        _repeats == other._repeats)) return false;
+        _repeats == other._repeats)) {
+      return false;
+    }
 
     if (_labelSectionVersions == null) {
       return (other._labelSectionVersions == null);

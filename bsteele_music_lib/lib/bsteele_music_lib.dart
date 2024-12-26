@@ -2,7 +2,7 @@
 ///
 /// More dartdocs go here.
 // ignore: library_names
-library bsteeleMusicLib;
+library;
 
 export 'src/bsteele_music_lib_base.dart';
 

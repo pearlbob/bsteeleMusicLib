@@ -19,7 +19,6 @@ class MeasureRepeatExtension extends MeasureComment {
       case ChordSectionLocationMarker.repeatOnOneLineRight:
         return onOneLineRightMeasureRepeatExtension;
       case ChordSectionLocationMarker.none:
-      default:
         return nullMeasureRepeatExtension;
     }
   }
