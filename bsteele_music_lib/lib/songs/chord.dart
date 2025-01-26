@@ -145,15 +145,15 @@ class Chord implements Comparable<Chord> {
     return ret;
   }
 
-  String markupStart() {
+  String markupStart({bool withInversion = true}) {
     return _scaleChord.toMarkup() +
-        (slashScaleNote == null ? '' : '/${slashScaleNote!.toMarkup()}') +
+        (slashScaleNote == null || withInversion == false ? '' : '/${slashScaleNote!.toMarkup()}') +
         _anticipationOrDelay.toString();
   }
 
   /// Returns a markup representation of the object.
-  String toMarkup() {
-    String ret = markupStart();
+  String toMarkup({bool withInversion = true}) {
+    String ret = markupStart(withInversion: withInversion);
     if (!implicitBeats) {
       ret += beatsToString();
     }

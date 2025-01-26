@@ -124,7 +124,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   }
 
   @override
-  String toMarkup({bool expanded = false}) {
+  String toMarkup({bool expanded = false, bool withInversion = true}) {
     return toString();
   }
 

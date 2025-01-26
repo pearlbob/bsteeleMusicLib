@@ -59,6 +59,9 @@ enum UserDisplayStyle {
 
   /// Banner (horizontal) player display mode
   banner,
+
+  /// High contrast for the visually challenged
+  highContrast,
 }
 
 enum BannerColumn {
@@ -4018,6 +4021,17 @@ class SongBase {
           }
         }
         break;
+
+      case UserDisplayStyle.highContrast:
+        {
+          for (var m in songMoments) {
+            var gc = GridCoordinate(0, m.momentNumber);
+            _displayGrid.setAt(gc, m.measure);
+            _songMomentToGridCoordinate.add(gc); //  only row likely to always have an entry
+          }
+        }
+        break;
+
       case UserDisplayStyle.player:
       case UserDisplayStyle.both:
         //  the play and both display styles only differ by the display of the lyrics

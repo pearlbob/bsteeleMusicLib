@@ -15,7 +15,6 @@ import 'phrase.dart';
 import 'section.dart';
 import 'section_version.dart';
 
-
 /// A chord section of a song is typically a collection of measures
 /// that constitute a portion of the song that is considered musically a unit.
 /// Immutable.
@@ -544,7 +543,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  String toMarkup() {
+  String toMarkup({bool withInversion = true}) {
     StringBuffer sb = StringBuffer();
     sb.write(sectionVersion.toString());
     sb.write(' ');

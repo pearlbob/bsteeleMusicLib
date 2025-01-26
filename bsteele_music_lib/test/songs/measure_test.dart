@@ -112,6 +112,7 @@ void main() {
       _jsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
       expect(m.toMarkup(), '4A.B.');
+      expect(m.toMarkup(withInversion: false), '4A.B.');
     }
     {
       s = 'AB';
@@ -120,6 +121,7 @@ void main() {
       _jsonMeasureTest(m);
       //  5/4 split across two chords, first one gets the extra beat
       expect(m.toMarkup(), 'AB');
+      expect(m.toMarkup(withInversion: false), 'AB');
     }
     {
       s = 'A.B.';
@@ -130,27 +132,31 @@ void main() {
       expect('AB', m.toMarkup());
     }
     {
-      s = 'A/GA/F♯';
+      s = 'A/GC/F♯';
 
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
       _jsonMeasureTest(m);
-      expect(m.toMarkup(), 'A/GA/F#');
+      expect(m.toMarkup(), 'A/GC/F#');
+      expect(m.toMarkup(withInversion: false), 'AC');
     }
     {
       s = 'A/G';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
       _jsonMeasureTest(m);
-      expect(s, m.toMarkup());
+      expect(m.toMarkup(), s);
       expect(m.beatCount, 4);
+      expect(m.toMarkup(withInversion: true), s);
+      expect(m.toMarkup(withInversion: false), 'A');
     }
     {
       s = 'F.';
       m = Measure.parseString(s, 4);
       expect(m, isNotNull);
       _jsonMeasureTest(m);
-      expect(s, m.toMarkup());
+      expect(m.toMarkup(), s);
+      expect(m.toMarkup(withInversion: false), s);
       expect(m.beatCount, 2);
     }
     {

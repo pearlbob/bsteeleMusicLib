@@ -295,7 +295,7 @@ class MeasureRepeat extends Phrase {
 // }
 
   @override
-  String toMarkup({bool expanded = false}) {
+  String toMarkup({bool expanded = false, bool withInversion = true}) {
     if (expanded) {
       var sb = StringBuffer();
       for (var r = 1; r <= repeats; r++) {

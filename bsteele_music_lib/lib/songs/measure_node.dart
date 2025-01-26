@@ -67,7 +67,7 @@ abstract class MeasureNode {
   String toNashville(Key key);
 
   /// Represent the measure node to the user in a string form and from storage encoding.
-  String toMarkup();
+  String toMarkup({bool withInversion = true});
 
   /// Represent the measure node to the user in a display string for presentation
   String toMarkupWithoutEnd();

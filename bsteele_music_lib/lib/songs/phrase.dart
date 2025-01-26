@@ -630,7 +630,7 @@ class Phrase extends MeasureNode {
   }
 
   @override
-  String toMarkup({bool expanded = false}) {
+  String toMarkup({bool expanded = false, bool withInversion = true}) {
     if (_measures.isEmpty) {
       return '[]';
     }

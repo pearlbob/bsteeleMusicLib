@@ -25,7 +25,7 @@ class MeasureRepeatMarker extends Measure {
   }
 
   @override
-  String toMarkup({bool expanded = false}) {
+  String toMarkup({bool expanded = false, bool withInversion = true}) {
     return toString();
   }
 

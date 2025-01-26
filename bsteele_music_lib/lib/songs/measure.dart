@@ -262,8 +262,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  String toMarkup() {
-    return _toMarkupWithEnd(',');
+  String toMarkup({bool withInversion = true}) {
+    return _toMarkupWithEnd(',', withInversion: withInversion);
   }
 
   @override
@@ -311,11 +311,11 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return _toMarkupWithEnd(null);
   }
 
-  String _toMarkupWithEnd(String? endOfRowChar) {
+  String _toMarkupWithEnd(String? endOfRowChar, {bool withInversion = true}) {
     if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
-        sb.write(chord.toMarkup());
+        sb.write(chord.toMarkup(withInversion: withInversion));
       }
       if (endOfRowChar != null && endOfRow) {
         sb.write(endOfRowChar);
