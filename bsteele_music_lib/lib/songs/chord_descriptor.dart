@@ -7,7 +7,6 @@ import '../util/util.dart';
 import 'chord_component.dart';
 import 'music_constants.dart';
 
-
 ///
 /// The modifier to a chord specification that describes the basic type of chord.
 /// Typical values are major, minor, dominant7, etc.
@@ -348,6 +347,10 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   final ChordDescriptor? _alias;
 
   ChordDescriptor get simplified {
+    if (_simpleChords.contains(this)) {
+      return this;
+    }
+
     //  major, minor or dominant7
     if (chordComponents.contains(ChordComponent.minorThird)) {
       return _minor;
@@ -479,6 +482,15 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     _capMajor,
     _dimMasculineOrdinalIndicator,
     _major,
+  ];
+
+  static final List<ChordDescriptor> _simpleChords = [
+    //  most common
+    _major,
+    _minor,
+    _dominant7,
+    _minor7,
+    _major7,
   ];
 
   static List<ChordDescriptor> get parseOrderedValues => _parseOrderedChordDescriptorsOrdered;

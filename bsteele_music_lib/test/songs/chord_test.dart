@@ -274,9 +274,22 @@ void main() {
   });
 
   test('test simplified chords', () {
-    logger.i('${'chord'.padLeft(7)}: simplified');
+    logger.i('${'chord'.padLeft(7)}: simplified'
+        '                   comparison                               difference');
     for (var descriptor in ChordDescriptor.values) {
-      logger.i('${descriptor.toString().padLeft(7)}: ${descriptor.simplified.name}');
+      var comparison = descriptor != descriptor.simplified
+          ? '${descriptor.chordComponents.toString().padLeft(25)}'
+              ' => ${descriptor.simplified.chordComponents.toString().padRight(25)}'
+          : '';
+      var inFirst = descriptor.chordComponents.where((e) => !descriptor.simplified.chordComponents.contains(e));
+      var inSecond = descriptor.simplified.chordComponents.where((e) => !descriptor.chordComponents.contains(e));
+      var diff = inFirst.isEmpty && inSecond.isEmpty
+          ? ''
+          : '${inFirst.toString().padLeft(10)} => ${inSecond.toString().padRight(10)}';
+
+      logger.i('${descriptor.toString().padLeft(7)}: ${descriptor.simplified.toString().padLeft(7)}'
+          ' $comparison'
+          ' $diff');
     }
 
     // for (var descriptor in ChordDescriptor.values) {
@@ -287,9 +300,9 @@ void main() {
     expect(ChordDescriptor.major.simplified.name, 'major');
     expect(ChordDescriptor.minor.simplified.name, 'minor');
     expect(ChordDescriptor.dominant7.simplified.name, 'dominant7');
-    expect(ChordDescriptor.minor7.simplified.name, 'minor');
+    expect(ChordDescriptor.minor7.simplified.name, 'minor7');
     expect(ChordDescriptor.power5.simplified.name, 'major');
-    expect(ChordDescriptor.major7.simplified.name, 'major');
+    expect(ChordDescriptor.major7.simplified.name, 'major7');
     expect(ChordDescriptor.major6.simplified.name, 'major');
     expect(ChordDescriptor.suspended2.simplified.name, 'major');
     expect(ChordDescriptor.suspended4.simplified.name, 'major');
