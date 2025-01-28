@@ -4028,8 +4028,10 @@ class SongBase {
           int col = 0;
           int lastRepeat = 0;
           Phrase lastPhrase = songMoments.first.phrase;
+          LyricSection lastLyricSection = songMoments.first.lyricSection;
           for (var m in songMoments) {
-            if (lastRepeat != m.repeat || lastPhrase != m.phrase) {
+            if (lastLyricSection != m.lyricSection || lastPhrase != m.phrase || lastRepeat != m.repeat) {
+              lastLyricSection = m.lyricSection;
               lastRepeat = m.repeat;
               lastPhrase = m.phrase;
               row++;
