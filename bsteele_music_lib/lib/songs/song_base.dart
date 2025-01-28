@@ -4024,10 +4024,24 @@ class SongBase {
 
       case UserDisplayStyle.highContrast:
         {
+          int row = 0;
+          int col = 0;
+          int lastRepeat = 0;
+          Phrase lastPhrase = songMoments.first.phrase;
           for (var m in songMoments) {
-            var gc = GridCoordinate(0, m.momentNumber);
+            if (lastRepeat != m.repeat || lastPhrase != m.phrase) {
+              lastRepeat = m.repeat;
+              lastPhrase = m.phrase;
+              row++;
+              col = 0;
+            }
+            var gc = GridCoordinate(row, col++);
             _displayGrid.setAt(gc, m.measure);
-            _songMomentToGridCoordinate.add(gc); //  only row likely to always have an entry
+            _songMomentToGridCoordinate.add(gc);
+            if (m.measure.endOfRow) {
+              row++;
+              col = 0;
+            }
           }
         }
         break;

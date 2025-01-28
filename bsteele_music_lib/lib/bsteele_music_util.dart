@@ -74,6 +74,7 @@ arguments:
 -allSongPerformances sync with CJ performances
 -attendance         CJ attendance in csv
 -bpm                list the bpm's used
+-chord              list the chord descriptors used
 -cjwrite {file)     format the song metadata
 -cjwritesongs {file)     write song list of cj songs
 -cjread {file)      add song metadata
@@ -248,6 +249,39 @@ coerced to reflect the songlist's last modification for that song.
               if (bpm > 200) {
                 logger.i('${song.title} by ${song.artist}, bpm: $bpm, beats: ${song.beatsPerBar}');
               }
+            }
+          }
+          break;
+
+        case '-chord':
+          {
+            Map<ChordDescriptor, int> chordDescriptors = {};
+            //  include all for completeness
+            for (var cd in ChordDescriptor.values) {
+              chordDescriptors[cd] = 0;
+            }
+            for (Song song in allSongs) {
+              for (var songMoment in song.songMoments) {
+                for (var chord in songMoment.measure.chords) {
+                  var cd = chord.scaleChord.chordDescriptor;
+                  chordDescriptors[cd] = chordDescriptors[cd]! + 1;
+                  //    logger.i('"$chord: ", cd: $cd');
+                }
+              }
+            }
+
+            logger.i('${'Name'.padLeft(15)}: ${'Count'.padLeft(6)}  ShortName');
+            for (ChordDescriptor cd in SplayTreeSet<ChordDescriptor>((ChordDescriptor key1, ChordDescriptor key2) {
+              int ret = chordDescriptors[key2]!.compareTo(chordDescriptors[key1]!);
+              if (ret == 0) {
+                return key1.name.compareTo(key2.name);
+              }
+              return ret;
+            })
+              ..addAll(chordDescriptors.keys)
+              ..toList()) {
+              logger.i('${cd.name.padLeft(15)}: ${chordDescriptors[cd].toString().padLeft(6)}'
+                  '  ${cd.shortName}');
             }
           }
           break;

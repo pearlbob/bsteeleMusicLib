@@ -278,6 +278,65 @@ void main() {
     for (var descriptor in ChordDescriptor.values) {
       logger.i('${descriptor.toString().padLeft(7)}: ${descriptor.simplified.name}');
     }
+
+    // for (var descriptor in ChordDescriptor.values) {
+    //   logger.i('expect(ChordDescriptor.${descriptor.name.toString()}.simplified.name'
+    //       ', \'${descriptor.simplified.name}\');');
+    // }
+    //  generated:
+    expect(ChordDescriptor.major.simplified.name, 'major');
+    expect(ChordDescriptor.minor.simplified.name, 'minor');
+    expect(ChordDescriptor.dominant7.simplified.name, 'dominant7');
+    expect(ChordDescriptor.minor7.simplified.name, 'minor');
+    expect(ChordDescriptor.power5.simplified.name, 'major');
+    expect(ChordDescriptor.major7.simplified.name, 'major');
+    expect(ChordDescriptor.major6.simplified.name, 'major');
+    expect(ChordDescriptor.suspended2.simplified.name, 'major');
+    expect(ChordDescriptor.suspended4.simplified.name, 'major');
+    expect(ChordDescriptor.add9.simplified.name, 'major');
+    expect(ChordDescriptor.majorSeven.simplified.name, 'major');
+    expect(ChordDescriptor.dominant9.simplified.name, 'dominant7');
+    expect(ChordDescriptor.sevenSus4.simplified.name, 'dominant7');
+    expect(ChordDescriptor.diminished.simplified.name, 'minor');
+    expect(ChordDescriptor.minor6.simplified.name, 'minor');
+    expect(ChordDescriptor.major9.simplified.name, 'major');
+    expect(ChordDescriptor.suspendedSecond.simplified.name, 'major');
+    expect(ChordDescriptor.minor9.simplified.name, 'minor');
+    expect(ChordDescriptor.augmented.simplified.name, 'major');
+    expect(ChordDescriptor.suspended.simplified.name, 'major');
+    expect(ChordDescriptor.suspendedFourth.simplified.name, 'major');
+    expect(ChordDescriptor.sevenSharp5.simplified.name, 'dominant7');
+    expect(ChordDescriptor.maj.simplified.name, 'major');
+    expect(ChordDescriptor.minor7b5.simplified.name, 'minor');
+    expect(ChordDescriptor.diminished7.simplified.name, 'minor');
+    expect(ChordDescriptor.minor11.simplified.name, 'minor');
+    expect(ChordDescriptor.six9.simplified.name, 'major');
+    expect(ChordDescriptor.msus4.simplified.name, 'minor');
+    expect(ChordDescriptor.dominant11.simplified.name, 'dominant7');
+    expect(ChordDescriptor.sevenSus.simplified.name, 'dominant7');
+    expect(ChordDescriptor.augmented7.simplified.name, 'dominant7');
+    expect(ChordDescriptor.capMajor.simplified.name, 'major');
+    expect(ChordDescriptor.mmaj7.simplified.name, 'minor');
+    expect(ChordDescriptor.dominant13.simplified.name, 'dominant7');
+    expect(ChordDescriptor.msus2.simplified.name, 'minor');
+    expect(ChordDescriptor.sevenSharp9.simplified.name, 'minor');
+    expect(ChordDescriptor.sevenFlat9.simplified.name, 'major');
+    expect(ChordDescriptor.sevenFlat5.simplified.name, 'dominant7');
+    expect(ChordDescriptor.suspended7.simplified.name, 'dominant7');
+    expect(ChordDescriptor.minor13.simplified.name, 'minor');
+    expect(ChordDescriptor.augmented5.simplified.name, 'major');
+    expect(ChordDescriptor.jazz7b9.simplified.name, 'major');
+    expect(ChordDescriptor.capMajor7.simplified.name, 'major');
+    expect(ChordDescriptor.deltaMajor7.simplified.name, 'major');
+    expect(ChordDescriptor.dimMasculineOrdinalIndicator.simplified.name, 'minor');
+    expect(ChordDescriptor.dimMasculineOrdinalIndicator7.simplified.name, 'minor');
+    expect(ChordDescriptor.diminishedAsCircle.simplified.name, 'minor');
+    expect(ChordDescriptor.madd9.simplified.name, 'minor');
+    expect(ChordDescriptor.maug.simplified.name, 'minor');
+    expect(ChordDescriptor.majorNine.simplified.name, 'major');
+    expect(ChordDescriptor.nineSus4.simplified.name, 'dominant7');
+    expect(ChordDescriptor.flat5.simplified.name, 'major');
+    expect(ChordDescriptor.sevenSus2.simplified.name, 'dominant7');
   });
 
   test('chord serialization', () {
