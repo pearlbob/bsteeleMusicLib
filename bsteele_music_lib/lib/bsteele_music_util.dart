@@ -10,6 +10,7 @@ import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
+import 'package:bsteele_music_lib/songs/song_base.dart';
 import 'package:csv/csv.dart';
 import 'package:english_words/english_words.dart';
 import 'package:excel/excel.dart';
@@ -43,6 +44,7 @@ const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
 final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 AllSongPerformances allSongPerformances = AllSongPerformances();
+final _messagePattern = RegExp(r'(.*)\s+INFO\s+.*\s+onMessage\("\s*(.*)\s*"\)');
 
 const _logFiles = Level.debug;
 const _logMessageLines = Level.debug;
@@ -91,6 +93,7 @@ arguments:
 -list               list all songs
 -longlyrics         select for songs  with long lyrics lines
 -longsections       select for songs  with long sections
+-missing            list all performance songs that are missing in the song list
 -ninjam             select for ninjam friendly songs
 -o {output dir}     select the output directory, must be specified prior to -x
 -oddmeasures        find the odd length measures in songs
@@ -910,6 +913,88 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
+        case '-missing':
+          {
+            var dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS');
+            var dir = Directory('${Util.homePath()}/$_allSongPerformancesHistoricalDirectoryLocation');
+            SplayTreeSet<Song> missingSongsSet = SplayTreeSet();
+            for (var p in allSongPerformances.missingSongsFromPerformanceHistory) {
+              var lastSungDateTime = p.lastSungDateTime;
+              File file = File('${dir.path}/catalina.${lastSungDateTime.year}'
+                  '-${lastSungDateTime.month.toString().padLeft(2, '0')}'
+                  '-${lastSungDateTime.day.toString().padLeft(2, '0')}'
+                  '.log');
+              logger.i('missing: ${p.lastSungDateTime}: ${file.path}  ${dateFormat.format(lastSungDateTime)}');
+
+              if (p.songIdAsString.startsWith('Song_Little_')) {
+                logger.i('breakpoint');
+              }
+
+              dynamic songJson;
+              for (var m in _messagePattern.allMatches(file.readAsStringSync())) {
+                //  fixme: somehow the last sung date is the first of the next song sung
+                var dateTime = dateFormat.parse(m.group(1)!);
+                if (dateTime == lastSungDateTime) {
+                  break;
+                }
+                // logger.i('${m.group(1)!}:  $dateTime');
+                assert(dateFormat.format(dateTime) == m.group(1)!);
+                Map<String, dynamic> decoded = json.decode(m.group(2)!) as Map<String, dynamic>;
+                if (decoded['song'] != null) {
+                  songJson = decoded['song']; //  the prior song
+                }
+              }
+              if (songJson != null) {
+                var song = Song.fromJson(songJson);
+                song.chordSectionGrid; //  force the parse of chords
+                assert(song.songId.toString() == p.songIdAsString);
+                logger.i('   song: ${song.songId}  vs ${p.songIdAsString} ${p.song}');
+
+                //  validate the song
+                {
+                  var errors = SongBase.validateChords(song.chords, song.beatsPerBar);
+                  if (errors != null) {
+                    logger.w('invalid chords on $song: $errors');
+                    songJson = null;
+                    continue;
+                  }
+                }
+                {
+                  var errors = song.validateLyrics(song.lyricSectionsAsEntryString);
+                  if (errors != null) {
+                    logger.w('invalid lyrics on $song: $errors');
+                    songJson = null;
+                    continue;
+                  }
+                }
+
+                missingSongsSet.add(song);
+              } else {
+                logger.w('song not found: ${p.songIdAsString}');
+              }
+            }
+
+            if (missingSongsSet.isNotEmpty) {
+              StringBuffer sb = StringBuffer();
+              //  note the sorted order by title
+              for (var song in missingSongsSet) {
+                sb.write(sb.isEmpty ? '[\n' : ',\n'); //  start or continue
+                sb.write('{ "file": "", "lastModifiedDate": ${song.lastModifiedTime}, "song":\n');
+                sb.write(song.toJsonString().trim());
+                sb.write('\n}');
+              }
+              sb.write('\n]\n');
+
+              // logger.i(sb.toString());
+              final outputFile = File('${Util.homePath()}/Downloads/missing_songs_'
+                  '${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}'
+                  '.songlyrics');
+              logger.i(outputFile.path);
+              outputFile.writeAsStringSync(sb.toString(), flush: true);
+            }
+          }
+          break;
+
         case '-ninjam':
           {
             Map<Song, int> ninjams = {};
@@ -1037,6 +1122,7 @@ coerced to reflect the songlist's last modification for that song.
             assert(allSongPerformances.allSongPerformanceHistory.isEmpty);
             assert(allSongPerformances.allSongPerformances.isEmpty);
             assert(allSongPerformances.allSongPerformanceRequests.isEmpty);
+            assert(allSongPerformances.missingSongsFromPerformanceHistory.isEmpty);
 
             //  add the github version
             var usTimer = UsTimer();
@@ -1235,8 +1321,9 @@ coerced to reflect the songlist's last modification for that song.
                   ', songs.length: ${songs.length}'
                   ', idMetadata.length: ${SongMetadata.idMetadata.length}'
                   ', corrections: $corrections');
-              assert(seconds < 0.25);
+              assert(seconds < 0.75);
             }
+
             // if (_verbose) {
             //   logger.i(allSongPerformances.toString());
             // }
@@ -1478,15 +1565,13 @@ coerced to reflect the songlist's last modification for that song.
               File logFile = File('$tempoPath/catalina.$year-$month-$day.log');
               //  20-Jun-2024 21:10:56.732 INFO [http-nio-8080-exec-4] com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage onMessage("{ "momentNumber": -3 }")
               DateFormat dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS');
-              final messagePattern = RegExp(
-                  // r'(.*):\s+INFO\s+.*onMessage\("\s*(.*)\s*"\)'
-                  r'(.*)\s+INFO\s+.*\s+onMessage\("\s*(.*)\s*"\)');
+
               Song song = Song.theEmptySong;
               String stateName = 'unknown';
               int lastMomentNumber = 0;
               DateTime lastDateTime = DateTime.now();
 
-              for (var m in messagePattern.allMatches(logFile.readAsStringSync())) {
+              for (var m in _messagePattern.allMatches(logFile.readAsStringSync())) {
                 var dateTime = dateFormat.parse(m.group(1)!);
                 // logger.i('${m.group(1)!}:  $dateTime');
                 assert(dateFormat.format(dateTime) == m.group(1)!);

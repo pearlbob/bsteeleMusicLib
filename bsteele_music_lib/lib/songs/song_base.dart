@@ -703,7 +703,7 @@ class SongBase {
   /// Return null if valid.  Return a marked string of the offending portion if not valid.
   static MarkedString? validateChords(final String chords, int beatsPerBar) {
     if (chords.isEmpty) {
-      return null; //  valid
+      return MarkedString('missing chords'); //  invalid
     }
 
     SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();

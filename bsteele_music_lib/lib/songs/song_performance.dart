@@ -439,6 +439,7 @@ class AllSongPerformances {
     {
       List<SongPerformance> removals = [];
       List<SongPerformance> additions = [];
+      _missingSongsFromPerformanceHistory.clear();
       for (var songPerformance in _allSongPerformanceHistory) {
         var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
         if (newSong != null) {
@@ -449,6 +450,7 @@ class AllSongPerformances {
           }
         } else {
           logger.e('lost _allSongPerformanceHistory: ${songPerformance.lowerCaseSongIdAsString}');
+          _missingSongsFromPerformanceHistory.add(songPerformance);
           // assert(false);
         }
       }
@@ -715,6 +717,7 @@ class AllSongPerformances {
     _allSongPerformances.clear();
     _allSongPerformanceHistory.clear();
     _allSongPerformanceRequests.clear();
+    _missingSongsFromPerformanceHistory.clear();
   }
 
   void clearAllSongPerformanceRequests() {
@@ -757,6 +760,10 @@ class AllSongPerformances {
 
   Iterable<SongPerformance> get allSongPerformanceHistory => _allSongPerformanceHistory;
   final SplayTreeSet<SongPerformance> _allSongPerformanceHistory =
+      SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+
+  Iterable<SongPerformance> get missingSongsFromPerformanceHistory => _missingSongsFromPerformanceHistory;
+  final SplayTreeSet<SongPerformance> _missingSongsFromPerformanceHistory =
       SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
 
   Iterable<SongRequest> get allSongPerformanceRequests => _allSongPerformanceRequests;

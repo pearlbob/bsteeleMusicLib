@@ -3299,7 +3299,7 @@ i: []
       expect(markedString!.getMark(), 4);
     }
 
-    expect(SongBase.validateChords('', beatsPerBar), null);
+    expect(SongBase.validateChords('', beatsPerBar), isNotNull);
     expect(SongBase.validateChords('i: A', beatsPerBar), null);
     {
       var markedString = SongBase.validateChords(
