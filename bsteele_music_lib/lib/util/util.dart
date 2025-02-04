@@ -16,9 +16,7 @@ class Util {
   static String homePath() {
     String home = '';
     Map<String, String> envVars = Platform.environment;
-    if (Platform.isMacOS) {
-      home = envVars['HOME'] ?? '';
-    } else if (Platform.isLinux) {
+    if (Platform.isMacOS || Platform.isLinux) {
       home = envVars['HOME'] ?? '';
     } else if (Platform.isWindows) {
       home = envVars['UserProfile'] ?? '';

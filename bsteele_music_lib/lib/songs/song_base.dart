@@ -4029,15 +4029,36 @@ class SongBase {
           int lastRepeat = 0;
           Phrase lastPhrase = songMoments.first.phrase;
           LyricSection lastLyricSection = songMoments.first.lyricSection;
+          LyricSection? lastLyricSectionShown;
           for (var m in songMoments) {
-            if (lastLyricSection != m.lyricSection || lastPhrase != m.phrase || lastRepeat != m.repeat) {
+            if (
+                //  a new lyric section
+                lastLyricSection != m.lyricSection ||
+                    //  the end of this phrase
+                    lastPhrase != m.phrase ||
+                    //  not the end of the repeats
+                    lastRepeat != m.repeat) {
               lastLyricSection = m.lyricSection;
               lastRepeat = m.repeat;
               lastPhrase = m.phrase;
               row++;
               col = 0;
             }
-            var gc = GridCoordinate(row, col++);
+            var gc;
+
+            //  put the lyric section in the first column
+            if (col == 0) {
+              gc = GridCoordinate(row, col);
+              if (lastLyricSectionShown != m.lyricSection) {
+                lastLyricSectionShown = m.lyricSection;
+                _displayGrid.setAt(gc, m.lyricSection);
+              } else {
+                _displayGrid.setAt(gc, null);
+              }
+              col++;
+            }
+            gc = GridCoordinate(row, col++);
+
             _displayGrid.setAt(gc, m.measure);
             _songMomentToGridCoordinate.add(gc);
             if (m.measure.endOfRow) {
