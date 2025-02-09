@@ -4044,9 +4044,9 @@ class SongBase {
               row++;
               col = 0;
             }
-            var gc;
 
             //  put the lyric section in the first column
+            GridCoordinate gc;
             if (col == 0) {
               gc = GridCoordinate(row, col);
               if (lastLyricSectionShown != m.lyricSection) {

@@ -35,6 +35,8 @@ import 'songs/song_update.dart';
 import 'util/us_timer.dart';
 import 'util/util.dart';
 
+// ignore_for_file: avoid_print
+
 const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
 const String _allSongPerformancesHistoricalDirectoryLocation = 'communityJams/cj/old_Downloads';
 const String _junkRelativeDirectory = 'junk'; //  relative to user home
@@ -970,7 +972,9 @@ coerced to reflect the songlist's last modification for that song.
 
                 missingSongsSet.add(song);
               } else {
-                logger.w('song not found: ${p.songIdAsString}');
+                if (_verbose) {
+                  print('song not found: ${p.songIdAsString}');
+                }
               }
             }
 

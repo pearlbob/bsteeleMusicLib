@@ -7,6 +7,8 @@ import 'package:bsteele_music_lib/util/guitar_chords.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
+// ignore_for_file: avoid_print
+
 void main() {
   Logger.level = Level.info;
 
