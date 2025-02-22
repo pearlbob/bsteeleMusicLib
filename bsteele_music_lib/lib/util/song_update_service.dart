@@ -65,48 +65,60 @@ class SongUpdateService extends ChangeNotifier {
           Uri uri = Uri.parse(url);
           _responseCount = 0;
 
-          _webSocketChannel =
-              WebSocketChannel.connect(uri); //  fixme: currently the package can throw an unhandled exception here!
+          _webSocketChannel = WebSocketChannel.connect(uri);
+          try {
+            //  verify the host has been found
+            await _webSocketChannel?.ready;
+          } catch (e) {
+            logger.log(_log, 'WebSocket connection to $host failed: $e');
+            rethrow;
+          }
           _webSocketSink = _webSocketChannel!.sink;
           notifyListeners();
 
           //  setup the song update service listening
           logger.log(_log, 'listen to: $_ipAddress, $uri');
-          _subscription = _webSocketChannel!.stream.listen((message) {
-            _responseCount++;
-            if (_responseCount == 1) {
-              notifyListeners(); //  notify on change of status
-            }
+          _subscription = _webSocketChannel!.stream.listen(
+            (message) {
+              _responseCount++;
+              if (_responseCount == 1) {
+                notifyListeners(); //  notify on change of status
+              }
 
-            if (message is String) {
-              if (message.startsWith(timeRequest)) {
-                //  time
-                logger.i('time response: $message');
-              } else if (message.startsWith(tempoRequest)) {
-                //  tempo
-                logger.i('tempo response: $message');
-              } else {
-                _songUpdate = SongUpdate.fromJson(message);
-                if (_songUpdate != null) {
-                  callback?.call(_songUpdate!); //  fixme:  exposure to UI internals
-                  _delayMilliseconds = 0;
-                  _songUpdateCount++;
-                  logger.log(
+              if (message is String) {
+                if (message.startsWith(timeRequest)) {
+                  //  time
+                  logger.i('time response: $message');
+                } else if (message.startsWith(tempoRequest)) {
+                  //  tempo
+                  logger.i('tempo response: $message');
+                } else {
+                  _songUpdate = SongUpdate.fromJson(message);
+                  if (_songUpdate != null) {
+                    callback?.call(_songUpdate!); //  fixme:  exposure to UI internals
+                    _delayMilliseconds = 0;
+                    _songUpdateCount++;
+                    logger.log(
                       _logMessage,
                       'received: song: ${_songUpdate!.song.songId}'
-                      ' at moment: ${_songUpdate?.momentNumber}');
+                      ' at moment: ${_songUpdate?.momentNumber}',
+                    );
+                  }
                 }
               }
-            }
-          }, onError: (Object error) {
-            logger.log(_log, 'webSocketChannel onError: "$error" at "$uri"'); //  fixme: retry later
-            _closeWebSocketChannel();
-            appLogMessage('webSocketChannel onError: $error at $uri');
-          }, onDone: () {
-            logger.log(_log, 'webSocketChannel onDone: at $uri');
-            _closeWebSocketChannel();
-            appLogMessage('webSocketChannel onDone: at $uri');
-          });
+            },
+            cancelOnError: true,
+            onError: (Object error) {
+              logger.log(_log, 'webSocketChannel onError: "$error" at "$uri"'); //  fixme: retry later
+              _closeWebSocketChannel();
+              appLogMessage('webSocketChannel onError: $error at $uri');
+            },
+            onDone: () {
+              logger.log(_log, 'webSocketChannel onDone: at $uri');
+              _closeWebSocketChannel();
+              appLogMessage('webSocketChannel onDone: at $uri');
+            },
+          );
 
           //  See if the server is there, that is, force a response that
           //  confirms the connection
@@ -118,7 +130,7 @@ class SongUpdateService extends ChangeNotifier {
           lastHost = host;
 
           if (_webSocketChannel != null) {
-            for (_idleCount = 0;; _idleCount++) {
+            for (_idleCount = 0; ; _idleCount++) {
               //  idle
               await Future.delayed(const Duration(milliseconds: _idleMilliseconds));
 
@@ -149,8 +161,7 @@ class SongUpdateService extends ChangeNotifier {
         }
       } catch (e, stacktrace) {
         logger.log(_log, 'webSocketChannel exception: $e');
-        // ignore: avoid_print
-        print(stacktrace.toString());
+        logger.log(_log, stacktrace.toString());
         _closeWebSocketChannel();
       }
 
@@ -193,7 +204,6 @@ class SongUpdateService extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 
   void _issueTimeRequest() {
     _webSocketSink?.add(timeRequest);
