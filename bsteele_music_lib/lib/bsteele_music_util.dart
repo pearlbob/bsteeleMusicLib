@@ -89,6 +89,7 @@ arguments:
 -complexity         write songlist in order of complexity
 -expand {file}      expand a songlyrics list file to the output directory
 -floatnotes         list bass notes by float frequency
+-file               read the songs from the given file
 -f                  force file writes over existing files
 -h                  this help message
 -html               HTML song list
@@ -791,6 +792,26 @@ coerced to reflect the songlist's last modification for that song.
           _force = true;
           break;
 
+        case '-file':
+        //  insist there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing file path for -file');
+            _help();
+            exit(-1);
+          }
+          argCount++;
+
+          File inputFile = File(args[argCount]);
+          logger.i('file: ${(await inputFile.exists())}, ${inputFile is Directory}');
+
+          if (!(await inputFile.exists()) || inputFile.runtimeType is Directory) {
+            logger.e('missing input file for -file: ${inputFile.path}');
+            exit(-1);
+          }
+          _addAllSongsFromFile(inputFile);
+          break;
+
+
         case '-floatnotes':
           for (var pitch in Pitch.sharps) {
             logger.i(' ${pitch.frequency.toStringAsFixed(9).padLeft(4 + 1 + 9)}'
@@ -995,6 +1016,15 @@ coerced to reflect the songlist's last modification for that song.
                   '.songlyrics');
               logger.i(outputFile.path);
               outputFile.writeAsStringSync(sb.toString(), flush: true);
+
+              for (var song in missingSongsSet) {
+                logger.i('$song');
+                SongMetadata.addSong(song, NameValue('status', 'uncurated'));
+              }
+              logger.i(SongMetadata.toJson());
+              logger.i('fixme:  finish the implementation for missing metadata!!!!');
+            } else {
+              logger.i('there are no missing songs.');
             }
           }
           break;
@@ -1822,7 +1852,7 @@ coerced to reflect the songlist's last modification for that song.
                 for (var phrase in chordSection.phrases) {
                   // if (phrase.repeats > 0) {
                   //   logger.i('   repeats: ${phrase.repeats}');
-                  // }
+                  //     }
                   for (var measure in phrase.measures) {
                     for (var chord in measure.chords) {
                       var scaleChord = chord.scaleChord;
