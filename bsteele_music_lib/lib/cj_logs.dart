@@ -85,7 +85,7 @@ class CjLog {
     }
 
     if (_verbose > 0) {
-      print('CjLogs:');
+      print('CjLogs: -verbose: $_verbose, _host: $_host, _catalinaBase: $_catalinaBase');
     }
 
     //  prepare the file stuff
@@ -123,11 +123,13 @@ class CjLog {
       allSongPerformances.updateFromJsonString(data);
     }
 
-    SplayTreeSet<SongPerformance> originalAllSongPerformances =
-        SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger)
-          ..addAll(allSongPerformances.allSongPerformanceHistory.map((perf) {
-            return perf.copyWith();
-          }));
+    SplayTreeSet<SongPerformance> originalAllSongPerformances = SplayTreeSet(
+      SongPerformance.compareByLastSungSongIdAndSinger,
+    )..addAll(
+      allSongPerformances.allSongPerformanceHistory.map((perf) {
+        return perf.copyWith();
+      }),
+    );
     logger.i('originalAllSongPerformances.length: ${originalAllSongPerformances.length}');
 
     logger.i('request count: ${allSongPerformances.allSongPerformanceRequests.length}');
@@ -145,13 +147,12 @@ class CjLog {
       }
       var file = fileSystemEntity;
       DateTime date;
-      {
-        RegExpMatch? m = catalinaLogRegExp.firstMatch(file.path);
-        if (m == null) {
-          continue;
-        }
-        date = DateTime(int.parse(m.group(1)!), int.parse(m.group(2)!), int.parse(m.group(3)!));
+
+      RegExpMatch? m = catalinaLogRegExp.firstMatch(file.path);
+      if (m == null) {
+        continue;
       }
+      date = DateTime(int.parse(m.group(1)!), int.parse(m.group(2)!), int.parse(m.group(3)!));
 
       if (_verbose > 1) {
         print('$file:  $date');
@@ -176,8 +177,9 @@ class CjLog {
 
       logger.log(_cjLogFiles, '');
       logger.log(_cjLogFiles, '${file.path}:  $date');
-      var log = utf8Decoder
-          .convert(file.path.endsWith('.gz') ? gZipDecoder.convert(file.readAsBytesSync()) : file.readAsBytesSync());
+      var log = utf8Decoder.convert(
+        file.path.endsWith('.gz') ? gZipDecoder.convert(file.readAsBytesSync()) : file.readAsBytesSync(),
+      );
       SongUpdate? firstSongUpdate;
       SongUpdate lastSongUpdate = SongUpdate();
       var dateTime = DateTime(1970);
@@ -189,10 +191,22 @@ class CjLog {
         }
         dateTime = dateFormat.parse(m.group(1)!);
         var msg = m.group(2);
-        if (msg == null || msg.isEmpty || msg == 't:' //  a time request can show up when a client starts!
-            ) {
+        if (msg == null ||
+            msg.isEmpty ||
+            msg ==
+                't:' //  a time request can show up when a client starts!
+                ) {
           continue;
         }
+
+        if (msg.startsWith(tempoRegExp)) {
+          //  fixme tempo updates not processed
+          if (_verbose > 1) {
+            print('tempo: $msg');
+          }
+          continue;
+        }
+
         logger.log(_cjLogLines, '$dateTime: string: $msg');
         SongUpdate songUpdate;
         try {
@@ -207,8 +221,10 @@ class CjLog {
 
         //  output the update if the song has changed
         if (!songUpdate.song.songBaseSameContent(lastSongUpdate.song) && lastSongUpdate.song.title.isNotEmpty) {
-          logger.log(_cjLogLines,
-              '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}');
+          logger.log(
+            _cjLogLines,
+            '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}',
+          );
 
           //  see if it makes sense that this song was actually played... or only looked at
           var song = lastSongUpdate.song;
@@ -226,9 +242,10 @@ class CjLog {
             minimumMomentCount = max(minimumMomentCount, (0.6 * moments.last.momentNumber).round());
           }
           logger.log(
-              _cjLogWasSung,
-              '$song:  ${momentNumbers.toString()}/$minimumMomentCount '
-              '(${song.songMoments.length})');
+            _cjLogWasSung,
+            '$song:  ${momentNumbers.toString()}/$minimumMomentCount '
+            '(${song.songMoments.length})',
+          );
           if (momentNumbers.first <= 0 && momentNumbers.last >= minimumMomentCount) {
             logger.log(_cjLogWasSung, '  sung');
           } else {
@@ -278,36 +295,40 @@ class CjLog {
       }
     }
 
-//  Note:  intentionally leave in unknown singers.
-//  These are songs sung from outside the singers screen.
+    //  Note:  intentionally leave in unknown singers.
+    //  These are songs sung from outside the singers screen.
 
-//  read the new songs as source for song corrections
+    //  read the new songs as source for song corrections
     var songs = Song.songListFromJson(_allSonglyricsGithubFile.readAsStringSync());
     var corrections = allSongPerformances.loadSongs(songs);
     print('postLoad: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
     print('corrections: $corrections');
 
-// clean up the near misses in the history and performances due to song title, artist and cover artist changes
-//  count the sloppy matched songs in history
+    // clean up the near misses in the history and performances due to song title, artist and cover artist changes
+    //  count the sloppy matched songs in history
     {
       var matches = 0;
       for (var performance in allSongPerformances.allSongPerformanceHistory) {
         if (performance.song == null) {
           print('missing song: ${performance.lowerCaseSongIdAsString}');
-// assert(false);
+          // assert(false);
         } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
-          logger.i('${performance.lowerCaseSongIdAsString}'
-              ' vs ${performance.song!.songId.toString().toLowerCase()}');
+          logger.i(
+            '${performance.lowerCaseSongIdAsString}'
+            ' vs ${performance.song!.songId.toString().toLowerCase()}',
+          );
           assert(false);
         } else {
           matches++;
         }
       }
-      print('matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
-          ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
+      print(
+        'matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
+        ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}',
+      );
     }
 
-//  repair metadata song changes
+    //  repair metadata song changes
     SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
     File localSongMetadata = File('$downloadsDirString/allSongs.songmetadata');
     logger.i('localSongMetadata: ${localSongMetadata.path}');
@@ -317,7 +338,7 @@ class CjLog {
         localSongMetadata.deleteSync();
       } catch (e) {
         logger.e(e.toString());
-//assert(false);
+        //assert(false);
       }
       localSongMetadata.writeAsStringSync(SongMetadata.toJson(), flush: true);
 
@@ -327,7 +348,7 @@ class CjLog {
     }
 
     {
-//  song check... not strictly required
+      //  song check... not strictly required
       int count = 0;
       for (var perf in originalAllSongPerformances) {
         count += perf.song == null ? 1 : 0;
@@ -335,14 +356,16 @@ class CjLog {
       logger.i('original missing songs: $count');
     }
 
-    SplayTreeSet<SongPerformance> processedAllSongPerformances =
-        SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger)
-          ..addAll(allSongPerformances.allSongPerformanceHistory.map((perf) {
-            return perf.copyWith();
-          }));
+    SplayTreeSet<SongPerformance> processedAllSongPerformances = SplayTreeSet(
+      SongPerformance.compareByLastSungSongIdAndSinger,
+    )..addAll(
+      allSongPerformances.allSongPerformanceHistory.map((perf) {
+        return perf.copyWith();
+      }),
+    );
     logger.i('processedAllSongPerformances.length: ${processedAllSongPerformances.length}');
     {
-//  song check... not strictly required
+      //  song check... not strictly required
       int count = 0;
       for (var perf in processedAllSongPerformances) {
         count += perf.song == null ? 1 : 0;
@@ -351,33 +374,31 @@ class CjLog {
     }
 
     logger.i('originalAllSongPerformances.difference(processedAllSongPerformances):');
-    (originalAllSongPerformances.difference(processedAllSongPerformances).toList()
-      ..forEach((perf) {
-        logger.i(perf.toShortString());
-      }));
+    (originalAllSongPerformances.difference(processedAllSongPerformances).toList()..forEach((perf) {
+      logger.i(perf.toShortString());
+    }));
     logger.i('\n');
     logger.i('processedAllSongPerformances.difference(originalAllSongPerformances):');
-    (processedAllSongPerformances.difference(originalAllSongPerformances).toList()
-      ..forEach((perf) {
-        logger.i(perf.toShortString());
-      }));
+    (processedAllSongPerformances.difference(originalAllSongPerformances).toList()..forEach((perf) {
+      logger.i(perf.toShortString());
+    }));
 
-//  write the corrected performances
+    //  write the corrected performances
     File localSongperformances = File('$downloadsDirString/allSongPerformances.songperformances');
     {
       try {
         localSongperformances.deleteSync();
       } catch (e) {
         logger.e(e.toString());
-//assert(false);
+        //assert(false);
       }
       localSongperformances.writeAsStringSync(allSongPerformances.toJsonString(), flush: true);
     }
 
-//  time the reload
+    //  time the reload
     {
-// allSongPerformances.clear();
-// SongMetadata.clear();
+      // allSongPerformances.clear();
+      // SongMetadata.clear();
 
       print('\nreload:');
       var usTimer = UsTimer();
@@ -396,15 +417,17 @@ class CjLog {
       print('localSongMetadata: ${usTimer.deltaToString()}');
 
       double seconds = usTimer.seconds;
-      print('reload: usTimer: $seconds s'
-          ', allSongPerformances.length: ${allSongPerformances.length}'
-          ', songs.length: ${songs.length}'
-          ', idMetadata.length: ${SongMetadata.idMetadata.length}'
-          ', corrections: $corrections');
+      print(
+        'reload: usTimer: $seconds s'
+        ', allSongPerformances.length: ${allSongPerformances.length}'
+        ', songs.length: ${songs.length}'
+        ', idMetadata.length: ${SongMetadata.idMetadata.length}'
+        ', corrections: $corrections',
+      );
       assert(seconds < 0.25);
     }
 
-//  write the output file
+    //  write the output file
     _writeSongPerformances(File('${processedLogs.path}/allSongPerformances.songperformances'), prettyPrint: false);
     logger.log(_cjLogPerformances, allSongPerformances.toJsonString(prettyPrint: false));
   }
@@ -420,7 +443,7 @@ class CjLog {
             oldest = p.lastSungDateTime;
           }
           if (p.lastSungDateTime.compareTo(_firstValidDate) < 0) {
-// logger.i('      too early:  ${p.lastSungDateTime}');
+            // logger.i('      too early:  ${p.lastSungDateTime}');
             count++;
           }
         }
@@ -429,8 +452,10 @@ class CjLog {
       }
 
       if (file.path.endsWith('.gz')) {
-        file.writeAsBytesSync(gzip.encode(utf8.encode(allSongPerformances.toJsonString(prettyPrint: prettyPrint))),
-            flush: true);
+        file.writeAsBytesSync(
+          gzip.encode(utf8.encode(allSongPerformances.toJsonString(prettyPrint: prettyPrint))),
+          flush: true,
+        );
       } else {
         file.writeAsStringSync(allSongPerformances.toJsonString(prettyPrint: prettyPrint), flush: true);
       }
@@ -459,11 +484,17 @@ class CjLog {
   String _host = 'cj';
   var _verbose = 0;
 
-  final RegExp catalinaLogRegExp =
-      RegExp(r'.*/catalina\.(\d{4})-(\d{2})-(\d{2})\.log'); //  note: no end to allow for both .log and .log.gz
-  final RegExp messageRegExp = RegExp(r'(\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) INFO .*'
-      r' com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage'
-      r' onMessage\("(.*)"\)\s*$');
+  final RegExp catalinaLogRegExp = RegExp(
+    r'.*/catalina\.(\d{4})-(\d{2})-(\d{2})\.log',
+  ); //  note: no end to allow for both .log and .log.gz
+  final RegExp messageRegExp = RegExp(
+    r'(\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) INFO .*'
+    r' com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage'
+    r' onMessage\("(.*)"\)\s*$',
+  );
+
+  //  tempo:{ "songId": "Song_1234_by_Feist", "currentBeatsPerMinute": 119, "user": "tempo" }
+  final RegExp tempoRegExp = RegExp(r'^\s*tempo:');
 }
 
 int cjLogCompare(SongPerformance first, SongPerformance other) {
