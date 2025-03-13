@@ -43,43 +43,44 @@ const JsonDecoder _jsonDecoder = JsonDecoder();
 ///
 /// fixme: song update should always have a song
 class SongUpdate {
-  SongUpdate(
-      {SongUpdateState? state,
-      Song? song,
-      String? user,
-      String? singer,
-      int? momentNumber,
-      int? rowNumber,
-      this.songMoment,
-      int? beat,
-      int? beatsPerMeasure,
-      int? currentBeatsPerMinute,
-      Key? currentKey})
-      : state = state ?? SongUpdateState.idle,
-        user = user ?? 'unknown',
-        singer = singer ?? unknownSinger,
-        momentNumber = momentNumber ?? 0,
-        rowNumber = rowNumber ?? 0,
-        beat = beat ?? 0,
-        beatsPerMeasure = beatsPerMeasure ?? song?.beatsPerBar ?? 4,
-        currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
-        currentKey = currentKey ?? Key.getDefault() {
+  SongUpdate({
+    SongUpdateState? state,
+    Song? song,
+    String? user,
+    String? singer,
+    int? momentNumber,
+    int? rowNumber,
+    this.songMoment,
+    int? beat,
+    int? beatsPerMeasure,
+    int? currentBeatsPerMinute,
+    Key? currentKey,
+  }) : state = state ?? SongUpdateState.idle,
+       user = user ?? 'unknown',
+       singer = singer ?? unknownSinger,
+       momentNumber = momentNumber ?? 0,
+       rowNumber = rowNumber ?? 0,
+       beat = beat ?? 0,
+       beatsPerMeasure = beatsPerMeasure ?? song?.beatsPerBar ?? 4,
+       currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
+       currentKey = currentKey ?? Key.getDefault() {
     //  notice assignSong() is not used to keep currentKey and currentBeatsPerMinute correct
     //  that is, the update versions
     this.song = song ?? Song.createEmptySong(currentBeatsPerMinute: song?.beatsPerMinute, currentKey: song?.key);
   }
 
-  SongUpdate copyWith(
-      {SongUpdateState? state,
-      Song? song,
-      String? user,
-      String? singer,
-      int? momentNumber,
-      SongMoment? songMoment,
-      int? beat,
-      int? beatsPerMeasure,
-      int? currentBeatsPerMinute,
-      Key? currentKey}) {
+  SongUpdate copyWith({
+    SongUpdateState? state,
+    Song? song,
+    String? user,
+    String? singer,
+    int? momentNumber,
+    SongMoment? songMoment,
+    int? beat,
+    int? beatsPerMeasure,
+    int? currentBeatsPerMinute,
+    Key? currentKey,
+  }) {
     SongUpdate ret = SongUpdate(
       song: song ?? this.song,
       state: state ?? this.state,
@@ -227,8 +228,10 @@ class SongUpdate {
 
   @override
   String toString() {
-    var sb = StringBuffer('SongUpdate: "${song.title}" by "${song.artist}" '
-        '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}"' : ''}: ');
+    var sb = StringBuffer(
+      'SongUpdate: "${song.title}" by "${song.artist}" '
+      '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}"' : ''}: ',
+    );
     sb.write(', moment: ');
     sb.write(momentNumber);
     if (songMoment != null) {
@@ -321,7 +324,7 @@ class SongUpdate {
       }
       setMomentNumber(momentNumber);
       songMoment =
-          song.songMoments.isNotEmpty ? song.songMoments[min(max(0, momentNumber), song.songMoments.length)] : null;
+          song.songMoments.isNotEmpty ? song.songMoments[min(max(0, momentNumber), song.songMoments.length - 1)] : null;
     }
   }
 
@@ -376,7 +379,16 @@ class SongUpdate {
   @override
   int get hashCode {
     return Object.hash(
-        state, currentKey, song, momentNumber, beat, beatsPerMeasure, currentBeatsPerMinute, user, singer);
+      state,
+      currentKey,
+      song,
+      momentNumber,
+      beat,
+      beatsPerMeasure,
+      currentBeatsPerMinute,
+      user,
+      singer,
+    );
   }
 
   SongUpdateState state;
