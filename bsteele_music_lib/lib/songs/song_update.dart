@@ -139,7 +139,7 @@ class SongUpdate {
 
     //  past the end and we're done
     if (m >= song.songMoments.length) {
-      momentNumber = song.songMoments.length;
+      momentNumber = song.songMoments.length - 1;
       songMoment = null;
       return;
     }

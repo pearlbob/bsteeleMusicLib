@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/key.dart';
 import 'package:bsteele_music_lib/songs/song.dart';
@@ -148,17 +150,27 @@ void main() {
       expect(instance.momentNumber, expResult);
       expResult = 20;
       instance.setMomentNumber(expResult);
-      expect(instance.momentNumber, expResult);
+      expect(instance.momentNumber, min(expResult, instance.song.songMoments.length - 1));
       expResult = 25;
       instance.setMomentNumber(expResult);
-      expect(instance.momentNumber, 20);
+      expect(instance.momentNumber, min(expResult, instance.song.songMoments.length - 1));
+      expResult = -3;
+      instance.setMomentNumber(expResult);
+      expect(instance.momentNumber, expResult);
       expResult = 0;
       instance.setMomentNumber(expResult);
       expect(instance.momentNumber, expResult);
 
+
       instance.song.lastModifiedTime = 0; //  for testing only
 
-      expect(instance.toJson(), '''{
+      //  moment number should never be greater then length - 1
+      int length = instance.song.songMoments.length;
+      int limit = instance.song.songMoments.length + 3;
+      for (int momentNumber = 0; momentNumber < limit; momentNumber++) {
+        instance.setMomentNumber(momentNumber);
+
+        expect(instance.toJson(), '''{
 "state": "idle",
 "currentKey": "C",
 "song": {
@@ -185,7 +197,7 @@ void main() {
     ]
 }
 ,
-"momentNumber": 0,
+"momentNumber": ${min(momentNumber, length - 1)},
 "rowNumber": 0,
 "beat": 0,
 "user": "unknown",
@@ -194,6 +206,7 @@ void main() {
 "currentBeatsPerMinute": 100
 }
 ''');
+      }
 
       SongUpdate? instance2 = SongUpdate.fromJson(instance.toJson());
       expect(instance2 != null, true);
