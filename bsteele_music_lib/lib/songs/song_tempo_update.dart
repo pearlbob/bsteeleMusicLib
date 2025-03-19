@@ -13,13 +13,14 @@ const JsonDecoder _jsonDecoder = JsonDecoder();
 const String _tempoUser = 'tempo';
 
 class SongTempoUpdate {
-  SongTempoUpdate(this.songId, this.currentBeatsPerMinute, {this.user = _tempoUser});
+  SongTempoUpdate(this.songId, this.currentBeatsPerMinute, this.level, {this.user = _tempoUser});
 
   @override
   String toString() {
     var sb = StringBuffer('SongTempoUpdate: "$songId"');
     sb.write(', currentBPM: $currentBeatsPerMinute');
     sb.write(', user: $user');
+    sb.write(', level: ${level.toStringAsFixed(3)}');
     return sb.toString();
   }
 
@@ -34,7 +35,7 @@ class SongTempoUpdate {
   }
 
   static SongTempoUpdate? fromJsonObject(dynamic json) {
-    SongTempoUpdate songTempoUpdate = SongTempoUpdate(SongId.noArgs(), 0);
+    SongTempoUpdate songTempoUpdate = SongTempoUpdate(SongId.noArgs(), 0, 0);
     songTempoUpdate._updateFromJsonObject(json);
     return songTempoUpdate;
   }
@@ -47,11 +48,14 @@ class SongTempoUpdate {
           case 'songId':
             songId = SongId.fromString(jv);
             break;
+          case 'user':
+            user = jv.toString();
+            break;
           case 'currentBeatsPerMinute':
             currentBeatsPerMinute = jv;
             break;
-          case 'user':
-            user = jv.toString();
+          case 'level':
+            level = jv;
             break;
           default:
             logger.w('unknown field in JSON: "$name"');
@@ -67,12 +71,12 @@ class SongTempoUpdate {
 
     sb.write('"songId": ');
     sb.write(jsonEncode(songId.songIdAsString));
-    sb.write(',\n');
-    sb.write('"currentBeatsPerMinute": ');
-    sb.write(jsonEncode(currentBeatsPerMinute));
-    sb.write(',\n');
-    sb.write('"user": ');
+    sb.write(',\n"user": ');
     sb.write(jsonEncode(user));
+    sb.write(',\n"currentBeatsPerMinute": ');
+    sb.write(jsonEncode(currentBeatsPerMinute));
+    sb.write(',\n"level": ');
+    sb.write(level);
     sb.write('\n}\n');
 
     return sb.toString();
@@ -87,15 +91,17 @@ class SongTempoUpdate {
         other is SongTempoUpdate &&
         songId == other.songId &&
         currentBeatsPerMinute == other.currentBeatsPerMinute &&
-        user == other.user;
+        user == other.user &&
+        level == other.level;
   }
 
   @override
   int get hashCode {
-    return Object.hash(songId, currentBeatsPerMinute, user);
+    return Object.hash(songId, currentBeatsPerMinute, user, level);
   }
 
   SongId songId;
   String user;
   int currentBeatsPerMinute;
+  double level; // 0 to 1.0, best if 0.5 < level < 1.0
 }
