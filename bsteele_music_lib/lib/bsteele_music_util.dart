@@ -10,6 +10,7 @@ import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
+import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:bsteele_music_lib/songs/song_base.dart';
 import 'package:csv/csv.dart';
 import 'package:english_words/english_words.dart';
@@ -79,6 +80,7 @@ arguments:
 -attendance         CJ attendance in csv
 -bpm                list the bpm's used
 -chord              list the chord descriptors used
+-blues              look for blues songs
 -cjwrite {file)     format the song metadata
 -cjwritesongs {file)     write song list of cj songs
 -cjread {file)      add song metadata
@@ -193,9 +195,9 @@ coerced to reflect the songlist's last modification for that song.
           _copyright();
           break;
 
-//        case '-csv':
-//          _csv();
-//          break;
+        //        case '-csv':
+        //          _csv();
+        //          break;
 
         case '-cjread': // {file}
           //  insist there is another arg
@@ -237,20 +239,22 @@ coerced to reflect the songlist's last modification for that song.
               bpms[bpm] = (n ?? 0) == 0 ? 1 : n! + 1;
               logger.i('"${song.songId.songIdAsString}", bpm: $bpm');
             }
-            for (int n in SplayTreeSet<int>()
-              ..addAll(bpms.keys)
-              ..toList()) {
+            for (int n
+                in SplayTreeSet<int>()
+                  ..addAll(bpms.keys)
+                  ..toList()) {
               logger.i('$n: ${bpms[n]}');
             }
-            for (Song song in SplayTreeSet<Song>((song1, song2) {
-              var ret = song1.beatsPerMinute.compareTo(song2.beatsPerMinute);
-              if (ret != 0) {
-                return ret;
-              }
-              return song1.compareTo(song2);
-            })
-              ..addAll(allSongs)
-              ..toList()) {
+            for (Song song
+                in SplayTreeSet<Song>((song1, song2) {
+                    var ret = song1.beatsPerMinute.compareTo(song2.beatsPerMinute);
+                    if (ret != 0) {
+                      return ret;
+                    }
+                    return song1.compareTo(song2);
+                  })
+                  ..addAll(allSongs)
+                  ..toList()) {
               int bpm = song.beatsPerMinute;
               if (bpm > 200) {
                 logger.i('${song.title} by ${song.artist}, bpm: $bpm, beats: ${song.beatsPerBar}');
@@ -277,17 +281,54 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             logger.i('${'Name'.padLeft(15)}: ${'Count'.padLeft(6)}  ShortName');
-            for (ChordDescriptor cd in SplayTreeSet<ChordDescriptor>((ChordDescriptor key1, ChordDescriptor key2) {
-              int ret = chordDescriptors[key2]!.compareTo(chordDescriptors[key1]!);
-              if (ret == 0) {
-                return key1.name.compareTo(key2.name);
+            for (ChordDescriptor cd
+                in SplayTreeSet<ChordDescriptor>((ChordDescriptor key1, ChordDescriptor key2) {
+                    int ret = chordDescriptors[key2]!.compareTo(chordDescriptors[key1]!);
+                    if (ret == 0) {
+                      return key1.name.compareTo(key2.name);
+                    }
+                    return ret;
+                  })
+                  ..addAll(chordDescriptors.keys)
+                  ..toList()) {
+              logger.i(
+                '${cd.name.padLeft(15)}: ${chordDescriptors[cd].toString().padLeft(6)}'
+                '  ${cd.shortName}',
+              );
+            }
+          }
+          break;
+
+        case '-blues':
+          {
+            for (Song song in allSongs) {
+              //  look for 12 bar sections
+              int bars12 = 0;
+              int barsNot12 = 0;
+              for (ChordSection chordSection in song.getChordSections()) {
+                if (chordSection.phrases.length == 1 && chordSection.phrases[0].measures.length == 12) {
+                  bool blues = true;
+                  //  fixme: jazz blues can fail here
+                  SplayTreeSet<ScaleNote> set = SplayTreeSet();
+                  for (var m in chordSection.phrases[0].measures) {
+                    if (m.chords.length > 1) {
+                      blues = false;
+                      break;
+                    }
+                    set.add(m.chords[0].scaleChord.scaleNote);
+                  }
+                  if (!blues || set.length > 3) {
+                    barsNot12++;
+                  }
+                  bars12++;
+                } else {
+                  barsNot12++;
+                }
               }
-              return ret;
-            })
-              ..addAll(chordDescriptors.keys)
-              ..toList()) {
-              logger.i('${cd.name.padLeft(15)}: ${chordDescriptors[cd].toString().padLeft(6)}'
-                  '  ${cd.shortName}');
+              if (bars12 > barsNot12) {
+                logger.i('$song:');
+                logger.i('      12: $bars12, not12: $barsNot12');
+              }
             }
           }
           break;
@@ -457,16 +498,28 @@ coerced to reflect the songlist's last modification for that song.
                 BestMatch bestMatch = StringSimilarity.findBestMatch(songId.toString(), songs);
                 var idString = songs[bestMatch.bestMatchIndex];
                 song = allSongs.firstWhere((e) => e.songId.toString() == idString);
-                logger.i('   best match: title: "${song.title}", artist: "${song.artist}"'
-                    ', coverArtist: "${song.coverArtist}"');
+                logger.i(
+                  '   best match: title: "${song.title}", artist: "${song.artist}"'
+                  ', coverArtist: "${song.coverArtist}"',
+                );
               }
               if (genre.isNotEmpty || subgenre.isNotEmpty || jam.isNotEmpty || year.isNotEmpty) {
                 logger.t('$song:  genre: $genre, subgenre: $subgenre, jam: $jam, year: $year');
-                if (genre.isNotEmpty) SongMetadata.addSong(song, NameValue('genre', genre));
-                if (subgenre.isNotEmpty) SongMetadata.addSong(song, NameValue('subgenre', subgenre));
-                if (jam.isNotEmpty) SongMetadata.addSong(song, NameValue('jam', jam));
-                if (year.isNotEmpty) SongMetadata.addSong(song, NameValue('year', year));
-                if (status.isNotEmpty) SongMetadata.addSong(song, NameValue('status', status));
+                if (genre.isNotEmpty) {
+                  SongMetadata.addSong(song, NameValue('genre', genre));
+                }
+                if (subgenre.isNotEmpty) {
+                  SongMetadata.addSong(song, NameValue('subgenre', subgenre));
+                }
+                if (jam.isNotEmpty) {
+                  SongMetadata.addSong(song, NameValue('jam', jam));
+                }
+                if (year.isNotEmpty) {
+                  SongMetadata.addSong(song, NameValue('year', year));
+                }
+                if (status.isNotEmpty) {
+                  SongMetadata.addSong(song, NameValue('status', status));
+                }
               }
             }
 
@@ -510,16 +563,7 @@ coerced to reflect the songlist's last modification for that song.
               var subgenre = md.isNotEmpty ? md.first.value : '';
               md = SongMetadata.songMetadata(song, 'Status');
               var status = md.isNotEmpty ? md.first.value : '';
-              rows.add([
-                song.title,
-                song.artist,
-                song.coverArtist,
-                year,
-                jam,
-                genre,
-                subgenre,
-                status,
-              ]);
+              rows.add([song.title, song.artist, song.coverArtist, year, jam, genre, subgenre, status]);
             }
             await outputFile.writeAsString(converter.convert(rows), flush: true);
 
@@ -574,7 +618,8 @@ coerced to reflect the songlist's last modification for that song.
             if (_verbose) logger.i('input file path: ${_file.toString()}');
             if (!(await _file!.exists())) {
               logger.d(
-                  'input file path: ${_file.toString()} is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
+                'input file path: ${_file.toString()} is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}',
+              );
 
               exit(-1);
             }
@@ -627,13 +672,15 @@ coerced to reflect the songlist's last modification for that song.
                 if (fileAsJson != fileAsRead) {
                   writeTo.writeAsStringSync(fileAsJson, flush: true);
                   if (_verbose) {
-                    logger
-                        .i('${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                    logger.i(
+                      '${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}',
+                    );
                   }
                 } else {
                   if (_veryVerbose) {
-                    logger
-                        .i('${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}');
+                    logger.i(
+                      '${song.title} by ${song.artist}:  ${song.songId.toString()} ${fileTime.toIso8601String()}',
+                    );
                     logger.i('\tidentical');
                   }
                 }
@@ -655,7 +702,8 @@ coerced to reflect the songlist's last modification for that song.
           _addAllSongsFromFile(_allSongsFile);
 
           allSongPerformances.updateFromJsonString(
-              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+            File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+          );
           allSongPerformances.loadSongs(allSongs);
 
           {
@@ -770,7 +818,7 @@ coerced to reflect the songlist's last modification for that song.
               data.add([
                 CellData('Date', 15, dayFormat.format(day)),
                 CellData('Count', 8, jam.length),
-                CellData('Singers', 180, singers)
+                CellData('Singers', 180, singers),
               ]);
             }
             _addExcelCellDataSheet(excel, 'Singers per Jam', data.toList(growable: false));
@@ -793,7 +841,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-file':
-        //  insist there is another arg
+          //  insist there is another arg
           if (argCount >= args.length - 1) {
             logger.e('missing file path for -file');
             _help();
@@ -811,11 +859,12 @@ coerced to reflect the songlist's last modification for that song.
           _addAllSongsFromFile(inputFile);
           break;
 
-
         case '-floatnotes':
           for (var pitch in Pitch.sharps) {
-            logger.i(' ${pitch.frequency.toStringAsFixed(9).padLeft(4 + 1 + 9)}'
-                ', // ${pitch.number.toString().padLeft(2)} $pitch ');
+            logger.i(
+              ' ${pitch.frequency.toStringAsFixed(9).padLeft(4 + 1 + 9)}'
+              ', // ${pitch.number.toString().padLeft(2)} $pitch ',
+            );
           }
           for (var pitch in Pitch.sharps) {
             logger.i('"$pitch", // ${pitch.number.toString().padLeft(2)}  ');
@@ -851,9 +900,11 @@ coerced to reflect the songlist's last modification for that song.
 <ul>
 ''');
             for (Song song in allSongs) {
-              logger.i('<li><span class="title">${song.title}</span> by <span class="artist">${song.artist}</span>'
-                  '${song.coverArtist.isNotEmpty ? ' cover by <span class="coverArtist">${song.coverArtist}</span>' : ''}'
-                  '</li>');
+              logger.i(
+                '<li><span class="title">${song.title}</span> by <span class="artist">${song.artist}</span>'
+                '${song.coverArtist.isNotEmpty ? ' cover by <span class="coverArtist">${song.coverArtist}</span>' : ''}'
+                '</li>',
+              );
             }
             logger.i('''</ul>
 </body>
@@ -893,9 +944,11 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (Song song in sortedSongs) {
-                logger.i('"${song.title}" by "${song.artist}"'
-                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                    ': maxLength: $i');
+                logger.i(
+                  '"${song.title}" by "${song.artist}"'
+                  '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                  ': maxLength: $i',
+                );
               }
             }
           }
@@ -926,11 +979,13 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (Song song in sortedSongs) {
-                logger.i('"${song.title}" by "${song.artist}"'
-                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                    ': maxLength: $i'
-                    ', last modified:'
-                    ' ${song.lastModifiedTime == 0 ? 'unknown' : DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime).toString()}');
+                logger.i(
+                  '"${song.title}" by "${song.artist}"'
+                  '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                  ': maxLength: $i'
+                  ', last modified:'
+                  ' ${song.lastModifiedTime == 0 ? 'unknown' : DateTime.fromMillisecondsSinceEpoch(song.lastModifiedTime).toString()}',
+                );
               }
             }
           }
@@ -943,10 +998,12 @@ coerced to reflect the songlist's last modification for that song.
             SplayTreeSet<Song> missingSongsSet = SplayTreeSet();
             for (var p in allSongPerformances.missingSongsFromPerformanceHistory) {
               var lastSungDateTime = p.lastSungDateTime;
-              File file = File('${dir.path}/catalina.${lastSungDateTime.year}'
-                  '-${lastSungDateTime.month.toString().padLeft(2, '0')}'
-                  '-${lastSungDateTime.day.toString().padLeft(2, '0')}'
-                  '.log');
+              File file = File(
+                '${dir.path}/catalina.${lastSungDateTime.year}'
+                '-${lastSungDateTime.month.toString().padLeft(2, '0')}'
+                '-${lastSungDateTime.day.toString().padLeft(2, '0')}'
+                '.log',
+              );
               logger.i('missing: ${p.lastSungDateTime}: ${file.path}  ${dateFormat.format(lastSungDateTime)}');
 
               if (p.songIdAsString.startsWith('Song_Little_')) {
@@ -1011,9 +1068,11 @@ coerced to reflect the songlist's last modification for that song.
               sb.write('\n]\n');
 
               // logger.i(sb.toString());
-              final outputFile = File('${Util.homePath()}/Downloads/missing_songs_'
-                  '${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}'
-                  '.songlyrics');
+              final outputFile = File(
+                '${Util.homePath()}/Downloads/missing_songs_'
+                '${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}'
+                '.songlyrics',
+              );
               logger.i(outputFile.path);
               outputFile.writeAsStringSync(sb.toString(), flush: true);
 
@@ -1089,9 +1148,11 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               for (Song song in sortedSongs) {
-                logger.i('"${song.title}" by "${song.artist}"'
-                    '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                    ':  /bpi $i  /bpm ${song.beatsPerMinute}  ${ninjamSections[song]?.toMarkup()}');
+                logger.i(
+                  '"${song.title}" by "${song.artist}"'
+                  '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                  ':  /bpi $i  /bpm ${song.beatsPerMinute}  ${ninjamSections[song]?.toMarkup()}',
+                );
               }
             }
           }
@@ -1107,14 +1168,18 @@ coerced to reflect the songlist's last modification for that song.
             }
             if (!(await _outputDirectory.exists())) {
               if (_verbose) {
-                logger.d('output path: ${_outputDirectory.toString()}'
-                    ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
+                logger.d(
+                  'output path: ${_outputDirectory.toString()}'
+                  ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}',
+                );
               }
 
               Directory parent = _outputDirectory.parent;
               if (!(await parent.exists())) {
-                logger.d('parent path: ${parent.toString()}'
-                    ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}');
+                logger.d(
+                  'parent path: ${parent.toString()}'
+                  ' is missing${_outputDirectory.isAbsolute ? '' : ' at ${Directory.current}'}',
+                );
                 return -2;
               }
               _outputDirectory.createSync();
@@ -1161,9 +1226,12 @@ coerced to reflect the songlist's last modification for that song.
             //  add the github version
             var usTimer = UsTimer();
             allSongPerformances.updateFromJsonString(
-                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
-            logger.i('preload: usTimer: ${usTimer.seconds} s'
-                ', allSongPerformances.length: ${allSongPerformances.length}');
+              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+            );
+            logger.i(
+              'preload: usTimer: ${usTimer.seconds} s'
+              ', allSongPerformances.length: ${allSongPerformances.length}',
+            );
 
             //  read from server logs
             logger.i('allSongPerformances.length: ${allSongPerformances.length}');
@@ -1206,8 +1274,9 @@ coerced to reflect the songlist's last modification for that song.
 
                     allSongPerformances.updateFromJsonString(file.readAsStringSync());
                     logger.i('allSongPerformances.length: ${allSongPerformances.length}');
-                    logger
-                        .i('allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}');
+                    logger.i(
+                      'allSongPerformanceHistory.length: ${allSongPerformances.allSongPerformanceHistory.length}',
+                    );
                   } else {
                     if (_verbose) {
                       logger.i('ignore:  file: $name');
@@ -1219,18 +1288,19 @@ coerced to reflect the songlist's last modification for that song.
 
               {
                 //  most recent performances, less than the limit
-                SplayTreeSet<SongPerformance> performanceDelete =
-                    SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+                SplayTreeSet<SongPerformance> performanceDelete = SplayTreeSet<SongPerformance>(
+                  SongPerformance.compareByLastSungSongIdAndSinger,
+                );
                 for (var songPerformance in allSongPerformances.allSongPerformances) {
                   if (songPerformance.lastSung < lastSungLimit
-                          //  workaround for early bad singer entries
-                          ||
-                          (!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger)
-                      // ||
-                      // songPerformance.singer.contains('Vikki') ||
-                      // songPerformance.singer.contains('Alicia C.') ||
-                      // songPerformance.singer.contains('Bob S.')
-                      ) {
+                      //  workaround for early bad singer entries
+                      ||
+                      (!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger)
+                  // ||
+                  // songPerformance.singer.contains('Vikki') ||
+                  // songPerformance.singer.contains('Alicia C.') ||
+                  // songPerformance.singer.contains('Bob S.')
+                  ) {
                     performanceDelete.add(songPerformance);
                   }
                   assert(!songPerformance.singer.contains('Vikki'));
@@ -1278,7 +1348,8 @@ coerced to reflect the songlist's last modification for that song.
 
             var corrections = allSongPerformances.loadSongs(songs);
             logger.i(
-                'postLoad: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}');
+              'postLoad: usTimer: ${usTimer.seconds} s, delta: ${usTimer.deltaToString()}, songs: ${songs.length}',
+            );
             logger.i('corrections: $corrections');
 
             //  count the sloppy matched songs in history
@@ -1288,15 +1359,19 @@ coerced to reflect the songlist's last modification for that song.
                 if (performance.song == null) {
                   logger.i('missing song: ${performance.lowerCaseSongIdAsString}');
                 } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
-                  logger.i('${performance.lowerCaseSongIdAsString}'
-                      ' vs ${performance.song!.songId.toString().toLowerCase()}');
+                  logger.i(
+                    '${performance.lowerCaseSongIdAsString}'
+                    ' vs ${performance.song!.songId.toString().toLowerCase()}',
+                  );
                   assert(false);
                 } else {
                   matches++;
                 }
               }
-              logger.i('matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
-                  ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
+              logger.i(
+                'matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
+                ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}',
+              );
             }
 
             SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
@@ -1316,8 +1391,9 @@ coerced to reflect the songlist's last modification for that song.
               }
             }
 
-            File localSongperformances =
-                File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
+            File localSongperformances = File(
+              '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances',
+            );
             {
               try {
                 localSongperformances.deleteSync();
@@ -1350,11 +1426,13 @@ coerced to reflect the songlist's last modification for that song.
               logger.i('localSongMetadata: ${usTimer.deltaToString()}');
 
               double seconds = usTimer.seconds;
-              logger.i('reload: usTimer: $seconds s'
-                  ', allSongPerformances.length: ${allSongPerformances.length}'
-                  ', songs.length: ${songs.length}'
-                  ', idMetadata.length: ${SongMetadata.idMetadata.length}'
-                  ', corrections: $corrections');
+              logger.i(
+                'reload: usTimer: $seconds s'
+                ', allSongPerformances.length: ${allSongPerformances.length}'
+                ', songs.length: ${songs.length}'
+                ', idMetadata.length: ${SongMetadata.idMetadata.length}'
+                ', corrections: $corrections',
+              );
               assert(seconds < 0.75);
             }
 
@@ -1370,14 +1448,18 @@ coerced to reflect the songlist's last modification for that song.
 
             //  add the github version
             allSongPerformances.updateFromJsonString(
-                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+            );
             logger.i('performances: ${allSongPerformances.allSongPerformanceHistory.length}');
             SplayTreeMap<DateTime, SplayTreeSet<String>> dateSingersMap =
                 SplayTreeMap<DateTime, SplayTreeSet<String>>();
             for (var perf in allSongPerformances.allSongPerformanceHistory) {
               if (perf.singer == 'unknown') continue;
-              var dateTime =
-                  DateTime(perf.lastSungDateTime.year, perf.lastSungDateTime.month, perf.lastSungDateTime.day);
+              var dateTime = DateTime(
+                perf.lastSungDateTime.year,
+                perf.lastSungDateTime.month,
+                perf.lastSungDateTime.day,
+              );
               var dateSingers = dateSingersMap[dateTime] ?? SplayTreeSet<String>();
               dateSingers.add(perf.singer);
               dateSingersMap[dateTime] = dateSingers;
@@ -1386,8 +1468,10 @@ coerced to reflect the songlist's last modification for that song.
             logger.i('Date, Count, Singers');
             for (var dateTime in SplayTreeSet<DateTime>()..addAll(dateSingersMap.keys)) {
               var singers = dateSingersMap[dateTime];
-              logger.i('${DateFormat('yyyy-MM-dd').format(dateTime)}, ${singers?.length}'
-                  ', "${singers.toString().replaceAll(bracesRegex, '')}"');
+              logger.i(
+                '${DateFormat('yyyy-MM-dd').format(dateTime)}, ${singers?.length}'
+                ', "${singers.toString().replaceAll(bracesRegex, '')}"',
+              );
             }
           }
           break;
@@ -1440,7 +1524,8 @@ coerced to reflect the songlist's last modification for that song.
 
             //  add the github version
             allSongPerformances.updateFromJsonString(
-                File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+            );
 
             //  load local songs
             var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
@@ -1455,14 +1540,15 @@ coerced to reflect the songlist's last modification for that song.
               }
             }
 
-            var sortMapByValue = Map.fromEntries(songCounts.entries.toList()
-              ..sort((e1, e2) {
+            var sortMapByValue = Map.fromEntries(
+              songCounts.entries.toList()..sort((e1, e2) {
                 int ret = -e1.value.compareTo(e2.value);
                 if (ret != 0) {
                   return ret;
                 }
                 return e1.key.compareTo(e2.key);
-              }));
+              }),
+            );
 
             {
               int count = 0;
@@ -1622,7 +1708,8 @@ coerced to reflect the songlist's last modification for that song.
                 // logger.i('$dateTime: $state: momentNumber: $momentNumber, song: ${song.toString()}');
                 // logger.i('   momentNumber from $lastMomentNumber to $momentNumber');
                 if (lastMomentNumber >= 0 && momentNumber > lastMomentNumber) {
-                  double deltaS = (dateTime.microsecondsSinceEpoch - lastDateTime.microsecondsSinceEpoch) /
+                  double deltaS =
+                      (dateTime.microsecondsSinceEpoch - lastDateTime.microsecondsSinceEpoch) /
                       Duration.microsecondsPerSecond;
                   int beats =
                       song.songMoments[max(momentNumber, 0)].beatNumber - song.songMoments[lastMomentNumber].beatNumber;
@@ -1630,8 +1717,15 @@ coerced to reflect the songlist's last modification for that song.
                   // logger.i('   beat from ${song.songMoments[lastMomentNumber].beatNumber}'
                   //     ' to ${song.songMoments[momentNumber].beatNumber} = $beats beats in $deltaS s'
                   //     ' = $bpm bpm');
-                  tempoMoments.add(TempoMoment(dateTime, SongUpdateState.fromName(stateName), song,
-                      momentNumber: momentNumber, bpm: bpm));
+                  tempoMoments.add(
+                    TempoMoment(
+                      dateTime,
+                      SongUpdateState.fromName(stateName),
+                      song,
+                      momentNumber: momentNumber,
+                      bpm: bpm,
+                    ),
+                  );
                 }
 
                 lastMomentNumber = momentNumber;
@@ -1642,15 +1736,17 @@ coerced to reflect the songlist's last modification for that song.
             {
               // const sampleRate = 48000;
               File tempoFile = File('$tempoPath/tempo_log_$year$month$day');
-              DateFormat dateFormat =
-                  DateFormat('yyyy-MM-dd HH:mm:ss.SSS'); //  fixme: DateFormat won't parse microseconds
+              DateFormat dateFormat = DateFormat(
+                'yyyy-MM-dd HH:mm:ss.SSS',
+              ); //  fixme: DateFormat won't parse microseconds
               // logger.i(tempoFile.readAsStringSync());
               // 2024-06-20 19:20:06.654485: 63246 =  1.318s =  0.759 hz = 45.536 bpm @  7911, consistent: false
-              final tempoPattern = RegExp(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})'
-                  r'\d{3}' //  fixme: DateFormat won't parse microseconds
-                  r':\s+bestBpm:\s+(\d+)\s+@\s+(\d+), tpm:\s+(\d+)'
-                  //
-                  );
+              final tempoPattern = RegExp(
+                r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})'
+                r'\d{3}' //  fixme: DateFormat won't parse microseconds
+                r':\s+bestBpm:\s+(\d+)\s+@\s+(\d+), tpm:\s+(\d+)',
+                //
+              );
               DateTime? lastDateTime;
               for (var m in tempoPattern.allMatches(tempoFile.readAsStringSync())) {
                 logger.i(m.group(0)!);
@@ -1793,10 +1889,10 @@ coerced to reflect the songlist's last modification for that song.
           var path = authority.replaceAll(RegExp(r'^[.\w]*/', caseSensitive: false), '');
           authority = authority.replaceAll(RegExp(r'/.*'), '');
           logger.d('authority: <$authority>, path: <$path>');
-          List<Song> addSongs = Song.songListFromJson(utf8
-                  .decode(await http.readBytes(Uri.http(authority, path)))
-                  .replaceAll('": null,', '": "",')) //  cheap repair
-              ;
+          List<Song> addSongs = Song.songListFromJson(
+            utf8.decode(await http.readBytes(Uri.http(authority, path))).replaceAll('": null,', '": "",'),
+          ) //  cheap repair
+          ;
           allSongs.addAll(addSongs);
 
           // {
@@ -1832,8 +1928,7 @@ coerced to reflect the songlist's last modification for that song.
             }
             for (var user in SplayTreeSet<String>((key1, key2) {
               return -(userMap[key1] ?? 0).compareTo(userMap[key2] ?? 0);
-            })
-              ..addAll(userMap.keys)) {
+            })..addAll(userMap.keys)) {
               logger.i('$user: ${userMap[user]}');
             }
           }
@@ -2104,8 +2199,9 @@ coerced to reflect the songlist's last modification for that song.
               'Zombie',
             ];
             for (var title in list) {
-              var songsFound =
-                  allSongs.where((song) => song.title.toLowerCase() == title.toLowerCase()).toList(growable: false);
+              var songsFound = allSongs
+                  .where((song) => song.title.toLowerCase() == title.toLowerCase())
+                  .toList(growable: false);
               if (songsFound.isEmpty) {
                 logger.i('//  NOT FOUND: $title');
                 continue;
@@ -2200,9 +2296,11 @@ coerced to reflect the songlist's last modification for that song.
 
   String _cjCsvRanking() {
     StringBuffer sb = StringBuffer();
-    sb.write('Id'
-        ',ranking'
-        '\n');
+    sb.write(
+      'Id'
+      ',ranking'
+      '\n',
+    );
     for (Song song in allSongs) {
       var meta = SongMetadata.where(idIs: song.songId.songIdAsString, nameIs: 'jam');
       if (meta.isNotEmpty) {
@@ -2240,10 +2338,13 @@ coerced to reflect the songlist's last modification for that song.
 
     //  add the github version
     var usTimer = UsTimer();
-    allSongPerformances
-        .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
-    logger.i('preload: usTimer: ${usTimer.seconds} s'
-        ', allSongPerformances.length: ${allSongPerformances.length}');
+    allSongPerformances.updateFromJsonString(
+      File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+    );
+    logger.i(
+      'preload: usTimer: ${usTimer.seconds} s'
+      ', allSongPerformances.length: ${allSongPerformances.length}',
+    );
 
     //  read from server logs
     logger.i('allSongPerformances.length: ${allSongPerformances.length}');
@@ -2333,18 +2434,19 @@ coerced to reflect the songlist's last modification for that song.
       }
 
       {
-        SplayTreeSet<SongPerformance> performanceDelete =
-            SplayTreeSet<SongPerformance>(SongPerformance.compareByLastSungSongIdAndSinger);
+        SplayTreeSet<SongPerformance> performanceDelete = SplayTreeSet<SongPerformance>(
+          SongPerformance.compareByLastSungSongIdAndSinger,
+        );
         for (var songPerformance in allSongPerformances.allSongPerformances) {
           if (songPerformance.lastSung < lastSungLimit
-                  //  workaround for early bad singer entries
-                  ||
-                  (!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger)
-              // ||
-              // songPerformance.singer.contains('Vikki') ||
-              // songPerformance.singer.contains('Alicia C.') ||
-              // songPerformance.singer.contains('Bob S.')
-              ) {
+              //  workaround for early bad singer entries
+              ||
+              (!songPerformance.singer.contains(' ') && songPerformance.singer != unknownSinger)
+          // ||
+          // songPerformance.singer.contains('Vikki') ||
+          // songPerformance.singer.contains('Alicia C.') ||
+          // songPerformance.singer.contains('Bob S.')
+          ) {
             performanceDelete.add(songPerformance);
           }
           assert(!songPerformance.singer.contains('Vikki'));
@@ -2402,15 +2504,19 @@ coerced to reflect the songlist's last modification for that song.
           logger.i('missing song: ${performance.lowerCaseSongIdAsString}');
           assert(false);
         } else if (performance.lowerCaseSongIdAsString != performance.song!.songId.toString().toLowerCase()) {
-          logger.i('${performance.lowerCaseSongIdAsString}'
-              ' vs ${performance.song!.songId.toString().toLowerCase()}');
+          logger.i(
+            '${performance.lowerCaseSongIdAsString}'
+            ' vs ${performance.song!.songId.toString().toLowerCase()}',
+          );
           assert(false);
         } else {
           matches++;
         }
       }
-      logger.i('matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
-          ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}');
+      logger.i(
+        'matches:  $matches/${allSongPerformances.allSongPerformanceHistory.length}'
+        ', corrections: ${allSongPerformances.allSongPerformanceHistory.length - matches}',
+      );
     }
 
     //  repair metadata song changes
@@ -2432,8 +2538,9 @@ coerced to reflect the songlist's last modification for that song.
     }
 
     //  write the corrected performances
-    File localSongperformances =
-        File('${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances');
+    File localSongperformances = File(
+      '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances',
+    );
     {
       try {
         localSongperformances.deleteSync();
@@ -2466,11 +2573,13 @@ coerced to reflect the songlist's last modification for that song.
       logger.i('localSongMetadata: ${usTimer.deltaToString()}');
 
       double seconds = usTimer.seconds;
-      logger.i('reload: usTimer: $seconds s'
-          ', allSongPerformances.length: ${allSongPerformances.length}'
-          ', songs.length: ${songs.length}'
-          ', idMetadata.length: ${SongMetadata.idMetadata.length}'
-          ', corrections: $corrections');
+      logger.i(
+        'reload: usTimer: $seconds s'
+        ', allSongPerformances.length: ${allSongPerformances.length}'
+        ', songs.length: ${songs.length}'
+        ', idMetadata.length: ${SongMetadata.idMetadata.length}'
+        ', corrections: $corrections',
+      );
       assert(seconds < 0.25);
     }
   }
@@ -2494,10 +2603,7 @@ coerced to reflect the songlist's last modification for that song.
       bottomBorder: Border(borderStyle: BorderStyle.Medium, borderColorHex: ExcelColor.fromHexString('FF0000FF')),
       textWrapping: TextWrapping.WrapText,
     );
-    CellStyle songCellStyle = CellStyle(
-      horizontalAlign: HorizontalAlign.Left,
-      textWrapping: TextWrapping.WrapText,
-    );
+    CellStyle songCellStyle = CellStyle(horizontalAlign: HorizontalAlign.Left, textWrapping: TextWrapping.WrapText);
     List<CellData> first = data.first;
     List<CellValue?> colNames = [];
     for (int c = 0; c < first.length; c++) {
@@ -2536,31 +2642,31 @@ coerced to reflect the songlist's last modification for that song.
     }
   }
 
-// void _csv() {
-//   StringBuffer sb = StringBuffer();
-//   sb.write('Title, Artist, Cover Artist'
-//       ',User'
-//       // ',Modified'
-//       ',Copyright'
-//       ',Key'
-//       ',BPM'
-//       ',Time'
-//       '\n');
-//   for (Song song in allSongs) {
-//     sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
-//         ',"${song.user}"'
-//         //  ',"${song.lastModifiedTime??''}"'
-//         ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
-//         ',"${song.key}"'
-//         ',"${song.defaultBpm}"'
-//         ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
-//         '\n');
-//   }
-//
-//   //logger.i(sb.toString());
-//   File writeTo = File(Util.homePath() + '/allSongs.csv');
-//   writeTo.writeAsStringSync(sb.toString(), flush: true);
-// }
+  // void _csv() {
+  //   StringBuffer sb = StringBuffer();
+  //   sb.write('Title, Artist, Cover Artist'
+  //       ',User'
+  //       // ',Modified'
+  //       ',Copyright'
+  //       ',Key'
+  //       ',BPM'
+  //       ',Time'
+  //       '\n');
+  //   for (Song song in allSongs) {
+  //     sb.write('"${song.title}","${song.artist}","${song.coverArtist}"'
+  //         ',"${song.user}"'
+  //         //  ',"${song.lastModifiedTime??''}"'
+  //         ',"${song.copyright.substring(0, min(song.copyright.length, 80))}"'
+  //         ',"${song.key}"'
+  //         ',"${song.defaultBpm}"'
+  //         ',"${song.beatsPerBar}/${song.unitsPerMeasure}"'
+  //         '\n');
+  //   }
+  //
+  //   //logger.i(sb.toString());
+  //   File writeTo = File(Util.homePath() + '/allSongs.csv');
+  //   writeTo.writeAsStringSync(sb.toString(), flush: true);
+  // }
 
   Directory _outputDirectory = Directory.current;
   SplayTreeSet<Song> allSongs = SplayTreeSet();
@@ -2593,36 +2699,35 @@ class CellData {
   CellData(this.name, this.width, this.value);
 
   CellData.byColumnEnum(ColumnEnum columnEnum, this.value)
-      : name = Util.camelCaseToSpace(columnEnum.name),
-        width = columnEnum.columnWidth;
+    : name = Util.camelCaseToSpace(columnEnum.name),
+      width = columnEnum.columnWidth;
 
   final String name;
   final double width;
   final Comparable value;
 }
 
-enum MonitorState {
-  changeOfSong,
-  starting,
-  measured;
-}
+enum MonitorState { changeOfSong, starting, measured }
 
 testAutoScrollAlgorithm() {
   final RegExp catalinaLog = RegExp(r'/catalina\..*\.log$');
-  final RegExp webSocketServerMessage = RegExp(r'^(.*) INFO'
-      r' .* com\.bsteele\.bsteeleMusicApp\.WebSocketServer\.onMessage'
-      r' onMessage\(\"(.*)\"\)$');
+  final RegExp webSocketServerMessage = RegExp(
+    r'^(.*) INFO'
+    r' .* com\.bsteele\.bsteeleMusicApp\.WebSocketServer\.onMessage'
+    r' onMessage\(\"(.*)\"\)$',
+  );
   final RegExp bsteeleMusicAppMessage = RegExp(r'^\s*({.*})\s*$');
 
   //  13-Apr-2024 15:52:55.993
   DateFormat format = DateFormat("dd-MMM-yyyy hh:mm:ss.SSS");
 
   //  collect all the files to be read
-  var dir = Directory('${Util.homePath()}/'
-      // '$_allSongPerformancesDirectoryLocation'
-      '$_allSongPerformancesHistoricalDirectoryLocation'
-      //
-      );
+  var dir = Directory(
+    '${Util.homePath()}/'
+    // '$_allSongPerformancesDirectoryLocation'
+    '$_allSongPerformancesHistoricalDirectoryLocation',
+    //
+  );
   SplayTreeSet<File> files = SplayTreeSet((key1, key2) => key1.path.compareTo(key2.path));
   for (var file in dir.listSync()) {
     if (file is File && catalinaLog.hasMatch(file.path)) {
@@ -2683,9 +2788,11 @@ testAutoScrollAlgorithm() {
                 startMomentNumber = 0;
                 monitorState = MonitorState.starting;
                 delay = 0;
-                logger.i('\n$dateString: ${song.title} by ${song.artist}'
-                    '${song.coverArtist.isEmpty ? "" : " cover by ${song.coverArtist}"}'
-                    ', song BPM: ${song.beatsPerMinute}:');
+                logger.i(
+                  '\n$dateString: ${song.title} by ${song.artist}'
+                  '${song.coverArtist.isEmpty ? "" : " cover by ${song.coverArtist}"}'
+                  ', song BPM: ${song.beatsPerMinute}:',
+                );
                 break;
               case MonitorState.starting:
                 if (songUpdate.state != SongUpdateState.playing) {
@@ -2724,18 +2831,20 @@ testAutoScrollAlgorithm() {
                     logger.i('songUpdate.momentNumber: ${songUpdate.momentNumber}/${song.songMoments.length}');
                     assert(songUpdate.momentNumber >= 0 && songUpdate.momentNumber < song.songMoments.length);
                   }
-                  int beatCountFromStart = song.songMoments[songUpdate.momentNumber].beatNumber -
+                  int beatCountFromStart =
+                      song.songMoments[songUpdate.momentNumber].beatNumber -
                       song.songMoments[startMomentNumber].beatNumber;
                   double measuredBpm = Duration.secondsPerMinute * beatCountFromStart / (lastTimeS - startTimeS);
                   double songDt =
                       song.getSongTimeAtMoment(songUpdate.momentNumber) - song.getSongTimeAtMoment(startMomentNumber);
                   logger.log(
-                      _logManualPushes,
-                      '     moment: ${songUpdate.momentNumber.toString().padLeft(3)}:'
-                      ', beatCountFromStart: ${beatCountFromStart.toString().padLeft(4)}'
-                      ', t: ${songDt.toStringAsFixed(3).padLeft(7)}'
-                      ' vs ${(lastTimeS - startTimeS).toStringAsFixed(3).padLeft(7)}'
-                      ', bpm: ${measuredBpm.toStringAsFixed(3).padLeft(7)}');
+                    _logManualPushes,
+                    '     moment: ${songUpdate.momentNumber.toString().padLeft(3)}:'
+                    ', beatCountFromStart: ${beatCountFromStart.toString().padLeft(4)}'
+                    ', t: ${songDt.toStringAsFixed(3).padLeft(7)}'
+                    ' vs ${(lastTimeS - startTimeS).toStringAsFixed(3).padLeft(7)}'
+                    ', bpm: ${measuredBpm.toStringAsFixed(3).padLeft(7)}',
+                  );
                 }
                 break;
             }
@@ -2761,21 +2870,33 @@ testAutoScrollAlgorithm() {
 
 class TempoMoment implements Comparable<TempoMoment> {
   TempoMoment(this.dateTime, this.state, this.song, {this.momentNumber = 0, int? bpm, int? tpm})
-      : bpm = bpm ?? song?.beatsPerMinute.toInt() ?? 0,
-        referenceBpm = song?.beatsPerMinute ?? bpm?.round() ?? 0,
-        tpm = tpm ?? 0;
+    : bpm = bpm ?? song?.beatsPerMinute.toInt() ?? 0,
+      referenceBpm = song?.beatsPerMinute ?? bpm?.round() ?? 0,
+      tpm = tpm ?? 0;
 
   TempoMoment.fromBpm(this.dateTime, this.bpm, {int? tpm})
-      : state = SongUpdateState.drumTempo,
-        song = null,
-        momentNumber = 0,
-        referenceBpm = bpm.round(),
-        tpm = tpm ?? 0;
+    : state = SongUpdateState.drumTempo,
+      song = null,
+      momentNumber = 0,
+      referenceBpm = bpm.round(),
+      tpm = tpm ?? 0;
 
-  TempoMoment copyWith(
-      {DateTime? dateTime, SongUpdateState? state, Song? song, int? momentNumber, int? bpm, int? tpm}) {
-    return TempoMoment(dateTime ?? this.dateTime, state ?? this.state, song ?? this.song,
-        momentNumber: this.momentNumber, bpm: bpm ?? this.bpm, tpm: tpm ?? this.tpm);
+  TempoMoment copyWith({
+    DateTime? dateTime,
+    SongUpdateState? state,
+    Song? song,
+    int? momentNumber,
+    int? bpm,
+    int? tpm,
+  }) {
+    return TempoMoment(
+      dateTime ?? this.dateTime,
+      state ?? this.state,
+      song ?? this.song,
+      momentNumber: this.momentNumber,
+      bpm: bpm ?? this.bpm,
+      tpm: tpm ?? this.tpm,
+    );
   }
 
   @override
@@ -2803,7 +2924,8 @@ class TempoMoment implements Comparable<TempoMoment> {
     String songDataString = '';
     if (song != null) {
       var songMoment = song!.songMoments[momentNumber];
-      songDataString = ', @${momentNumber.toString().padLeft(3)}, b#: ${songMoment.beatNumber}'
+      songDataString =
+          ', @${momentNumber.toString().padLeft(3)}, b#: ${songMoment.beatNumber}'
           ' $song, beatsPerBar: ${song!.beatsPerBar}';
     }
     return '$dateTime: ${state.name.padLeft(10)}'
