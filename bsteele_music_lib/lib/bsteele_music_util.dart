@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:archive/archive.dart';
+import 'package:bsteele_music_lib/songs/chord_pro.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
 import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:bsteele_music_lib/songs/song_base.dart';
@@ -89,6 +90,7 @@ arguments:
 -cjgenre {file}     read the csv version of the CJ web genre file
 -cjgenrewrite {file}     write the csv version of the CJ web genre file
 -complexity         write songlist in order of complexity
+-cover              look for cover artist hidden in the title
 -expand {file}      expand a songlyrics list file to the output directory
 -floatnotes         list bass notes by float frequency
 -file               read the songs from the given file
@@ -580,6 +582,141 @@ coerced to reflect the songlist's last modification for that song.
             logger.i('${song.getComplexity().toString().padLeft(5)}: ${song.toString()}');
           }
           logger.i('-complexity: ');
+          break;
+
+        case '-cover':
+          {
+            final RegExp coverRegex = RegExp(r'cover', caseSensitive: false);
+            final RegExp coverByRegex = RegExp(r', cover by ', caseSensitive: false);
+            final RegExp coverByArtistRegex = RegExp(r'(.*), cover by (.*)', caseSensitive: false);
+            SplayTreeSet<Song> notCoverBySet = SplayTreeSet();
+
+            //  load local performances
+            allSongPerformances.updateFromJsonString(
+              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+            );
+
+            SongMetadata.fromJson(_allSongsMetadataFile.readAsStringSync());
+
+            //  load local songs
+            var songs = Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync());
+            allSongPerformances.loadSongs(songs);
+
+            SplayTreeSet<Song> removeSongs = SplayTreeSet();
+            SplayTreeSet<Song> addSongs = SplayTreeSet();
+            for (Song song in allSongs) {
+              if (!song.title.contains(coverRegex)) {
+                continue;
+              }
+              if (!song.title.contains(coverByRegex)) {
+                notCoverBySet.add(song);
+                continue;
+              }
+              print('"${song.title}" by ${song.artist} cover by "${song.coverArtist}"');
+              print('   ${song.songId.songIdAsString}');
+              if (song.coverArtist.isNotEmpty) {
+                print('   coverArtist.isNotEmpty:  "${song.coverArtist}"');
+              }
+              RegExpMatch? m = coverByArtistRegex.firstMatch(song.title);
+              assert(m != null);
+              m = m!;
+              var title = m.group(1);
+              var coverArtist = m.group(2);
+              var song2 = song.copyWith(title: title, artist: song.artist, coverArtist: coverArtist);
+              print('    "${song2.title}", by "${song2.artist}", cover by "${song2.coverArtist}"');
+              print('   ${song2.songId.songIdAsString}');
+              print(
+                '   length:  ${allSongPerformances
+                    .bySong(song)
+                    .length}'
+                    '/${allSongPerformances.length}',
+              );
+              for (var performance in allSongPerformances.bySong(song)) {
+                print('     $performance');
+              }
+
+              assert(allSongPerformances
+                  .setOfRequestsBySong(song)
+                  .isEmpty); //  fixme eventually
+              print('');
+              print('   requests:  ${allSongPerformances
+                  .setOfRequestsBySong(song)
+                  .length}');
+              print('');
+
+              //  replace the song, it's performances and metadata
+              allSongPerformances.songRepair.addSong(song2);
+              for (var performance in allSongPerformances.bySong(song)) {
+                var performance2 = performance.copyWith(song: song2);
+                print('    2: $performance2');
+                if (allSongPerformances.removeSongPerformance(performance)) {
+                  allSongPerformances.addSongPerformance(performance2);
+                }
+                SongIdMetadata? songIdMetadata = SongMetadata.songIdMetadata(song);
+                if (songIdMetadata != null) {
+                  var songIdMetadata2 = SongIdMetadata(
+                      song2.songId.songIdAsString, metadata: songIdMetadata.nameValues);
+                  SongMetadata.removeSongIdMetadata(songIdMetadata);
+                  SongMetadata.addSongIdMetadata(songIdMetadata2);
+                }
+              }
+              allSongPerformances.songRepair.removeSong(song);
+
+              removeSongs.add(song);
+              addSongs.add(song2);
+            }
+            allSongs.addAll(addSongs);
+            allSongs.removeAll(removeSongs);
+
+            {
+              //  write songs to test location
+              File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songlyrics');
+              await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
+            }
+
+            {
+              //  write performances to test location
+              File localSongperformances = File(
+                '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances',
+              );
+
+              try {
+                localSongperformances.deleteSync();
+              } catch (e) {
+                logger.e(e.toString());
+                //assert(false);
+              }
+              await localSongperformances.writeAsString(allSongPerformances.toJsonString(), flush: true);
+            }
+
+            //  wrte metadata with corrections
+                {
+              File localSongMetadata = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songmetadata');
+              {
+                try {
+                  localSongMetadata.deleteSync();
+                } catch (e) {
+                  logger.e(e.toString());
+                  //assert(false);
+                }
+                await localSongMetadata.writeAsString(SongMetadata.toJson(), flush: true);
+
+                if (_verbose) {
+                  logger.i('allSongPerformances location: ${localSongMetadata.path}');
+                }
+              }
+            }
+
+            print('');
+            print('not cover by:');
+            for (var song in notCoverBySet) {
+              print(
+                '"${song.title}"'
+                    ' by ${song.artist}${song.coverArtist.isEmpty ? '' : ' cover by ${song.coverArtist}'}',
+              );
+              continue;
+            }
+          }
           break;
 
         case '-exp':

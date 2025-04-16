@@ -223,7 +223,7 @@ class CjLog {
         if (!songUpdate.song.songBaseSameContent(lastSongUpdate.song) && lastSongUpdate.song.title.isNotEmpty) {
           logger.log(
             _cjLogLines,
-            '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, lastkey: ${lastSongUpdate.currentKey}',
+            '$dateTime: $songUpdate, key: ${songUpdate.currentKey}, currentKey: ${lastSongUpdate.currentKey}',
           );
 
           //  see if it makes sense that this song was actually played... or only looked at
