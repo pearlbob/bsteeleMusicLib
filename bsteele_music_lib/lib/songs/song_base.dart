@@ -4002,7 +4002,8 @@ class SongBase {
             _displayGrid.setAt(gc, chordSection == lastChordSection ? null : chordSection);
             lastChordSection = chordSection;
 
-            var marker = m.phrase is MeasureRepeat ? MeasureRepeatMarker(m.repeatMax, repetition: m.repeat) : null;
+            var marker = m.phrase is MeasureRepeat ? MeasureRepeatMarker(
+                m.repeatMax, m.phrase.length, repetition: m.repeat) : null;
             if (marker == lastMarker) {
               marker = null;
             } else {

@@ -128,15 +128,16 @@ void main() {
     ChordSectionLocation? chordSectionLocation;
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'V: [G Bm F♯m G, GBm ] x3',
-        rawLyrics: 'v: bob, bob, bob berand\n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'V: [G Bm F♯m G, GBm ] x3',
+      rawLyrics: 'v: bob, bob, bob berand\n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -190,15 +191,16 @@ void main() {
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: [A B , Ab Bb Eb, D C G G# ] x3 T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: [A B , Ab Bb Eb, D C G G# ] x3 T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -247,26 +249,24 @@ void main() {
 
     chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 4 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(
-      chordSectionLocation!.marker,
-      ChordSectionLocationMarker.none,
-    );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: E F F# G [A B C D Ab Bb Eb Db, D C G Gb D C G# A#] x3 T: A',
-        //          1 2 3  4  1 2 3 4 5  6  7  8  1 2 3 4  5 6 7  8
-        //                                       9 101112 131415 16
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: E F F# G [A B C D Ab Bb Eb Db, D C G Gb D C G# A#] x3 T: A',
+      //          1 2 3  4  1 2 3 4 5  6  7  8  1 2 3 4  5 6 7  8
+      //                                       9 101112 131415 16
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
 
     a.debugSongMoments();
 
@@ -306,24 +306,22 @@ void main() {
     expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatLowerRight);
     chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(2, 8 + 1 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(
-      chordSectionLocation!.marker,
-      ChordSectionLocationMarker.none,
-    );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.none);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: A B C D x3 T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: A B C D x3 T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -345,24 +343,22 @@ void main() {
 
     chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(0, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(
-      chordSectionLocation!.marker,
-      ChordSectionLocationMarker.repeatOnOneLineRight,
-    );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatOnOneLineRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: [A B C D] x3 T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: [A B C D] x3 T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -384,24 +380,22 @@ void main() {
 
     chordSectionLocation = a.getChordSectionLocation(const GridCoordinate(0, 4 + 1));
     expect(chordSectionLocation, isNotNull);
-    expect(
-      chordSectionLocation!.marker,
-      ChordSectionLocationMarker.repeatOnOneLineRight,
-    );
+    expect(chordSectionLocation!.marker, ChordSectionLocationMarker.repeatOnOneLineRight);
     measureNode = a.findMeasureNodeByLocation(chordSectionLocation);
     expect(measureNode, isNotNull);
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -443,15 +437,16 @@ void main() {
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: [A B C D, Ab Bb Eb Db, D C G# ] x3 T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: [A B C D, Ab Bb Eb Db, D C G# ] x3 T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -497,15 +492,16 @@ void main() {
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 E F F# G T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: [A B C D, Ab Bb Eb Db, D C G G# ] x3 E F F# G T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -552,15 +548,16 @@ void main() {
     expect(measureNode!.isRepeat(), isTrue);
 
     a = SongBase(
-        title: 'A',
-        artist: 'bob',
-        copyright: 'bsteele.com',
-        key: Key.getDefault(),
-        beatsPerMinute: 100,
-        beatsPerBar: beatsPerBar,
-        unitsPerMeasure: 4,
-        chords: 'v: E F F# Gb [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
-        rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n');
+      title: 'A',
+      artist: 'bob',
+      copyright: 'bsteele.com',
+      key: Key.getDefault(),
+      beatsPerMinute: 100,
+      beatsPerBar: beatsPerBar,
+      unitsPerMeasure: 4,
+      chords: 'v: E F F# Gb [A B C D, Ab Bb Eb Db, D C G G# ] x3 T: A',
+      rawLyrics: 'i:\nv: bob, bob, bob berand\nt: last line \n',
+    );
     a.debugSongMoments();
 
     cs = ChordSection.parseString('v:', a.beatsPerBar);
@@ -649,7 +646,7 @@ void main() {
       expect(grid.getRowCount(), 2);
       expect(grid.rowLength(0), 5);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('D', beatsPerBar));
-      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2, repetition: 1));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2, 4, repetition: 1));
     }
     {
       s = 'A B C D E F G A x3';
@@ -658,9 +655,9 @@ void main() {
       expect(grid.getRowCount(), 3);
       expect(grid.rowLength(0), 9);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('A', beatsPerBar));
-      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3, repetition: 1));
-      expect(grid.get(1, grid.rowLength(0) - 1), MeasureRepeatMarker(3, repetition: 2));
-      expect(grid.get(2, grid.rowLength(0) - 1), MeasureRepeatMarker(3, repetition: 3));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3, 8, repetition: 1));
+      expect(grid.get(1, grid.rowLength(0) - 1), MeasureRepeatMarker(3, 8, repetition: 2));
+      expect(grid.get(2, grid.rowLength(0) - 1), MeasureRepeatMarker(3, 8, repetition: 3));
     }
     {
       s = '[A B C D, E F G A#] x4';
@@ -675,7 +672,7 @@ void main() {
       expect(grid.rowLength(r), 4 + 1 + 1);
       expect(grid.get(r, grid.rowLength(r) - 3), Measure.parseString('A#', beatsPerBar));
       expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4, repetition: 1));
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4, 8, repetition: 1));
     }
     {
       s = '[A B C D, E F G A#, Bb CE C#] x2';
@@ -697,7 +694,7 @@ void main() {
       expect(grid.get(r, grid.rowLength(r) - 4), Measure.parseString('C#', beatsPerBar));
       expect(grid.get(r, grid.rowLength(r) - 3), isNull);
       expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2, repetition: r - 1));
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2, 11, repetition: r - 1));
     }
     {
       s = '[A, E F, Bb CE C#, A# B C D] x2';
@@ -727,7 +724,7 @@ void main() {
 
       expect(grid.get(3, 3), Measure.parseString('D', beatsPerBar));
       expect(grid.get(3, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(3, 5), MeasureRepeatMarker(2, repetition: 1));
+      expect(grid.get(3, 5), MeasureRepeatMarker(2, 10, repetition: 1));
     }
     {
       s = '[A# B C D, Bb CE C#, E F, A,  ] x3';
@@ -758,7 +755,7 @@ void main() {
       expect(grid.get(3, 2), isNull);
       expect(grid.get(3, 3), isNull);
       expect(grid.get(3, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
-      expect(grid.get(3, 5), MeasureRepeatMarker(3, repetition: 1));
+      expect(grid.get(3, 5), MeasureRepeatMarker(3, 10, repetition: 1));
     }
   });
   test('test repeat grid expanded', () {
@@ -776,7 +773,7 @@ void main() {
       expect(grid.getRowCount(), 2);
       expect(grid.rowLength(0), 5);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('D', beatsPerBar));
-      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2, repetition: 1));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(2, 4, repetition: 1));
     }
     {
       s = 'A B C D E F G A x3';
@@ -785,7 +782,7 @@ void main() {
       expect(grid.getRowCount(), 3);
       expect(grid.rowLength(0), 9);
       expect(grid.get(0, grid.rowLength(0) - 2), Measure.parseString('A', beatsPerBar));
-      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3, repetition: 1));
+      expect(grid.get(0, grid.rowLength(0) - 1), MeasureRepeatMarker(3, 8, repetition: 1));
     }
     {
       s = '[A B C D, E F G A#] x4';
@@ -801,7 +798,7 @@ void main() {
       r = 1;
       expect(grid.get(r, grid.rowLength(r) - 3), Measure.parseString('A#', beatsPerBar));
       expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4, repetition: 1));
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(4, 8, repetition: 1));
     }
     {
       s = '[A B C D, E F G A#, Bb CE C#] x2';
@@ -823,7 +820,7 @@ void main() {
       expect(grid.get(r, grid.rowLength(r) - 4), Measure.parseString('C#', beatsPerBar));
       expect(grid.get(r, grid.rowLength(r) - 3), isNull);
       expect(grid.get(r, grid.rowLength(r) - 2), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2, repetition: 1));
+      expect(grid.get(r, grid.rowLength(r) - 1), MeasureRepeatMarker(2, 11, repetition: 1));
     }
     {
       s = '[A, E F, Bb CE C#, A# B C D] x2';
@@ -853,7 +850,7 @@ void main() {
 
       expect(grid.get(3, 3), Measure.parseString('D', beatsPerBar));
       expect(grid.get(3, 4), MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
-      expect(grid.get(3, 5), MeasureRepeatMarker(2, repetition: 1));
+      expect(grid.get(3, 5), MeasureRepeatMarker(2, 10, repetition: 1));
     }
     {
       s = '[A# B C D, Bb CE C#, E F, A,  ] x3';
@@ -884,7 +881,7 @@ void main() {
       expect(grid.get(3, 2), isNull);
       expect(grid.get(3, 3), isNull);
       expect(grid.get(3, 4), MeasureRepeatExtension.upperRightMeasureRepeatExtension);
-      expect(grid.get(3, 5), MeasureRepeatMarker(3, repetition: 1));
+      expect(grid.get(3, 5), MeasureRepeatMarker(3, 10, repetition: 1));
     }
   });
 

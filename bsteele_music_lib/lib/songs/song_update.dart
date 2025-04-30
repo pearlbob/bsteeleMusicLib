@@ -62,7 +62,7 @@ class SongUpdate {
        rowNumber = rowNumber ?? 0,
        beat = beat ?? 0,
        beatsPerMeasure = beatsPerMeasure ?? song?.beatsPerBar ?? 4,
-       currentBeatsPerMinute = currentBeatsPerMinute ?? 100,
+       currentBeatsPerMinute = currentBeatsPerMinute ?? defaultBeatsPerMinute,
        currentKey = currentKey ?? Key.getDefault() {
     //  notice assignSong() is not used to keep currentKey and currentBeatsPerMinute correct
     //  that is, the update versions
@@ -405,5 +405,6 @@ class SongUpdate {
   int beat;
   int beatsPerMeasure; //  fixme: this should be removed
   int currentBeatsPerMinute;
+  static const defaultBeatsPerMinute = 120;
   Key currentKey;
 }

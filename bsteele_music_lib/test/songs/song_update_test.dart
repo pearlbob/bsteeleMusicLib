@@ -41,7 +41,7 @@ void main() {
     {
       logger.d('getCurrentBeatsPerMinute');
       SongUpdate instance = SongUpdate();
-      int expResult = 100;
+      int expResult = SongUpdate.defaultBeatsPerMinute;
       int result = instance.getCurrentBeatsPerMinute();
       expect(result, expResult);
       expResult = 112;
@@ -203,7 +203,7 @@ void main() {
 "user": "unknown",
 "singer": "unknown",
 "beatsPerMeasure": 4,
-"currentBeatsPerMinute": 100
+"currentBeatsPerMinute": ${SongUpdate.defaultBeatsPerMinute}
 }
 ''');
       }

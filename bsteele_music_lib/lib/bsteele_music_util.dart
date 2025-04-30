@@ -9,7 +9,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:archive/archive.dart';
-import 'package:bsteele_music_lib/songs/chord_pro.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
 import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:bsteele_music_lib/songs/song_base.dart';

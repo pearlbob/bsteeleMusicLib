@@ -5,7 +5,7 @@ import 'measure.dart';
 import 'measure_node.dart';
 
 class MeasureRepeatMarker extends Measure {
-  MeasureRepeatMarker(this.repeats, {this.repetition}) : super.zeroArgs();
+  MeasureRepeatMarker(this.repeats, this.measuresPerRepeat, {this.repetition}) : super.zeroArgs();
 
   @override
   MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
@@ -47,14 +47,16 @@ class MeasureRepeatMarker extends Measure {
     return runtimeType == other.runtimeType &&
         other is MeasureRepeatMarker &&
         repeats == other.repeats &&
-        repetition == other.repetition;
+        repetition == other.repetition &&
+        measuresPerRepeat == other.measuresPerRepeat;
   }
 
   @override
   int get hashCode {
-    return Object.hash(repeats, repetition);
+    return Object.hash(repeats, repetition, measuresPerRepeat);
   }
 
   int? repetition; //  the cycle count of the repeats, starting at 1
   int repeats;
+  int measuresPerRepeat;
 }

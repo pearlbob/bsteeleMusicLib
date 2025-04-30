@@ -15,7 +15,8 @@ import 'phrase.dart';
 import 'section.dart';
 
 class MeasureRepeat extends Phrase {
-  MeasureRepeat(super.measures, super.phraseIndex, int repeats) : _repeatMarker = MeasureRepeatMarker(repeats);
+  MeasureRepeat(super.measures, super.phraseIndex, int repeats)
+      : _repeatMarker = MeasureRepeatMarker(repeats, measures.length);
 
   static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);
@@ -37,7 +38,7 @@ class MeasureRepeat extends Phrase {
       markedString.consume(1);
     }
 
-//  look for a set of measures and comments
+    //  look for a set of measures and comments
     bool barFound = false;
     for (int i = 0; i < 1e3; i++) //  safety
     {
@@ -198,7 +199,7 @@ class MeasureRepeat extends Phrase {
               if (phraseRowCount > 1) {
                 ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
               }
-              ret.add(MeasureRepeatMarker(repeats, repetition: repetition + 1));
+              ret.add(MeasureRepeatMarker(repeats, measures.length, repetition: repetition + 1));
             } else if (phraseRowCount > 2) {
               ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatMiddleRight));
             }
@@ -222,7 +223,7 @@ class MeasureRepeat extends Phrase {
     return phraseMeasureAt(measureIndex % measures.length);
   }
 
-//  return the first measure of the given row
+  //  return the first measure of the given row
   @override
   Measure firstMeasureInRow(final int row) {
     int n = phraseRowCount;
@@ -278,21 +279,21 @@ class MeasureRepeat extends Phrase {
     return super.chordExpandedRowCount * _repeatMarker.repeats;
   }
 
-// @override
-// int beatsInRow( int row,{bool? expanded} ){
-//   if (measures.isEmpty) {
-//     return 0;
-//   }
-//   var chordRowCount = 0;
-//   var beats = 0;  fixme here now
-//   for (Measure measure in measures) {
-//     chordRowCount += (measure.endOfRow ? 1 : 0);
-//     if ( row == chordRowCount ){
-//       beats += measure.beatCount;
-//     }
-//   }
-//   return beats;
-// }
+  // @override
+  // int beatsInRow( int row,{bool? expanded} ){
+  //   if (measures.isEmpty) {
+  //     return 0;
+  //   }
+  //   var chordRowCount = 0;
+  //   var beats = 0;  fixme here now
+  //   for (Measure measure in measures) {
+  //     chordRowCount += (measure.endOfRow ? 1 : 0);
+  //     if ( row == chordRowCount ){
+  //       beats += measure.beatCount;
+  //     }
+  //   }
+  //   return beats;
+  // }
 
   @override
   String toMarkup({bool expanded = false, bool withInversion = true}) {
@@ -384,7 +385,7 @@ class MeasureRepeat extends Phrase {
             (hasExtensions ? 1 : 0) //  for repeat extension
             +
             1 //  for repeat marker
-        );
+    );
 
     var repetition = 1;
     for (var repeatExpansion = 0; repeatExpansion < repeats; repeatExpansion++) {
@@ -424,7 +425,8 @@ class MeasureRepeat extends Phrase {
         }
         grid.set(row, col++, MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
       }
-      grid.set(row, col, (repeats > 1 ? MeasureRepeatMarker(repeats, repetition: repetition++) : _repeatMarker));
+      grid.set(row, col,
+          (repeats > 1 ? MeasureRepeatMarker(repeats, measures.length, repetition: repetition++) : _repeatMarker));
       row++;
       rowMod = row % rowCount;
       col = 0;
