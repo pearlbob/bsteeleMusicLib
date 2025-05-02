@@ -5,10 +5,12 @@ import 'measure.dart';
 import 'measure_node.dart';
 
 class MeasureRepeatMarker extends Measure {
-  MeasureRepeatMarker(this.repeats, this.measuresPerRepeat, {this.repetition}) : super.zeroArgs();
+  MeasureRepeatMarker(this.repeats, this.measuresPerRepeat, {this.repetition, this.lastRepetition}) : super.zeroArgs() {
+    lastRepetition ??= repeats;
+  }
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
+  MeasureNodeType get measureNodeType => MeasureNodeType.measureRepeatMarker;
 
   @override
   String transpose(Key key, int halfSteps) {
@@ -57,6 +59,7 @@ class MeasureRepeatMarker extends Measure {
   }
 
   int? repetition; //  the cycle count of the repeats, starting at 1
+  int? lastRepetition; //  the last cycle of this repeat, starting at 1
   int repeats;
   int measuresPerRepeat;
 }

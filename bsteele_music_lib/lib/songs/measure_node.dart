@@ -9,6 +9,7 @@ enum MeasureNodeType {
   comment,
   decoration,
   lyricSection,
+  measureRepeatMarker,
 }
 
 enum MeasureEditType {
