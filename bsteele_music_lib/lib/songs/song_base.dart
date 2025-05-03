@@ -353,9 +353,11 @@ class SongBase {
 
   /// share the given lines to the given row.
   /// extra lines go to the early measures until depleted.
-  static String shareLinesToRow(int rowCount,
-      int sectionRowNumber, //  measure number - section start measure number
-      List<String> lines,) {
+  static String shareLinesToRow(
+    int rowCount,
+    int sectionRowNumber, //  measure number - section start measure number
+    List<String> lines,
+  ) {
     StringBuffer ret = StringBuffer();
     int lineCount = lines.length;
 
@@ -385,9 +387,11 @@ class SongBase {
 
   /// split the given line to the given measure.
   /// extra lines go to the early measures until depleted.
-  String _splitWordsToMeasure(int measureCountInRow,
-      int rowMeasureNumber, //  measure number - row start measure number
-      String? line,) {
+  String _splitWordsToMeasure(
+    int measureCountInRow,
+    int rowMeasureNumber, //  measure number - row start measure number
+    String? line,
+  ) {
     if (line == null || line.isEmpty) {
       return '';
     }
@@ -2993,16 +2997,18 @@ class SongBase {
    * @return a new song if the fields are valid
    * @throws ParseException exception thrown if the song's fields don't match properly.
    */
-  static Song checkSongBase(String? title,
-      String? artist,
-      String? copyright,
-      Key? key,
-      String? bpmEntry,
-      String? beatsPerBarEntry,
-      String? unitsPerMeasureEntry,
-      String user,
-      String? chordsTextEntry,
-      String? lyricsTextEntry,) {
+  static Song checkSongBase(
+    String? title,
+    String? artist,
+    String? copyright,
+    Key? key,
+    String? bpmEntry,
+    String? beatsPerBarEntry,
+    String? unitsPerMeasureEntry,
+    String user,
+    String? chordsTextEntry,
+    String? lyricsTextEntry,
+  ) {
     if (title == null || title.isEmpty) {
       throw 'no song title given!';
     }
@@ -3829,13 +3835,9 @@ class SongBase {
                 ', repeat: $repeat',
               );
               var phraseRowCount = phrase.phraseRowCount;
-              if (lyricsIndex < lyrics.length) {
+              var isInstrumentalRepeat = lyrics.length == 1 && instrumentalRegex.hasMatch(lyrics[0].line);
+              if (lyricsIndex < lyrics.length && !isInstrumentalRepeat) {
                 //  lyrics to add
-
-                //  make an exception for the instrumental annotation
-                if (lyrics.length == 1 && instrumentalRegex.hasMatch(lyrics[0].line)) {
-                  firstBlankSectionRow = sectionRowIndex;
-                }
 
                 //  gather all the rows for a repeat, with their lyrics
                 while (lyricsIndex < lyrics.length) {
@@ -3933,7 +3935,8 @@ class SongBase {
                   for (; phraseRowIndex < limit; phraseRowIndex++) {
                     var phraseGridRow = phraseGrid.getRow(phraseRowIndex);
                     sectionGrid.setRow(sectionRowIndex, 0, phraseGridRow);
-                    sectionGrid.set(sectionRowIndex, lastColumn, null);
+                    sectionGrid.set(sectionRowIndex, lastColumn, isInstrumentalRepeat ? lyrics.first : null);
+                    isInstrumentalRepeat = false; //  one row only
 
                     //  log the song moments of the row into the grid
                     var columnIndex = 0; //  column index

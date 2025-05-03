@@ -41,6 +41,16 @@ class MeasureRepeatMarker extends Measure {
     return toString();
   }
 
+  /// Copy the song to a new instance with possible changes.
+  MeasureRepeatMarker copyWith({int? lastRepetition}) {
+    return MeasureRepeatMarker(
+      repeats,
+      measuresPerRepeat,
+      repetition: repetition,
+      lastRepetition: lastRepetition ?? this.lastRepetition,
+    );
+  }
+
   @override
   bool operator ==(other) {
     if (identical(this, other)) {
