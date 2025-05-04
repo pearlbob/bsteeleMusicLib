@@ -76,6 +76,11 @@ abstract class MeasureNode {
   /// Represent the measure node to the user in a string form and entry ready.
   String toEntry();
 
+  /// Represent the measure node with its internal details in a development environment
+  String toDebugString() {
+    return toString();
+  }
+
   /// Set the measures per row to the given value;
   bool setMeasuresPerRow(int measuresPerRow);
 

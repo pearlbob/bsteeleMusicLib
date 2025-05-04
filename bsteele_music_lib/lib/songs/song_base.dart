@@ -3867,8 +3867,8 @@ class SongBase {
                             marker.lastRepetition = repeat + 1;
                             logger.log(
                               _logGridDetails,
-                              'lyric marker: $marker  ${marker.repetition} to ${marker.lastRepetition}'
-                              '/${marker.repeats}, repeat: $repeat',
+                              'measureRepeatMarker: $marker  ${marker.repetition} to ${marker.lastRepetition}'
+                              '/${marker.repeats}, phase repeat: $repeat',
                             );
                             break;
                           default:
@@ -3909,6 +3909,7 @@ class SongBase {
                           break;
                         case MeasureNodeType.measureRepeatMarker:
                           var marker = node as MeasureRepeatMarker;
+                          marker.lastRepetition = repeat + 1;
                           logger.log(
                             _logGridDetails,
                             'empty marker: $marker  ${marker.repetition} to ${marker.lastRepetition}'

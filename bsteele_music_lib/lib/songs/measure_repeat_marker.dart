@@ -52,6 +52,11 @@ class MeasureRepeatMarker extends Measure {
   }
 
   @override
+  String toDebugString() {
+    return '${toString()}, lastRepetition: $lastRepetition, measuresPerRepeat: $measuresPerRepeat';
+  }
+
+  @override
   bool operator ==(other) {
     if (identical(this, other)) {
       return true;
