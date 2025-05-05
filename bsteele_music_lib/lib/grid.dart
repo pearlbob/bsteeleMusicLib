@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'grid_coordinate.dart';
 
+typedef GridCallback<T> = void Function(int r, int c, T value);
+
 /// A generic grid used to store data presentations to the user.
 /// Grid locations are logically assigned without the details of the UI mapping.
 class Grid<T> {
@@ -52,9 +54,11 @@ class Grid<T> {
 
     //  add new rows to the grid if required
     while (r >= gridList.length) {
-      gridList.add(List.generate(1, (a) {
-        return null;
-      }));
+      gridList.add(
+        List.generate(1, (a) {
+          return null;
+        }),
+      );
     }
 
     //  add new columns to the grid if required
@@ -73,6 +77,20 @@ class Grid<T> {
 
   void setAt(GridCoordinate gc, T? t) {
     set(gc.row, gc.col, t);
+  }
+
+  /// process each non-null grid position by the given function
+  void foreach(GridCallback<T> action) {
+    for (int r = 0; r < getRowCount(); r++) {
+      List<T?>? row = getRow(r);
+      int colLimit = row?.length ?? 0;
+      for (int c = 0; c < colLimit; c++) {
+        var value = get(r, c);
+        if (value != null) {
+          action(r, c, value);
+        }
+      }
+    }
   }
 
   @override
@@ -97,7 +115,7 @@ class Grid<T> {
     return sb.toString();
   }
 
-//  map the grid to a debug string
+  //  map the grid to a debug string
   String _debugString() {
     var sb = StringBuffer();
     for (var r = 0; r < getRowCount(); r++) {
