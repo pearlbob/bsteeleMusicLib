@@ -18,7 +18,8 @@ import 'util/util.dart';
 
 const String _allSongDirectory = 'github/allSongs.songlyrics';
 final _allSonglyricsGithubFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songlyrics');
-const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
+const songPerformanceExtension = AllSongPerformances.fileExtension;
+const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances$songPerformanceExtension';
 final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 late final String downloadsDirString;
 
@@ -32,8 +33,6 @@ const _cjLogLines = Level.debug;
 const _cjLogWasSung = Level.debug;
 const _cjLogPerformances = Level.debug;
 const _cjLogDelete = Level.debug;
-
-const songPerformanceExtension = '.songperformances';
 
 void main(List<String> args) {
   Logger.level = Level.info;
@@ -384,7 +383,7 @@ class CjLog {
     }));
 
     //  write the corrected performances
-    File localSongperformances = File('$downloadsDirString/allSongPerformances.songperformances');
+    File localSongperformances = File('$downloadsDirString/allSongPerformances$songPerformanceExtension');
     {
       try {
         localSongperformances.deleteSync();
@@ -428,7 +427,10 @@ class CjLog {
     }
 
     //  write the output file
-    _writeSongPerformances(File('${processedLogs.path}/allSongPerformances.songperformances'), prettyPrint: false);
+    _writeSongPerformances(
+      File('${processedLogs.path}/allSongPerformances$songPerformanceExtension'),
+      prettyPrint: false,
+    );
     logger.log(_cjLogPerformances, allSongPerformances.toJsonString(prettyPrint: false));
   }
 

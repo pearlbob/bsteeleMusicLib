@@ -232,15 +232,15 @@ class SongUpdate {
       'SongUpdate: "${song.title}" by "${song.artist}" '
       '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}"' : ''}: ',
     );
-    sb.write(', moment: ');
+    sb.write(' ${state.name}, m: ');
     sb.write(momentNumber);
     if (songMoment != null) {
-      sb.write(', beat: ');
+      sb.write(', ');
       sb.write(songMoment!.beatNumber);
-      sb.write(', measure: ');
+      sb.write(', ');
       sb.write(songMoment!.measure.toString());
       if (songMoment!.repeatMax > 0) {
-        sb.write(', repeat: ');
+        sb.write(', rep: ');
         sb.write((songMoment!.repeat + 1));
         sb.write('/');
         sb.write(songMoment!.repeatMax);

@@ -42,7 +42,8 @@ const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads
 const String _allSongPerformancesHistoricalDirectoryLocation = 'communityJams/cj/old_Downloads';
 const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
-const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
+const String _allSongPerformancesGithubFileLocation =
+    '$_allSongDirectory/allSongPerformances${AllSongPerformances.fileExtension}';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
 final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
@@ -625,22 +626,16 @@ coerced to reflect the songlist's last modification for that song.
               print('    "${song2.title}", by "${song2.artist}", cover by "${song2.coverArtist}"');
               print('   ${song2.songId.songIdAsString}');
               print(
-                '   length:  ${allSongPerformances
-                    .bySong(song)
-                    .length}'
-                    '/${allSongPerformances.length}',
+                '   length:  ${allSongPerformances.bySong(song).length}'
+                '/${allSongPerformances.length}',
               );
               for (var performance in allSongPerformances.bySong(song)) {
                 print('     $performance');
               }
 
-              assert(allSongPerformances
-                  .setOfRequestsBySong(song)
-                  .isEmpty); //  fixme eventually
+              assert(allSongPerformances.setOfRequestsBySong(song).isEmpty); //  fixme eventually
               print('');
-              print('   requests:  ${allSongPerformances
-                  .setOfRequestsBySong(song)
-                  .length}');
+              print('   requests:  ${allSongPerformances.setOfRequestsBySong(song).length}');
               print('');
 
               //  replace the song, it's performances and metadata
@@ -654,7 +649,9 @@ coerced to reflect the songlist's last modification for that song.
                 SongIdMetadata? songIdMetadata = SongMetadata.songIdMetadata(song);
                 if (songIdMetadata != null) {
                   var songIdMetadata2 = SongIdMetadata(
-                      song2.songId.songIdAsString, metadata: songIdMetadata.nameValues);
+                    song2.songId.songIdAsString,
+                    metadata: songIdMetadata.nameValues,
+                  );
                   SongMetadata.removeSongIdMetadata(songIdMetadata);
                   SongMetadata.addSongIdMetadata(songIdMetadata2);
                 }
@@ -676,7 +673,7 @@ coerced to reflect the songlist's last modification for that song.
             {
               //  write performances to test location
               File localSongperformances = File(
-                '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances',
+                '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances${AllSongPerformances.fileExtension}',
               );
 
               try {
@@ -689,7 +686,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             //  wrte metadata with corrections
-                {
+            {
               File localSongMetadata = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songmetadata');
               {
                 try {
@@ -711,7 +708,7 @@ coerced to reflect the songlist's last modification for that song.
             for (var song in notCoverBySet) {
               print(
                 '"${song.title}"'
-                    ' by ${song.artist}${song.coverArtist.isEmpty ? '' : ' cover by ${song.coverArtist}'}',
+                ' by ${song.artist}${song.coverArtist.isEmpty ? '' : ' cover by ${song.coverArtist}'}',
               );
               continue;
             }
@@ -1528,7 +1525,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             File localSongperformances = File(
-              '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances',
+              '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances${AllSongPerformances.fileExtension}',
             );
             {
               try {
@@ -2675,7 +2672,7 @@ coerced to reflect the songlist's last modification for that song.
 
     //  write the corrected performances
     File localSongperformances = File(
-      '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances.songperformances',
+      '${Util.homePath()}/$_junkRelativeDirectory/allSongPerformances${AllSongPerformances.fileExtension}',
     );
     {
       try {

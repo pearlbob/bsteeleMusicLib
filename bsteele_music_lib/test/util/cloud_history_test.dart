@@ -12,7 +12,8 @@ import 'package:test/test.dart';
 // const String _allSongPerformancesDirectoryLocation = 'communityJams/cj/Downloads';
 // const String _junkRelativeDirectory = 'junk'; //  relative to user home
 const String _allSongDirectory = 'github/allSongs.songlyrics';
-const String _allSongPerformancesGithubFileLocation = '$_allSongDirectory/allSongPerformances.songperformances';
+const String _allSongPerformancesGithubFileLocation =
+    '$_allSongDirectory/allSongPerformances${AllSongPerformances.fileExtension}';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
 // final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
@@ -30,12 +31,15 @@ void main() {
     logger.i('test cloud history:');
     _addAllSongsFromFile(_allSongsFile);
     //  add the github version
-    allSongPerformances
-        .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+    allSongPerformances.updateFromJsonString(
+      File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+    );
     allSongPerformances.loadSongs(allSongs);
     logger.i('allSongs.length: ${allSongs.length}');
-    logger.i('allSongPerformances.allSongPerformanceHistory.length:'
-        ' ${allSongPerformances.allSongPerformanceHistory.length}');
+    logger.i(
+      'allSongPerformances.allSongPerformanceHistory.length:'
+      ' ${allSongPerformances.allSongPerformanceHistory.length}',
+    );
     final List<Song> allSongList = allSongs.toList(growable: false);
     final List<String?> allSongIdList = allSongs.map((e) => e.songId.toString()).toList(growable: false);
     for (var perf in allSongPerformances.allSongPerformanceHistory) {
