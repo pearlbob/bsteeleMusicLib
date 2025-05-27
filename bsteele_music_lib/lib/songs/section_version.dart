@@ -1,8 +1,10 @@
+import 'package:meta/meta.dart';
 
 import '../util/util.dart';
 import 'section.dart';
 
 /// A version identifier for multiple numerical variations of a given section.
+@immutable
 class SectionVersion implements Comparable<SectionVersion> {
   /// A convenience constructor for a section without numerical variation.
   SectionVersion.bySection(this.section)

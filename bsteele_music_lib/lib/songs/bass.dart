@@ -1,9 +1,12 @@
+import 'package:meta/meta.dart';
+
 import 'music_constants.dart';
 import 'scale_chord.dart';
 import 'scale_note.dart';
 
 import 'pitch.dart';
 
+@immutable
 class Bass {
   static int mapPitchToBassFret(Pitch pitch) {
     //  deal with the piano numbers starting on A instead of E

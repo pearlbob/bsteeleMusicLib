@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:meta/meta.dart';
+
 import 'key.dart';
 
 import 'measure_node.dart';
 
+@immutable
 class Lyric extends MeasureNode {
   Lyric(this.line, {this.phraseIndex = 0, this.repeat = 0});
 

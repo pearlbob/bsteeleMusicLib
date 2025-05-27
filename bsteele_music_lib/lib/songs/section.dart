@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:meta/meta.dart';
+
 import '../util/util.dart';
 import 'section_version.dart';
 
@@ -62,6 +64,7 @@ Map<SectionEnum, int> _sectionWeights = {
 ///
 /// Sections do not imply semantics but their proper suggested use
 /// will aid in song structure readability.
+@immutable
 class Section implements Comparable<Section> {
   Section._(this.sectionEnum, this.abbreviation, this.alternateAbbreviation, this.description)
       : //_lowerCaseName = sectionEnumToString(sectionEnum).toLowerCase(),
