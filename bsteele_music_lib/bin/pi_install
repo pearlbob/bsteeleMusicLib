@@ -25,6 +25,9 @@ set bsDir=${app}
 set remoteDir=remotePi
 set src=${app}
 
+
+echo fixme: dart compile exe --target-os=linux --target-arch=arm64 lib/cj_logs.dart
+
 if ( `hostname` == 'bob' ) then
 	cd ~/github/${app}
 
