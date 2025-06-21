@@ -10,12 +10,12 @@ void main() {
     expect(usTimer.seconds > 0.1, isTrue);
 
     await Future.delayed(const Duration(milliseconds: 100));
-    var delta = usTimer.delta;
+    var delta = usTimer.deltaUs;
     logger.i('delta: $delta');
     expect(delta < 200 * Duration.microsecondsPerMillisecond, isTrue);
 
     await Future.delayed(const Duration(milliseconds: 100));
-    delta = usTimer.delta;
+    delta = usTimer.deltaUs;
     logger.i('delta: $delta');
     expect(delta < 200 * Duration.microsecondsPerMillisecond, isTrue);
 

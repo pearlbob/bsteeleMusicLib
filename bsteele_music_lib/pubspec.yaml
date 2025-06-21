@@ -10,7 +10,6 @@ environment:
 dependencies:
   logger:
   quiver:
-  http:
   archive:
   intl:
   string_similarity:

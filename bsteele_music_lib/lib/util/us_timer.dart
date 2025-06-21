@@ -10,7 +10,7 @@ class UsTimer {
   double get seconds => (DateTime.now().microsecondsSinceEpoch - _initialEpochUs) / Duration.microsecondsPerSecond;
 
   /// Microseconds since construction or last call
-  int get delta {
+  int get deltaUs {
     int us = DateTime.now().microsecondsSinceEpoch;
     int lastUs = _lastEpochUs ?? _initialEpochUs;
     _lastEpochUs = us;
@@ -18,7 +18,7 @@ class UsTimer {
   }
 
   String deltaToString() {
-    return '${(delta.toDouble() / Duration.microsecondsPerMillisecond).toStringAsFixed(3)} ms';
+    return '${(deltaUs.toDouble() / Duration.microsecondsPerMillisecond).toStringAsFixed(3)} ms';
   }
 
   @override
