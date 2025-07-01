@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
+import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -11,10 +12,11 @@ void main() {
 
   test('test counts', () {
     expect(
-        Pitch.getPitches().length,
-        7 /* octaves */ * (12 /* notes */ + 9 /* aliases/octave */) +
-            4 /* high notes (A7 or higher) */ +
-            3 /* high note aliases */);
+      Pitch.getPitches().length,
+      7 /* octaves */ * (12 /* notes */ + 9 /* aliases/octave */ ) +
+          4 /* high notes (A7 or higher) */ +
+          3 /* high note aliases */,
+    );
   });
 
   test('pitch numbers', () {
@@ -27,8 +29,10 @@ void main() {
     for (var e in PitchEnum.values) {
       var pitch = Pitch.get(e);
 
-      logger.i('${e.name.padLeft(4)}: ${pitch.toString().padLeft(4)}: ${pitch.number.toString().padLeft(2)}'
-          ': ${pitch.frequency.toStringAsFixed(3)}');
+      logger.i(
+        '${e.name.padLeft(4)}: ${pitch.toString().padLeft(4)}: ${pitch.number.toString().padLeft(2)}'
+        ': ${pitch.frequency.toStringAsFixed(3)}',
+      );
 
       if (pitch.frequency != lastPitch.frequency) {
         var fRatio = pitch.frequency / lastPitch.frequency;
@@ -36,6 +40,25 @@ void main() {
         expect((fRatio - refRatio) < 2.23e-16, isTrue);
       }
       lastPitch = pitch;
+    }
+  });
+
+  test('pitch by numbers', () {
+    for (Pitch p in Pitch.getPitches()) {
+      if (p.isFlat) {
+        if (p.scaleNote == ScaleNote.Cb || p.scaleNote == ScaleNote.Fb) {
+          expect(Pitch.findFlatByNumber(p.number), p.asSharp()); //  cheap trick
+        } else
+          expect(Pitch.findFlatByNumber(p.number), p);
+      } else if (p.isSharp) {
+        if (p.scaleNote == ScaleNote.Bs || p.scaleNote == ScaleNote.Es) {
+          expect(Pitch.findSharpByNumber(p.number), p.asFlat()); //  cheap trick
+        } else
+          expect(Pitch.findSharpByNumber(p.number), p);
+      } else {
+        expect(Pitch.findFlatByNumber(p.number), p);
+        expect(Pitch.findSharpByNumber(p.number), p);
+      }
     }
   });
 
@@ -220,10 +243,12 @@ void main() {
     var basePitch = Pitch.get(PitchEnum.C4);
     for (int i = 0; i <= MusicConstants.halfStepsPerOctave; i++) {
       var pitch = Pitch.sharps[basePitch.number + i];
-      logger.i('$i ${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
-          ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
-          ' ${pitch.frequency / basePitch.frequency}'
-          '');
+      logger.i(
+        '$i ${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
+        ' ${pitch.frequency / basePitch.frequency}'
+        '',
+      );
     }
     // for (var pitch in Pitch.sharps) {
     //   logger.i('${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
@@ -233,8 +258,10 @@ void main() {
 
   test('test all pitches', () {
     for (var pitch in Pitch.sharps) {
-      logger.i('${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
-          ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}');
+      logger.i(
+        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}',
+      );
     }
   });
 }

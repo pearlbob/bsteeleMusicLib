@@ -223,7 +223,7 @@ class Pitch implements Comparable<Pitch> {
     return list[index];
   }
 
-  static Pitch get(PitchEnum se) {
+  static Pitch get(final PitchEnum se) {
     return _getPitchMap()[se]!;
   }
 
@@ -319,7 +319,7 @@ class Pitch implements Comparable<Pitch> {
     return lastPitch; //  only close, better than nothing
   }
 
-  static Pitch findFlatFromFrequency(double frequency) {
+  static Pitch findFlatFromFrequency(final double frequency) {
     Pitch ret = flats[0];
     double bestError = (ret.frequency - frequency).abs();
     for (Pitch p in flats) {
@@ -333,7 +333,7 @@ class Pitch implements Comparable<Pitch> {
     return ret;
   }
 
-  static Pitch findSharpFromFrequency(double frequency) {
+  static Pitch findSharpFromFrequency(final double frequency) {
     Pitch ret = sharps[0];
     double bestError = (ret.frequency - frequency).abs();
     for (Pitch p in sharps) {
@@ -345,6 +345,14 @@ class Pitch implements Comparable<Pitch> {
       bestError = e;
     }
     return ret;
+  }
+
+  static Pitch findFlatByNumber(final int number) {
+    return flats[max(0, min(flats.length - 1, number))];
+  }
+
+  static Pitch findSharpByNumber(final int number) {
+    return sharps[max(0, min(flats.length - 1, number))];
   }
 
   Pitch octaveLower() {

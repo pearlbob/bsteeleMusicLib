@@ -1,7 +1,5 @@
 import 'dart:collection';
 
-import 'package:meta/meta.dart';
-
 import '../util/util.dart';
 import 'chord_anticipation_or_delay.dart';
 import 'key.dart';
