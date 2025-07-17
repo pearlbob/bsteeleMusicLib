@@ -17,6 +17,10 @@ class UsTimer {
     return us - lastUs;
   }
 
+  reset() {
+    _lastEpochUs = DateTime.now().microsecondsSinceEpoch;
+  }
+
   String deltaToString() {
     return '${(deltaUs.toDouble() / Duration.microsecondsPerMillisecond).toStringAsFixed(3)} ms';
   }
