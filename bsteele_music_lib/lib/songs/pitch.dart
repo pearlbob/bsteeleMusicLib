@@ -43,15 +43,14 @@ enum PitchEnum {
   Bb1,
   B1,
   Bs1,
-  Cb2,
-  // Low C
+  Cb2, // Low C
   C2,
   Cs2,
   Db2,
   D2,
   Ds2,
   Eb2,
-  E2, //  82.4hz, guitar low string
+  E2, //  82.4hz, guitar lowest string
   Es2,
   Fb2,
   F2,
@@ -87,8 +86,7 @@ enum PitchEnum {
   B3,
   Bs3,
   Cb4,
-  // middle C
-  C4,
+  C4, // middle C
   Cs4,
   Db4,
   D4,
@@ -103,8 +101,7 @@ enum PitchEnum {
   G4,
   Gs4,
   Ab4,
-  // Concert pitch
-  A4,
+  A4, // Concert pitch
   As4,
   Bb4,
   B4,
@@ -130,10 +127,8 @@ enum PitchEnum {
   Bb5,
   B5,
   Bs5,
-
-  // High C
   Cb6,
-  C6,
+  C6, // High C
   Cs6,
   Db6,
   D6,
@@ -205,7 +200,8 @@ class Pitch implements Comparable<Pitch> {
       //  offset from A to C
       int fromC = (n - MusicConstants.halfStepsFromAtoC) % MusicConstants.halfStepsPerOctave;
       //  compute halfSteps from A0
-      n += ((fromC >= (MusicConstants.halfStepsPerOctave - MusicConstants.halfStepsFromAtoC))
+      n +=
+          ((fromC >= (MusicConstants.halfStepsPerOctave - MusicConstants.halfStepsFromAtoC))
               ? _octaveNumber
               : _octaveNumber - 1) *
           MusicConstants.halfStepsPerOctave;
@@ -421,6 +417,13 @@ class Pitch implements Comparable<Pitch> {
   int compareTo(Pitch other) {
     return _pitchEnum.index.compareTo(other._pitchEnum.index);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Pitch && runtimeType == other.runtimeType && _pitchEnum == other._pitchEnum;
+
+  @override
+  int get hashCode => _pitchEnum.hashCode;
 
   final PitchEnum _pitchEnum;
 
