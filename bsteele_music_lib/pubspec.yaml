@@ -27,6 +27,7 @@ dependencies:
   change_notifier:
   worker_manager:
   excel:
+  http:
 
 dev_dependencies:
   lints:
