@@ -17,7 +17,7 @@ class UsTimer {
     return us - lastUs;
   }
 
-  reset() {
+  void reset() {
     _lastEpochUs = DateTime.now().microsecondsSinceEpoch;
   }
 

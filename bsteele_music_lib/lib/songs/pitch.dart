@@ -15,7 +15,7 @@ import 'scale_note.dart';
 ///
 /// Black key pitches will have an alias at the same frequency.  This
 /// is done to help ease the mapping from keys to pitches.
-enum PitchEnum {
+enum PitchEnum implements Comparable<PitchEnum> {
   // First tone on 88 key piano
   A0,
   As0,
@@ -171,7 +171,28 @@ enum PitchEnum {
   Bs7,
   Cb8,
   // last tone
-  C8,
+  C8;
+
+  operator <=(PitchEnum other) {
+    return index <= other.index;
+  }
+
+  operator <(PitchEnum other) {
+    return index < other.index;
+  }
+
+  operator >=(PitchEnum other) {
+    return index >= other.index;
+  }
+
+  operator >(PitchEnum other) {
+    return index > other.index;
+  }
+
+  @override
+  int compareTo(PitchEnum other) {
+    return index.compareTo(other.index);
+  }
 }
 
 @immutable
@@ -425,6 +446,7 @@ class Pitch implements Comparable<Pitch> {
   @override
   int get hashCode => _pitchEnum.hashCode;
 
+  PitchEnum get pitchEnum => _pitchEnum;
   final PitchEnum _pitchEnum;
 
   String get name => _name;
