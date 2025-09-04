@@ -373,7 +373,7 @@ class Pitch implements Comparable<Pitch> {
   }
 
   Pitch octaveLower() {
-    int retNumber = _number - MusicConstants.halfStepsPerOctave;
+    final int retNumber = _number - MusicConstants.halfStepsPerOctave;
     if (retNumber < 0) {
       return this;
     }
@@ -381,8 +381,8 @@ class Pitch implements Comparable<Pitch> {
   }
 
   Pitch? nextHigherPitch() {
-    List<Pitch> list = (isSharp ? sharps : flats);
-    int n = _number + 1;
+    final List<Pitch> list = (isSharp ? sharps : flats);
+    final int n = _number + 1;
     if (n >= list.length) {
       return null;
     }
@@ -390,8 +390,8 @@ class Pitch implements Comparable<Pitch> {
   }
 
   Pitch? nextLowerPitch() {
-    List<Pitch> list = (isSharp ? sharps : flats);
-    int n = _number - 1;
+    final List<Pitch> list = (isSharp ? sharps : flats);
+    final int n = _number - 1;
     if (n < 0) {
       return null;
     }
@@ -404,12 +404,12 @@ class Pitch implements Comparable<Pitch> {
   }
 
   /// Return the pitch offset by the given number of half steps.
-  Pitch? offsetByHalfSteps(int halfSteps) {
+  Pitch? offsetByHalfSteps(final int halfSteps) {
     if (halfSteps == 0) {
       return this;
     }
-    List<Pitch> list = _scaleNote.isSharp ? _sharps : _flats;
-    int n = _number + halfSteps;
+    final List<Pitch> list = _scaleNote.isSharp ? _sharps : _flats;
+    final int n = _number + halfSteps;
     if (n < 0 || n >= list.length) {
       return null;
     }

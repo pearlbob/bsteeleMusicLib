@@ -256,12 +256,54 @@ void main() {
     // }
   });
 
+  test('test pitch frequencies', () {
+    Map<int, Pitch> fMap = {};
+    for (var pitchEnum in PitchEnum.values) {
+      Pitch pitch = Pitch.get(pitchEnum);
+
+      logger.i(
+        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
+        ', number: ${pitch.number}',
+      );
+
+      Pitch? foundPitch = fMap[pitch.number];
+      if (foundPitch == null) {
+        fMap[pitch.number] = pitch;
+      } else {
+        logger.i('    same f as: $foundPitch');
+        expect(pitch.frequency, foundPitch.frequency);
+      }
+    }
+  });
+
   test('test all pitches', () {
+    int number = 0;
     for (var pitch in Pitch.sharps) {
       logger.i(
         '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
         ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}',
       );
+      logger.i('  accidental: ${pitch.accidental.name}, number: ${pitch.number}');
+
+      expect(pitch.number, number);
+      expect(pitch.isFlat, false);
+      expect(pitch.accidental.name, pitch.isSharp ? 'sharp' : 'natural');
+      number++;
+    }
+
+    number = 0;
+    for (var pitch in Pitch.flats) {
+      logger.i(
+        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}',
+      );
+      logger.i('  accidental: ${pitch.accidental.name}, number: ${pitch.number}');
+
+      expect(pitch.number, number);
+      expect(pitch.isSharp, false);
+      expect(pitch.accidental.name, pitch.isFlat ? 'flat' : 'natural');
+      number++;
     }
   });
 }
