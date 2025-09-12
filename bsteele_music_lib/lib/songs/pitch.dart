@@ -436,7 +436,8 @@ class Pitch implements Comparable<Pitch> {
 
   @override
   int compareTo(Pitch other) {
-    return _pitchEnum.index.compareTo(other._pitchEnum.index);
+    //  accidental expressions are equal, i.e. frequencies by other names are equal
+    return number.compareTo(other.number);
   }
 
   @override

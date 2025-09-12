@@ -1,5 +1,5 @@
 class UsTimer {
-  /// Microseconds since construction
+  /// Microseconds since last reset, construction or measurement
   int get us {
     int us = DateTime.now().microsecondsSinceEpoch;
     _lastEpochUs = us;
