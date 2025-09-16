@@ -262,9 +262,8 @@ void main() {
       Pitch pitch = Pitch.get(pitchEnum);
 
       logger.i(
-        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
-        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
-        ', number: ${pitch.number}',
+          '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+              ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
       );
 
       Pitch? foundPitch = fMap[pitch.number];
@@ -273,6 +272,22 @@ void main() {
       } else {
         logger.i('    same f as: $foundPitch');
         expect(pitch.frequency, foundPitch.frequency);
+      }
+    }
+  });
+
+  test('test pitch ratios', () {
+    for (var pitch in Pitch.flats) {
+
+      logger.i(
+          '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+              ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
+      );
+      var nextPitch = pitch.nextHigherPitch()?.asFlat();
+      if ( nextPitch != null ){
+        var ratio = nextPitch.frequency/pitch.frequency;
+        logger.i( '   next as fraction: $ratio');
+        expect(ratio, closeTo(MusicConstants.halfStepFrequencyRatio, 2.3e-16));
       }
     }
   });
