@@ -24,6 +24,17 @@ class Util {
     return home;
   }
 
+  static String userHome() {
+    Map<String, String> envVars = Platform.environment;
+    if ( Platform.isLinux) {
+      return '/home/${envVars['USER'] ?? 'unknown'}';
+    }
+    if (Platform.isMacOS ) {
+      return '/Users/${envVars['USER'] ?? 'unknown'}';
+    }
+    return '';
+  }
+
   /// add quotes to a string so it can be used as a dart constant
   static String? quote(String? s) {
     if (s == null) {
