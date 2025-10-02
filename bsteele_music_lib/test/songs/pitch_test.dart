@@ -206,6 +206,19 @@ void main() {
     p = Pitch.get(PitchEnum.Bs2);
     expect(p.asSharp(), p);
     expect(p.asFlat(), Pitch.get(PitchEnum.C3));
+
+    for (PitchEnum pe in PitchEnum.values) {
+      Pitch p = Pitch.get(pe);
+      var note = p.getScaleNote();
+      print('$p: asSharp: ${p.asSharp()}, asFlat: ${p.asFlat()}, note: $note');
+      if (p.isSharp || p.isFlat) {
+        if (note != ScaleNote.Cb && note != ScaleNote.Fb) expect(p.asSharp().name.contains('s'), true);
+        if (note != ScaleNote.Bs && note != ScaleNote.Es) expect(p.asFlat().name.contains('b'), true);
+      } else {
+        expect(p.asSharp().name.contains('s'), false);
+        expect(p.asFlat().name.contains('b'), false);
+      }
+    }
   });
 
   test('test getFromMidiNoteNumber()', () {
@@ -262,8 +275,8 @@ void main() {
       Pitch pitch = Pitch.get(pitchEnum);
 
       logger.i(
-          '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
-              ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
+        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}',
       );
 
       Pitch? foundPitch = fMap[pitch.number];
@@ -278,15 +291,14 @@ void main() {
 
   test('test pitch ratios', () {
     for (var pitch in Pitch.flats) {
-
       logger.i(
-          '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
-              ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}'
+        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}',
       );
       var nextPitch = pitch.nextHigherPitch()?.asFlat();
-      if ( nextPitch != null ){
-        var ratio = nextPitch.frequency/pitch.frequency;
-        logger.i( '   next as fraction: $ratio');
+      if (nextPitch != null) {
+        var ratio = nextPitch.frequency / pitch.frequency;
+        logger.i('   next as fraction: $ratio');
         expect(ratio, closeTo(MusicConstants.halfStepFrequencyRatio, 2.3e-16));
       }
     }
