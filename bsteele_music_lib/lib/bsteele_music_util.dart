@@ -82,13 +82,14 @@ arguments:
 -bpm                list the bpm's used
 -chord              list the chord descriptors used
 -blues              look for blues songs
--cjwrite {file)     format the song metadata
--cjwritesongs {file)     write song list of cj songs
--cjread {file)      add song metadata
--cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjcsvread {file}   read a cj csv format the song metadata file
+-cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
+-cjdiff             diff songlist
 -cjgenre {file}     read the csv version of the CJ web genre file
 -cjgenrewrite {file}     write the csv version of the CJ web genre file
+-cjread {file)      add song metadata
+-cjwrite {file)     format the song metadata
+-cjwritesongs {file)     write song list of cj songs
 -complexity         write songlist in order of complexity
 -cover              look for cover artist hidden in the title
 -expand {file}      expand a songlyrics list file to the output directory
@@ -382,6 +383,95 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
+        case '-cjdiff':
+          logger.i('cjdiff:');
+          //  assert there data in the songlist
+          if (allSongs.isEmpty) {
+            logger.e('initial song list is empty. try: ');
+            exit(-1);
+          }
+          logger.i('allSongs.length: ${allSongs.length}');
+
+          //  assert there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing other file path for -cjdiff');
+            exit(-1);
+          }
+          argCount++;
+          {
+            SplayTreeSet<Song> otherSongs;
+            {
+              File otherSongsFile = File(args[argCount]);
+
+              if (otherSongsFile.statSync().type == FileSystemEntityType.file) {
+                if (!(await otherSongsFile.exists())) {
+                  logger.e('missing other file at: $otherSongsFile');
+                  exit(-1);
+                }
+              }
+              logger.i('otherSongsFile: $otherSongsFile');
+
+              var tempAllSongs = allSongs;
+              allSongs = SplayTreeSet();
+              _addAllSongsFromFile(otherSongsFile);
+              otherSongs = allSongs;
+              allSongs = tempAllSongs;
+            }
+            logger.i('otherSongs.length: ${otherSongs.length}');
+
+            //  compare the two song lists
+            logger.i('');
+            logger.i('missing songs:');
+            for (var song in allSongs) {
+              if (!otherSongs.contains(song)) {
+                logger.i('   $song');
+              }
+            }
+            logger.i('');
+            logger.i('added songs (should be fine):');
+            for (var song in otherSongs) {
+              if (!allSongs.contains(song)) {
+                logger.i('   $song');
+              }
+            }
+            logger.i('');
+            logger.i('changed signatures:');
+            for (var song in allSongs) {
+              if (otherSongs.contains(song)) {
+                try {
+                  var otherSong = otherSongs.firstWhere((otherSong) {
+                    return otherSong.compareBySongId(song) == 0;
+                  });
+                  if (song.timeSignature != otherSong.timeSignature) {
+                    logger.i('   song: $otherSong');
+                    logger.i('       signature change: was: ${song.timeSignature}, new: ${otherSong.timeSignature}');
+                  }
+                } catch (e) {
+                  logger.i('   missing song: $song');
+                }
+              }
+            }
+            logger.i('');
+            logger.i('changed copyrights:');
+            for (var song in allSongs) {
+              if (otherSongs.contains(song)) {
+                try {
+                  var otherSong = otherSongs.firstWhere((otherSong) {
+                    return otherSong.compareBySongId(song) == 0;
+                  });
+                  if (song.copyright != otherSong.copyright) {
+                    logger.i('   song: $otherSong');
+                    logger.i('       was: "${song.copyright}"');
+                    logger.i('       new: "${otherSong.copyright}"');
+                  }
+                } catch (e) {
+                  logger.i('   missing song: $song');
+                }
+              }
+            }
+          }
+          break;
+
         case '-cjcsvwrite': // {file}  format the song data as a CSV version of the CJ ranking metadata
           //  assert there is another arg
           if (argCount >= args.length - 1) {
@@ -399,6 +489,7 @@ coerced to reflect the songlist's last modification for that song.
             await outputFile.writeAsString(_cjCsvRanking(), flush: true);
           }
           break;
+
         case '-cjcsvread': // {file}
           //  insist there is another arg
           if (argCount >= args.length - 1) {
@@ -2022,10 +2113,11 @@ coerced to reflect the songlist's last modification for that song.
           var path = authority.replaceAll(RegExp(r'^[.\w]*/', caseSensitive: false), '');
           authority = authority.replaceAll(RegExp(r'/.*'), '');
           logger.d('authority: <$authority>, path: <$path>');
-          List<Song> addSongs = Song.songListFromJson(
-            utf8.decode(await http.readBytes(Uri.http(authority, path))).replaceAll('": null,', '": "",'),
-          ) //  cheap repair
-          ;
+          List<Song> addSongs =
+              Song.songListFromJson(
+                utf8.decode(await http.readBytes(Uri.http(authority, path))).replaceAll('": null,', '": "",'),
+              ) //  cheap repair
+              ;
           allSongs.addAll(addSongs);
 
           // {
