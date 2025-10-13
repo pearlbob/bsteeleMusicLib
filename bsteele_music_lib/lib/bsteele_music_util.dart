@@ -111,6 +111,7 @@ arguments:
 -similar            list similar titled/artist/coverArtist songs
 -spreadsheet        generate history spreadsheet in excel
 -stat               statistics
+-shari              shari cheap sync
 -tempo              tempo test
 -tomcat {catalina_base}  read the tomcat logs
 -url {url}          read the given url into the utility's allSongs list
@@ -1877,6 +1878,76 @@ coerced to reflect the songlist's last modification for that song.
                 logger.i('   _${key.name}, //  ${chordDescriptorUsageMap[key]}');
               }
             }
+          }
+          break;
+
+        case '-shari':
+          logger.i('cjdiff:');
+          //  assert there is data in the songlist
+          if (allSongs.isEmpty) {
+            logger.e('initial song list is empty. try: ');
+            exit(-1);
+          }
+          logger.i('allSongs.length: ${allSongs.length}');
+
+          //  assert there is another arg
+          if (argCount >= args.length - 1) {
+            logger.e('missing other file path for -cjdiff');
+            exit(-1);
+          }
+          argCount++;
+          {
+            SplayTreeSet<Song> otherSongs;
+            {
+              File otherSongsFile = File(args[argCount]);
+
+              if (otherSongsFile
+                  .statSync()
+                  .type == FileSystemEntityType.file) {
+                if (!(await otherSongsFile.exists())) {
+                  logger.e('missing other file at: $otherSongsFile');
+                  exit(-1);
+                }
+              }
+              logger.i('otherSongsFile: $otherSongsFile');
+
+              var tempAllSongs = allSongs;
+              allSongs = SplayTreeSet();
+              _addAllSongsFromFile(otherSongsFile);
+              otherSongs = allSongs;
+              allSongs = tempAllSongs;
+            }
+            logger.i('otherSongs.length: ${otherSongs.length}');
+
+            //  update selected song list data
+            logger.i('');
+            logger.i('changed tags:');
+            for (var song in allSongs) {
+              if (otherSongs.contains(song)) {
+                try {
+                  var otherSong = otherSongs.firstWhere((otherSong) {
+                    return otherSong.compareBySongId(song) == 0;
+                  });
+                  if (song.lastModifiedTime != otherSong.lastModifiedTime || song.fileName != otherSong.fileName) {
+                    logger.i('   song: $otherSong');
+                    logger.i(
+                      '       fileName: was: ${song.fileName}, new: ${otherSong.fileName}',
+                    );
+                    logger.i(
+                      '       lastModifiedTime change: was: ${song.lastModifiedTime}, new: ${otherSong
+                          .lastModifiedTime}',
+                    );
+                    song.fileName = otherSong.fileName;
+                    song.lastModifiedTime = otherSong.lastModifiedTime;
+                  }
+                } catch (e) {
+                  logger.i('   missing song: $song');
+                }
+              }
+            }
+
+            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/shari_allSongs.songlyrics');
+            await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
           }
           break;
 
