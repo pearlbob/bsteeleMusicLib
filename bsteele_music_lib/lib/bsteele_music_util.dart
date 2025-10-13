@@ -1901,9 +1901,7 @@ coerced to reflect the songlist's last modification for that song.
             {
               File otherSongsFile = File(args[argCount]);
 
-              if (otherSongsFile
-                  .statSync()
-                  .type == FileSystemEntityType.file) {
+              if (otherSongsFile.statSync().type == FileSystemEntityType.file) {
                 if (!(await otherSongsFile.exists())) {
                   logger.e('missing other file at: $otherSongsFile');
                   exit(-1);
@@ -1928,24 +1926,51 @@ coerced to reflect the songlist's last modification for that song.
                   var otherSong = otherSongs.firstWhere((otherSong) {
                     return otherSong.compareBySongId(song) == 0;
                   });
-                  if (song.lastModifiedTime != otherSong.lastModifiedTime || song.fileName != otherSong.fileName) {
-                    logger.i('   song: $otherSong');
-                    logger.i(
-                      '       fileName: was: ${song.fileName}, new: ${otherSong.fileName}',
-                    );
-                    logger.i(
-                      '       lastModifiedTime change: was: ${song.lastModifiedTime}, new: ${otherSong
-                          .lastModifiedTime}',
-                    );
-                    song.fileName = otherSong.fileName;
-                    song.lastModifiedTime = otherSong.lastModifiedTime;
+                  String out = '';
+                  song.fileName = otherSong.fileName;
+                  song.lastModifiedTime = otherSong.lastModifiedTime;
+                  if (song.key != otherSong.key) {
+                    out += '   key: ${song.key} vs ${otherSong.key}\n';
+                    song.key = otherSong.key;
+                  }
+                  if (song.timeSignature != otherSong.timeSignature) {
+                    out += '   timeSignature: ${song.timeSignature} vs ${otherSong.timeSignature}\n';
+                    //  not done
+                  }
+                  if (song.beatsPerMinute != otherSong.beatsPerMinute) {
+                    out += '   beatsPerMinute: ${song.beatsPerMinute} vs ${otherSong.beatsPerMinute}\n';
+                    song.beatsPerMinute = otherSong.beatsPerMinute;
+                  }
+                  if (song.user == 'Unknown' || song.user == 'Shari') {
+                    song.user = 'Shari C.';
+                  }
+                  if (song.user != otherSong.user) {
+                    out += '   user: ${song.user} vs ${otherSong.user}\n';
+                  }
+                  song.chords = otherSong.chords;
+                  song.rawLyrics = otherSong.rawLyrics;
+                  if (out.isNotEmpty) {
+                    logger.i('$song:\n$out');
                   }
                 } catch (e) {
                   logger.i('   missing song: $song');
                 }
+              } else {
+                logger.i('$song:  not found in new song list\n');
               }
             }
 
+            logger.i('');
+            logger.i('added songs:');
+            for (var song in otherSongs) {
+              if (!allSongs.contains(song)) {
+                logger.i('  $song');
+                allSongs.add(song);
+              }
+            }
+
+            logger.i('');
+            logger.i('allSongs.length: ${allSongs.length}');
             File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/shari_allSongs.songlyrics');
             await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
           }
