@@ -436,7 +436,7 @@ class CjLog {
 
   void _writeSongPerformances(File file, {bool prettyPrint = true}) {
     if (allSongPerformances.isNotEmpty) {
-      logger.i('first valid date: $_firstValidDate');
+      print('first valid date: $_firstValidDate');
       {
         int count = 0;
         var oldest = _now;
@@ -445,13 +445,15 @@ class CjLog {
             oldest = p.lastSungDateTime;
           }
           if (p.lastSungDateTime.compareTo(_firstValidDate) < 0) {
-            // logger.i('      too early:  ${p.lastSungDateTime}');
+            print('      too early:  ${p.lastSungDateTime}');
             count++;
           }
         }
-        logger.i('oldest:  $oldest');
-        logger.i('history too early count:  $count');
+        print('oldest:  $oldest');
+        print('history too early count:  $count');
       }
+
+      print('allSongPerformances.length: ${allSongPerformances.length}');
 
       if (file.path.endsWith('.gz')) {
         file.writeAsBytesSync(
@@ -459,11 +461,14 @@ class CjLog {
           flush: true,
         );
       } else {
+        print('file: $file, prettyPrint: $prettyPrint');
         file.writeAsStringSync(allSongPerformances.toJsonString(prettyPrint: prettyPrint), flush: true);
       }
       if (_verbose > 0) {
         logger.i('\twrote: ${file.path}');
       }
+    } else {
+      print('allSongPerformances.isEmpty!');
     }
   }
 

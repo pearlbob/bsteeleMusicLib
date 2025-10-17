@@ -72,6 +72,11 @@ class SongPerformance implements Comparable<SongPerformance> {
     return ret;
   }
 
+  static int compareByPerformance(SongPerformance first, SongPerformance other) {
+    int ret = first.compareTo(other); //  does not include last sung
+    return ret == 0 ? first._lastSung.compareTo(other._lastSung) : ret;
+  }
+
   static int compareBySongId(SongPerformance first, SongPerformance other) {
     if (identical(first, other)) {
       return 0;
@@ -148,15 +153,13 @@ class SongPerformance implements Comparable<SongPerformance> {
     : _songIdAsString = json['songId'],
       _lowerCaseSongIdAsString = json['songId'].toString().toLowerCase(),
       _singer = _cleanPerformer(json['singer']),
-      key =
-          json['key'] == null
-              ? Key.getDefault()
-              : json['key'] is int
-              ? Key.getKeyByHalfStep(json['key'])
-              : Key.fromMarkup(json['key']),
+      key = json['key'] == null || (json['key'] is String && (json['key'] as String).isEmpty)
+          ? Key.getDefault()
+          : json['key'] is int
+          ? Key.getKeyByHalfStep(json['key'])
+          : Key.fromMarkup(json['key']),
       _bpm = json['bpm'] ?? MusicConstants.defaultBpm,
       song = null,
-      _firstSung = json['firstSung'] ?? 0,
       _lastSung = json['lastSung'] ?? 0 {
     _firstSung = _lastSung; //  first sung are all relative the list contents so they are not stored.
   }
@@ -774,10 +777,9 @@ class AllSongPerformances {
   }
 
   void readFileSync(File file) {
-    String jsonString =
-        file.path.endsWith('.gz')
-            ? const Utf8Decoder().convert(GZipCodec().decoder.convert(file.readAsBytesSync()))
-            : file.readAsStringSync();
+    String jsonString = file.path.endsWith('.gz')
+        ? const Utf8Decoder().convert(GZipCodec().decoder.convert(file.readAsBytesSync()))
+        : file.readAsStringSync();
     addFromJsonString(jsonString);
   }
 
