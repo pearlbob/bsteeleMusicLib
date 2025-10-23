@@ -1146,7 +1146,7 @@ coerced to reflect the songlist's last modification for that song.
         case '-json':
           //  assert there is another arg
           if (argCount >= args.length - 1) {
-            logger.e('missing other file path for -cjdiff');
+            logger.e('missing other file path for -json');
             exit(-1);
           }
           argCount++;
@@ -1158,6 +1158,7 @@ coerced to reflect the songlist's last modification for that song.
           // print(encoder.convert(json));
 
           File outFile = File('${Util.homePath()}/$_junkRelativeDirectory/$fileName');
+          print('outFile: $outFile');
           outFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
           break;
 
