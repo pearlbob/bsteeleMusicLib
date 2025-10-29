@@ -12,6 +12,7 @@ import 'package:archive/archive.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
 import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:bsteele_music_lib/songs/song_base.dart';
+import 'package:bsteele_music_lib/util/app_util.dart';
 import 'package:csv/csv.dart';
 import 'package:english_words/english_words.dart';
 import 'package:excel/excel.dart';
@@ -984,7 +985,7 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             //  measures sung
-                {
+            {
               List<List<CellData>> data = [];
               int totalMeasureCount = 0;
               int totalShortMeasureCount = 0;
@@ -1000,6 +1001,7 @@ coerced to reflect the songlist's last modification for that song.
                 int measureCount = 0;
                 int shortMeasureCount = 0;
                 int oddMeasureCount = 0;
+                SplayTreeSet<String> oddBarsSet = SplayTreeSet();
                 for (var lyricSection in song.lyricSections) {
                   var chordSection = song.findChordSectionByLyricSection(lyricSection);
                   chordSection = chordSection!;
@@ -1010,18 +1012,23 @@ coerced to reflect the songlist's last modification for that song.
                         var measure = phrase.phraseMeasureAt(m);
                         measure = measure!;
                         if (measure.beatCount < song.beatsPerBar) {
-                          if (measure.beatCount == 2 && song.beatsPerBar == 4) {
+                          if ((measure.beatCount / song.beatsPerBar - 0.5).abs() < 0.00001) {
                             shortMeasureCount++;
                           } else {
                             oddMeasureCount++;
-                            logger.i('odd bar: $song: ${chordSection.sectionVersion}: ${phrase.phraseIndex}: '
-                                '$m: $measure,'
-                                ', beats: ${measure.beatCount} of ${song.beatsPerBar}');
+                            oddBarsSet.add(
+                              'odd bar: $song: ${chordSection.sectionVersion}: '
+                              '"$measure"'
+                              ', beats: ${measure.beatCount} of ${song.beatsPerBar}',
+                            );
                           }
                         }
                       }
                     }
                   }
+                }
+                for (String s in oddBarsSet) {
+                  logger.i(s);
                 }
                 rowData.add(CellData('bars', 10, measureCount * songSingings)); // 5
                 rowData.add(CellData('short', 10, shortMeasureCount * songSingings)); // 6
@@ -1031,11 +1038,19 @@ coerced to reflect the songlist's last modification for that song.
                 totalShortMeasureCount += shortMeasureCount;
                 totalOddMeasureCount += oddMeasureCount;
               }
+              logger.i('');
+              logger.i('Of all measures sung:');
               logger.i('totalMeasureCount: $totalMeasureCount');
-              logger.i('totalShortMeasureCount: $totalShortMeasureCount');
-              logger.i('totalOddMeasureCount: $totalOddMeasureCount');
-              logger.i('totalShortMeasureCount/totalMeasureCount: ${totalShortMeasureCount / totalMeasureCount}');
-              logger.i('totalOddMeasureCount/totalMeasureCount: ${totalOddMeasureCount / totalMeasureCount}');
+              logger.i('totalShortMeasureCount: $totalShortMeasureCount   (typically 2 beats in a 4 beat song)');
+              logger.i(
+                'totalShortMeasureCount/totalMeasureCount: ${to6(totalShortMeasureCount / totalMeasureCount)}'
+                ' = ${to3(100 * totalShortMeasureCount / totalMeasureCount)} %',
+              );
+              logger.i('totalOddMeasureCount: $totalOddMeasureCount   (typically 3 beats in a 4 beat song)');
+              logger.i(
+                'totalOddMeasureCount/totalMeasureCount: ${to6(totalOddMeasureCount / totalMeasureCount)}'
+                ' = ${to3(100 * totalOddMeasureCount / totalMeasureCount)} %',
+              );
 
               SplayTreeSet<List<CellData>> sortedData = SplayTreeSet((d1, d2) {
                 bool first = true;
@@ -1052,11 +1067,7 @@ coerced to reflect the songlist's last modification for that song.
                 return 0;
               });
               sortedData.addAll(data);
-              _addExcelCellDataSheet(
-                  excel,
-                  'By Measures Sung',
-                  sortedData.toList(growable: false)
-              );
+              _addExcelCellDataSheet(excel, 'By Measures Sung', sortedData.toList(growable: false));
             }
           }
 

@@ -56,6 +56,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         case '5':
         case '6':
           maxBeatCount = int.parse(c);
+          maxBeatCount = min(maxBeatCount, beatsPerBar);
           markedString.consume(1);
           break;
       }
@@ -140,7 +141,6 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     //  verify not over specified
     if (totalBeats > maxBeatCount) {
       beatCount = maxBeatCount;
-      //  fixme: limit the total beats???
       return; //  too many beats!  even if the implicit chords only got 1 beat
     }
 

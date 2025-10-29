@@ -501,7 +501,7 @@ class AllSongPerformances {
           additions.add(songRequest.copyWith(song: newSong));
         } else {
           logger.log(_logLostSongs, 'lost _allSongPerformanceRequests: ${songRequest.lowerCaseSongIdAsString}');
-          assert(false);
+          // assert(false);
         }
       }
       _allSongPerformanceRequests.removeAll(removals);
