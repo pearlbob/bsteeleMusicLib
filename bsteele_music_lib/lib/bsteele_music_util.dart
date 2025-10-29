@@ -937,8 +937,6 @@ coerced to reflect the songlist's last modification for that song.
           _allSongPerformances.loadSongs(allSongs);
 
           {
-            List<List<CellData>> data = [];
-
             //  add all the songs
             Map<Song, int> singings = {};
             for (var song in allSongs) {
@@ -953,21 +951,96 @@ coerced to reflect the songlist's last modification for that song.
               }
             }
 
-            for (var song in allSongs) {
-              List<CellData> rowData = [];
-              rowData.add(CellData.byColumnEnum(ColumnEnum.title, song.title));
-              rowData.add(CellData.byColumnEnum(ColumnEnum.artist, song.artist));
-              rowData.add(CellData.byColumnEnum(ColumnEnum.coverArtist, song.coverArtist));
-              rowData.add(CellData('Performances', 15, singings[song]!));
-              data.add(rowData);
-            }
-            _addExcelCellDataSheet(excel, 'By Song Title', data);
-
             {
+              List<List<CellData>> data = [];
+              for (var song in allSongs) {
+                List<CellData> rowData = [];
+                rowData.add(CellData.byColumnEnum(ColumnEnum.title, song.title));
+                rowData.add(CellData.byColumnEnum(ColumnEnum.artist, song.artist));
+                rowData.add(CellData.byColumnEnum(ColumnEnum.coverArtist, song.coverArtist));
+                rowData.add(CellData('Performances', 15, singings[song]!));
+                data.add(rowData);
+              }
+              _addExcelCellDataSheet(excel, 'By Song Title', data);
+
+              {
+                SplayTreeSet<List<CellData>> sortedData = SplayTreeSet((d1, d2) {
+                  bool first = true;
+                  for (int col in [3, 0, 1, 2]) {
+                    int ret = d1[col].value.compareTo(d2[col].value);
+                    if (first) {
+                      first = false;
+                      ret = -ret;
+                    }
+                    if (ret != 0) {
+                      return ret;
+                    }
+                  }
+                  return 0;
+                });
+                sortedData.addAll(data);
+                _addExcelCellDataSheet(excel, 'By Performances', sortedData.toList(growable: false));
+              }
+            }
+
+            //  measures sung
+                {
+              List<List<CellData>> data = [];
+              int totalMeasureCount = 0;
+              int totalShortMeasureCount = 0;
+              int totalOddMeasureCount = 0;
+              for (var song in allSongs) {
+                List<CellData> rowData = [];
+                rowData.add(CellData.byColumnEnum(ColumnEnum.title, song.title)); // 0
+                rowData.add(CellData.byColumnEnum(ColumnEnum.artist, song.artist)); // 1
+                rowData.add(CellData.byColumnEnum(ColumnEnum.coverArtist, song.coverArtist)); // 2
+                var songSingings = singings[song] ?? 0;
+                rowData.add(CellData('Performances', 15, songSingings)); // 3
+                rowData.add(CellData('bpm', 8, song.beatsPerMinute)); // 4
+                int measureCount = 0;
+                int shortMeasureCount = 0;
+                int oddMeasureCount = 0;
+                for (var lyricSection in song.lyricSections) {
+                  var chordSection = song.findChordSectionByLyricSection(lyricSection);
+                  chordSection = chordSection!;
+                  for (var phrase in chordSection.phrases) {
+                    measureCount += phrase.repeatMeasureCount;
+                    for (int repeat = 0; repeat < phrase.repeatRowCount; repeat++) {
+                      for (int m = 0; m < phrase.phraseMeasureCount; m++) {
+                        var measure = phrase.phraseMeasureAt(m);
+                        measure = measure!;
+                        if (measure.beatCount < song.beatsPerBar) {
+                          if (measure.beatCount == 2 && song.beatsPerBar == 4) {
+                            shortMeasureCount++;
+                          } else {
+                            oddMeasureCount++;
+                            logger.i('odd bar: $song: ${chordSection.sectionVersion}: ${phrase.phraseIndex}: '
+                                '$m: $measure,'
+                                ', beats: ${measure.beatCount} of ${song.beatsPerBar}');
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                rowData.add(CellData('bars', 10, measureCount * songSingings)); // 5
+                rowData.add(CellData('short', 10, shortMeasureCount * songSingings)); // 6
+                rowData.add(CellData('odd', 10, oddMeasureCount * songSingings)); // 7
+                data.add(rowData);
+                totalMeasureCount += measureCount;
+                totalShortMeasureCount += shortMeasureCount;
+                totalOddMeasureCount += oddMeasureCount;
+              }
+              logger.i('totalMeasureCount: $totalMeasureCount');
+              logger.i('totalShortMeasureCount: $totalShortMeasureCount');
+              logger.i('totalOddMeasureCount: $totalOddMeasureCount');
+              logger.i('totalShortMeasureCount/totalMeasureCount: ${totalShortMeasureCount / totalMeasureCount}');
+              logger.i('totalOddMeasureCount/totalMeasureCount: ${totalOddMeasureCount / totalMeasureCount}');
+
               SplayTreeSet<List<CellData>> sortedData = SplayTreeSet((d1, d2) {
                 bool first = true;
-                for (int c in [3, 0, 1, 2]) {
-                  int ret = d1[c].value.compareTo(d2[c].value);
+                for (int col in [5, 0, 1, 2, 3, 4, 6, 7]) {
+                  int ret = d1[col].value.compareTo(d2[col].value);
                   if (first) {
                     first = false;
                     ret = -ret;
@@ -979,7 +1052,11 @@ coerced to reflect the songlist's last modification for that song.
                 return 0;
               });
               sortedData.addAll(data);
-              _addExcelCellDataSheet(excel, 'By Performances', sortedData.toList(growable: false));
+              _addExcelCellDataSheet(
+                  excel,
+                  'By Measures Sung',
+                  sortedData.toList(growable: false)
+              );
             }
           }
 
@@ -1056,7 +1133,7 @@ coerced to reflect the songlist's last modification for that song.
 
           //  singers songs sung per jam
 
-          // fixme: the library won't do this:   excel.delete('Sheet1');
+          excel.delete('Sheet1');
           excel.setDefaultSheet('By Song Title');
 
           var fileBytes = excel.save();
@@ -3013,6 +3090,9 @@ coerced to reflect the songlist's last modification for that song.
             break;
           case const (int):
             data.value = IntCellValue(cellData.value as int);
+            break;
+          case const (double):
+            data.value = DoubleCellValue(cellData.value as double);
             break;
           default:
             logger.t('type failure: ${cellData.value.runtimeType}');
