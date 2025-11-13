@@ -18,7 +18,7 @@ class MeasureComment extends Measure {
   }
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.comment;
+  MeasureNodeType get measureNodeType => .comment;
 
   static MeasureComment parseString(String s) {
     return parse(MarkedString(s));

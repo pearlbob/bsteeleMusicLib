@@ -1221,9 +1221,7 @@ class SongBase {
                       ChordSectionLocation.withMarker(
                         sectionVersion,
                         phraseIndex,
-                        (repeatExtensionCount > 0
-                            ? ChordSectionLocationMarker.repeatMiddleRight
-                            : ChordSectionLocationMarker.repeatUpperRight),
+                        (repeatExtensionCount > 0 ? .repeatMiddleRight : .repeatUpperRight),
                       ),
                       chordSection,
                       phrase,
@@ -1260,9 +1258,7 @@ class SongBase {
                   ChordSectionLocation loc = ChordSectionLocation.withMarker(
                     sectionVersion,
                     phraseIndex,
-                    repeatExtensionCount > 0
-                        ? ChordSectionLocationMarker.repeatLowerRight
-                        : ChordSectionLocationMarker.repeatOnOneLineRight,
+                    repeatExtensionCount > 0 ? .repeatLowerRight : .repeatOnOneLineRight,
                   ); //  just for the visuals
                   GridCoordinate coordinate = GridCoordinate(row, col);
                   _gridCoordinateChordSectionLocationMap[coordinate] = loc;
@@ -1703,7 +1699,7 @@ class SongBase {
     ChordSection? chordSection = getChordSectionByLocation(location);
     if (chordSection == null) {
       switch (measureNode.measureNodeType) {
-        case MeasureNodeType.section:
+        case .section:
           chordSection = measureNode as ChordSection;
           break;
         default:
@@ -1739,7 +1735,7 @@ class SongBase {
     MeasureRepeat newRepeat;
     Phrase newPhrase;
     switch (measureNode.measureNodeType) {
-      case MeasureNodeType.section:
+      case .section:
         switch (editType) {
           case MeasureEditType.delete:
             //  find the section prior to the one being deleted
@@ -1766,7 +1762,7 @@ class SongBase {
         }
         return standardEditCleanup(ret, location);
 
-      case MeasureNodeType.repeat:
+      case .repeat:
         newRepeat = measureNode as MeasureRepeat;
         if (newRepeat.isEmpty) {
           //  empty repeat
@@ -1779,7 +1775,7 @@ class SongBase {
               //  convert repeat to phrase
               newPhrase = Phrase(repeat.measures, location.phraseIndex);
               int phaseIndex = location.phraseIndex;
-              if (phaseIndex > 0 && chordSection.getPhrase(phaseIndex - 1)?.measureNodeType == MeasureNodeType.phrase) {
+              if (phaseIndex > 0 && chordSection.getPhrase(phaseIndex - 1)?.measureNodeType == .phrase) {
                 //  expect combination of the two phrases
                 int newPhraseIndex = phaseIndex - 1;
                 Phrase? priorPhrase = chordSection.getPhrase(newPhraseIndex);
@@ -1896,7 +1892,7 @@ class SongBase {
         }
         break;
 
-      case MeasureNodeType.phrase:
+      case .phrase:
         newPhrase = measureNode as Phrase;
         int phraseIndex = 0;
         switch (editType) {
@@ -1917,7 +1913,7 @@ class SongBase {
               Phrase? lastPhrase = chordSection.lastPhrase();
               if (lastPhrase != null) {
                 switch (lastPhrase.measureNodeType) {
-                  case MeasureNodeType.phrase:
+                  case .phrase:
                     location = ChordSectionLocation(
                       chordSection.sectionVersion,
                       phraseIndex: lastPhrase.phraseIndex,
@@ -2005,7 +2001,7 @@ class SongBase {
               Phrase? firstPhrase = chordSection.getPhrase(0);
               if (firstPhrase != null) {
                 switch (firstPhrase.measureNodeType) {
-                  case MeasureNodeType.phrase:
+                  case .phrase:
                     location = ChordSectionLocation(
                       chordSection.sectionVersion,
                       phraseIndex: firstPhrase.phraseIndex,
@@ -2081,7 +2077,7 @@ class SongBase {
                 //  delete the phrase before replacing it
                 phraseIndex = location.phraseIndex;
                 Phrase? priorPhrase = chordSection.getPhrase(phraseIndex - 1);
-                if (priorPhrase != null && phraseIndex > 0 && priorPhrase.measureNodeType == MeasureNodeType.phrase) {
+                if (priorPhrase != null && phraseIndex > 0 && priorPhrase.measureNodeType == .phrase) {
                   //  expect combination of the two phrases
 
                   location = ChordSectionLocation(
@@ -2121,8 +2117,8 @@ class SongBase {
         );
         return standardEditCleanup(chordSection.add(phraseIndex, newPhrase), location);
 
-      case MeasureNodeType.measure:
-      case MeasureNodeType.comment:
+      case .measure:
+      case .comment:
         //  add measure to current phrase
         if (location != null) {
           if (location.hasMeasureIndex) {
@@ -2187,10 +2183,10 @@ class SongBase {
           return standardEditCleanup(chordSection.add(phrase.phraseIndex, newPhrase), newLocation);
         }
         break;
-      case MeasureNodeType.decoration:
-      case MeasureNodeType.measureRepeatMarker:
-      case MeasureNodeType.lyric:
-      case MeasureNodeType.lyricSection:
+      case .decoration:
+      case .measureRepeatMarker:
+      case .lyric:
+      case .lyricSection:
         return false;
     }
 
@@ -2199,8 +2195,8 @@ class SongBase {
       case MeasureEditType.insert:
         if (location != null) {
           switch (measureNode.measureNodeType) {
-            case MeasureNodeType.repeat:
-            case MeasureNodeType.phrase:
+            case .repeat:
+            case .phrase:
               ret = chordSection.insert(location.phraseIndex, measureNode);
               break;
             default:
@@ -2232,15 +2228,15 @@ class SongBase {
 
           if (location.isSection) {
             switch (measureNode.measureNodeType) {
-              case MeasureNodeType.section:
+              case .section:
                 SectionVersion? sectionVersion = location.sectionVersion;
                 if (sectionVersion != null) {
                   _getChordSectionMap()[sectionVersion] = measureNode as ChordSection;
                   return standardEditCleanup(true, location.nextMeasureIndexLocation());
                 }
                 break;
-              case MeasureNodeType.phrase:
-              case MeasureNodeType.repeat:
+              case .phrase:
+              case .repeat:
                 return standardEditCleanup(chordSection.add(location.phraseIndex, measureNode as Phrase), location);
               default:
                 break;
@@ -2248,8 +2244,8 @@ class SongBase {
           }
           if (location.isPhrase) {
             switch (measureNode.measureNodeType) {
-              case MeasureNodeType.repeat:
-              case MeasureNodeType.phrase:
+              case .repeat:
+              case .phrase:
                 chordSection.phrases.insert(location.phraseIndex + 1, measureNode as Phrase);
                 return standardEditCleanup(true, location);
               default:
@@ -2504,7 +2500,7 @@ class SongBase {
         MeasureNode? measureNode = findMeasureNodeByLocation(location);
         if (measureNode != null) {
           switch (measureNode.measureNodeType) {
-            case MeasureNodeType.measure:
+            case .measure:
               return measureNode as Measure;
             default:
               break;
@@ -2546,7 +2542,7 @@ class SongBase {
       Phrase? phrase = chordSection.getPhrase(chordSectionLocation.phraseIndex);
       if (chordSectionLocation.isPhrase) {
         switch (chordSectionLocation.marker) {
-          case ChordSectionLocationMarker.none:
+          case .none:
             return phrase;
           default:
             return MeasureRepeatExtension.get(chordSectionLocation.marker);
@@ -3852,7 +3848,7 @@ class SongBase {
                     for (var node in phraseGridRow ?? []) {
                       if (node is MeasureNode) {
                         switch (node.measureNodeType) {
-                          case MeasureNodeType.measure:
+                          case .measure:
                             var rowIndex = grid.getRowCount() + sectionRowIndex;
                             logger.log(
                               _logGridDetails,
@@ -3862,7 +3858,7 @@ class SongBase {
                             _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                             momentNumber++;
                             break;
-                          case MeasureNodeType.measureRepeatMarker:
+                          case .measureRepeatMarker:
                             var marker = node as MeasureRepeatMarker;
                             marker.lastRepetition = repeat + 1;
                             logger.log(
@@ -3897,7 +3893,7 @@ class SongBase {
                   for (var node in phraseGridRow ?? []) {
                     if (node is MeasureNode) {
                       switch (node.measureNodeType) {
-                        case MeasureNodeType.measure:
+                        case .measure:
                           var rowIndex = grid.getRowCount() + sectionRowIndex;
                           logger.log(
                             _logGridDetails,
@@ -3907,7 +3903,7 @@ class SongBase {
                           _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                           momentNumber++;
                           break;
-                        case MeasureNodeType.measureRepeatMarker:
+                        case .measureRepeatMarker:
                           var marker = node as MeasureRepeatMarker;
                           marker.lastRepetition = repeat + 1;
                           logger.log(
@@ -3944,7 +3940,7 @@ class SongBase {
                     for (var node in phraseGridRow ?? []) {
                       if (node is MeasureNode) {
                         switch (node.measureNodeType) {
-                          case MeasureNodeType.measure:
+                          case .measure:
                             var rowIndex = grid.getRowCount() + sectionRowIndex;
                             logger.log(
                               _logGridDetails,
@@ -3954,7 +3950,7 @@ class SongBase {
                             _songMomentToGridCoordinate.add(GridCoordinate(rowIndex, columnIndex));
                             momentNumber++;
                             break;
-                          case MeasureNodeType.measureRepeatMarker:
+                          case .measureRepeatMarker:
                             var marker = node as MeasureRepeatMarker;
                             logger.log(
                               _logGridDetails,
@@ -3980,7 +3976,7 @@ class SongBase {
                     //  log the song moments of the row into the grid
                     var columnIndex = 0; //  column index
                     for (var node in phraseGridRow ?? []) {
-                      if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                      if (node is MeasureNode && node.measureNodeType == .measure) {
                         var rowIndex = grid.getRowCount() + firstBlankSectionRow + phraseRowIndex;
                         logger.log(
                           _logGridDetails,
@@ -4008,7 +4004,7 @@ class SongBase {
               //  log the song moments of the row into the grid
               var columnIndex = 0; //  column index
               for (var node in phraseGridRow ?? []) {
-                if (node is MeasureNode && node.measureNodeType == MeasureNodeType.measure) {
+                if (node is MeasureNode && node.measureNodeType == .measure) {
                   var rowIndex = grid.getRowCount() + sectionRowIndex;
                   logger.log(
                     _logGridDetails,
@@ -4054,7 +4050,7 @@ class SongBase {
       //  compute the first and last moment number for the repeats
       for (var songMoment in songMoments) {
         switch (songMoment.phrase.measureNodeType) {
-          case MeasureNodeType.repeat:
+          case .repeat:
             //  compute the first and last moment number for this repeat
             var firstRepeat =
                 songMoment.momentNumber -
@@ -4108,7 +4104,7 @@ class SongBase {
           break;
         }
         switch (songMoment.phrase.measureNodeType) {
-          case MeasureNodeType.repeat:
+          case .repeat:
             // logger.i('          repeat: ${songMoment.phrase}.${songMoment.measureIndex}: ${songMoment.measure}');
             min -= songMoment.measureIndex;
             max += songMoment.phrase.length - 1 - songMoment.measureIndex;
@@ -4316,16 +4312,16 @@ class SongBase {
 
   //  preferred sections by order of priority
   final List<SectionVersion> _suggestedSectionVersions = [
-    SectionVersion.bySection(Section.get(SectionEnum.verse)),
-    SectionVersion.bySection(Section.get(SectionEnum.chorus)),
-    SectionVersion.bySection(Section.get(SectionEnum.intro)),
-    SectionVersion.bySection(Section.get(SectionEnum.bridge)),
-    SectionVersion.bySection(Section.get(SectionEnum.outro)),
-    SectionVersion.bySection(Section.get(SectionEnum.preChorus)),
-    SectionVersion.bySection(Section.get(SectionEnum.tag)),
-    SectionVersion.bySection(Section.get(SectionEnum.a)),
-    SectionVersion.bySection(Section.get(SectionEnum.b)),
-    SectionVersion.bySection(Section.get(SectionEnum.coda)),
+    SectionVersion.bySection(Section.get(.verse)),
+    SectionVersion.bySection(Section.get(.chorus)),
+    SectionVersion.bySection(Section.get(.intro)),
+    SectionVersion.bySection(Section.get(.bridge)),
+    SectionVersion.bySection(Section.get(.outro)),
+    SectionVersion.bySection(Section.get(.preChorus)),
+    SectionVersion.bySection(Section.get(.tag)),
+    SectionVersion.bySection(Section.get(.a)),
+    SectionVersion.bySection(Section.get(.b)),
+    SectionVersion.bySection(Section.get(.coda)),
   ];
 
   /// suggest a new chord section (that doesn't currently exist
@@ -4356,7 +4352,7 @@ class SongBase {
     }
 
     //  punt
-    return ChordSection(SectionVersion(Section.get(SectionEnum.chorus), 0), null);
+    return ChordSection(SectionVersion(Section.get(.chorus), 0), null);
   }
 
   String toNashville() {

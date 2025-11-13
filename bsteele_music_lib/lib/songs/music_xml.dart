@@ -100,9 +100,9 @@ class MusicXml {
 
     {
       int beats = song.timeSignature.beatsPerBar;
-      Pitch lowRoot = Pitch.get(PitchEnum.E2); //  bass staff
+      Pitch lowRoot = Pitch.get(.E2); //  bass staff
       lowRoot = key.mappedPitch(lowRoot); // required once only
-      Pitch highRoot = Pitch.get(PitchEnum.C3); //  treble staff
+      Pitch highRoot = Pitch.get(.C3); //  treble staff
       highRoot = key.mappedPitch(highRoot); // required once only
 
       song.songMomentGrid; //  fixme: shouldn't be required!
@@ -438,6 +438,6 @@ class MusicXml {
   bool _lyricsHaveBeenWritten = false;
 
   static const int _divisionsPerBeat = 4; //  16th note resolution only, funny timing concept from MusicXml
-  static final Pitch _chordBase = Pitch.get(PitchEnum.C4);
+  static final Pitch _chordBase = Pitch.get(.C4);
   static final Map<String, String> _chordDescriptorMap = {};
 }

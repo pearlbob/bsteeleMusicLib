@@ -76,7 +76,7 @@ void main() {
         for (ChordAnticipationOrDelay anticipationOrDelay in ChordAnticipationOrDelay.values) {
           logger.d('anticipationOrDelay: $anticipationOrDelay');
           for (final scaleNote in ScaleNote.values) {
-            if (scaleNote == ScaleNote.X) {
+            if (scaleNote == .X) {
               continue;
             }
             for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
@@ -108,9 +108,9 @@ void main() {
       Chord? chord;
       int beatsPerBar = 4;
       chord = chordByScaleChord(
-        ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.D, ChordDescriptor.diminished),
+        ScaleChord.fromScaleNoteEnumAndChordDescriptor(.D, ChordDescriptor.diminished),
       );
-      chord.slashScaleNote = ScaleNote.G;
+      chord.slashScaleNote = .G;
 
       logger.i('"${Chord.parseString('Ddim/G', beatsPerBar)}"');
       logger.i('compare: ${Chord.parseString('Ddim/G', beatsPerBar)?.compareTo(chord)}');
@@ -119,32 +119,32 @@ void main() {
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
 
-      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.X, ChordDescriptor.major));
-      chord.slashScaleNote = ScaleNote.G;
+      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.X, ChordDescriptor.major));
+      chord.slashScaleNote = .G;
       pChord = Chord.parseString('X/G', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
 
       chord = chordByScaleChord(
-        ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.A, ChordDescriptor.diminished),
+        ScaleChord.fromScaleNoteEnumAndChordDescriptor(.A, ChordDescriptor.diminished),
       );
-      chord.slashScaleNote = ScaleNote.G;
+      chord.slashScaleNote = .G;
       pChord = Chord.parseString('Adim/G', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
 
       chord = chordByScaleChord(
-        ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.suspendedSecond),
+        ScaleChord.fromScaleNoteEnumAndChordDescriptor(.G, ChordDescriptor.suspendedSecond),
       );
-      chord.slashScaleNote = ScaleNote.A;
+      chord.slashScaleNote = .A;
       pChord = Chord.parseString('G2/A', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
-      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.add9));
+      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.G, ChordDescriptor.add9));
       pChord = Chord.parseString('Gadd9A', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
-      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.madd9));
+      chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.G, ChordDescriptor.madd9));
       pChord = Chord.parseString('Gmadd9A', beatsPerBar);
       pChord?.beats = beatsPerBar;
       expect(pChord, CompareTo(chord));
@@ -215,86 +215,86 @@ void main() {
       }
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.major),
+          ScaleChord(.C, ChordDescriptor.major),
           beats,
           beatsPerBar,
           null,
           ChordAnticipationOrDelay.defaultValue,
           true,
         ).pianoChordPitches(),
-        [Pitch.get(PitchEnum.C4), Pitch.get(PitchEnum.E4), Pitch.get(PitchEnum.G4)],
+        [Pitch.get(.C4), Pitch.get(.E4), Pitch.get(.G4)],
       );
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.minor),
+          ScaleChord(.C, ChordDescriptor.minor),
           beats,
           beatsPerBar,
           null,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).pianoChordPitches(),
-        [Pitch.get(PitchEnum.C4), Pitch.get(PitchEnum.Eb4), Pitch.get(PitchEnum.G4)],
+        [Pitch.get(.C4), Pitch.get(.Eb4), Pitch.get(.G4)],
       );
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.dominant7),
+          ScaleChord(.C, ChordDescriptor.dominant7),
           beats,
           beatsPerBar,
           null,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).pianoChordPitches(),
-        [Pitch.get(PitchEnum.C4), Pitch.get(PitchEnum.E4), Pitch.get(PitchEnum.G4), Pitch.get(PitchEnum.Bb4)],
+        [Pitch.get(.C4), Pitch.get(.E4), Pitch.get(.G4), Pitch.get(.Bb4)],
       );
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.dominant7),
+          ScaleChord(.C, ChordDescriptor.dominant7),
           beats,
           beatsPerBar,
-          ScaleNote.G,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+              .G,
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).pianoChordPitches(),
         [
           //  slash note not included
-          Pitch.get(PitchEnum.C4),
-          Pitch.get(PitchEnum.E4),
-          Pitch.get(PitchEnum.G4),
-          Pitch.get(PitchEnum.Bb4),
+          Pitch.get(.C4),
+          Pitch.get(.E4),
+          Pitch.get(.G4),
+          Pitch.get(.Bb4),
         ],
       );
 
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.dominant7),
+          ScaleChord(.C, ChordDescriptor.dominant7),
           beats,
           beatsPerBar,
-          ScaleNote.G,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+              .G,
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).pianoSlashPitch(),
-        Pitch.get(PitchEnum.G2),
+        Pitch.get(.G2),
       );
 
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.dominant7),
+          ScaleChord(.C, ChordDescriptor.dominant7),
           beats,
           beatsPerBar,
-          ScaleNote.G,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+              .G,
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).bassSlashPitch(),
-        Pitch.get(PitchEnum.G1),
+        Pitch.get(.G1),
       );
 
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.dominant7),
+          ScaleChord(.C, ChordDescriptor.dominant7),
           beats,
           beatsPerBar,
           null,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).pianoSlashPitch(),
         isNull,
@@ -302,11 +302,11 @@ void main() {
 
       expect(
         Chord(
-          ScaleChord(ScaleNote.C, ChordDescriptor.dominant7),
+          ScaleChord(.C, ChordDescriptor.dominant7),
           beats,
           beatsPerBar,
           null,
-          ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.anticipate8th),
+          ChordAnticipationOrDelay.get(.anticipate8th),
           true,
         ).bassSlashPitch(),
         isNull,
@@ -315,7 +315,7 @@ void main() {
       //  G♯maj9: {R, 3, 5, 7, 9}: [G♯4, C5, D♯5, G5, C6]
       expect(
         Chord(
-          ScaleChord(ScaleNote.Gs, ChordDescriptor.major9),
+          ScaleChord(.Gs, ChordDescriptor.major9),
           beats,
           beatsPerBar,
           null,
@@ -323,11 +323,11 @@ void main() {
           true,
         ).pianoChordPitches(),
         [
-          Pitch.get(PitchEnum.Gs4),
-          Pitch.get(PitchEnum.C5),
-          Pitch.get(PitchEnum.Ds5),
-          Pitch.get(PitchEnum.G5),
-          Pitch.get(PitchEnum.C6),
+          Pitch.get(.Gs4),
+          Pitch.get(.C5),
+          Pitch.get(.Ds5),
+          Pitch.get(.G5),
+          Pitch.get(.C6),
         ],
       );
     });
@@ -424,7 +424,7 @@ void main() {
     for (int beatsPerBar in [2, 3, 4, 6]) {
       for (var beats = 1; beats <= beatsPerBar; beats++) {
         bool implicitBeats = beats < beatsPerBar; //  chord has fewer beats than the beats per bar
-        for (ScaleNote? slashScaleNote in [null, ScaleNote.A, ScaleNote.C]) {
+        for (ScaleNote? slashScaleNote in [null, .A, ScaleNote.C]) {
           for (ScaleNote scaleNote in ScaleNote.values) {
             for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
               ScaleChord scaleChord = ScaleChord(scaleNote, chordDescriptor);

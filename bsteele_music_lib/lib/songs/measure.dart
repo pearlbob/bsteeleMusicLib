@@ -352,7 +352,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.measure;
+  MeasureNodeType get measureNodeType => .measure;
 
   bool get hasReducedBeats => beatCount < beatsPerBar;
 

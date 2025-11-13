@@ -80,72 +80,72 @@ enum ScaleNote implements Comparable<ScaleNote> {
   }
 
   ScaleNote asSharp({bool value = true}) {
-    if (this == ScaleNote.X) {
-      return ScaleNote.X;
+    if (this == .X) {
+      return .X;
     }
     return value ? _sharps[_halfStep] : _flats[_halfStep];
   }
 
   ScaleNote asFlat({bool value = true}) {
-    if (this == ScaleNote.X) {
-      return ScaleNote.X;
+    if (this == .X) {
+      return .X;
     }
     return value ? _flats[_halfStep] : _sharps[_halfStep];
   }
 
   ScaleNote asEasyRead() {
-    if (this == ScaleNote.X) {
-      return ScaleNote.X;
+    if (this == .X) {
+      return .X;
     }
     return _easyRead[_halfStep];
   }
 
   //  all sharps
-  static final _sharps = [
-    ScaleNote.A,
-    ScaleNote.As,
-    ScaleNote.B,
-    ScaleNote.C,
-    ScaleNote.Cs,
-    ScaleNote.D,
-    ScaleNote.Ds,
-    ScaleNote.E,
-    ScaleNote.F,
-    ScaleNote.Fs,
-    ScaleNote.G,
-    ScaleNote.Gs
+  static final List<ScaleNote> _sharps = [
+        .A,
+        .As,
+        .B,
+        .C,
+        .Cs,
+        .D,
+        .Ds,
+        .E,
+        .F,
+        .Fs,
+        .G,
+        .Gs,
   ];
 
   //  all flats
-  static final _flats = [
-    ScaleNote.A,
-    ScaleNote.Bb,
-    ScaleNote.B,
-    ScaleNote.C,
-    ScaleNote.Db,
-    ScaleNote.D,
-    ScaleNote.Eb,
-    ScaleNote.E,
-    ScaleNote.F,
-    ScaleNote.Gb,
-    ScaleNote.G,
-    ScaleNote.Ab
+  static final List<ScaleNote> _flats = [
+        .A,
+        .Bb,
+        .B,
+        .C,
+        .Db,
+        .D,
+        .Eb,
+        .E,
+        .F,
+        .Gb,
+        .G,
+        .Ab,
   ];
 
   //  easy read
-  static final _easyRead = [
-    ScaleNote.A,
-    ScaleNote.Bb,
-    ScaleNote.B,
-    ScaleNote.C,
-    ScaleNote.Db,
-    ScaleNote.D,
-    ScaleNote.Eb,
-    ScaleNote.E,
-    ScaleNote.F,
-    ScaleNote.Fs,
-    ScaleNote.G,
-    ScaleNote.Ab
+  static final List<ScaleNote> _easyRead = [
+        .A,
+        .Bb,
+        .B,
+        .C,
+        .Db,
+        .D,
+        .Eb,
+        .E,
+        .F,
+        .Fs,
+        .G,
+        .Ab,
   ];
 
   static ScaleNote? parseString(String s) {
@@ -163,7 +163,7 @@ enum ScaleNote implements Comparable<ScaleNote> {
     if (c < 'A'.codeUnitAt(0) || c > 'G'.codeUnitAt(0)) {
       if (c == 'X'.codeUnitAt(0)) {
         markedString.pop();
-        return ScaleNote.X;
+        return .X;
       }
       throw ArgumentError('scale note must start with A to G');
     }
@@ -194,8 +194,8 @@ enum ScaleNote implements Comparable<ScaleNote> {
 
   /// Transpose this key to the given key with the given steps offset.
   ScaleNote transpose(Key key, int steps) {
-    if (this == ScaleNote.X) {
-      return ScaleNote.X;
+    if (this == .X) {
+      return .X;
     }
     return key.getScaleNoteEnum3ByHalfStep(halfStep + steps);
   }
@@ -214,9 +214,9 @@ enum ScaleNote implements Comparable<ScaleNote> {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name, //
-        'accidental': accidental.toJson() //  for restful api only?????
-      };
+    'name': name, //
+    'accidental': accidental.toJson(), //  for restful api only?????
+  };
 
   factory ScaleNote.fromJson(Map<String, dynamic> json) {
     return ScaleNote.values.byName(json['name']);
@@ -227,10 +227,16 @@ enum ScaleNote implements Comparable<ScaleNote> {
     return index - other.index;
   }
 
-  const ScaleNote(this._halfStep, this._markup, this._scaleNoteString, this.isSharp, this.isFlat,
-      {this.scaleNumber = -1, this.isSilent = false})
+  const ScaleNote(this._halfStep,
+      this._markup,
+      this._scaleNoteString,
+      this.isSharp,
+      this.isFlat, {
+        this.scaleNumber = -1,
+        this.isSilent = false,
+      })
       : isNatural = !isSharp && !isFlat && !isSilent,
-        accidental = (isSharp ? Accidental.sharp : (isFlat ? Accidental.flat : Accidental.natural));
+        accidental = (isSharp ? .sharp : (isFlat ? .flat : .natural));
 
   int get halfStep => _halfStep;
   final int _halfStep;

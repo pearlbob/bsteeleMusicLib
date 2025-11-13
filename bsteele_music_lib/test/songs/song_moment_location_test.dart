@@ -32,7 +32,7 @@ void main() {
       expect(loc, isNull);
       loc = SongMomentLocation.parseString('V2:2:1#3');
       SongMomentLocation locExpected = SongMomentLocation(
-          ChordSectionLocation(SectionVersion(Section.get(SectionEnum.verse), 2), phraseIndex: 2, measureIndex: 1), 3);
+          ChordSectionLocation(SectionVersion(Section.get(.verse), 2), phraseIndex: 2, measureIndex: 1), 3);
       logger.d(locExpected.toString());
       expect(loc, locExpected);
     }

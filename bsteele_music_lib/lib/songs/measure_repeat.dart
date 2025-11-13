@@ -5,7 +5,6 @@ import 'measure_repeat_extension.dart';
 import '../app_logger.dart';
 import '../grid.dart';
 import '../util/util.dart';
-import 'chord_section_location.dart';
 import 'key.dart';
 import 'measure.dart';
 import 'measure_comment.dart';
@@ -149,7 +148,7 @@ class MeasureRepeat extends Phrase {
   set repeats(int repeats) => getRepeatMarker().repeats = repeats;
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.repeat;
+  MeasureNodeType get measureNodeType => .repeat;
 
   @override
   MeasureNode? findMeasureNode(MeasureNode measureNode) {
@@ -194,14 +193,14 @@ class MeasureRepeat extends Phrase {
           if (editRowCount == index) {
             //  place repeat markers
             if (phraseRowCount > 1 && identical(ret.first, measures.first)) {
-              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatUpperRight));
+              ret.add(MeasureRepeatExtension.get(.repeatUpperRight));
             } else if (identical(measure, measures.last)) {
               if (phraseRowCount > 1) {
-                ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatLowerRight));
+                ret.add(MeasureRepeatExtension.get(.repeatLowerRight));
               }
               ret.add(MeasureRepeatMarker(repeats, measures.length, repetition: repetition + 1));
             } else if (phraseRowCount > 2) {
-              ret.add(MeasureRepeatExtension.get(ChordSectionLocationMarker.repeatMiddleRight));
+              ret.add(MeasureRepeatExtension.get(.repeatMiddleRight));
             }
             return ret;
           }

@@ -11,7 +11,7 @@ import 'measure.dart';
 import 'measure_node.dart';
 
 final ChordSectionLocation defaultLocation = // last resort, better than null
-    ChordSectionLocation(SectionVersion.bySection(Section.get(SectionEnum.chorus)));
+ChordSectionLocation(SectionVersion.bySection(Section.get(.chorus)));
 
 enum SongEditScale {
   section,
@@ -56,7 +56,7 @@ class SongEditManager {
           if (measureNode == null || measureNode.isEmpty) {
             measureNode = Measure(_song.beatsPerBar, [
               Chord(_song.key.getMajorScaleChord(), _song.beatsPerBar, _song.beatsPerBar, null,
-                  ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none), true)
+                  ChordAnticipationOrDelay.get(.none), true)
             ]);
           }
         }
@@ -161,7 +161,7 @@ class EditPoint {
         measureNode == o.measureNode;
   }
 
-  bool get isSection => measureNode != null && measureNode?.measureNodeType == MeasureNodeType.section;
+  bool get isSection => measureNode != null && measureNode?.measureNodeType == .section;
 
   @override
   int get hashCode => Object.hashAll([location, measureEditType, measureNode]);

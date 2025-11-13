@@ -156,7 +156,7 @@ void main() {
     {
       //  infinite loop?
       ChordSection chordSection = ChordSection.parseString('o:AGEDCAGEDCAGA (organ descending scale)', 4);
-      SectionVersion outro = SectionVersion.bySection(Section.get(SectionEnum.outro));
+      SectionVersion outro = SectionVersion.bySection(Section.get(.outro));
       expect(chordSection.sectionVersion == outro, isTrue);
     }
 
@@ -165,7 +165,7 @@ void main() {
       ChordSection chordSection = ChordSection.parseString('I: G .G Bm Bm  x2', 4);
       //  error will be thrown: expect(chordSection != null, isTrue);
       logger.d(chordSection.toMarkup());
-      SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
+      SectionVersion intro = SectionVersion.bySection(Section.get(.intro));
       expect(chordSection.sectionVersion == intro, isTrue);
       phrases = chordSection.phrases;
       expect(3, phrases.length);
@@ -178,7 +178,7 @@ void main() {
           'I: A B C D\n'
           'AbBb/G# Am7 Ebsus4 C7/Bb',
           4);
-      SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
+      SectionVersion intro = SectionVersion.bySection(Section.get(.intro));
       expect(chordSection.sectionVersion, intro);
       phrases = chordSection.phrases;
       expect(1, phrases.length);
@@ -186,17 +186,17 @@ void main() {
       measures = phrases[0].measures;
       expect(measures, isNotNull);
       expect(8, measures.length);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.B, measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 3, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 4, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Bb, measures, 4, 1);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(.B, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(.C, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(.D, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 4, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Bb, measures, 4, 1);
       checkMeasureNodesSlashScaleNoteByMeasure(null, measures, 4, 0);
-      checkMeasureNodesSlashScaleNoteByMeasure(ScaleNote.Gs, measures, 4, 1);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 5, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Eb, measures, 6, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 7, 0);
+      checkMeasureNodesSlashScaleNoteByMeasure(.Gs, measures, 4, 1);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 5, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Eb, measures, 6, 0);
+      checkMeasureNodesScaleNoteByMeasure(.C, measures, 7, 0);
     }
     {
       ChordSection chordSection = ChordSection.parseString(
@@ -204,28 +204,28 @@ void main() {
           'Ab - - G ',
           4);
       logger.d(chordSection.toMarkup());
-      SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
+      SectionVersion intro = SectionVersion.bySection(Section.get(.intro));
       expect(chordSection.sectionVersion, intro);
       phrases = chordSection.phrases;
       expect(phrases, isNotNull);
       expect(1, phrases.length);
       measures = phrases[0].measures;
       expect(8, measures.length);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 3, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 4, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 5, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 6, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.G, measures, 7, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 4, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 5, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 6, 0);
+      checkMeasureNodesScaleNoteByMeasure(.G, measures, 7, 0);
     }
     {
       ChordSection chordSection = ChordSection.parseString(
           'I: A - - -\n'
           'Ab - - X ',
           4);
-      SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
+      SectionVersion intro = SectionVersion.bySection(Section.get(.intro));
       expect(chordSection.sectionVersion, intro);
       phrases = chordSection.phrases;
       expect(1, phrases.length);
@@ -233,14 +233,14 @@ void main() {
       measures = phrases[0].measures;
       expect(measures, isNotNull);
       expect(8, measures.length);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 3, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 4, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 5, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.Ab, measures, 6, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.X, measures, 7, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 4, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 5, 0);
+      checkMeasureNodesScaleNoteByMeasure(.Ab, measures, 6, 0);
+      checkMeasureNodesScaleNoteByMeasure(.X, measures, 7, 0);
 
       Measure measure = measures[3];
       expect(1, measure.chords.length);
@@ -249,16 +249,16 @@ void main() {
     {
       ChordSection chordSection = ChordSection.parseString('I: A B C D\n' 'AbBb/G# Am7 Ebsus4 C7/Bb x4', 4);
       logger.d(chordSection.toMarkup());
-      SectionVersion intro = SectionVersion.bySection(Section.get(SectionEnum.intro));
+      SectionVersion intro = SectionVersion.bySection(Section.get(.intro));
       expect(chordSection.sectionVersion, intro);
       phrases = chordSection.phrases;
       expect(2, phrases.length);
       measures = phrases[0].measures;
       expect(4, measures.length);
 
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.B, measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(.B, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(.C, measures, 2, 0);
       checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 3, 0);
 
       phrase = chordSection.phrases[1]; //    the repeat
@@ -282,7 +282,7 @@ void main() {
           'T:\n' //  note: tag should be ignored on a single chord section parseString
           'D C AG D\n',
           4);
-      SectionVersion verse = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      SectionVersion verse = SectionVersion.bySection(Section.get(.verse));
       expect(chordSection.sectionVersion, verse);
       phrases = chordSection.phrases;
       phrase = phrases[0];
@@ -303,7 +303,7 @@ void main() {
       expect(markedString, isEmpty);
       logger.i(chordSection.toString());
       expect(chordSection.isEmpty, isFalse);
-      expect(chordSection.sectionVersion, SectionVersion.bySection(Section.get(SectionEnum.tag)));
+      expect(chordSection.sectionVersion, SectionVersion.bySection(Section.get(.tag)));
     }
     {
       MarkedString markedString = MarkedString('\nT:\n'
@@ -311,7 +311,7 @@ void main() {
       ChordSection chordSection = ChordSection.parse(markedString, 4, false);
       expect(markedString, isEmpty);
       expect(chordSection, isNotNull);
-      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.tag));
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(.tag));
       expect(chordSection.sectionVersion, sectionVersion);
       phrases = chordSection.phrases;
       expect(1, phrases.length);
@@ -320,10 +320,10 @@ void main() {
       measures = phrase.measures;
       expect(4, measures.length);
 
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 0, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.C, measures, 1, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.A, measures, 2, 0);
-      checkMeasureNodesScaleNoteByMeasure(ScaleNote.D, measures, 3, 0);
+      checkMeasureNodesScaleNoteByMeasure(.D, measures, 0, 0);
+      checkMeasureNodesScaleNoteByMeasure(.C, measures, 1, 0);
+      checkMeasureNodesScaleNoteByMeasure(.A, measures, 2, 0);
+      checkMeasureNodesScaleNoteByMeasure(.D, measures, 3, 0);
     }
     {
       ChordSection chordSection = ChordSection.parseString('I:       A B C D\n\n', 4);

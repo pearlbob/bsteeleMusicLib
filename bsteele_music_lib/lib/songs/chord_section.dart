@@ -53,7 +53,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
       }
 
       //  cope with badly formatted songs
-      sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      sectionVersion = SectionVersion.bySection(Section.get(.verse));
     }
 
     List<Phrase> phrases = [];
@@ -216,8 +216,8 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
 
     switch (newMeasureNode.measureNodeType) {
-      case MeasureNodeType.repeat:
-      case MeasureNodeType.phrase:
+      case .repeat:
+      case .phrase:
         break;
       default:
         return false;
@@ -245,8 +245,8 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
     }
 
     switch (newMeasureNode.measureNodeType) {
-      case MeasureNodeType.repeat:
-      case MeasureNodeType.phrase:
+      case .repeat:
+      case .phrase:
         break;
       default:
         return false;
@@ -299,12 +299,12 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
         continue;
       }
       if (lastPhrase == null) {
-        if (phrase.measureNodeType == MeasureNodeType.phrase) {
+        if (phrase.measureNodeType == .phrase) {
           lastPhrase = phrase;
         }
         continue;
       }
-      if (phrase.measureNodeType == MeasureNodeType.phrase) {
+      if (phrase.measureNodeType == .phrase) {
         //  join two contiguous phrases
         lastPhrase.lastMeasure?.endOfRow = true; //  assure odd rows are preserved
         lastPhrase.add(phrase.measures);
@@ -445,7 +445,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.section;
+  MeasureNodeType get measureNodeType => .section;
 
   MeasureNode? lastMeasureNode() {
     if (isEmpty) {

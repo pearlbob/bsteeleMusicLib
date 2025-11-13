@@ -44,7 +44,7 @@ void main() {
     int beats = 4;
     int beatsPerBar = 4;
     ScaleNote? slashScaleNote;
-    ChordAnticipationOrDelay anticipationOrDelay = ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
+    ChordAnticipationOrDelay anticipationOrDelay = ChordAnticipationOrDelay.get(.none);
     bool implicitBeats = false;
 
     for (final e1 in ScaleNote.values) {

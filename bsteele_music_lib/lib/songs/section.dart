@@ -46,16 +46,16 @@ enum SectionEnum {
 
 //  indicate how "interesting", i.e. how common the section is
 Map<SectionEnum, int> _sectionWeights = {
-  SectionEnum.intro: 8,
-  SectionEnum.verse: 10,
-  SectionEnum.preChorus: 8,
-  SectionEnum.chorus: 9,
-  SectionEnum.a: 2,
-  SectionEnum.b: 2,
-  SectionEnum.bridge: 5,
-  SectionEnum.coda: 1,
-  SectionEnum.tag: 4,
-  SectionEnum.outro: 6,
+      .intro: 8,
+      .verse: 10,
+      .preChorus: 8,
+      .chorus: 9,
+      .a: 2,
+      .b: 2,
+      .bridge: 5,
+      .coda: 1,
+      .tag: 4,
+      .outro: 6,
 };
 
 /// Song structure is represented by a sequence of these sections.
@@ -141,7 +141,7 @@ class Section implements Comparable<Section> {
         }
       }
       //  additions:
-      mapStringToSection['instrumental'] = Section.get(SectionEnum.intro);
+      mapStringToSection['instrumental'] = Section.get(.intro);
     }
     return mapStringToSection;
   }
@@ -205,7 +205,7 @@ class Section implements Comparable<Section> {
   /// Utility to return the default section.
   static SectionVersion getDefaultVersion() {
     //  fixme: is this in the right place?
-    return SectionVersion.bySection(Section.get(SectionEnum.verse));
+    return SectionVersion.bySection(Section.get(.verse));
   }
 
   @override
@@ -248,7 +248,7 @@ class Section implements Comparable<Section> {
 
   static const int maxLength = 10; //  fixme: compute
 
-  static final defaultInstance = Section.get(SectionEnum.verse);
+  static final defaultInstance = Section.get(.verse);
 
   static final RegExp sectionRegexp = RegExp('^([a-zA-Z]+)([\\d]*):\\s*,*');
 }

@@ -18,12 +18,12 @@ void main() {
 
     final RegExp endsInB = RegExp(r'b$');
     final RegExp endsInS = RegExp(r's$');
-    for (final e in ScaleNote.values) {
+    for (final ScaleNote e in ScaleNote.values) {
       sn = e;
       logger.d('${e.name}: ${endsInB.hasMatch(e.toString())}');
       expect(sn.isFlat, endsInB.hasMatch(e.name));
       expect(sn.isSharp, endsInS.hasMatch(e.name));
-      if (e != ScaleNote.X) {
+      if (e != .X) {
         expect(sn.isFlat, !(sn.isSharp || sn.isNatural));
         expect(sn.isSilent, false);
       } else {

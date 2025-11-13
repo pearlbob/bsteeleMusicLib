@@ -217,7 +217,7 @@ class Phrase extends MeasureNode {
     }
 
     switch (newMeasureNode.measureNodeType) {
-      case MeasureNodeType.measure:
+      case .measure:
         break;
       default:
         return false;
@@ -248,7 +248,7 @@ class Phrase extends MeasureNode {
     }
 
     switch (newMeasureNode.measureNodeType) {
-      case MeasureNodeType.measure:
+      case .measure:
         break;
       default:
         return false;
@@ -278,7 +278,7 @@ class Phrase extends MeasureNode {
     }
 
     switch (newMeasureNode.measureNodeType) {
-      case MeasureNodeType.measure:
+      case .measure:
         break;
       default:
         return false;
@@ -350,9 +350,9 @@ class Phrase extends MeasureNode {
     } else {
       //  reject wrong node type
       switch (newMeasureNode.measureNodeType) {
-        case MeasureNodeType.phrase: //  multiple measures
-        case MeasureNodeType.comment:
-        case MeasureNodeType.measure:
+        case .phrase: //  multiple measures
+        case .comment:
+        case .measure:
           break;
         //  repeats not allowed!
         default:
@@ -622,7 +622,7 @@ class Phrase extends MeasureNode {
   int get repeats => 1;
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.phrase;
+  MeasureNodeType get measureNodeType => .phrase;
 
   @override
   bool get isEmpty {

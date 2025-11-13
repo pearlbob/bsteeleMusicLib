@@ -10,7 +10,7 @@ class MeasureRepeatMarker extends Measure {
   }
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.measureRepeatMarker;
+  MeasureNodeType get measureNodeType => .measureRepeatMarker;
 
   @override
   String transpose(Key key, int halfSteps) {

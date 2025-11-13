@@ -70,7 +70,7 @@ void main() {
         logger.i('section: $section, version: $i');
         expect(
             sectionVersion == sectionVersionV,
-            (section != Section.get(SectionEnum.verse) || i != 0) // depends on the default!
+            (section != Section.get(.verse) || i != 0) // depends on the default!
                 ? isFalse
                 : isTrue);
       }

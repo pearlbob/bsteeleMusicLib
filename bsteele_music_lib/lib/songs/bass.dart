@@ -27,5 +27,5 @@ class Bass {
     return _e1.offsetByHalfSteps(fret)!;
   }
 
-  static final Pitch _e1 = Pitch.get(PitchEnum.E1);
+  static final Pitch _e1 = Pitch.get(.E1);
 }

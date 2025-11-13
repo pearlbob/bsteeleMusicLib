@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:bsteele_music_lib/app_logger.dart';
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
-import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
@@ -20,7 +19,7 @@ void main() {
   });
 
   test('pitch numbers', () {
-    var lastPitch = Pitch.get(PitchEnum.A0);
+    var lastPitch = Pitch.get(.A0);
 
     //  expected pitch ratio between half steps
     var refRatio = pow(2, (1 / 12));
@@ -46,12 +45,12 @@ void main() {
   test('pitch by numbers', () {
     for (Pitch p in Pitch.getPitches()) {
       if (p.isFlat) {
-        if (p.scaleNote == ScaleNote.Cb || p.scaleNote == ScaleNote.Fb) {
+        if (p.scaleNote == .Cb || p.scaleNote == .Fb) {
           expect(Pitch.findFlatByNumber(p.number), p.asSharp()); //  cheap trick
         } else
           expect(Pitch.findFlatByNumber(p.number), p);
       } else if (p.isSharp) {
-        if (p.scaleNote == ScaleNote.Bs || p.scaleNote == ScaleNote.Es) {
+        if (p.scaleNote == .Bs || p.scaleNote == .Es) {
           expect(Pitch.findSharpByNumber(p.number), p.asFlat()); //  cheap trick
         } else
           expect(Pitch.findSharpByNumber(p.number), p);
@@ -79,17 +78,17 @@ void main() {
       logger.i(sb.toString());
     }
 
-    expect(Pitch.get(PitchEnum.A1).frequency, closeTo(55.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E1).frequency, closeTo(41.2034, 1e-4));
-    expect(Pitch.get(PitchEnum.A2).frequency, closeTo(110.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E2).frequency, closeTo(Pitch.get(PitchEnum.E1).frequency * 2, 1e-20));
-    expect(Pitch.get(PitchEnum.A3).frequency, closeTo(220.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E3).frequency, closeTo(Pitch.get(PitchEnum.E1).frequency * 4, 1e-12));
-    expect(Pitch.get(PitchEnum.A4).frequency, closeTo(440.0, 1e-20));
-    expect(Pitch.get(PitchEnum.E4).frequency, closeTo(Pitch.get(PitchEnum.E1).frequency * 8, 1e-12));
-    expect(Pitch.get(PitchEnum.A5).frequency, closeTo(880.0, 1e-20));
-    expect(Pitch.get(PitchEnum.C6).frequency, closeTo(1046.5022612023945, 1e-20)); // human voice, saprano
-    expect(Pitch.get(PitchEnum.C8).frequency, closeTo(4186.009044809578, 1e-20)); //  piano
+    expect(Pitch.get(.A1).frequency, closeTo(55.0, 1e-20));
+    expect(Pitch.get(.E1).frequency, closeTo(41.2034, 1e-4));
+    expect(Pitch.get(.A2).frequency, closeTo(110.0, 1e-20));
+    expect(Pitch.get(.E2).frequency, closeTo(Pitch.get(.E1).frequency * 2, 1e-20));
+    expect(Pitch.get(.A3).frequency, closeTo(220.0, 1e-20));
+    expect(Pitch.get(.E3).frequency, closeTo(Pitch.get(.E1).frequency * 4, 1e-12));
+    expect(Pitch.get(.A4).frequency, closeTo(440.0, 1e-20));
+    expect(Pitch.get(.E4).frequency, closeTo(Pitch.get(.E1).frequency * 8, 1e-12));
+    expect(Pitch.get(.A5).frequency, closeTo(880.0, 1e-20));
+    expect(Pitch.get(.C6).frequency, closeTo(1046.5022612023945, 1e-20)); // human voice, saprano
+    expect(Pitch.get(.C8).frequency, closeTo(4186.009044809578, 1e-20)); //  piano
   });
 
   test('testIsSharp', () {
@@ -111,7 +110,7 @@ void main() {
     expect(7 * 7 + 2, flatCount);
     expect(7 * 7 + 2, naturalCount);
 
-    Pitch? p = Pitch.get(PitchEnum.A0);
+    Pitch? p = Pitch.get(.A0);
     expect(false, p.isSharp);
     expect(false, p.isFlat);
     expect(true, p.isNatural);
@@ -131,7 +130,7 @@ void main() {
     expect(52, naturals);
     expect(36, flats);
 
-    p = Pitch.get(PitchEnum.As0);
+    p = Pitch.get(.As0);
     expect(true, p.isSharp);
     expect(false, p.isFlat);
     expect(false, p.isNatural);
@@ -152,68 +151,68 @@ void main() {
   });
 
   test('test from Frequency', () {
-    expect(Pitch.findFlatFromFrequency(1), Pitch.get(PitchEnum.A0));
-    expect(Pitch.findSharpFromFrequency(1), Pitch.get(PitchEnum.A0));
-    expect(Pitch.findFlatFromFrequency(41), Pitch.get(PitchEnum.E1));
-    expect(Pitch.findFlatFromFrequency(42), Pitch.get(PitchEnum.E1));
-    expect(Pitch.findFlatFromFrequency(43), Pitch.get(PitchEnum.F1));
-    expect(Pitch.findFlatFromFrequency(880), Pitch.get(PitchEnum.A5));
-    expect(Pitch.findFlatFromFrequency(906), Pitch.get(PitchEnum.A5));
-    expect(Pitch.findFlatFromFrequency(907), Pitch.get(PitchEnum.Bb5));
-    expect(Pitch.findFlatFromFrequency(933), Pitch.get(PitchEnum.Bb5));
-    expect(Pitch.findSharpFromFrequency(933), Pitch.get(PitchEnum.As5));
-    expect(Pitch.findFlatFromFrequency(7030), Pitch.get(PitchEnum.C8));
+    expect(Pitch.findFlatFromFrequency(1), Pitch.get(.A0));
+    expect(Pitch.findSharpFromFrequency(1), Pitch.get(.A0));
+    expect(Pitch.findFlatFromFrequency(41), Pitch.get(.E1));
+    expect(Pitch.findFlatFromFrequency(42), Pitch.get(.E1));
+    expect(Pitch.findFlatFromFrequency(43), Pitch.get(.F1));
+    expect(Pitch.findFlatFromFrequency(880), Pitch.get(.A5));
+    expect(Pitch.findFlatFromFrequency(906), Pitch.get(.A5));
+    expect(Pitch.findFlatFromFrequency(907), Pitch.get(.Bb5));
+    expect(Pitch.findFlatFromFrequency(933), Pitch.get(.Bb5));
+    expect(Pitch.findSharpFromFrequency(933), Pitch.get(.As5));
+    expect(Pitch.findFlatFromFrequency(7030), Pitch.get(.C8));
   });
 
   test('test NextPitch', () {
-    Pitch p = Pitch.get(PitchEnum.E2);
+    Pitch p = Pitch.get(.E2);
 
-    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.F2));
+    expect(p.nextHigherPitch(), Pitch.get(.F2));
     p = Pitch.findFlatFromFrequency(82);
-    expect(p, Pitch.get(PitchEnum.E2));
-    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.F2));
+    expect(p, Pitch.get(.E2));
+    expect(p.nextHigherPitch(), Pitch.get(.F2));
     p = Pitch.findFlatFromFrequency(92);
-    expect(p, Pitch.get(PitchEnum.Gb2));
-    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.G2));
+    expect(p, Pitch.get(.Gb2));
+    expect(p.nextHigherPitch(), Pitch.get(.G2));
     p = Pitch.findSharpFromFrequency(92);
-    expect(p, Pitch.get(PitchEnum.Fs2));
-    expect(p.nextHigherPitch(), Pitch.get(PitchEnum.G2));
+    expect(p, Pitch.get(.Fs2));
+    expect(p.nextHigherPitch(), Pitch.get(.G2));
   });
 
   test('test asSharp and asFlat', () {
     Pitch p;
 
-    p = Pitch.get(PitchEnum.E2);
+    p = Pitch.get(.E2);
     expect(p.asSharp(), p);
     expect(p.asFlat(), p);
 
-    p = Pitch.get(PitchEnum.Eb2);
-    expect(p.asSharp(), Pitch.get(PitchEnum.Ds2));
+    p = Pitch.get(.Eb2);
+    expect(p.asSharp(), Pitch.get(.Ds2));
     expect(p.asFlat(), p);
 
-    p = Pitch.get(PitchEnum.Cs2);
+    p = Pitch.get(.Cs2);
     expect(p.asSharp(), p);
-    expect(p.asFlat(), Pitch.get(PitchEnum.Db2));
+    expect(p.asFlat(), Pitch.get(.Db2));
 
-    p = Pitch.get(PitchEnum.Es2);
+    p = Pitch.get(.Es2);
     expect(p.asSharp(), p);
-    expect(p.asFlat(), Pitch.get(PitchEnum.F2));
+    expect(p.asFlat(), Pitch.get(.F2));
 
-    p = Pitch.get(PitchEnum.Gs2);
+    p = Pitch.get(.Gs2);
     expect(p.asSharp(), p);
-    expect(p.asFlat(), Pitch.get(PitchEnum.Ab2));
+    expect(p.asFlat(), Pitch.get(.Ab2));
 
-    p = Pitch.get(PitchEnum.Bs2);
+    p = Pitch.get(.Bs2);
     expect(p.asSharp(), p);
-    expect(p.asFlat(), Pitch.get(PitchEnum.C3));
+    expect(p.asFlat(), Pitch.get(.C3));
 
     for (PitchEnum pe in PitchEnum.values) {
       Pitch p = Pitch.get(pe);
       var note = p.getScaleNote();
       print('$p: asSharp: ${p.asSharp()}, asFlat: ${p.asFlat()}, note: $note');
       if (p.isSharp || p.isFlat) {
-        if (note != ScaleNote.Cb && note != ScaleNote.Fb) expect(p.asSharp().name.contains('s'), true);
-        if (note != ScaleNote.Bs && note != ScaleNote.Es) expect(p.asFlat().name.contains('b'), true);
+        if (note != .Cb && note != .Fb) expect(p.asSharp().name.contains('s'), true);
+        if (note != .Bs && note != .Es) expect(p.asFlat().name.contains('b'), true);
       } else {
         expect(p.asSharp().name.contains('s'), false);
         expect(p.asFlat().name.contains('b'), false);
@@ -222,11 +221,11 @@ void main() {
   });
 
   test('test getFromMidiNoteNumber()', () {
-    var a0 = Pitch.get(PitchEnum.A0);
+    var a0 = Pitch.get(.A0);
     logger.i('$a0: ${a0.frequency}');
-    var e1 = Pitch.get(PitchEnum.E1);
+    var e1 = Pitch.get(.E1);
     logger.i('$e1: ${e1.frequency}');
-    var c8 = Pitch.get(PitchEnum.C8);
+    var c8 = Pitch.get(.C8);
     logger.i('$c8: ${c8.frequency}');
 
     for (var i = -3; i < 21; i++) {
@@ -253,7 +252,7 @@ void main() {
   });
 
   test('test scale ratios', () {
-    var basePitch = Pitch.get(PitchEnum.C4);
+    var basePitch = Pitch.get(.C4);
     for (int i = 0; i <= MusicConstants.halfStepsPerOctave; i++) {
       var pitch = Pitch.sharps[basePitch.number + i];
       logger.i(

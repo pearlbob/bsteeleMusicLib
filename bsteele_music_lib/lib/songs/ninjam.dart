@@ -1,5 +1,4 @@
 import 'phrase.dart';
-import 'section.dart';
 import 'song.dart';
 import 'package:quiver/collection.dart';
 
@@ -29,11 +28,11 @@ class NinJam {
 
     for (ChordSection chordSection in chordSections) {
       switch (chordSection.sectionVersion.section.sectionEnum) {
-        case SectionEnum.intro:
-        case SectionEnum.outro:
-        case SectionEnum.tag:
-        case SectionEnum.coda:
-        case SectionEnum.bridge:
+        case .intro:
+        case .outro:
+        case .tag:
+        case .coda:
+        case .bridge:
           break;
         default:
           if (ninJamChordSection == null) {

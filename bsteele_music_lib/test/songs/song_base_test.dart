@@ -664,7 +664,7 @@ void main() {
           rawLyrics: 'i: v: bob, bob, bob berand');
       logger.i(a.toMarkup());
 
-      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(.verse));
       ChordSectionLocation? chordSectionLocation =
           ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: measureIndex);
       logger.d(chordSectionLocation.toString());
@@ -699,7 +699,7 @@ void main() {
           rawLyrics: 'i: v: bob, bob, bob berand');
       logger.i(a.toMarkup());
 
-      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(.verse));
       ChordSectionLocation? chordSectionLocation =
           ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: measureIndex);
       logger.d(chordSectionLocation.toString());
@@ -724,7 +724,7 @@ void main() {
 
     //  test where the current is not necessarily the repeat location
     {
-      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(SectionEnum.verse));
+      SectionVersion sectionVersion = SectionVersion.bySection(Section.get(.verse));
       var size = 12;
       for (var currentIndex = 4; currentIndex < 13; currentIndex++) {
         var currentChordSectionLocation =
@@ -865,7 +865,7 @@ void main() {
             switch (c) {
               case 0:
                 expect(node is ChordSection, isTrue);
-                expect((node as ChordSection).sectionVersion.section, Section.get(SectionEnum.verse));
+                expect((node as ChordSection).sectionVersion.section, Section.get(.verse));
                 break;
               case 1:
                 measure = node as Measure;
@@ -881,7 +881,7 @@ void main() {
             switch (c) {
               case 0:
                 expect(node is ChordSection, isTrue);
-                expect((node as ChordSection).sectionVersion.section, Section.get(SectionEnum.chorus));
+                expect((node as ChordSection).sectionVersion.section, Section.get(.chorus));
                 break;
               case 1:
               case 2:
@@ -902,7 +902,7 @@ void main() {
             switch (c) {
               case 0:
                 expect(node is ChordSection, isTrue);
-                expect(Section.get(SectionEnum.chorus), (node as ChordSection).sectionVersion.section);
+                expect(Section.get(.chorus), (node as ChordSection).sectionVersion.section);
                 break;
               case 1:
                 measure = node as Measure;
@@ -1224,7 +1224,7 @@ c2:
             'D..Dm7 Dm7 C..B♭maj7 B♭maj7  x12',
         rawLyrics: 'o: nothing');
     logger.t('grid: ${a.logGrid()}');
-    location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0), phraseIndex: 0, measureIndex: 3);
+    location = ChordSectionLocation(SectionVersion(Section.get(.outro), 0), phraseIndex: 0, measureIndex: 3);
     MeasureNode? measureNode = a.findMeasureNodeByLocation(location);
     logger.t('measure: ${measureNode!.toMarkup()}');
     expect(measureNode, Measure.parseString('B♭maj7', beatsPerBar));
@@ -1234,7 +1234,7 @@ c2:
 
     const int row = 0;
     const int lastCol = 3;
-    location = ChordSectionLocation(SectionVersion(Section.get(SectionEnum.outro), 0),
+    location = ChordSectionLocation(SectionVersion(Section.get(.outro), 0),
         phraseIndex: row, measureIndex: lastCol);
     measureNode = a.findMeasureNodeByLocation(location);
     if (measureNode == null) throw 'measureNode == null';
@@ -1371,8 +1371,8 @@ c2:
             'i3: chorus here \ni4: mo chorus here\no: last line of outro');
 
     //  assure parse was successful
-    expect(a.lyricSections.first.sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 1));
-    expect(a.lyricSections.last.sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+    expect(a.lyricSections.first.sectionVersion, SectionVersion(Section.get(.intro), 1));
+    expect(a.lyricSections.last.sectionVersion, SectionVersion(Section.get(.outro), 0));
   });
 
   test('testGridStuff', () {
@@ -4362,15 +4362,15 @@ Grid{
 	O:\\nD C G G# \\nO:\\nD C G G# \\n
 }''');
         expect(grid.getRowCount(), 3 + 1);
-        expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-        expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect((grid.get(0, 2) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-        expect((grid.get(1, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-        expect((grid.get(1, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.intro), 0));
-        expect((grid.get(2, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect((grid.get(2, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
-        expect((grid.get(3, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
-        expect((grid.get(3, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(SectionEnum.outro), 0));
+        expect((grid.get(0, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(.intro), 0));
+        expect((grid.get(0, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(.verse), 0));
+        expect((grid.get(0, 2) as ChordSection).sectionVersion, SectionVersion(Section.get(.outro), 0));
+        expect((grid.get(1, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(.intro), 0));
+        expect((grid.get(1, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(.intro), 0));
+        expect((grid.get(2, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(.verse), 0));
+        expect((grid.get(2, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(.verse), 0));
+        expect((grid.get(3, 0) as ChordSection).sectionVersion, SectionVersion(Section.get(.outro), 0));
+        expect((grid.get(3, 1) as ChordSection).sectionVersion, SectionVersion(Section.get(.outro), 0));
 
 //  in pro, verify top row of chord sections in song order
         for (var songMoment in a.songMoments) {
@@ -4423,7 +4423,7 @@ Grid{
         expect(grid.getRowCount(), 5);
         assert(grid.get(0, 0) is LyricSection);
         var lyricSection = grid.get(0, 0) as LyricSection;
-        expect(lyricSection.sectionVersion, SectionVersion(Section.get(SectionEnum.verse), 0));
+        expect(lyricSection.sectionVersion, SectionVersion(Section.get(.verse), 0));
         expect(grid.get(1, 0), isNull);
         expect(grid.get(1, 1)!.measureNodeType, MeasureNodeType.lyric);
         var lyric = grid.get(1, 1) as Lyric;
@@ -5051,7 +5051,7 @@ Grid{
               assert(false);
             }
             if (min == max /*  && phrase.length > 1*/) {
-              assert(songMoment.measure.measureNodeType != MeasureNodeType.repeat);
+              assert(songMoment.measure.measureNodeType != .repeat);
             }
             var (rowMin, rowMax) = a.songMomentToRepeatRowRange(songMoment.momentNumber);
             // logger.i('${songMoment.momentNumber}: rows: ${(rowMin, rowMax)}');
@@ -5060,7 +5060,7 @@ Grid{
             assert(rowMax >= 0);
             assert(rowMax < displayGrid.getRowCount());
             switch (songMoment.phrase.measureNodeType) {
-              case MeasureNodeType.repeat:
+              case .repeat:
                 var row = a.songMomentToGridCoordinate[songMoment.momentNumber].row;
                 assert(rowMin <= row);
                 //  fixme: this doesn't deal with complex situations or instrumental exceptions!

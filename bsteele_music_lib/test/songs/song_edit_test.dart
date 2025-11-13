@@ -1309,7 +1309,7 @@ void main() {
     ts.resultChords('I: [G A B C D ] x4 ');
     ts.post(MeasureEditType.append, 'I:0:0', 'G');
     var lastLocation = _a.findLastChordSectionLocation(
-        _a.findChordSectionBySectionVersion(SectionVersion.bySection(Section.get(SectionEnum.intro))));
+        _a.findChordSectionBySectionVersion(SectionVersion.bySection(Section.get(.intro))));
     logger.d('lastChordSectionLocation: $lastLocation');
     expect(lastLocation.toString(), 'I:0:4');
 
@@ -1359,7 +1359,7 @@ void main() {
       for (var measureIndex = 0; measureIndex < 4; measureIndex++) {
         ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
         ts.setRepeat(
-            ChordSectionLocation(SectionVersion.bySection(Section.get(SectionEnum.verse)),
+            ChordSectionLocation(SectionVersion.bySection(Section.get(.verse)),
                 phraseIndex: 0, measureIndex: measureIndex),
             repeats);
         ts.resultChords('V: [C F C C ] x$repeats [C7 A B C, Cm F C C ] x4 G F C G');
@@ -1371,7 +1371,7 @@ void main() {
       for (var measureIndex = 0; measureIndex < 8; measureIndex++) {
         ts.startingChords('V: C F C C [C7 A B C, Cm F C C ] x4 G F C G');
         ts.setRepeat(
-            ChordSectionLocation(SectionVersion.bySection(Section.get(SectionEnum.verse)),
+            ChordSectionLocation(SectionVersion.bySection(Section.get(.verse)),
                 phraseIndex: 1, measureIndex: measureIndex),
             repeats);
         ts.resultChords('V: C F C C [C7 A B C, Cm F C C ] x$repeats G F C G');

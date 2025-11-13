@@ -104,7 +104,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   }
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.lyricSection;
+  MeasureNodeType get measureNodeType => .lyricSection;
 
   @override
   bool setMeasuresPerRow(int measuresPerRow) {

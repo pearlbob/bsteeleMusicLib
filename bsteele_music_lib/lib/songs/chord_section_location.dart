@@ -30,7 +30,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       }
     }
 
-    _marker = ChordSectionLocationMarker.none;
+    _marker = .none;
   }
 
   ChordSectionLocation.copy(ChordSectionLocation? other)
@@ -53,7 +53,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
       _sectionVersion = labelSectionVersions.first;
     }
 
-    _marker = ChordSectionLocationMarker.none;
+    _marker = .none;
   }
 
   ChordSectionLocation.withMarker(this._sectionVersion, int phraseIndex, this._marker) : _labelSectionVersions = null {
@@ -169,7 +169,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   @override
   String toString() {
     return getId() +
-        (_marker != ChordSectionLocationMarker.none ? ':${MeasureRepeatExtension.get(_marker)}' : '') +
+        (_marker != .none ? ':${MeasureRepeatExtension.get(_marker)}' : '') +
         (_repeats != null ? ':x$_repeats' : '');
   }
 
@@ -335,9 +335,9 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   bool get isPhrase => _hasPhraseIndex == true && _hasMeasureIndex == false;
 
   bool get isMeasure =>
-      _hasPhraseIndex == true && _hasMeasureIndex == true && _marker == ChordSectionLocationMarker.none;
+      _hasPhraseIndex == true && _hasMeasureIndex == true && _marker == .none;
 
-  bool get isMarker => _marker != ChordSectionLocationMarker.none;
+  bool get isMarker => _marker != .none;
 
   bool get isRepeat => _repeats != null;
 
@@ -358,7 +358,7 @@ class ChordSectionLocation implements Comparable<ChordSectionLocation> {
   late bool _hasMeasureIndex;
 
   ChordSectionLocationMarker get marker => _marker;
-  ChordSectionLocationMarker _marker = ChordSectionLocationMarker.none;
+  ChordSectionLocationMarker _marker = .none;
   String? id;
 
   int get repeats => _repeats ?? 0;

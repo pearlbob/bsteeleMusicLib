@@ -45,7 +45,7 @@ void main() {
         '    <table border="1" >\n');
 
     for (final sn in ScaleNote.values) {
-      if (sn == ScaleNote.X) {
+      if (sn == .X) {
         continue;
       }
       String s = sn.toString();
@@ -95,31 +95,31 @@ void main() {
 
   test('testScaleChordParse', () {
     ScaleChord? a = ScaleChord.parseString('A13');
-    ScaleChord ref = ScaleChord(ScaleNote.A, ChordDescriptor.dominant13);
+    ScaleChord ref = ScaleChord(.A, ChordDescriptor.dominant13);
     expect(a, ref);
-    expect(ScaleChord.parseString('A13'), ScaleChord(ScaleNote.A, ChordDescriptor.dominant13));
-    expect(ScaleChord(ScaleNote.F, ChordDescriptor.major), ScaleChord.parseString('F'));
-    expect(ScaleChord(ScaleNote.F, ChordDescriptor.major), ScaleChord.parseString('FGm'));
-    expect(ScaleChord(ScaleNote.F, ChordDescriptor.minor), ScaleChord.parseString('Fm'));
-    expect(ScaleChord(ScaleNote.Fs, ChordDescriptor.minor), ScaleChord.parseString('F#m'));
-    expect(ScaleChord(ScaleNote.Fs, ChordDescriptor.minor), ScaleChord.parseString('F#mGm'));
-    expect(ScaleChord(ScaleNote.D, ChordDescriptor.diminished), ScaleChord.parseString('Ddim/G'));
-    expect(ScaleChord(ScaleNote.A, ChordDescriptor.diminished), ScaleChord.parseString('Adim/G'));
-    expect(ScaleChord(ScaleNote.X, ChordDescriptor.major), ScaleChord.parseString('X/G'));
+    expect(ScaleChord.parseString('A13'), ScaleChord(.A, ChordDescriptor.dominant13));
+    expect(ScaleChord(.F, ChordDescriptor.major), ScaleChord.parseString('F'));
+    expect(ScaleChord(.F, ChordDescriptor.major), ScaleChord.parseString('FGm'));
+    expect(ScaleChord(.F, ChordDescriptor.minor), ScaleChord.parseString('Fm'));
+    expect(ScaleChord(.Fs, ChordDescriptor.minor), ScaleChord.parseString('F#m'));
+    expect(ScaleChord(.Fs, ChordDescriptor.minor), ScaleChord.parseString('F#mGm'));
+    expect(ScaleChord(.D, ChordDescriptor.diminished), ScaleChord.parseString('Ddim/G'));
+    expect(ScaleChord(.A, ChordDescriptor.diminished), ScaleChord.parseString('Adim/G'));
+    expect(ScaleChord(.X, ChordDescriptor.major), ScaleChord.parseString('X/G'));
   });
 
   test('test ScaleChord scale notes', () {
     Key key = Key.C;
 
-    expect(ScaleChord(ScaleNote.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
-    expect(ScaleChord(ScaleNote.C, ChordDescriptor.minor).chordNotes(key).toString(), '[C, E♭, G]');
-    expect(ScaleChord(ScaleNote.G, ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
-    expect(ScaleChord(ScaleNote.G, ChordDescriptor.dominant7).chordNotes(key).toString(), '[G, B, D, F]');
-    expect(ScaleChord(ScaleNote.G, ChordDescriptor.dominant9).chordNotes(key).toString(), '[G, B, D, F, B]');
-    expect(ScaleChord(ScaleNote.G, ChordDescriptor.minor7).chordNotes(key).toString(), '[G, B♭, D, F]');
+    expect(ScaleChord(.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
+    expect(ScaleChord(.C, ChordDescriptor.minor).chordNotes(key).toString(), '[C, E♭, G]');
+    expect(ScaleChord(.G, ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
+    expect(ScaleChord(.G, ChordDescriptor.dominant7).chordNotes(key).toString(), '[G, B, D, F]');
+    expect(ScaleChord(.G, ChordDescriptor.dominant9).chordNotes(key).toString(), '[G, B, D, F, B]');
+    expect(ScaleChord(.G, ChordDescriptor.minor7).chordNotes(key).toString(), '[G, B♭, D, F]');
 
     key = Key.E; //  4 #
-    expect(ScaleChord(ScaleNote.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
+    expect(ScaleChord(.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
     expect(ScaleChord(ScaleNote.C, ChordDescriptor.minor).chordNotes(key).toString(), '[C, D♯, G]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.dominant7).chordNotes(key).toString(), '[G, B, D, F]');

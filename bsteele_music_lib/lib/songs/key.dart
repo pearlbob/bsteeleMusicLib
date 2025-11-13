@@ -92,19 +92,19 @@ class Key implements Comparable<Key> {
       : _name = keyEnumToString(keyEnum),
         keyScaleNote = ScaleNote.valueOf(keyEnumToString(keyEnum))!;
 
-  static final Gb = get(KeyEnum.Gb);
-  static final Db = get(KeyEnum.Db);
-  static final Ab = get(KeyEnum.Ab);
-  static final Eb = get(KeyEnum.Eb);
-  static final Bb = get(KeyEnum.Bb);
-  static final F = get(KeyEnum.F);
-  static final C = get(KeyEnum.C);
-  static final G = get(KeyEnum.G);
-  static final D = get(KeyEnum.D);
-  static final A = get(KeyEnum.A);
-  static final E = get(KeyEnum.E);
-  static final B = get(KeyEnum.B);
-  static final Fs = get(KeyEnum.Fs);
+  static final Gb = get(.Gb);
+  static final Db = get(.Db);
+  static final Ab = get(.Ab);
+  static final Eb = get(.Eb);
+  static final Bb = get(.Bb);
+  static final F = get(.F);
+  static final C = get(.C);
+  static final G = get(.G);
+  static final D = get(.D);
+  static final A = get(.A);
+  static final E = get(.E);
+  static final B = get(.B);
+  static final Fs = get(.Fs);
 
   static String keyEnumToString(KeyEnum ke) {
     return ke.toString().split('.').last;
@@ -219,11 +219,11 @@ class Key implements Comparable<Key> {
     return null;
   }
 
-  static final trebleStaffTopPitch = Pitch.get(PitchEnum.F5);
+  static final trebleStaffTopPitch = Pitch.get(.F5);
   static final double trebleStaffTop = _staffSpacesFromA0(trebleStaffTopPitch);
-  static final bassStaffTopPitch = Pitch.get(PitchEnum.A3);
+  static final bassStaffTopPitch = Pitch.get(.A3);
   static final double bassStaffTop = _staffSpacesFromA0(bassStaffTopPitch);
-  static final bass8vbStaffTopPitch = Pitch.get(PitchEnum.A2);
+  static final bass8vbStaffTopPitch = Pitch.get(.A2);
   static final double bass8vbStaffTop = _staffSpacesFromA0(bass8vbStaffTopPitch);
 
   static double _staffSpacesFromA0(Pitch pitch) {
@@ -472,13 +472,13 @@ class Key implements Comparable<Key> {
 
     //  deal with exceptions
     switch (keyEnum) {
-      case KeyEnum.Gb:
-        if (scaleNote == ScaleNote.B) {
+      case .Gb:
+        if (scaleNote == .B) {
           return null;
         }
         break;
-      case KeyEnum.Fs:
-        if (scaleNote == ScaleNote.F) {
+      case .Fs:
+        if (scaleNote == .F) {
           return null;
         }
         break;
@@ -503,13 +503,13 @@ class Key implements Comparable<Key> {
 
     //  deal with exceptions
     switch (keyEnum) {
-      case KeyEnum.Gb:
-        if (scaleNote == ScaleNote.B) {
+      case .Gb:
+        if (scaleNote == .B) {
           return 'C';
         }
         break;
-      case KeyEnum.Fs:
-        if (scaleNote == ScaleNote.F) {
+      case .Fs:
+        if (scaleNote == .F) {
           return 'E';
         }
         break;
@@ -519,24 +519,24 @@ class Key implements Comparable<Key> {
 
     //  adjust the expressed accidental as required (i.e. if different)
     switch (keyScaleNote.accidental) {
-      case Accidental.natural:
+      case .natural:
         return scaleNote.toString();
-      case Accidental.sharp:
+      case .sharp:
         switch (scaleNote.accidental) {
-          case Accidental.natural:
+          case .natural:
             return scaleNote.scaleNoteString + MusicConstants.naturalChar;
-          case Accidental.sharp:
+          case .sharp:
             return scaleNote.scaleNoteString;
-          case Accidental.flat:
+          case .flat:
             return scaleNote.scaleNoteString + MusicConstants.flatChar;
         }
-      case Accidental.flat:
+      case .flat:
         switch (scaleNote.accidental) {
-          case Accidental.natural:
+          case .natural:
             return scaleNote.scaleNoteString + MusicConstants.naturalChar;
-          case Accidental.sharp:
+          case .sharp:
             return scaleNote.scaleNoteString + MusicConstants.sharpChar;
-          case Accidental.flat:
+          case .flat:
             return scaleNote.scaleNoteString;
         }
     }
@@ -553,10 +553,10 @@ class Key implements Comparable<Key> {
   ScaleNote getScaleNoteByHalfStep(int halfSteps) {
     ScaleNote ret = _getScaleNoteByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
-    if (keyValue == 6 && ret == ScaleNote.F) {
-      return ScaleNote.Es;
-    } else if (keyValue == -6 && ret == ScaleNote.B) {
-      return ScaleNote.Cb;
+    if (keyValue == 6 && ret == .F) {
+      return .Es;
+    } else if (keyValue == -6 && ret == .B) {
+      return .Cb;
     }
     return ret;
   }
@@ -571,10 +571,10 @@ class Key implements Comparable<Key> {
   ScaleNote getScaleNoteEnum3ByHalfStep(int halfSteps) {
     ScaleNote ret = _getScaleNoteEnum3ByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
-    if (keyValue == 6 && ret == ScaleNote.F) {
-      return ScaleNote.Es;
-    } else if (keyValue == -6 && ret == ScaleNote.B) {
-      return ScaleNote.Cb;
+    if (keyValue == 6 && ret == .F) {
+      return .Es;
+    } else if (keyValue == -6 && ret == .B) {
+      return .Cb;
     }
     return ret;
   }
@@ -708,18 +708,18 @@ class Key implements Comparable<Key> {
   //   ChordDescriptor.minor7b5, //  6 + 1 = 7
   // ];
   static const List<KeyEnum> _flatKeyEnumsByHalfStep = <KeyEnum>[
-    KeyEnum.A,
-    KeyEnum.Bb,
-    KeyEnum.B,
-    KeyEnum.C,
-    KeyEnum.Db,
-    KeyEnum.D,
-    KeyEnum.Eb,
-    KeyEnum.E,
-    KeyEnum.F,
-    KeyEnum.Gb, //  the problem child, is it F#?
-    KeyEnum.G,
-    KeyEnum.Ab
+        .A,
+        .Bb,
+        .B,
+        .C,
+        .Db,
+        .D,
+        .Eb,
+        .E,
+        .F,
+        .Gb, //  the problem child, is it F#?
+        .G,
+        .Ab
   ];
 
   static const int halfStepsPerOctave = MusicConstants.halfStepsPerOctave;

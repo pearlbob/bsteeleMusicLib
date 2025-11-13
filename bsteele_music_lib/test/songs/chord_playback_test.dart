@@ -9,7 +9,7 @@ import 'package:bsteele_music_lib/songs/scale_note.dart';
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 
-Pitch _atOrAbove = Pitch.get(PitchEnum.A3);
+Pitch _atOrAbove = Pitch.get(.A3);
 
 String _stringChord(Chord? chord) {
   if (chord == null) throw 'null chord';
@@ -67,7 +67,7 @@ void main() {
           ScaleChord scaleChord = ScaleChord(pitch.getScaleNote(), chordDescriptor);
 
           ChordAnticipationOrDelay anticipationOrDelay =
-              ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
+          ChordAnticipationOrDelay.get(.none);
 
           ScaleNote slashScaleNote = pitch.getScaleNote();
 

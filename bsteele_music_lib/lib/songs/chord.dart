@@ -245,7 +245,7 @@ class Chord implements Comparable<Chord> {
   ChordAnticipationOrDelay get anticipationOrDelay => _anticipationOrDelay;
   late final ChordAnticipationOrDelay _anticipationOrDelay;
 
-  static final minimumPianoRootPitch = Pitch.get(PitchEnum.A3); //  the A below middle C, i.e. C4.
-  static final minimumPianoSlashPitch = Pitch.get(PitchEnum.E2); // bottom of piano bass clef
-  static final minimumBassSlashPitch = Pitch.get(PitchEnum.E1); //  the low E of a bass guitar
+  static final minimumPianoRootPitch = Pitch.get(.A3); //  the A below middle C, i.e. C4.
+  static final minimumPianoSlashPitch = Pitch.get(.E2); // bottom of piano bass clef
+  static final minimumBassSlashPitch = Pitch.get(.E1); //  the low E of a bass guitar
 }

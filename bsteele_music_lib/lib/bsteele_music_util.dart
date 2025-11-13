@@ -28,7 +28,6 @@ import 'songs/chord_section.dart';
 import 'songs/key.dart';
 import 'songs/music_constants.dart';
 import 'songs/scale_chord.dart';
-import 'songs/section.dart';
 import 'songs/song.dart';
 import 'songs/song_id.dart';
 import 'songs/song_metadata.dart';
@@ -1441,11 +1440,11 @@ coerced to reflect the songlist's last modification for that song.
 
               for (ChordSection chordSection in chordSections) {
                 switch (chordSection.sectionVersion.section.sectionEnum) {
-                  case SectionEnum.intro:
-                  case SectionEnum.outro:
-                  case SectionEnum.tag:
-                  case SectionEnum.coda:
-                  case SectionEnum.bridge:
+                  case .intro:
+                  case .outro:
+                  case .tag:
+                  case .coda:
+                  case .bridge:
                     break;
                   default:
                     if (firstChordSection == null) {

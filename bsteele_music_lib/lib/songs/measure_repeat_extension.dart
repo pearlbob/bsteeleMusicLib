@@ -10,15 +10,15 @@ class MeasureRepeatExtension extends MeasureComment {
     }
 
     switch (marker) {
-      case ChordSectionLocationMarker.repeatUpperRight:
+      case .repeatUpperRight:
         return upperRightMeasureRepeatExtension;
-      case ChordSectionLocationMarker.repeatMiddleRight:
+      case .repeatMiddleRight:
         return middleRightMeasureRepeatExtension;
-      case ChordSectionLocationMarker.repeatLowerRight:
+      case .repeatLowerRight:
         return lowerRightMeasureRepeatExtension;
-      case ChordSectionLocationMarker.repeatOnOneLineRight:
+      case .repeatOnOneLineRight:
         return onOneLineRightMeasureRepeatExtension;
-      case ChordSectionLocationMarker.none:
+      case .none:
         return nullMeasureRepeatExtension;
     }
   }
@@ -26,7 +26,7 @@ class MeasureRepeatExtension extends MeasureComment {
   MeasureRepeatExtension(this.marker, this.markerString) : super.zeroArgs();
 
   @override
-  MeasureNodeType get measureNodeType => MeasureNodeType.decoration;
+  MeasureNodeType get measureNodeType => .decoration;
 
   @override
   @Deprecated('dont use this')
@@ -66,15 +66,15 @@ class MeasureRepeatExtension extends MeasureComment {
   // static final String _lowerLeft = '\u23A3';
   static const String _extension = '\u23A5'; // ⎥
   static final MeasureRepeatExtension upperRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatUpperRight, _upperRight);
+  MeasureRepeatExtension(.repeatUpperRight, _upperRight);
   static final MeasureRepeatExtension middleRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatMiddleRight, _extension);
+  MeasureRepeatExtension(.repeatMiddleRight, _extension);
   static final MeasureRepeatExtension lowerRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatLowerRight, _lowerRight);
+  MeasureRepeatExtension(.repeatLowerRight, _lowerRight);
   static final MeasureRepeatExtension onOneLineRightMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.repeatOnOneLineRight, ']');
+  MeasureRepeatExtension(.repeatOnOneLineRight, ']');
   static final MeasureRepeatExtension nullMeasureRepeatExtension =
-      MeasureRepeatExtension(ChordSectionLocationMarker.none, '');
+  MeasureRepeatExtension(.none, '');
 
   final ChordSectionLocationMarker marker;
   final String markerString;

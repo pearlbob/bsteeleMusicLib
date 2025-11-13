@@ -55,23 +55,23 @@ void main() {
     {
       //  let's start with a sane key
       var key = Key.C;
-      expect(key.transpose(ScaleNote.Fs, 3), ScaleNote.A);
-      expect(key.transpose(ScaleNote.Fs, 2), ScaleNote.Ab);
-      expect(key.transpose(ScaleNote.Fs, 1), ScaleNote.G);
-      expect(key.transpose(ScaleNote.Fs, 0), ScaleNote.Gb);
-      expect(key.transpose(ScaleNote.Fs, -1), ScaleNote.F);
-      expect(key.transpose(ScaleNote.Fs, -2), ScaleNote.E);
+      expect(key.transpose(.Fs, 3), ScaleNote.A);
+      expect(key.transpose(.Fs, 2), ScaleNote.Ab);
+      expect(key.transpose(.Fs, 1), ScaleNote.G);
+      expect(key.transpose(.Fs, 0), ScaleNote.Gb);
+      expect(key.transpose(.Fs, -1), ScaleNote.F);
+      expect(key.transpose(.Fs, -2), ScaleNote.E);
 
       //  E F Gb G Ab A
-      expect(key.transpose(ScaleNote.A, -4), ScaleNote.F);
-      expect(key.transpose(ScaleNote.A, -3), ScaleNote.Gb);
-      expect(key.transpose(ScaleNote.A, -2), ScaleNote.G);
-      expect(key.transpose(ScaleNote.A, -1), ScaleNote.Ab);
-      expect(key.transpose(ScaleNote.A, 0), ScaleNote.A);
-      expect(key.transpose(ScaleNote.A, 1), ScaleNote.Bb);
-      expect(key.transpose(ScaleNote.A, 2), ScaleNote.B);
-      expect(key.transpose(ScaleNote.A, 3), ScaleNote.C);
-      expect(key.transpose(ScaleNote.A, 4), ScaleNote.Db);
+      expect(key.transpose(.A, -4), ScaleNote.F);
+      expect(key.transpose(.A, -3), ScaleNote.Gb);
+      expect(key.transpose(.A, -2), ScaleNote.G);
+      expect(key.transpose(.A, -1), ScaleNote.Ab);
+      expect(key.transpose(.A, 0), ScaleNote.A);
+      expect(key.transpose(.A, 1), ScaleNote.Bb);
+      expect(key.transpose(.A, 2), ScaleNote.B);
+      expect(key.transpose(.A, 3), ScaleNote.C);
+      expect(key.transpose(.A, 4), ScaleNote.Db);
 
       expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Gb);
       expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
@@ -80,22 +80,22 @@ void main() {
     {
       //  let's start with another sane key, even if it's flat
       var key = Key.F;
-      expect(key.transpose(ScaleNote.Fs, 3), ScaleNote.A);
-      expect(key.transpose(ScaleNote.Fs, 2), ScaleNote.Ab);
-      expect(key.transpose(ScaleNote.Fs, 1), ScaleNote.G);
-      expect(key.transpose(ScaleNote.Fs, 0), ScaleNote.Gb);
-      expect(key.transpose(ScaleNote.Fs, -1), ScaleNote.F);
-      expect(key.transpose(ScaleNote.Fs, -2), ScaleNote.E);
+      expect(key.transpose(.Fs, 3), ScaleNote.A);
+      expect(key.transpose(.Fs, 2), ScaleNote.Ab);
+      expect(key.transpose(.Fs, 1), ScaleNote.G);
+      expect(key.transpose(.Fs, 0), ScaleNote.Gb);
+      expect(key.transpose(.Fs, -1), ScaleNote.F);
+      expect(key.transpose(.Fs, -2), ScaleNote.E);
 
-      expect(key.transpose(ScaleNote.A, -4), ScaleNote.F);
-      expect(key.transpose(ScaleNote.A, -3), ScaleNote.Gb);
-      expect(key.transpose(ScaleNote.A, -2), ScaleNote.G);
-      expect(key.transpose(ScaleNote.A, -1), ScaleNote.Ab);
-      expect(key.transpose(ScaleNote.A, 0), ScaleNote.A);
-      expect(key.transpose(ScaleNote.A, 1), ScaleNote.Bb);
-      expect(key.transpose(ScaleNote.A, 2), ScaleNote.B);
-      expect(key.transpose(ScaleNote.A, 3), ScaleNote.C);
-      expect(key.transpose(ScaleNote.A, 4), ScaleNote.Db);
+      expect(key.transpose(.A, -4), ScaleNote.F);
+      expect(key.transpose(.A, -3), ScaleNote.Gb);
+      expect(key.transpose(.A, -2), ScaleNote.G);
+      expect(key.transpose(.A, -1), ScaleNote.Ab);
+      expect(key.transpose(.A, 0), ScaleNote.A);
+      expect(key.transpose(.A, 1), ScaleNote.Bb);
+      expect(key.transpose(.A, 2), ScaleNote.B);
+      expect(key.transpose(.A, 3), ScaleNote.C);
+      expect(key.transpose(.A, 4), ScaleNote.Db);
 
       expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Gb);
       expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
@@ -104,22 +104,22 @@ void main() {
     {
       //  let's start with another sane key, even if it's sharp
       var key = Key.G;
-      expect(key.transpose(ScaleNote.Fs, 3), ScaleNote.A);
-      expect(key.transpose(ScaleNote.Fs, 2), ScaleNote.Gs);
-      expect(key.transpose(ScaleNote.Fs, 1), ScaleNote.G);
-      expect(key.transpose(ScaleNote.Fs, 0), ScaleNote.Fs);
-      expect(key.transpose(ScaleNote.Fs, -1), ScaleNote.F);
-      expect(key.transpose(ScaleNote.Fs, -2), ScaleNote.E);
+      expect(key.transpose(.Fs, 3), ScaleNote.A);
+      expect(key.transpose(.Fs, 2), ScaleNote.Gs);
+      expect(key.transpose(.Fs, 1), ScaleNote.G);
+      expect(key.transpose(.Fs, 0), ScaleNote.Fs);
+      expect(key.transpose(.Fs, -1), ScaleNote.F);
+      expect(key.transpose(.Fs, -2), ScaleNote.E);
 
-      expect(key.transpose(ScaleNote.A, -4), ScaleNote.F);
-      expect(key.transpose(ScaleNote.A, -3), ScaleNote.Fs);
-      expect(key.transpose(ScaleNote.A, -2), ScaleNote.G);
-      expect(key.transpose(ScaleNote.A, -1), ScaleNote.Gs);
-      expect(key.transpose(ScaleNote.A, 0), ScaleNote.A);
-      expect(key.transpose(ScaleNote.A, 1), ScaleNote.As);
-      expect(key.transpose(ScaleNote.A, 2), ScaleNote.B);
-      expect(key.transpose(ScaleNote.A, 3), ScaleNote.C);
-      expect(key.transpose(ScaleNote.A, 4), ScaleNote.Cs);
+      expect(key.transpose(.A, -4), ScaleNote.F);
+      expect(key.transpose(.A, -3), ScaleNote.Fs);
+      expect(key.transpose(.A, -2), ScaleNote.G);
+      expect(key.transpose(.A, -1), ScaleNote.Gs);
+      expect(key.transpose(.A, 0), ScaleNote.A);
+      expect(key.transpose(.A, 1), ScaleNote.As);
+      expect(key.transpose(.A, 2), ScaleNote.B);
+      expect(key.transpose(.A, 3), ScaleNote.C);
+      expect(key.transpose(.A, 4), ScaleNote.Cs);
 
       expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Fs);
       expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
@@ -128,19 +128,19 @@ void main() {
     }
     {
       var key = Key.Fs;
-      expect(key.transpose(ScaleNote.Fs, 3), ScaleNote.A);
-      expect(key.transpose(ScaleNote.Fs, 2), ScaleNote.Gs);
-      expect(key.transpose(ScaleNote.Fs, 1), ScaleNote.G);
-      expect(key.transpose(ScaleNote.Fs, 0), ScaleNote.Fs);
-      expect(key.transpose(ScaleNote.Fs, -1), ScaleNote.Es);
-      expect(key.transpose(ScaleNote.Fs, -2), ScaleNote.E);
-      expect(key.transpose(ScaleNote.A, -3), ScaleNote.Fs);
-      expect(key.transpose(ScaleNote.A, -4), ScaleNote.Es);
-      expect(key.transpose(ScaleNote.A, 0), ScaleNote.A);
-      expect(key.transpose(ScaleNote.A, 1), ScaleNote.As);
-      expect(key.transpose(ScaleNote.A, 2), ScaleNote.B);
-      expect(key.transpose(ScaleNote.A, 3), ScaleNote.C);
-      expect(key.transpose(ScaleNote.A, 4), ScaleNote.Cs);
+      expect(key.transpose(.Fs, 3), ScaleNote.A);
+      expect(key.transpose(.Fs, 2), ScaleNote.Gs);
+      expect(key.transpose(.Fs, 1), ScaleNote.G);
+      expect(key.transpose(.Fs, 0), ScaleNote.Fs);
+      expect(key.transpose(.Fs, -1), ScaleNote.Es);
+      expect(key.transpose(.Fs, -2), ScaleNote.E);
+      expect(key.transpose(.A, -3), ScaleNote.Fs);
+      expect(key.transpose(.A, -4), ScaleNote.Es);
+      expect(key.transpose(.A, 0), ScaleNote.A);
+      expect(key.transpose(.A, 1), ScaleNote.As);
+      expect(key.transpose(.A, 2), ScaleNote.B);
+      expect(key.transpose(.A, 3), ScaleNote.C);
+      expect(key.transpose(.A, 4), ScaleNote.Cs);
 
       expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Fs);
       expect(key.getScaleNoteByHalfStep(-4), ScaleNote.Es);
@@ -148,19 +148,19 @@ void main() {
     }
     {
       var key = Key.Gb;
-      expect(key.transpose(ScaleNote.Fs, 3), ScaleNote.A);
-      expect(key.transpose(ScaleNote.Fs, 2), ScaleNote.Ab);
-      expect(key.transpose(ScaleNote.Fs, 1), ScaleNote.G);
-      expect(key.transpose(ScaleNote.Fs, 0), ScaleNote.Gb);
-      expect(key.transpose(ScaleNote.Fs, -1), ScaleNote.F);
-      expect(key.transpose(ScaleNote.Fs, -2), ScaleNote.E);
-      expect(key.transpose(ScaleNote.A, -3), ScaleNote.Gb);
-      expect(key.transpose(ScaleNote.A, -4), ScaleNote.F);
-      expect(key.transpose(ScaleNote.A, 0), ScaleNote.A);
-      expect(key.transpose(ScaleNote.A, 1), ScaleNote.Bb);
-      expect(key.transpose(ScaleNote.A, 2), ScaleNote.Cb);
-      expect(key.transpose(ScaleNote.A, 3), ScaleNote.C);
-      expect(key.transpose(ScaleNote.A, 4), ScaleNote.Db);
+      expect(key.transpose(.Fs, 3), ScaleNote.A);
+      expect(key.transpose(.Fs, 2), ScaleNote.Ab);
+      expect(key.transpose(.Fs, 1), ScaleNote.G);
+      expect(key.transpose(.Fs, 0), ScaleNote.Gb);
+      expect(key.transpose(.Fs, -1), ScaleNote.F);
+      expect(key.transpose(.Fs, -2), ScaleNote.E);
+      expect(key.transpose(.A, -3), ScaleNote.Gb);
+      expect(key.transpose(.A, -4), ScaleNote.F);
+      expect(key.transpose(.A, 0), ScaleNote.A);
+      expect(key.transpose(.A, 1), ScaleNote.Bb);
+      expect(key.transpose(.A, 2), ScaleNote.Cb);
+      expect(key.transpose(.A, 3), ScaleNote.C);
+      expect(key.transpose(.A, 4), ScaleNote.Db);
 
       expect(key.getScaleNoteByHalfStep(-3), ScaleNote.Gb);
       expect(key.getScaleNoteByHalfStep(-4), ScaleNote.F);
@@ -331,9 +331,9 @@ void main() {
     Key key;
 
     _scaleChords = [];
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Gb));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Cb));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Db, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Gb));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Cb));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Db, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(key.getKeyScaleNote(), ScaleNote.Gb);
 
@@ -346,30 +346,30 @@ void main() {
     expect(key.getKeyScaleNote(), ScaleNote.Gb);
 
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.C));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.F));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.C));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.F));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.G, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.C, key.getKeyScaleNote());
 
     //  1     2   3    4    5    6     7
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Db));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Gb));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Ab, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Db));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Gb));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Ab, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Db, key.getKeyScaleNote());
 
     //  1     2   3    4    5    6     7
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Cs));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Cs));
     _scaleChordAdd(ScaleChord.parseString('F#'));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Gs, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Gs, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Db, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Bb, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Bb, ChordDescriptor.minor));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Db, key.getKeyScaleNote());
 
@@ -378,15 +378,15 @@ void main() {
     //  B    C♯m  D♯m  E    F♯7  G♯m  A♯m7b5
     //  E    F♯m  G♯m  A    B7   C♯m  D♯m7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.A));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Fs, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.B, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.A));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Fs, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.B, ChordDescriptor.minor));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.B, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.E, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.E, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.E, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.D, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.D, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.A, key.getKeyScaleNote());
 
@@ -394,13 +394,13 @@ void main() {
     //  E♭   Fm   Gm   A♭   B♭7  Cm   Dm7b5
     //  F    Gm   Am   B♭   C7   Dm   Em7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Ab));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.F, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Bb, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Ab));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.F, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.G, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Bb, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.F, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Eb, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Eb, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Eb, key.getKeyScaleNote());
 
@@ -408,12 +408,12 @@ void main() {
     //  C    Dm   Em   F    G7   Am   Bm7b5
     //  A    Bm   C♯m  D    E7   F♯m  G♯m7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.A, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.D, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.E, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.A, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.D, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.E, ChordDescriptor.minor));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.A, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.G, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.G, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.D, key.getKeyScaleNote());
 
@@ -422,12 +422,12 @@ void main() {
     //  E    F♯m  G♯m  A    B7   C♯m  D♯m7b5
     //  E♭   Fm   Gm   A♭   B♭7  Cm   Dm7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Gs, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Ds, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.E));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Gs, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Ds, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.E));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Eb, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Fs, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Fs, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.E, key.getKeyScaleNote());
 
@@ -436,13 +436,13 @@ void main() {
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     //  E♭   Fm   Gm   A♭   B♭7  Cm   Dm7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Bb, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Bb, ChordDescriptor.minor));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Bb, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Ab, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Ab, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Ab, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Db, ChordDescriptor.dominant7));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Db, ChordDescriptor.dominant7));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Ab, key.getKeyScaleNote());
 
@@ -450,11 +450,11 @@ void main() {
     //  A♭   B♭m  Cm   D♭   E♭7  Fm   Gm7b5
     //  D♭   E♭m  Fm   G♭   A♭7  B♭m  Cm7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Bb, ChordDescriptor.minor));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Db));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Bb, ChordDescriptor.minor));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Db));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Db, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.Ab));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.Ab));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.Ab, key.getKeyScaleNote());
 
@@ -462,12 +462,12 @@ void main() {
     //  G    Am   Bm   C    D7   Em   F♯m7b5
     //  D    Em   F♯m  G    A7   Bm   C♯m7b5
     _scaleChords.clear();
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.D));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.A));
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.G));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.D));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.A));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.G));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.D, key.getKeyScaleNote());
-    _scaleChords.add(ScaleChord.fromScaleNoteEnum(ScaleNote.C));
+    _scaleChords.add(ScaleChord.fromScaleNoteEnum(.C));
     key = Key.guessKey(_scaleChords);
     expect(ScaleNote.G, key.getKeyScaleNote());
   });
@@ -619,59 +619,59 @@ void main() {
     // }
 
     //  middle c is at the first lower stave of the treble clef staff
-    expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.C4)), 5);
+    expect(Key.getStaffPosition(Clef.treble, Pitch.get(.C4)), 5);
 
-    expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.G5)), -0.5);
-    expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.C5)), 1.5);
-    expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.G4)), 3);
-    expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.D4)), 4.5);
-    expect(Key.getStaffPosition(Clef.treble, Pitch.get(PitchEnum.Ds4)), 4.5);
+    expect(Key.getStaffPosition(Clef.treble, Pitch.get(.G5)), -0.5);
+    expect(Key.getStaffPosition(Clef.treble, Pitch.get(.C5)), 1.5);
+    expect(Key.getStaffPosition(Clef.treble, Pitch.get(.G4)), 3);
+    expect(Key.getStaffPosition(Clef.treble, Pitch.get(.D4)), 4.5);
+    expect(Key.getStaffPosition(Clef.treble, Pitch.get(.Ds4)), 4.5);
 
     //  this bass clef algorithm is for piano!
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.C4)), -1);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.C4)), -1);
 
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.B3)), -0.5);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Bb3)), -0.5);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.A3)), 0);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.As3)), 0);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gs3)), 1 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.G3)), 1 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.F3)), 2 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E3)), 3 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.D3)), 4 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.C3)), 5 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.B2)), 6 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.A2)), 7 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gs2)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.G2)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Gb2)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.F2)), 9 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Fb2)), 9 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.Es2)), 10 / 2);
-    expect(Key.getStaffPosition(Clef.bass, Pitch.get(PitchEnum.E2)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.B3)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.Bb3)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.A3)), 0);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.As3)), 0);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.Gs3)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.G3)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.F3)), 2 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.E3)), 3 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.D3)), 4 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.C3)), 5 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.B2)), 6 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.A2)), 7 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.Gs2)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.G2)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.Gb2)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.F2)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.Fb2)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.Es2)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass, Pitch.get(.E2)), 10 / 2);
 
     //  this bass clef algorithm is for bass!   not piano!
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.C3)), -1);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.C3)), -1);
 
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.B2)), -0.5);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Bb2)), -0.5);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.A2)), 0);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.As2)), 0);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Gs2)), 1 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.G2)), 1 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.F2)), 2 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.E2)), 3 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.D2)), 4 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.C2)), 5 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.B1)), 6 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.A1)), 7 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Gs1)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.G1)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Gb1)), 8 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.F1)), 9 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Fb1)), 9 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.Es1)), 10 / 2);
-    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(PitchEnum.E1)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.B2)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.Bb2)), -0.5);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.A2)), 0);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.As2)), 0);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.Gs2)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.G2)), 1 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.F2)), 2 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.E2)), 3 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.D2)), 4 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.C2)), 5 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.B1)), 6 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.A1)), 7 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.Gs1)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.G1)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.Gb1)), 8 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.F1)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.Fb1)), 9 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.Es1)), 10 / 2);
+    expect(Key.getStaffPosition(Clef.bass8vb, Pitch.get(.E1)), 10 / 2);
 
     int i = 0;
     for (Pitch pitch in Pitch.flats) {
@@ -849,8 +849,8 @@ void main() {
   test('test key.inKey()', () {
     {
       Key key = Key.Gb;
-      logger.i('B in Gb: ${key.inKey(ScaleNote.B)}');
-      logger.i('B tran in Gb: ${key.transpose(ScaleNote.B, 0)}');
+      logger.i('B in Gb: ${key.inKey(.B)}');
+      logger.i('B tran in Gb: ${key.transpose(.B, 0)}');
     }
 
     for (final key in Key.values) {

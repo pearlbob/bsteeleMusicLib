@@ -26,11 +26,11 @@ enum SongUpdateState {
 
   factory SongUpdateState.fromName(final String name) {
     //  workaround for old historical value: manualPlay
-    if (name == 'manualPlay') return SongUpdateState.playing;
+    if (name == 'manualPlay') return .playing;
     try {
       return SongUpdateState.values.byName(name);
     } catch (e) {
-      return SongUpdateState.none;
+      return .none;
     }
   }
 }
@@ -55,7 +55,7 @@ class SongUpdate {
     int? beatsPerMeasure,
     int? currentBeatsPerMinute,
     Key? currentKey,
-  }) : state = state ?? SongUpdateState.idle,
+  }) : state = state ?? .idle,
        user = user ?? 'unknown',
        singer = singer ?? unknownSinger,
        momentNumber = momentNumber ?? 0,

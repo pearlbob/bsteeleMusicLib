@@ -94,7 +94,7 @@ void main() {
             '       D C GB GbB \n'
             'C: F F# G G# Ab A Bb B C O: C C C C B',
         rawLyrics: 'i:\nv: bob, bob, bob berand\nv1: lala \nv2: sosos \nc: sing chorus here \no:');
-    Section section = Section.get(SectionEnum.verse);
+    Section section = Section.get(.verse);
     int v = 1;
     SectionVersion sectionVersion = SectionVersion(section, v);
 
@@ -120,7 +120,7 @@ void main() {
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 1, measureIndex: 4234)), isNull);
 
     //  no Ch1:
-    section = Section.get(SectionEnum.chorus);
+    section = Section.get(.chorus);
     sectionVersion = SectionVersion(section, v);
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 0)), isNull);
 
@@ -134,7 +134,7 @@ void main() {
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 8)),
         Measure.parseString('C', beatsPerBar)); //  no end of row
 
-    sectionVersion = SectionVersion(Section.get(SectionEnum.outro), 0);
+    sectionVersion = SectionVersion(Section.get(.outro), 0);
     expect(Measure.parseString('B', beatsPerBar),
         a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 4)));
     expect(a.findMeasureNodeByLocation(ChordSectionLocation(sectionVersion, phraseIndex: 0, measureIndex: 5)), isNull);

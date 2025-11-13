@@ -108,10 +108,9 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
 
   /// for JSON serialization only
   ChordAnticipationOrDelay()
-      : shortName = '',
-        chordAnticipationOrDelayEnum = ChordAnticipationOrDelayEnum.none;
+      : shortName = '', chordAnticipationOrDelayEnum = .none;
 
-  static ChordAnticipationOrDelay get defaultValue => ChordAnticipationOrDelay.get(ChordAnticipationOrDelayEnum.none);
+  static ChordAnticipationOrDelay get defaultValue => ChordAnticipationOrDelay.get(.none);
 
   @override
   int compareTo(ChordAnticipationOrDelay other) {
@@ -121,8 +120,7 @@ class ChordAnticipationOrDelay implements Comparable<ChordAnticipationOrDelay> {
   Map<String, dynamic> toJson() => {'chordAnticipationOrDelayEnum': chordAnticipationOrDelayEnum.name};
 
   factory ChordAnticipationOrDelay.fromJson(Map<String, dynamic> json) {
-    return ChordAnticipationOrDelay.get(
-        ChordAnticipationOrDelayEnum.values.firstWhere((e) => e.name == json['chordAnticipationOrDelayEnum']));
+    return ChordAnticipationOrDelay.get(.values.firstWhere((e) => e.name == json['chordAnticipationOrDelayEnum']));
   }
 
   @override
