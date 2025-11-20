@@ -1242,7 +1242,7 @@ coerced to reflect the songlist's last modification for that song.
           final fileName = args[argCount].replaceAllMapped(RegExp(r'.*/'), (match) => '');
 
           var json = _jsonDecoder.convert(jsonFile.readAsStringSync());
-          // print(encoder.convert(json));
+          // print(_jsonEncoder.convert(json));
 
           File outFile = File('${Util.homePath()}/$_junkRelativeDirectory/$fileName');
           print('outFile: $outFile');
@@ -2056,8 +2056,9 @@ coerced to reflect the songlist's last modification for that song.
             //  update selected song list data
             logger.i('');
             logger.i('changed tags:');
+
             const longVersion = true;
-            // final yearPattern = RegExp(r'\d{4}');
+
             for (var song in allSongs) {
               if (otherSongs.contains(song)) {
                 try {
@@ -2065,36 +2066,48 @@ coerced to reflect the songlist's last modification for that song.
                     return otherSong.compareBySongId(song) == 0;
                   });
                   String out = '';
-                  song.fileName = otherSong.fileName;
-                  song.lastModifiedTime = otherSong.lastModifiedTime;
-                  if (song.key != otherSong.key) {
-                    if (longVersion) out += '   key: ${song.key} vs ${otherSong.key}\n';
-                    song.key = otherSong.key;
-                  }
-                  if (song.timeSignature != otherSong.timeSignature) {
-                    if (longVersion) out += '   timeSignature: ${song.timeSignature} vs ${otherSong.timeSignature}\n';
-                    //  not done
-                  }
-                  if (song.beatsPerMinute != otherSong.beatsPerMinute) {
-                    if (longVersion) {
-                      out += '   beatsPerMinute: ${song.beatsPerMinute} vs ${otherSong.beatsPerMinute}\n';
-                    }
-                    song.beatsPerMinute = otherSong.beatsPerMinute;
-                  }
+                  //  note: title, artist and cover artist are part of the id so they will match
+
                   if (song.user == 'Unknown' || song.user == 'Shari') {
                     song.user = 'Shari C.';
                   }
-                  if (song
-                      .copyright
-                      .isEmpty //|| yearPattern.firstMatch(song.copyright) == null
-                      ) {
-                    if (longVersion) {
-                      out += '   copyright: "${song.copyright}" vs "${otherSong.copyright}"\n';
-                    }
-                  }
                   if (song.user != otherSong.user) {
-                    if (longVersion) out += '   user: ${song.user} vs ${otherSong.user}\n';
+                    if (longVersion) out += '   user: was ${song.user} vs ${otherSong.user}\n';
+                    song.user = otherSong.user;
                   }
+
+                  song.fileName = otherSong.fileName;
+                  song.lastModifiedTime = otherSong.lastModifiedTime;
+
+                  if (song.copyright.isEmpty) {
+                    if (longVersion) {
+                      out += '   copyright: was "${song.copyright}" vs "${otherSong.copyright}"\n';
+                    }
+                    song.copyright = otherSong.copyright;
+                  }
+
+                  if (song.key != otherSong.key) {
+                    if (longVersion) {
+                      out += '   key: was ${song.key} vs ${otherSong.key}\n';
+                    }
+                    song.key = otherSong.key;
+                  }
+
+                  if (song.beatsPerMinute != otherSong.beatsPerMinute) {
+                    if (longVersion) {
+                      out += '   beatsPerMinute: was ${song.beatsPerMinute} vs ${otherSong.beatsPerMinute}\n';
+                    }
+                    song.beatsPerMinute = otherSong.beatsPerMinute;
+                  }
+
+                  if (song.timeSignature != otherSong.timeSignature) {
+                    if (longVersion) {
+                      out += '   timeSignature: was ${song.timeSignature} vs ${otherSong.timeSignature}\n';
+                    }
+                    song.timeSignature = otherSong.timeSignature;
+                  }
+
+                  //  as per Shari
                   song.chords = otherSong.chords;
                   song.rawLyrics = otherSong.rawLyrics;
                   if (out.isNotEmpty) {
@@ -2118,9 +2131,88 @@ coerced to reflect the songlist's last modification for that song.
             }
 
             logger.i('');
+            logger.i('possible copyright issues:');
+            {
+              final RegExp yearRegexp = RegExp(r'(\d{4})');
+              final RegExp publicDomainRegexp = RegExp(r'public domain', caseSensitive: false);
+              final RegExp bluesRegexp = RegExp(r'blues', caseSensitive: false);
+              for (var song in allSongs) {
+                var copyright = song.copyright;
+
+                //  exceptions:
+                if (song.artist == 'Vicki' ||
+                    song.artist == 'blues' ||
+                    publicDomainRegexp.firstMatch(copyright) != null ||
+                    bluesRegexp.firstMatch(copyright) != null ||
+                    song.artist.contains('Shari Cheves') ||
+                    song.artist.contains('Wolff')) {
+                  continue;
+                }
+
+                var m = yearRegexp.firstMatch(copyright);
+                if (m == null) {
+                  logger.i(
+                    '  ${song.title}, ${song.artist} ${song.coverArtist.isEmpty ? '' : 'cover by: ${song.coverArtist}'}'
+                    '\n     copyright: "$copyright"   (missing year)',
+                  );
+                } else if (copyright.length < 4 + 3) {
+                  logger.i(
+                    '  ${song.title}, ${song.artist} ${song.coverArtist.isEmpty ? '' : 'cover by: ${song.coverArtist}'}'
+                    '\n     copyright: "$copyright"   (likely too short)',
+                  );
+                }
+              }
+            }
+
+            //  odd measure durations
+            {
+              logger.i('');
+              logger.i('odd measure durations: ');
+              Song? lastSong;
+              for (var song in allSongs) {
+                SplayTreeSet<ChordSection> chordSections = SplayTreeSet()..addAll(song.getChordSections());
+                for (ChordSection chordSection in chordSections) {
+                  for (var phrase in chordSection.phrases) {
+                    for (int m = 0; m < phrase.phraseMeasureCount; m++) {
+                      var measure = phrase.phraseMeasureAt(m);
+                      measure = measure!;
+                      if (measure.beatCount < song.beatsPerBar) {
+                        if ((measure.beatCount / song.beatsPerBar - 0.5).abs() < 0.00001) {
+                          //  even split
+                        } else {
+                          if (lastSong != song) {
+                            logger.i('$song:');
+                          }
+                          lastSong = song;
+
+                          logger.i(
+                            '    ${chordSection.sectionVersion}, phrase: ${phrase.phraseIndex}, measure: $m:  '
+                            '"$measure"'
+                            ', beats: ${measure.beatCount} of ${song.beatsPerBar}',
+                          );
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            //  write the expected output file
+            logger.i('');
             logger.i('allSongs.length: ${allSongs.length}');
-            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/shari_allSongs.songlyrics');
-            await outputFile.writeAsString(Song.listToJson(allSongs.toList()), flush: true);
+            {
+              var json = _jsonDecoder.convert(Song.listToJson(allSongs.toList()));
+              File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/updated_allSongs.songlyrics');
+              outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
+            }
+
+            //  write the input file sorted by song
+            {
+              var json = _jsonDecoder.convert(Song.listToJson(otherSongs.toList()));
+              File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_allSongs.songlyrics');
+              outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
+            }
           }
           break;
 
