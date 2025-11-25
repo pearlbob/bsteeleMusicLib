@@ -48,6 +48,7 @@ const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
 final _allSongsMetadataFile = File('${Util.homePath()}/$_allSongDirectory/allSongs.songmetadata');
 AllSongPerformances _allSongPerformances = AllSongPerformances();
+final _downloadsDirectory = '${Util.homePath()}/Downloads';
 final _messagePattern = RegExp(r'(.*)\s+INFO\s+.*\s+onMessage\("\s*(.*)\s*"\)');
 
 const _logFiles = Level.debug;
@@ -101,6 +102,7 @@ arguments:
 -f                  force file writes over existing files
 -h                  this help message
 -html               HTML song list
+-jamble             Jamble sync
 -json {file}        pretty print a json file
 -list               list all songs
 -longlyrics         select for songs  with long lyrics lines
@@ -116,7 +118,6 @@ arguments:
 -similar            list similar titled/artist/coverArtist songs
 -spreadsheet        generate history spreadsheet in excel
 -stat               statistics
--shari              shari cheap sync
 -tempo              tempo test
 -tomcat {catalina_base}  read the tomcat logs
 -url {url}          read the given url into the utility's allSongs list
@@ -2017,203 +2018,311 @@ coerced to reflect the songlist's last modification for that song.
           }
           break;
 
-        case '-shari':
-          logger.i('cjdiff:');
-          //  assert there is data in the songlist
-          if (allSongs.isEmpty) {
-            logger.e('initial song list is empty. try: ');
-            exit(-1);
-          }
-          logger.i('allSongs.length: ${allSongs.length}');
+        case '-jamble':
+          logger.i('jamble:');
 
-          //  assert there is another arg
-          if (argCount >= args.length - 1) {
-            logger.e('missing other file path for -cjdiff');
-            exit(-1);
-          }
-          argCount++;
+          // allSongs.clear();
+          // _addAllSongsFromFile(_allSongsFile);
+          //
+          // //  assert there is data in the existing song list
+          // if (allSongs.isEmpty) {
+          //   logger.e('initial song list is empty.');
+          //   exit(-1);
+          // }
+          // logger.i('allSongs.length: ${allSongs.length}');
+          //
+          // File? jambleSongListFile;
+          // {
+          //   final RegExp jambleSonglistRegexp = RegExp(
+          //     r'.*/JambleallSongs_\d{8}_\d{6}.songlyrics$',
+          //     caseSensitive: false,
+          //   );
+          //
+          //   for (var e in SplayTreeSet<FileSystemEntity>(
+          //     (key1, key2) => -key1.path.compareTo(key2.path),
+          //   )..addAll(Directory(_downloadsDirectory).listSync())) {
+          //     if (e is File && e.existsSync() && jambleSonglistRegexp.firstMatch(e.path) != null) {
+          //       jambleSongListFile = e;
+          //       break;
+          //     }
+          //   }
+          // }
+          // if (jambleSongListFile == null) {
+          //   logger.i('Missing the jambleSongListFile');
+          //   exit(-1);
+          // }
+          // logger.i('jambleSongListFile: $jambleSongListFile');
+          //
+          // SplayTreeSet<Song> jambleSongs = SplayTreeSet()..addAll(_songsFromFile(jambleSongListFile));
+          // logger.i('jambleSongs.length: ${jambleSongs.length}');
+          // assert(jambleSongs.length > 0);
+          //
+          // logger.i('');
+          // logger.i('replaced or missing songs:');
+          // SplayTreeMap<Song,Song> removeMap = SplayTreeMap();
+          // {
+          //   for (var song in allSongs) {
+          //     if (!jambleSongs.contains(song)) {
+          //       // logger.i('$song');
+          //
+          //       //  look for the best matching lyrics
+          //       var lyrics = song.lyricsAsString();
+          //       Song? best;
+          //       double bestSimilarity = 0;
+          //       for (var jambleSong in jambleSongs) {
+          //         double similarity = lyrics.similarityTo(jambleSong.lyricsAsString());
+          //         if (similarity >= bestSimilarity) {
+          //           best = jambleSong;
+          //           bestSimilarity = similarity;
+          //         }
+          //       }
+          //       // logger.i('  best match: $best,  $bestSimilarity');
+          //       if (bestSimilarity > 0.9) {
+          //         //  assume it's the same song
+          //         logger.i('$song\n    replaced by: $best  ($bestSimilarity)');
+          //         removeMap[song] = best!;
+          //       } else {
+          //         logger.i('$song NOT replaced by:\n   $best  ($bestSimilarity)');
+          //       }
+          //     }
+          //   }
+          //   allSongs.removeAll(removeMap.keys);
+          // }
+          //
+          // logger.i('');
+          // logger.i('added jamble songs:');
+          // for (var song in jambleSongs) {
+          //   if (!allSongs.contains(song)) {
+          //     logger.i('  $song');
+          //     allSongs.add(song);
+          //   }
+          // }
+          //
+          // //  update selected song list data
+          // logger.i('');
+          // logger.i('changed tags:');
+          //
+          // const longVersion = true;
+          //
+          // for (var song in allSongs) {
+          //   if (jambleSongs.contains(song)) {
+          //     try {
+          //       var otherSong = jambleSongs.firstWhere((otherSong) {
+          //         return otherSong.compareBySongId(song) == 0;
+          //       });
+          //       String out = '';
+          //       //  note: title, artist and cover artist are part of the id so they will match
+          //
+          //       if (song.user == 'Unknown' || song.user == 'Shari') {
+          //         song.user = 'Shari C.';
+          //       }
+          //       if (song.user != otherSong.user) {
+          //         if (longVersion) out += '   user: was ${song.user} vs ${otherSong.user}\n';
+          //         song.user = otherSong.user;
+          //       }
+          //
+          //       song.fileName = otherSong.fileName;
+          //       song.lastModifiedTime = otherSong.lastModifiedTime;
+          //
+          //       if (song.copyright.isEmpty) {
+          //         if (longVersion) {
+          //           out += '   copyright: was "${song.copyright}" vs "${otherSong.copyright}"\n';
+          //         }
+          //         song.copyright = otherSong.copyright;
+          //       }
+          //
+          //       if (song.key != otherSong.key) {
+          //         if (longVersion) {
+          //           out += '   key: was ${song.key} vs ${otherSong.key}\n';
+          //         }
+          //         song.key = otherSong.key;
+          //       }
+          //
+          //       if (song.beatsPerMinute != otherSong.beatsPerMinute) {
+          //         if (longVersion) {
+          //           out += '   beatsPerMinute: was ${song.beatsPerMinute} vs ${otherSong.beatsPerMinute}\n';
+          //         }
+          //         song.beatsPerMinute = otherSong.beatsPerMinute;
+          //       }
+          //
+          //       if (song.timeSignature != otherSong.timeSignature) {
+          //         if (longVersion) {
+          //           out += '   timeSignature: was ${song.timeSignature} vs ${otherSong.timeSignature}\n';
+          //         }
+          //         song.timeSignature = otherSong.timeSignature;
+          //       }
+          //
+          //       //  as per Shari
+          //       song.chords = otherSong.chords;
+          //       song.rawLyrics = otherSong.rawLyrics;
+          //       if (out.isNotEmpty) {
+          //         logger.i('$song:\n$out');
+          //       }
+          //     } catch (e) {
+          //       logger.i('   missing song: $song');
+          //     }
+          //   } else {
+          //     logger.i('$song:  not found in new song list\n');
+          //   }
+          // }
+          //
+          // logger.i('');
+          // logger.i('possible copyright issues:');
+          // {
+          //   final RegExp yearRegexp = RegExp(r'(\d{4})');
+          //   final RegExp publicDomainRegexp = RegExp(r'public domain', caseSensitive: false);
+          //   final RegExp bluesRegexp = RegExp(r'blues', caseSensitive: false);
+          //   for (var song in allSongs) {
+          //     var copyright = song.copyright;
+          //
+          //     //  exceptions:
+          //     if (song.artist == 'Vicki' ||
+          //         song.artist == 'blues' ||
+          //         publicDomainRegexp.firstMatch(copyright) != null ||
+          //         bluesRegexp.firstMatch(copyright) != null ||
+          //         song.artist.contains('Shari Cheves') ||
+          //         song.artist.contains('Wolff')) {
+          //       continue;
+          //     }
+          //
+          //     var m = yearRegexp.firstMatch(copyright);
+          //     if (m == null) {
+          //       logger.i(
+          //         '  ${song.title}, ${song.artist} ${song.coverArtist.isEmpty ? '' : 'cover by: ${song.coverArtist}'}'
+          //         '\n     copyright: "$copyright"   (missing year)',
+          //       );
+          //     } else if (copyright.length < 4 + 3) {
+          //       logger.i(
+          //         '  ${song.title}, ${song.artist} ${song.coverArtist.isEmpty ? '' : 'cover by: ${song.coverArtist}'}'
+          //         '\n     copyright: "$copyright"   (likely too short)',
+          //       );
+          //     }
+          //   }
+          // }
+          //
+          // //  odd measure durations
+          // {
+          //   logger.i('');
+          //   logger.i('odd measure durations: ');
+          //   Song? lastSong;
+          //   for (var song in allSongs) {
+          //     SplayTreeSet<ChordSection> chordSections = SplayTreeSet()..addAll(song.getChordSections());
+          //     for (ChordSection chordSection in chordSections) {
+          //       for (var phrase in chordSection.phrases) {
+          //         for (int m = 0; m < phrase.phraseMeasureCount; m++) {
+          //           var measure = phrase.phraseMeasureAt(m);
+          //           measure = measure!;
+          //           if (measure.beatCount < song.beatsPerBar) {
+          //             if ((measure.beatCount / song.beatsPerBar - 0.5).abs() < 0.00001) {
+          //               //  even split
+          //             } else {
+          //               if (lastSong != song) {
+          //                 logger.i('$song:');
+          //               }
+          //               lastSong = song;
+          //
+          //               logger.i(
+          //                 '    ${chordSection.sectionVersion}, phrase: ${phrase.phraseIndex}, measure: $m:  '
+          //                 '"$measure"'
+          //                 ', beats: ${measure.beatCount} of ${song.beatsPerBar}',
+          //               );
+          //             }
+          //           }
+          //         }
+          //       }
+          //     }
+          //   }
+          // }
+          //
+          // //  write the expected output file
+          // logger.i('');
+          // logger.i('allSongs.length: ${allSongs.length}');
+          // {
+          //   var json = _jsonDecoder.convert(Song.listToJson(allSongs.toList()));
+          //   File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/updated_allSongs.songlyrics');
+          //   outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
+          // }
+          //
+          // //  write the input file sorted by song
+          // {
+          //   var json = _jsonDecoder.convert(Song.listToJson(jambleSongs.toList()));
+          //   File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_allSongs.songlyrics');
+          //   outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
+          // }
+
+          //  read the local directory's list of song performance files
+          _allSongPerformances.clear();
+          _allSongPerformances.updateFromJsonString(
+            File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+          );
+          logger.i('');
+          logger.i(
+              '_allSongPerformances.allSongPerformanceHistory.length: ${_allSongPerformances.allSongPerformanceHistory
+                  .length}');
+
+          //  find the most recent performance file
+          File? _jamblePerformanceHistoryFile;
           {
-            SplayTreeSet<Song> otherSongs;
-            {
-              File otherSongsFile = File(args[argCount]);
+            // jambleallSongPerformances_20251117_010352.songperformances
+            final RegExp jambleSonglistRegexp = RegExp(
+              r'.*/jambleallSongPerformances_\d{8}_\d{6}.songperformances$',
+              caseSensitive: false,
+            );
 
-              if (otherSongsFile.statSync().type == FileSystemEntityType.file) {
-                if (!(await otherSongsFile.exists())) {
-                  logger.e('missing other file at: $otherSongsFile');
-                  exit(-1);
-                }
+            for (var e in SplayTreeSet<FileSystemEntity>(
+                  (key1, key2) => -key1.path.compareTo(key2.path),
+            )
+              ..addAll(Directory(_downloadsDirectory).listSync())) {
+              if (e is File && e.existsSync() && jambleSonglistRegexp.firstMatch(e.path) != null) {
+                _jamblePerformanceHistoryFile = e;
+                break;
               }
-              logger.i('otherSongsFile: $otherSongsFile');
-
-              var tempAllSongs = allSongs;
-              allSongs = SplayTreeSet();
-              _addAllSongsFromFile(otherSongsFile);
-              otherSongs = allSongs;
-              allSongs = tempAllSongs;
-            }
-            logger.i('otherSongs.length: ${otherSongs.length}');
-
-            //  update selected song list data
-            logger.i('');
-            logger.i('changed tags:');
-
-            const longVersion = true;
-
-            for (var song in allSongs) {
-              if (otherSongs.contains(song)) {
-                try {
-                  var otherSong = otherSongs.firstWhere((otherSong) {
-                    return otherSong.compareBySongId(song) == 0;
-                  });
-                  String out = '';
-                  //  note: title, artist and cover artist are part of the id so they will match
-
-                  if (song.user == 'Unknown' || song.user == 'Shari') {
-                    song.user = 'Shari C.';
-                  }
-                  if (song.user != otherSong.user) {
-                    if (longVersion) out += '   user: was ${song.user} vs ${otherSong.user}\n';
-                    song.user = otherSong.user;
-                  }
-
-                  song.fileName = otherSong.fileName;
-                  song.lastModifiedTime = otherSong.lastModifiedTime;
-
-                  if (song.copyright.isEmpty) {
-                    if (longVersion) {
-                      out += '   copyright: was "${song.copyright}" vs "${otherSong.copyright}"\n';
-                    }
-                    song.copyright = otherSong.copyright;
-                  }
-
-                  if (song.key != otherSong.key) {
-                    if (longVersion) {
-                      out += '   key: was ${song.key} vs ${otherSong.key}\n';
-                    }
-                    song.key = otherSong.key;
-                  }
-
-                  if (song.beatsPerMinute != otherSong.beatsPerMinute) {
-                    if (longVersion) {
-                      out += '   beatsPerMinute: was ${song.beatsPerMinute} vs ${otherSong.beatsPerMinute}\n';
-                    }
-                    song.beatsPerMinute = otherSong.beatsPerMinute;
-                  }
-
-                  if (song.timeSignature != otherSong.timeSignature) {
-                    if (longVersion) {
-                      out += '   timeSignature: was ${song.timeSignature} vs ${otherSong.timeSignature}\n';
-                    }
-                    song.timeSignature = otherSong.timeSignature;
-                  }
-
-                  //  as per Shari
-                  song.chords = otherSong.chords;
-                  song.rawLyrics = otherSong.rawLyrics;
-                  if (out.isNotEmpty) {
-                    logger.i('$song:\n$out');
-                  }
-                } catch (e) {
-                  logger.i('   missing song: $song');
-                }
-              } else {
-                logger.i('$song:  not found in new song list\n');
-              }
-            }
-
-            logger.i('');
-            logger.i('added songs:');
-            for (var song in otherSongs) {
-              if (!allSongs.contains(song)) {
-                logger.i('  $song');
-                allSongs.add(song);
-              }
-            }
-
-            logger.i('');
-            logger.i('possible copyright issues:');
-            {
-              final RegExp yearRegexp = RegExp(r'(\d{4})');
-              final RegExp publicDomainRegexp = RegExp(r'public domain', caseSensitive: false);
-              final RegExp bluesRegexp = RegExp(r'blues', caseSensitive: false);
-              for (var song in allSongs) {
-                var copyright = song.copyright;
-
-                //  exceptions:
-                if (song.artist == 'Vicki' ||
-                    song.artist == 'blues' ||
-                    publicDomainRegexp.firstMatch(copyright) != null ||
-                    bluesRegexp.firstMatch(copyright) != null ||
-                    song.artist.contains('Shari Cheves') ||
-                    song.artist.contains('Wolff')) {
-                  continue;
-                }
-
-                var m = yearRegexp.firstMatch(copyright);
-                if (m == null) {
-                  logger.i(
-                    '  ${song.title}, ${song.artist} ${song.coverArtist.isEmpty ? '' : 'cover by: ${song.coverArtist}'}'
-                    '\n     copyright: "$copyright"   (missing year)',
-                  );
-                } else if (copyright.length < 4 + 3) {
-                  logger.i(
-                    '  ${song.title}, ${song.artist} ${song.coverArtist.isEmpty ? '' : 'cover by: ${song.coverArtist}'}'
-                    '\n     copyright: "$copyright"   (likely too short)',
-                  );
-                }
-              }
-            }
-
-            //  odd measure durations
-            {
-              logger.i('');
-              logger.i('odd measure durations: ');
-              Song? lastSong;
-              for (var song in allSongs) {
-                SplayTreeSet<ChordSection> chordSections = SplayTreeSet()..addAll(song.getChordSections());
-                for (ChordSection chordSection in chordSections) {
-                  for (var phrase in chordSection.phrases) {
-                    for (int m = 0; m < phrase.phraseMeasureCount; m++) {
-                      var measure = phrase.phraseMeasureAt(m);
-                      measure = measure!;
-                      if (measure.beatCount < song.beatsPerBar) {
-                        if ((measure.beatCount / song.beatsPerBar - 0.5).abs() < 0.00001) {
-                          //  even split
-                        } else {
-                          if (lastSong != song) {
-                            logger.i('$song:');
-                          }
-                          lastSong = song;
-
-                          logger.i(
-                            '    ${chordSection.sectionVersion}, phrase: ${phrase.phraseIndex}, measure: $m:  '
-                            '"$measure"'
-                            ', beats: ${measure.beatCount} of ${song.beatsPerBar}',
-                          );
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-
-            //  write the expected output file
-            logger.i('');
-            logger.i('allSongs.length: ${allSongs.length}');
-            {
-              var json = _jsonDecoder.convert(Song.listToJson(allSongs.toList()));
-              File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/updated_allSongs.songlyrics');
-              outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
-            }
-
-            //  write the input file sorted by song
-            {
-              var json = _jsonDecoder.convert(Song.listToJson(otherSongs.toList()));
-              File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_allSongs.songlyrics');
-              outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
             }
           }
+          if (_jamblePerformanceHistoryFile == null) {
+            logger.i('Missing the jamblePerformanceHistoryFile');
+            exit(-1);
+          }
+          logger.i('');
+          logger.i('_jamblePerformanceHistoryFile: $_jamblePerformanceHistoryFile');
+
+          AllSongPerformances jamblePerformances = AllSongPerformances();
+          logger.i(
+              '_allSongPerformances.allSongPerformanceHistory.length: ${_allSongPerformances.allSongPerformanceHistory
+                  .length}');
+          jamblePerformances.updateFromJsonString(_jamblePerformanceHistoryFile.readAsStringSync());
+          logger.i(
+              '_allSongPerformances.allSongPerformanceHistory.length: ${_allSongPerformances.allSongPerformanceHistory
+                  .length}');
+
+          logger.i(
+            'jamblePerformances.allSongPerformanceHistory.length:'
+                ' ${jamblePerformances.allSongPerformanceHistory.length}',
+          );
+
+
+          // for (var jamblePerformance in jamblePerformances.allSongPerformanceHistory) {
+          //   if ( !_allSongPerformances.allSongPerformanceHistory.contains(jamblePerformance)){
+          //     logger.i('jamble: $jamblePerformance');
+          //   }
+          //   // else logger.i('jamble found: $jamblePerformance');
+          // }
+          // logger.i('');
+          // for (var performance in _allSongPerformances.allSongPerformanceHistory) {
+          //   if ( !jamblePerformances.allSongPerformanceHistory.contains(performance)){
+          //     logger.i('bsteele: $performance');
+          //   }
+          //   // else logger.i('found: $performance,  ${jamblePerformances.allSongPerformanceHistory.contains(performance)}');
+          //
+          // }
+          logger.i('');
+          logger.i(_allSongPerformances.historyDifference(jamblePerformances).toString());
+          logger.i(_allSongPerformances.allSongPerformanceHistory.length.toString());
+          logger.i('');
+          logger.i(jamblePerformances.historyDifference(_allSongPerformances).toString());
+          logger.i(jamblePerformances.allSongPerformanceHistory.length.toString());
+
+
           break;
 
         case '-test':
@@ -2827,6 +2936,20 @@ coerced to reflect the songlist's last modification for that song.
     }
   }
 
+  // List<Song> _songsFromFile(File inputFile) {
+  //   logger.d('_songsFromFile: $inputFile');
+  //
+  //   if (!inputFile.path.endsWith('.songlyrics')) return [];
+  //   if (_verbose) logger.i('inputFile: $inputFile');
+  //
+  //   //  fix for bad song lyric files
+  //   String s = inputFile.readAsStringSync();
+  //   s = s.replaceAll('": null,', '": "",');
+  //
+  //   //  only add the most recent modification
+  //   return Song.songListFromJson(s);
+  // }
+
   void _copyright() {
     Map<String, SplayTreeSet<Song>> copyrights = {};
     for (Song song in allSongs) {
@@ -2909,7 +3032,8 @@ coerced to reflect the songlist's last modification for that song.
 
     //  read from server logs
     logger.i('allSongPerformances.length: ${_allSongPerformances.length}');
-    logger.i('allSongPerformanceHistory.length: ${_allSongPerformances.allSongPerformanceHistory.length}');
+    logger.i('_allSongPerformances.allSongPerformanceHistory.length: ${_allSongPerformances.allSongPerformanceHistory
+        .length}');
     logger.i('last sung: ${_allSongPerformances.allSongPerformanceHistory.last.lastSungDateString}');
     var lastSungDateTime = _allSongPerformances.allSongPerformanceHistory.last.lastSungDateTime;
     // truncate date time to day

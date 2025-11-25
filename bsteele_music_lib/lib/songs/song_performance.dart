@@ -416,16 +416,10 @@ class SongRepair {
 }
 
 class AllSongPerformances {
-  static final AllSongPerformances _singleton = AllSongPerformances._internal();
-
-  factory AllSongPerformances() {
-    return _singleton;
-  }
+  AllSongPerformances();
 
   //  only used for testing to avoid collisions of async use of the singleton
   AllSongPerformances.test();
-
-  AllSongPerformances._internal();
 
   /// Populate song performance references with current songs
   int loadSongs(Iterable<Song> songs) {
@@ -810,6 +804,10 @@ class AllSongPerformances {
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(
     SongPerformance.compareBySongIdAndSinger,
   );
+
+  Set<SongPerformance> historyDifference(final AllSongPerformances other) {
+    return _allSongPerformanceHistory.difference(other._allSongPerformanceHistory);
+  }
 
   Iterable<SongPerformance> get allSongPerformanceHistory => _allSongPerformanceHistory;
   final SplayTreeSet<SongPerformance> _allSongPerformanceHistory = SplayTreeSet<SongPerformance>(
