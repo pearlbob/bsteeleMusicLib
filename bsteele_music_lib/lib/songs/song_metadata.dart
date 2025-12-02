@@ -17,8 +17,7 @@ enum SongMetadataGeneratedValue {
   year,
   beats,
   user,
-  key,
-  ;
+  key;
 
   static bool isGenerated(NameValue nameValue) {
     var name = Util.firstToLower(nameValue.name);
@@ -33,9 +32,7 @@ enum SongMetadataGeneratedValue {
 
 /// name and value pair
 class NameValue implements Comparable<NameValue> {
-  NameValue(String name, String value)
-      : _name = Util.firstToUpper(name),
-        _value = Util.firstToUpper(value);
+  NameValue(String name, String value) : _name = Util.firstToUpper(name), _value = Util.firstToUpper(value);
 
   @override
   String toString() {
@@ -55,9 +52,7 @@ class NameValue implements Comparable<NameValue> {
     return '{"name":${jsonEncode(name)},"value":${jsonEncode(value)}}';
   }
 
-  NameValue.fromJson(Map<String, dynamic> json)
-      : _name = json['name'],
-        _value = json['value'];
+  NameValue.fromJson(Map<String, dynamic> json) : _name = json['name'], _value = json['value'];
 
   Map<String, dynamic> toJson() => {'name': _name, 'value': _value};
 
@@ -89,11 +84,7 @@ class NameValue implements Comparable<NameValue> {
   final String _value;
 }
 
-enum NameValueType {
-  value,
-  noValue,
-  anyValue;
-}
+enum NameValueType { value, noValue, anyValue }
 
 class NameValueMatcher extends NameValue {
   NameValueMatcher(super.name, super.value, {NameValueType type = NameValueType.value}) : _type = type;
@@ -405,8 +396,26 @@ class SongMetadata {
       assert(songIdMetadata != null);
       songIdMetadata = songIdMetadata!;
       var newSongIdMetadata = SongIdMetadata(repairs[id]!.songId.toString(), metadata: songIdMetadata.nameValues);
-      logger.d(songIdMetadata.toString());
-      logger.d(newSongIdMetadata.toString());
+      SongMetadata.removeSongIdMetadata(songIdMetadata);
+      SongMetadata.addSongIdMetadata(newSongIdMetadata);
+    }
+  }
+
+  static void renameSong(final Song oldSong, final Song newSong) {
+    HashMap<String, Song> repairs = HashMap();
+    for (var songIdMetadata in _singleton._idMetadata.where(
+      (idMetadata) => idMetadata.id == oldSong.songId.songIdAsString,
+    )) {
+      repairs[songIdMetadata.id] = newSong;
+    }
+
+    //  perform the repair
+    for (var id in repairs.keys) {
+      logger.log(_logRepair, 'SongMetadata.repair: "$id" to "${repairs[id]?.songId.toString()}');
+      var songIdMetadata = SongMetadata.byId(id);
+      assert(songIdMetadata != null);
+      songIdMetadata = songIdMetadata!;
+      var newSongIdMetadata = SongIdMetadata(repairs[id]!.songId.toString(), metadata: songIdMetadata.nameValues);
       SongMetadata.removeSongIdMetadata(songIdMetadata);
       SongMetadata.addSongIdMetadata(newSongIdMetadata);
     }
@@ -496,8 +505,10 @@ class SongMetadata {
     isDirty = true;
   }
 
-  static SplayTreeSet<SongIdMetadata> match(bool Function(SongIdMetadata songIdMetadata) doesMatch,
-      {SplayTreeSet<SongIdMetadata>? from}) {
+  static SplayTreeSet<SongIdMetadata> match(
+    bool Function(SongIdMetadata songIdMetadata) doesMatch, {
+    SplayTreeSet<SongIdMetadata>? from,
+  }) {
     SplayTreeSet<SongIdMetadata> ret = SplayTreeSet();
     for (SongIdMetadata songIdMetadata in from ?? _singleton._idMetadata) {
       if (doesMatch(songIdMetadata)) {
@@ -604,14 +615,15 @@ class SongMetadata {
     }
   }
 
-  static SplayTreeSet<SongIdMetadata> where(
-      {String? idIsLike,
-      String? nameIsLike,
-      String? valueIsLike,
-      String? idIs,
-      String? nameIs,
-      String? valueIs,
-      NameValue? nameValue}) {
+  static SplayTreeSet<SongIdMetadata> where({
+    String? idIsLike,
+    String? nameIsLike,
+    String? valueIsLike,
+    String? idIs,
+    String? nameIs,
+    String? valueIs,
+    NameValue? nameValue,
+  }) {
     //  no filters allow any id
     if (idIsLike == null &&
         nameIsLike == null &&

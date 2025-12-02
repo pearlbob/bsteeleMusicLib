@@ -2759,7 +2759,7 @@ o: end here''');
       expect(
           a.chords,
           'I:\n'
-          '2AG#m\n');
+              'AG#m\n');
     }
   });
 

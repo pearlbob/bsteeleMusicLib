@@ -107,7 +107,8 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       throw 'no chords found';
     }
 
-    assert(maxBeatCount <= beatsPerBar);
+    //  no longer supported
+    // assert(maxBeatCount <= beatsPerBar);
     ret ??= Measure(maxBeatCount, chords, beatsPerBar: beatsPerBar);
 
     //  process end of row markers
@@ -298,9 +299,10 @@ class Measure extends MeasureNode implements Comparable<Measure> {
         sb.write(chord.markupStart());
         sb.write(chord.beatsToString());
       }
-      if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
-        return '$beatCount${sb.toString()}';
-      }
+      //  not supported
+      // if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
+      //   return '$beatCount${sb.toString()}';
+      // }
       return sb.toString();
     }
     return 'X'; // no chords
@@ -320,9 +322,10 @@ class Measure extends MeasureNode implements Comparable<Measure> {
       if (endOfRowChar != null && endOfRow) {
         sb.write(endOfRowChar);
       }
-      if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
-        return '$beatCount${sb.toString()}';
-      }
+      //  leading digit of beat count not supported.
+      // if (hasReducedBeats && (chords.length > 1 || chords.first.beats == 1)) {
+      //   return '$beatCount${sb.toString()}';
+      // }
 
       return sb.toString();
     }

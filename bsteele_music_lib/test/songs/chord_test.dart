@@ -456,7 +456,7 @@ void main() {
     input = "GCG";
     m = Measure.parseString(input, beatsPerBar);
     logger.i('m: $m');
-    expect(m.toString(), '3$input'); //  demand 3 beats in 4/4
+    expect(m.toString(), '$input'); //  demand 3 beats in 4/4
 
     input = "G";
     m = Measure.parseString(input, beatsPerBar);

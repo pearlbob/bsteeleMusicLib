@@ -581,6 +581,7 @@ class SongBase {
   }
 
   String _getChords() {
+    _getChordSectionMap();
     if (_chords.isEmpty) {
       _chords = chordsToJsonTransportString();
     }

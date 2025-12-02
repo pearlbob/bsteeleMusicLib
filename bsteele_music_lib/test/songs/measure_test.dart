@@ -102,7 +102,7 @@ void main() {
       expect(m, isNotNull);
       _jsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
-      expect(m.toMarkup(), '4A.B.');
+      expect(m.toMarkup(), 'A.B.');
     }
     {
       s = 'A.B.';
@@ -111,8 +111,8 @@ void main() {
       expect(m, isNotNull);
       _jsonMeasureTest(m);
       //  explicit measure short of beats is left as specified
-      expect(m.toMarkup(), '4A.B.');
-      expect(m.toMarkup(withInversion: false), '4A.B.');
+      expect(m.toMarkup(), 'A.B.');
+      expect(m.toMarkup(withInversion: false), 'A.B.');
     }
     {
       s = 'AB';
@@ -563,7 +563,7 @@ void main() {
     logger.i('bar, beats, input, output, comment');
 
     beatsPerBar = 2;
-    measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A', comment: 'one beat');
+    measure = _shortMeasureTest(beatsPerBar, 1, '1A', 'A', comment: 'one beat');
     expect(measure.beatCount, 1);
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
@@ -601,7 +601,7 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
 
     beatsPerBar = 3;
-    measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A', comment: 'one beat');
+    measure = _shortMeasureTest(beatsPerBar, 1, '1A', 'A', comment: 'one beat');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -623,7 +623,7 @@ void main() {
     expect(measure.getChordAtBeat(2), null);
     expect(measure.getChordAtBeat(3), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 2, '2AB', '2AB', comment: 'two beats');
+    measure = _shortMeasureTest(beatsPerBar, 2, '2AB', 'AB', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -633,7 +633,7 @@ void main() {
     expected.beats = 1;
     expect(measure.getChordAtBeat(1), expected);
 
-    measure = _shortMeasureTest(beatsPerBar, 2, '2AG#m', '2AG#m', comment: 'two beats');
+    measure = _shortMeasureTest(beatsPerBar, 2, '2AG#m', 'AG#m', comment: 'two beats');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -713,7 +713,7 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
 
     beatsPerBar = 4;
-    measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A', comment: 'one beat');
+    measure = _shortMeasureTest(beatsPerBar, 1, '1A', 'A', comment: 'one beat');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -747,7 +747,7 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
     expect(measure.getChordAtBeat(4), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 2, '2AB', '2AB');
+    measure = _shortMeasureTest(beatsPerBar, 2, '2AB', 'AB');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -808,7 +808,7 @@ void main() {
     expect(measure.getChordAtBeat(3), expected);
     expect(measure.getChordAtBeat(4), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 3, 'A.B', '3A.B');
+    measure = _shortMeasureTest(beatsPerBar, 3, 'A.B', 'A.B');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -821,7 +821,7 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
     expect(measure.getChordAtBeat(4), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 3, 'AB.', '3AB.');
+    measure = _shortMeasureTest(beatsPerBar, 3, 'AB.', 'AB.');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -837,7 +837,7 @@ void main() {
     expect(measure.getChordAtBeat(3), null);
     expect(measure.getChordAtBeat(4), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 3, 'ABC', '3ABC');
+    measure = _shortMeasureTest(beatsPerBar, 3, 'ABC', 'ABC');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -902,7 +902,7 @@ void main() {
     6       6     A AB A..B.C AB...C ABC...   A.B.C.  not:  ABC  A.....
     */
     beatsPerBar = 6;
-    measure = _shortMeasureTest(beatsPerBar, 1, '1A', '1A');
+    measure = _shortMeasureTest(beatsPerBar, 1, '1A', 'A');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -936,7 +936,7 @@ void main() {
     expect(measure.getChordAtBeat(1), expected);
     expect(measure.getChordAtBeat(2), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 2, '2AB', '2AB');
+    measure = _shortMeasureTest(beatsPerBar, 2, '2AB', 'AB');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -959,7 +959,7 @@ void main() {
     expect(measure.getChordAtBeat(2), expected);
     expect(measure.getChordAtBeat(3), null);
 
-    measure = _shortMeasureTest(beatsPerBar, 3, '3A.B', '3A.B');
+    measure = _shortMeasureTest(beatsPerBar, 3, '3A.B', 'A.B');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, isTrue);
     expected = Chord.parseString('A', beatsPerBar)!;
@@ -1091,15 +1091,15 @@ void main() {
     // Logger.level = Level.info;
 
     beatsPerBar = 2;
-    _shortMeasureTestJSON(beatsPerBar, '1A', '1A');
+    _shortMeasureTestJSON(beatsPerBar, '1A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'AB', 'AB');
 
     beatsPerBar = 3;
-    _shortMeasureTestJSON(beatsPerBar, '1A', '1A');
+    _shortMeasureTestJSON(beatsPerBar, '1A', 'A');
     _shortMeasureTestJSON(beatsPerBar, '2A', 'A.');
     _shortMeasureTestJSON(beatsPerBar, 'A.', 'A.');
-    _shortMeasureTestJSON(beatsPerBar, '2AB', '2AB');
+    _shortMeasureTestJSON(beatsPerBar, '2AB', 'AB');
     _shortMeasureTestJSON(beatsPerBar, '3A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'A.B', 'A.B');
@@ -1107,15 +1107,15 @@ void main() {
     _shortMeasureTestJSON(beatsPerBar, 'ABC', 'ABC');
 
     beatsPerBar = 4;
-    _shortMeasureTestJSON(beatsPerBar, '1A', '1A');
+    _shortMeasureTestJSON(beatsPerBar, '1A', 'A');
     _shortMeasureTestJSON(beatsPerBar, '2A', 'A.');
     _shortMeasureTestJSON(beatsPerBar, 'A.', 'A.');
-    _shortMeasureTestJSON(beatsPerBar, '2AB', '2AB');
+    _shortMeasureTestJSON(beatsPerBar, '2AB', 'AB');
     _shortMeasureTestJSON(beatsPerBar, '3A', 'A..');
     _shortMeasureTestJSON(beatsPerBar, 'A', 'A');
-    _shortMeasureTestJSON(beatsPerBar, 'A.B', '3A.B');
-    _shortMeasureTestJSON(beatsPerBar, 'AB.', '3AB.');
-    _shortMeasureTestJSON(beatsPerBar, 'ABC', '3ABC');
+    _shortMeasureTestJSON(beatsPerBar, 'A.B', 'A.B');
+    _shortMeasureTestJSON(beatsPerBar, 'AB.', 'AB.');
+    _shortMeasureTestJSON(beatsPerBar, 'ABC', 'ABC');
     _shortMeasureTestJSON(beatsPerBar, 'A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'A...', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'AB', 'AB');
@@ -1126,15 +1126,15 @@ void main() {
     _shortMeasureTestJSON(beatsPerBar, '4A..B', 'A..B');
 
     beatsPerBar = 6;
-    _shortMeasureTestJSON(beatsPerBar, '1A', '1A');
+    _shortMeasureTestJSON(beatsPerBar, '1A', 'A');
     _shortMeasureTestJSON(beatsPerBar, '2A', 'A.');
     _shortMeasureTestJSON(beatsPerBar, 'A.', 'A.');
-    _shortMeasureTestJSON(beatsPerBar, '2AB', '2AB');
+    _shortMeasureTestJSON(beatsPerBar, '2AB', 'AB');
     _shortMeasureTestJSON(beatsPerBar, '3A', 'A..');
     _shortMeasureTestJSON(beatsPerBar, 'A', 'A');
-    _shortMeasureTestJSON(beatsPerBar, 'A.B', '3A.B');
-    _shortMeasureTestJSON(beatsPerBar, '3A.B', '3A.B');
-    _shortMeasureTestJSON(beatsPerBar, 'AB.', '3AB.');
+    _shortMeasureTestJSON(beatsPerBar, 'A.B', 'A.B');
+    _shortMeasureTestJSON(beatsPerBar, '3A.B', 'A.B');
+    _shortMeasureTestJSON(beatsPerBar, 'AB.', 'AB.');
     _shortMeasureTestJSON(beatsPerBar, 'ABC', 'ABC');
     _shortMeasureTestJSON(beatsPerBar, 'A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'A.', 'A.');
@@ -1145,20 +1145,20 @@ void main() {
     _shortMeasureTestJSON(beatsPerBar, '6A', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'A.....', 'A');
     _shortMeasureTestJSON(beatsPerBar, 'AB', 'AB');
-    _shortMeasureTestJSON(beatsPerBar, 'A.BC', '4A.BC');
-    _shortMeasureTestJSON(beatsPerBar, 'AB.C', '4AB.C');
-    _shortMeasureTestJSON(beatsPerBar, 'ABC.', '4ABC.');
-    _shortMeasureTestJSON(beatsPerBar, 'A..B', '4A..B');
-    _shortMeasureTestJSON(beatsPerBar, '4A..B', '4A..B');
+    _shortMeasureTestJSON(beatsPerBar, 'A.BC', 'A.BC');
+    _shortMeasureTestJSON(beatsPerBar, 'AB.C', 'AB.C');
+    _shortMeasureTestJSON(beatsPerBar, 'ABC.', 'ABC.');
+    _shortMeasureTestJSON(beatsPerBar, 'A..B', 'A..B');
+    _shortMeasureTestJSON(beatsPerBar, '4A..B', 'A..B');
     _shortMeasureTestJSON(beatsPerBar, '4Asus2', 'Asus2...');
     _shortMeasureTestJSON(beatsPerBar, 'Asus2BM7', 'Asus2BM7');
     _shortMeasureTestJSON(beatsPerBar, 'AsusBM7', 'AsusBM7');
     _shortMeasureTestJSON(beatsPerBar, 'Asus2BM7C7', 'Asus2BM7C7');
 
-    _shortMeasureTestJSON(beatsPerBar, '4A.BM7.', '4A.BM7.');
+    _shortMeasureTestJSON(beatsPerBar, '4A.BM7.', 'A.BM7.');
     _shortMeasureTestJSON(beatsPerBar, 'Asus2BM7C7', 'Asus2BM7C7');
-    _shortMeasureTestJSON(beatsPerBar, '4Asus2BM7', '4Asus2BM7');
-    _shortMeasureTestJSON(beatsPerBar, '3Asus2BM7C7', '3Asus2BM7C7');
+    _shortMeasureTestJSON(beatsPerBar, '4Asus2BM7', 'Asus2BM7');
+    _shortMeasureTestJSON(beatsPerBar, '3Asus2BM7C7', 'Asus2BM7C7');
     _shortMeasureTestJSON(beatsPerBar, 'Asus2BM7C7', 'Asus2BM7C7');
   });
 }

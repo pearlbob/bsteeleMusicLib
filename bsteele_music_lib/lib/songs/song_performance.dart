@@ -55,11 +55,19 @@ class SongPerformance implements Comparable<SongPerformance> {
       _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
       _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance copyWith({final Song? song, int? firstSung, int? lastSung, Key? key, int? bpm}) {
-    var id = song?.songId.toString() ?? _songIdAsString;
+  SongPerformance copyWith({
+    final Song? song,
+    final SongId? songId,
+    final String? singer,
+    int? firstSung,
+    int? lastSung,
+    Key? key,
+    int? bpm,
+  }) {
+    var id = songId?.songIdAsString ?? song?.songId.toString() ?? _songIdAsString;
     var ret = SongPerformance(
       id,
-      singer,
+      singer ?? this._singer,
       key: key ?? this.key,
       bpm: bpm ?? _bpm,
       firstSung: firstSung ?? _firstSung,
@@ -245,10 +253,10 @@ class SongPerformance implements Comparable<SongPerformance> {
 
   DateTime get lastSungDateTime => DateTime.fromMillisecondsSinceEpoch(_lastSung);
 
-  int get firstSung => _firstSung;
+  int get firstSung => _firstSung; //  units: ms
   int _firstSung = 0;
 
-  int get lastSung => _lastSung;
+  int get lastSung => _lastSung; //  units: ms
   int _lastSung = 0;
 }
 
@@ -327,13 +335,13 @@ class SongRequest implements Comparable<SongRequest> {
 
 /// Find the best match against the current songs to replace songs where the song id has been changed.
 class SongRepair {
-  SongRepair(final Iterable<Song> songs) {
+  void repair(final Iterable<Song> songs) {
     for (var song in songs) {
       var key = song.songId.toString().toLowerCase();
       _songMap[key] = song;
 
       //  repair some old song names
-      var key2 = repairMap[key];
+      var key2 = repairMap[key]?.toLowerCase();
       if (key2 != null) {
         _songMap[key2] = song;
       }
@@ -374,7 +382,8 @@ class SongRepair {
     }
     logger.i(
       'lost song: $id, ${bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0}'
-      ', best: ${song?.songId.toString()}'
+      ', best: ${song?.songId.toString().toLowerCase()}\n'
+      "   '${song?.songId.toString().toLowerCase()}':'${lowerCaseId}',"
       '\n     $song',
     );
     return null;
@@ -407,11 +416,32 @@ class SongRepair {
     'song_feliz_navidad_by_jos_feliciano': 'song_feliz_navidad_by_christmas',
     'song_blue_bayou_by_roy_orbison_coverby_linda_rondstadt': 'song_blue_bayou_by_roy_orbison',
     'song_sin_city_by_flying_burrito_brothers_the': 'song_sin_city_by_gram_parsons',
+    'song_down_home_girl_by_alvin_robinson_coverby_old_crow_medicine_show': 'song_down_home_girl_by_alvin_robinson',
+    'song_hard_sun_by_indio_coverby_eddie_vedder': 'song_hard_sun_by_indio',
+    'song_hey_joe_by_various_coverby_jimi_hendrix': 'song_hey_joe_by_various',
+    'song_killing_the_blues_by_rowland_salley_coverby_robert_plant_and_alison_krauss':
+        'song_killing_the_blues_by_rowland_salley',
+    'song_i_love_rock_n_roll_by_arrows_coverby_joan_jett_the_blackhearts': 'song_i_love_rock__n__roll_by_arrows',
+    'song_gone_gone_gone_by_everly_brothers_the_coverby_robert_plant_alison_krauss':
+        'song_gone_gone_gone_by_everly_brothers__the',
+    'song_heart_on_a_string_by_candi_staton_coverby_jason_isbell_and_the_400_unit':
+        'song_heart_on_a_string_by_candi_staton',
+    'song_alone_by_iten_coverby_heart': 'song_alone_by_i_ten',
+    'song_valerie_by_zutons_the_coverby_mark_ronson_and_amy_winehouse': 'song_valerie_by_zutons__the',
+    'song_my_back_pages_by_bob_dylan_coverby_roger_mcguinn_tom_petty_neil_young_eric_clapton_bob_dylan_george_harrison':
+        'song_my_back_pages_by_bob_dylan',
+    'song_i_go_blind_by_5440_coverby_hootie_the_blowfish': 'song_i_go_blind_by_54_40',
+    'song_mary_had_a_little_lamb_by_buddy_guy_coverby_stevie_ray_vaughan_and_double_trouble':
+        'song_mary_had_a_little_lamb_by_buddy_guy',
+    'song_who_do_you_love_by_bo_diddley_coverby_george_thorogood_the_destroyers': 'song_who_do_you_love__by_bo_diddley',
+    'song_its_so_easy_by_crickets_the_coverby_linda_ronstadt': 'song_it_s_so_easy_by_crickets__the',
+    'song_respect_by_otis_redding_coverby_aretha_franklin': 'song_respect_by_otis_redding',
+    'song_words_of_love_by_buddy_holly_coverby_mamas_the_papas_the': 'song_words_of_love_by_mamas_and_papas',
   };
 
   int misses = 0;
   static const _matchRatingMinimum = 0.70;
-  late List<String> _allLowerCaseIds;
+  late List<String> _allLowerCaseIds = [];
   final HashMap<String, Song> _songMap = HashMap();
 }
 
@@ -426,7 +456,8 @@ class AllSongPerformances {
     var usTimer = UsTimer();
     var corrections = 0;
 
-    _songRepair = SongRepair(songs);
+    _songRepair = SongRepair();
+    _songRepair.repair(songs);
 
     //  fixme: a failed match can choose a wrong-ish "best match" if the song id has been changed too much
 
@@ -661,6 +692,33 @@ class AllSongPerformances {
     return _allSongPerformanceHistory.remove(songPerformance);
   }
 
+  void rebuildAllPerformancesFromHistory({final int lastSungLimitMs = 0 /* since epoch */}) {
+    //  limit history as well
+    if (lastSungLimitMs > 0) {
+      final SplayTreeSet<SongPerformance> newHistory = SplayTreeSet();
+      for (var songPerformance in _allSongPerformanceHistory.toList().reversed) {
+        if (songPerformance.lastSung >= lastSungLimitMs) {
+          newHistory.add(songPerformance);
+        }
+      }
+      _allSongPerformanceHistory.clear();
+      _allSongPerformanceHistory.addAll(newHistory);
+    }
+
+    //  sort the history with most recent first, then add to song performances
+    SplayTreeSet<SongPerformance> uniqueSongIdAndSinger = SplayTreeSet(
+      (song1, song2) => SongPerformance.compareBySongIdAndSinger(song1, song2),
+    );
+    for (var songPerformance in _allSongPerformanceHistory.toList().reversed) {
+      uniqueSongIdAndSinger.add(songPerformance);
+    }
+    _allSongPerformances.clear();
+    _allSongPerformances.addAll(uniqueSongIdAndSinger);
+
+    logger.i('_allSongPerformanceHistory.length: ${_allSongPerformanceHistory.length}');
+    logger.i('uniqueSongIdAndSinger.length: ${uniqueSongIdAndSinger.length}');
+  }
+
   void fromJsonString(String jsonString) {
     _allSongPerformances.clear();
     fromJson(jsonDecode(jsonString));
@@ -798,7 +856,7 @@ class AllSongPerformances {
   int get hashCode => Object.hash(_allSongPerformances, _allSongPerformanceHistory);
 
   SongRepair get songRepair => _songRepair;
-  SongRepair _songRepair = SongRepair([]);
+  SongRepair _songRepair = SongRepair();
 
   Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(
