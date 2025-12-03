@@ -402,10 +402,12 @@ class SongMetadata {
   }
 
   static void renameSong(final Song oldSong, final Song newSong) {
+    return renameSongId(oldSong.songId.songIdAsString, newSong);
+  }
+
+  static void renameSongId(final String oldSongIdAsString, final Song newSong) {
     HashMap<String, Song> repairs = HashMap();
-    for (var songIdMetadata in _singleton._idMetadata.where(
-      (idMetadata) => idMetadata.id == oldSong.songId.songIdAsString,
-    )) {
+    for (var songIdMetadata in _singleton._idMetadata.where((idMetadata) => idMetadata.id == oldSongIdAsString)) {
       repairs[songIdMetadata.id] = newSong;
     }
 
@@ -767,10 +769,12 @@ class SongMetadata {
     isDirty = false;
   }
 
-  static String toJson({Iterable<SongIdMetadata>? values}) {
+  static String toJson({Iterable<SongIdMetadata>? values = null}) {
     StringBuffer sb = StringBuffer();
     bool first = true;
-    for (SongIdMetadata songIdMetadata in values ?? _singleton._idMetadata) {
+    values ??= _singleton._idMetadata;
+    SplayTreeSet<SongIdMetadata> sortedValues = SplayTreeSet()..addAll(values);
+    for (SongIdMetadata songIdMetadata in sortedValues) {
       if (songIdMetadata.hasNonGeneratedNameValues) {
         if (first) {
           first = false;

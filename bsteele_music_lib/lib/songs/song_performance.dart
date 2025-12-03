@@ -158,8 +158,8 @@ class SongPerformance implements Comparable<SongPerformance> {
   }
 
   SongPerformance.fromJson(Map<String, dynamic> json)
-    : _songIdAsString = json['songId'],
-      _lowerCaseSongIdAsString = json['songId'].toString().toLowerCase(),
+    : _songIdAsString = SongId.correctSongId(json['songId']),
+      _lowerCaseSongIdAsString = SongId.correctSongId(json['songId']).toLowerCase(),
       _singer = _cleanPerformer(json['singer']),
       key = json['key'] == null || (json['key'] is String && (json['key'] as String).isEmpty)
           ? Key.getDefault()
@@ -335,7 +335,7 @@ class SongRequest implements Comparable<SongRequest> {
 
 /// Find the best match against the current songs to replace songs where the song id has been changed.
 class SongRepair {
-  void repair(final Iterable<Song> songs) {
+  SongRepair(final Iterable<Song> songs) {
     for (var song in songs) {
       var key = song.songId.toString().toLowerCase();
       _songMap[key] = song;
@@ -344,6 +344,7 @@ class SongRepair {
       var key2 = repairMap[key]?.toLowerCase();
       if (key2 != null) {
         _songMap[key2] = song;
+        _bestMatchesMap[key2] = song;
       }
     }
 
@@ -378,6 +379,10 @@ class SongRepair {
     song = _songMap[_allLowerCaseIds[bestMatch.bestMatchIndex]];
     if ((bestMatch.ratings[bestMatch.bestMatchIndex].rating ?? 0.0) > _matchRatingMinimum) {
       assert(song != null);
+      song = song!;
+      if (song.songId.songIdAsString.toLowerCase() != id) {
+        _bestMatchesMap[id] = song;
+      }
       return song;
     }
     logger.i(
@@ -443,6 +448,9 @@ class SongRepair {
   static const _matchRatingMinimum = 0.70;
   late List<String> _allLowerCaseIds = [];
   final HashMap<String, Song> _songMap = HashMap();
+
+  HashMap<String, Song> get bestMatchesMap => _bestMatchesMap;
+  final HashMap<String, Song> _bestMatchesMap = HashMap();
 }
 
 class AllSongPerformances {
@@ -456,8 +464,7 @@ class AllSongPerformances {
     var usTimer = UsTimer();
     var corrections = 0;
 
-    _songRepair = SongRepair();
-    _songRepair.repair(songs);
+    _songRepair = SongRepair(songs);
 
     //  fixme: a failed match can choose a wrong-ish "best match" if the song id has been changed too much
 
@@ -467,7 +474,7 @@ class AllSongPerformances {
       List<SongPerformance> removals = [];
       List<SongPerformance> additions = [];
       for (var songPerformance in _allSongPerformances) {
-        var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
+        var newSong = _songRepair.findBestSong(songPerformance.songIdAsString);
         if (newSong != null) {
           corrections += songPerformance.song != null && newSong.songId != songPerformance.song?.songId ? 1 : 0;
           if (songPerformance.song == null || newSong.songId != songPerformance.song?.songId) {
@@ -856,7 +863,12 @@ class AllSongPerformances {
   int get hashCode => Object.hash(_allSongPerformances, _allSongPerformanceHistory);
 
   SongRepair get songRepair => _songRepair;
-  SongRepair _songRepair = SongRepair();
+  SongRepair _songRepair = SongRepair([]);
+
+  HashMap<String, Song> get bestMatchesMap => _songRepair.bestMatchesMap;
+
+  HashMap<String, Song> get songRepairMap => _songRepairMap;
+  HashMap<String, Song> _songRepairMap = HashMap();
 
   Iterable<SongPerformance> get allSongPerformances => _allSongPerformances;
   final SplayTreeSet<SongPerformance> _allSongPerformances = SplayTreeSet<SongPerformance>(

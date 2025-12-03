@@ -1,0 +1,9 @@
+#!/bin/tcsh
+#set echo; set verbose
+
+dart run lib/bsteele_music_util.dart \
+	-v -jamble \
+>& ~/junk/jamble_update_report
+#`date +%Y%m%d_%H%M%S`
+echo $status
+exit $status

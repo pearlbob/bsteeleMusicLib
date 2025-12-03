@@ -27,6 +27,10 @@ class SongId implements Comparable<SongId> {
     if (s == null) {
       return 'unknown';
     }
+    return correctSongId(s);
+  }
+
+  static String correctSongId(final String s) {
     return s
         .trim()
         .replaceAllMapped(notWordOrSpaceRegExp, (Match m) => '')
