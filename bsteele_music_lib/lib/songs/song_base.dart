@@ -675,10 +675,9 @@ class SongBase {
             state = UpperCaseState.comment;
             break;
           }
-          state =
-              (c.codeUnitAt(0) >= 'A'.codeUnitAt(0) && c.codeUnitAt(0) <= 'G'.codeUnitAt(0))
-                  ? UpperCaseState.flatIsPossible
-                  : UpperCaseState.normal;
+          state = (c.codeUnitAt(0) >= 'A'.codeUnitAt(0) && c.codeUnitAt(0) <= 'G'.codeUnitAt(0))
+              ? UpperCaseState.flatIsPossible
+              : UpperCaseState.normal;
           continue toNormal; //  fall through
         toNormal:
         case UpperCaseState.normal:
@@ -3740,10 +3739,9 @@ class SongBase {
             if (chordSectionLocation.hasMeasureIndex) {
               int pi = (phraseIndex >= cs.getPhraseCount() ? cs.getPhraseCount() - 1 : phraseIndex);
               int measureIndex = chordSectionLocation.measureIndex;
-              int mi =
-                  (measureIndex >= phrase.length || pi < chordSectionLocation.phraseIndex
-                      ? phrase.length - 1
-                      : measureIndex);
+              int mi = (measureIndex >= phrase.length || pi < chordSectionLocation.phraseIndex
+                  ? phrase.length - 1
+                  : measureIndex);
               if (cs != chordSection ||
                   pi != chordSectionLocation.phraseIndex ||
                   mi != chordSectionLocation.measureIndex) {
@@ -4231,10 +4229,9 @@ class SongBase {
             _displayGrid.setAt(gc, chordSection == lastChordSection ? null : chordSection);
             lastChordSection = chordSection;
 
-            var marker =
-                m.phrase is MeasureRepeat
-                    ? MeasureRepeatMarker(m.repeatMax, m.phrase.length, repetition: m.repeat)
-                    : null;
+            var marker = m.phrase is MeasureRepeat
+                ? MeasureRepeatMarker(m.repeatMax, m.phrase.length, repetition: m.repeat)
+                : null;
             if (marker == lastMarker) {
               marker = null;
             } else {
@@ -4467,10 +4464,19 @@ class SongBase {
 
   @override
   int get hashCode {
-    //  2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
-    int ret = Object.hash(title, artist, coverArtist, copyright);
-    ret = ret * 17 + Object.hash(key.keyEnum, beatsPerMinute, timeSignature);
-    ret = ret * 19 + Object.hash(_getChords(), _rawLyrics, fileName, fileVersionNumber);
+    int ret = Object.hash(
+      title,
+      artist,
+      coverArtist,
+      copyright,
+      key.keyEnum,
+      beatsPerMinute,
+      timeSignature,
+      _getChords(),
+      _rawLyrics,
+      fileName,
+      fileVersionNumber,
+    );
     //  note:   _lastModifiedTime intentionally not included
     return ret;
   }
@@ -4566,6 +4572,7 @@ class SongBase {
   set timeSignature(TimeSignature timeSignature) {
     _timeSignature = timeSignature;
     _clearCachedValues();
+    _chordSectionMap = HashMap(); //  clear chord sections, will be parsed when required
   }
 
   TimeSignature get timeSignature => _timeSignature;

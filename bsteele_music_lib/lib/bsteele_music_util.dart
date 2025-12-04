@@ -2342,7 +2342,9 @@ coerced to reflect the songlist's last modification for that song.
           print('_jamblePerformanceHistoryFile: $_jamblePerformanceHistoryFile');
 
           SplayTreeSet<SongPerformance> jamblePerformanceList = SplayTreeSet(_compareSongPerformanceLastSung);
+          SplayTreeSet<SongPerformance> jamblePerformanceAdditions = SplayTreeSet();
           AllSongPerformances allJamblePerformances = AllSongPerformances();
+          int historyLength = 0;
           {
             int length = _allSongPerformances.allSongPerformanceHistory.length;
             print('_allSongPerformances.allSongPerformanceHistory.length: ${length}');
@@ -2406,6 +2408,11 @@ coerced to reflect the songlist's last modification for that song.
                 (key1, key2) => -SongPerformance.compareByLastSungSongIdAndSinger(key1, key2),
               );
               for (var perf in jamblePerformanceList) {
+                //  reject performances that are too old
+                if (perf.lastSung < lastSungLimitMs) {
+                  continue;
+                }
+
                 if (perf.bpm == 0 && perf.song != null) {
                   // print('$perf: bpm: ${perf.song?.beatsPerMinute}');
                   jambleBpmCorrectedPerformances.add(
@@ -2421,6 +2428,7 @@ coerced to reflect the songlist's last modification for that song.
               //  join the performance lists
               print('');
               print('added performances from Jamble:');
+              historyLength = _allSongPerformances.allSongPerformanceHistory.length;
               count = 0;
               int matchCount = 0;
               for (var jamblePerformance in jambleBpmCorrectedPerformances) {
@@ -2437,15 +2445,25 @@ coerced to reflect the songlist's last modification for that song.
                   //  fixme: the jamble utc dates were double adjusted!
                   var adjustLastSung =
                       jamblePerformance.lastSung - 8 * 60 * 60 * 1000; //  fixme: often wrong by an hour!!!!
-                  print(
-                    '   added: ${jamblePerformance.toShortString()}'
-                    // '      jamble: ${jamblePerformance.lastSung} vs ${adjustLastSung}'
-                    // ' = ${DateTime.fromMillisecondsSinceEpoch(adjustLastSung).toUtc()} utc'
-                    '\n       ${SongPerformance.yMdHmsDateFormat.format(DateTime.fromMillisecondsSinceEpoch(adjustLastSung))}'
-                    ' adjusted local',
-                  );
+
                   //  add performance with adjustment
-                  _allSongPerformances.addSongPerformance(jamblePerformance.copyWith(lastSung: adjustLastSung));
+                  var adjustedJamblePerformance = jamblePerformance.copyWith(
+                    firstSung: min(adjustLastSung, jamblePerformance.firstSung),
+                    lastSung: adjustLastSung,
+                  );
+                  assert(adjustedJamblePerformance.lastSung == adjustLastSung);
+                  _allSongPerformances.addSongPerformance(adjustedJamblePerformance);
+                  jamblePerformanceAdditions.add(adjustedJamblePerformance);
+                  print(
+                    '   added: ${adjustedJamblePerformance.toShortString()}'
+                    '\n       ${SongPerformance.yMdHmsDateFormat.format(DateTime.fromMillisecondsSinceEpoch(adjustLastSung))}'
+                    ' adjusted local, ${adjustedJamblePerformance.lastSung}',
+                  );
+                  print(
+                    '       from: ${jamblePerformance.toShortString()}'
+                    ', ${jamblePerformance.lastSung}',
+                  );
+                  assert(_allSongPerformances.allSongPerformanceHistory.contains(adjustedJamblePerformance));
                   count++;
                 } else if (matches.length == 1) {
                   matchCount++;
@@ -2472,6 +2490,8 @@ coerced to reflect the songlist's last modification for that song.
                 print('likely a formatting error with no matches');
                 exit(-1);
               }
+              historyLength += count;
+              assert(historyLength == _allSongPerformances.allSongPerformanceHistory.length);
             }
           }
 
@@ -2496,10 +2516,14 @@ coerced to reflect the songlist's last modification for that song.
           //  find songs in the performance list that are missing
           print('');
           print('allSong missing song check:');
+          assert(historyLength == _allSongPerformances.allSongPerformanceHistory.length);
+          // print( 'history.length: ${_allSongPerformances.allSongPerformanceHistory.length}');
           _allSongPerformances.loadSongs(allSongs);
+          // print( 'history.length: ${_allSongPerformances.allSongPerformanceHistory.length}');
+
           {
             int missingCount = 0;
-            for (var perf in _allSongPerformances.allSongPerformanceHistory) {
+            for (final perf in _allSongPerformances.allSongPerformanceHistory) {
               var song = perf.song;
               if (song == null) {
                 print('_allSongPerformances.lost song: ${perf.songIdAsString}');
@@ -2519,6 +2543,14 @@ coerced to reflect the songlist's last modification for that song.
           // exit(-1);
 
           _allSongPerformances.rebuildAllPerformancesFromHistory(lastSungLimitMs: lastSungLimitMs);
+
+          //  assure all performance additions were added
+          for (final performance in jamblePerformanceAdditions) {
+            if (!_allSongPerformances.allSongPerformanceHistory.contains(performance)) {
+              print('_allSongPerformances.allSongPerformanceHistory missing: ${performance.toShortString()}');
+              assert(false);
+            }
+          }
 
           print('');
           print('possible copyright issues:');

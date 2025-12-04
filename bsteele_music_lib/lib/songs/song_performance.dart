@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:string_similarity/string_similarity.dart';
@@ -249,6 +250,7 @@ class SongPerformance implements Comparable<SongPerformance> {
       _lastSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
   static DateFormat yMdHmsDateFormat = DateFormat.yMd().add_Hms();
+
   String get lastSungDateTimeString =>
       _lastSung == 0 ? '' : yMdHmsDateFormat.format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
@@ -703,8 +705,8 @@ class AllSongPerformances {
   void rebuildAllPerformancesFromHistory({final int lastSungLimitMs = 0 /* since epoch */}) {
     //  limit history as well
     if (lastSungLimitMs > 0) {
-      final SplayTreeSet<SongPerformance> newHistory = SplayTreeSet();
-      for (var songPerformance in _allSongPerformanceHistory.toList().reversed) {
+      final SplayTreeSet<SongPerformance> newHistory = SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger);
+      for (var songPerformance in _allSongPerformanceHistory) {
         if (songPerformance.lastSung >= lastSungLimitMs) {
           newHistory.add(songPerformance);
         }
@@ -717,7 +719,9 @@ class AllSongPerformances {
     SplayTreeSet<SongPerformance> uniqueSongIdAndSinger = SplayTreeSet(
       (song1, song2) => SongPerformance.compareBySongIdAndSinger(song1, song2),
     );
-    for (var songPerformance in _allSongPerformanceHistory.toList().reversed) {
+    for (var songPerformance in _allSongPerformanceHistory.sorted(
+      (perf1, perf2) => -perf1.lastSung.compareTo(perf2.lastSung),
+    )) {
       uniqueSongIdAndSinger.add(songPerformance);
     }
     _allSongPerformances.clear();
@@ -881,7 +885,7 @@ class AllSongPerformances {
   }
 
   Iterable<SongPerformance> get allSongPerformanceHistory => _allSongPerformanceHistory;
-  final SplayTreeSet<SongPerformance> _allSongPerformanceHistory = SplayTreeSet<SongPerformance>(
+  final SplayTreeSet<SongPerformance> _allSongPerformanceHistory = SplayTreeSet(
     SongPerformance.compareByLastSungSongIdAndSinger,
   );
 
