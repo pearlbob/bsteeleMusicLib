@@ -1,9 +1,28 @@
 #!/bin/tcsh
 #set echo; set verbose
 
+set touch=~/junk/jamble_touch_file
+rm -f $touch
+touch $touch
 dart run lib/bsteele_music_util.dart \
 	-v -jamble \
 >& ~/junk/jamble_update_report
 #`date +%Y%m%d_%H%M%S`
-echo $status
+
+set returnStatus=$status
+echo returnStatus
+
+if ( $returnStatus != 0 ) then
+  return $returnStatus
+endif
+
+cd ~/junk
+
+set jamble_zip=jamble_update_`date +%Y%m%d_%H%M%S`.zip
+zip $jamble_zip `find . -type f -newer $touch -print`
+unzip -l $jamble_zip
+
+rm -f jamble_touch_file
+
 exit $status
+
