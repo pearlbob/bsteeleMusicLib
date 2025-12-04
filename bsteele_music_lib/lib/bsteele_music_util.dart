@@ -1130,9 +1130,9 @@ coerced to reflect the songlist's last modification for that song.
               }
             }
             var dayFormat = DateFormat('yyyy/MM/dd');
-            for (var day in SplayTreeSet<DateTime>()..addAll(jams.keys)) {
+            for (var day in jams.keys.sorted()) {
               var jam = jams[day]!;
-              var singerSet = SplayTreeSet<String>()..addAll(jam.keys);
+              var singerSet = jam.keys.sorted();
               singerSet.removeWhere((e) => e == 'unknown');
               String singers = singerSet.toString().replaceAll('{', '').replaceAll('}', '').trim();
               // print('day: ${dayFormat.format(day)}, ${jam.length}, singers: $singers');
@@ -2135,7 +2135,7 @@ coerced to reflect the songlist's last modification for that song.
           }
 
           print('');
-          print('add the jamble songs:');
+          print('added jamble songs:');
           for (var song in jambleSongs) {
             if (!allSongs.contains(song)) {
               print('  $song');
@@ -2145,7 +2145,7 @@ coerced to reflect the songlist's last modification for that song.
 
           //  update selected song list data
           print('');
-          print('changed tags:');
+          print('changed fields:');
           const longVersion = true;
           for (var song in allSongs) {
             if (jambleSongs.contains(song)) {
@@ -2160,7 +2160,7 @@ coerced to reflect the songlist's last modification for that song.
                   song.user = 'Shari C.';
                 }
                 if (song.user != otherSong.user) {
-                  if (longVersion) out.write('   user: was ${song.user}, is now: ${otherSong.user}\n');
+                  if (longVersion) out.write('\n   user: was ${song.user}, is now: ${otherSong.user}');
                   song.user = otherSong.user;
                 }
 
@@ -2169,28 +2169,28 @@ coerced to reflect the songlist's last modification for that song.
 
                 if (song.copyright.isEmpty) {
                   if (longVersion) {
-                    out.write('   copyright: was "${song.copyright}", is now: "${otherSong.copyright}"\n');
+                    out.write('\n   copyright: was "${song.copyright}", is now: "${otherSong.copyright}"');
                   }
                   song.copyright = otherSong.copyright;
                 }
 
                 if (song.key != otherSong.key) {
                   if (longVersion) {
-                    out.write('   key: was ${song.key}, is now: ${otherSong.key}\n');
+                    out.write('\n   key: was ${song.key}, is now: ${otherSong.key}');
                   }
                   song.key = otherSong.key;
                 }
 
                 if (song.beatsPerMinute != otherSong.beatsPerMinute) {
                   if (longVersion) {
-                    out.write('   beatsPerMinute: was ${song.beatsPerMinute}, is now: ${otherSong.beatsPerMinute}\n');
+                    out.write('\n   beatsPerMinute: was ${song.beatsPerMinute}, is now: ${otherSong.beatsPerMinute}');
                   }
                   song.beatsPerMinute = otherSong.beatsPerMinute;
                 }
 
                 if (song.timeSignature != otherSong.timeSignature) {
                   if (longVersion) {
-                    out.write('   timeSignature: was ${song.timeSignature}, is now: ${otherSong.timeSignature}\n');
+                    out.write('\n   timeSignature: was ${song.timeSignature}, is now: ${otherSong.timeSignature}');
                   }
                   song.timeSignature = otherSong.timeSignature;
                 }
@@ -2198,20 +2198,20 @@ coerced to reflect the songlist's last modification for that song.
                 //  as per Shari
                 if (song.chords != otherSong.chords) {
                   out.write(
-                    '   chords were changed '
-                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.chords, otherSong.chords)))}%\n',
+                    '\n   chords were changed '
+                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.chords, otherSong.chords)))}%',
                   );
                   song.chords = otherSong.chords;
                 }
                 if (song.rawLyrics != otherSong.rawLyrics) {
                   out.write(
-                    '   lyrics were changed '
-                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.rawLyrics, otherSong.rawLyrics)))} %\n',
+                    '\n   lyrics were changed '
+                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.rawLyrics, otherSong.rawLyrics)))} %',
                   );
                   song.rawLyrics = otherSong.rawLyrics;
                 }
                 if (out.isNotEmpty) {
-                  print('  $song:\n$out');
+                  print('  $song:$out');
                 }
               } catch (e) {
                 print('missing song: $song');
@@ -2312,7 +2312,7 @@ coerced to reflect the songlist's last modification for that song.
             for (var newPerf in _allSongPerformances.allSongPerformanceHistory.where(
               (perf) => perf.songIdAsString == newSong?.songId.songIdAsString,
             )) {
-              print('  now: ${newPerf}');
+              print('  now: ${newPerf.toShortString()}');
             }
           }
 
@@ -2623,7 +2623,7 @@ coerced to reflect the songlist's last modification for that song.
           //  update renamed songs in the metadata
           print('');
           print('song metadata renames:');
-          for (var oldSong in renameMap.keys) {
+          for (var oldSong in renameMap.keys.sorted()) {
             var newSong = renameMap[oldSong];
             assert(newSong != null);
 
@@ -2632,15 +2632,17 @@ coerced to reflect the songlist's last modification for that song.
             SongMetadata.renameSong(oldSong, newSong!);
           }
           {
+            print('');
+            print('song metadata corrections:');
             HashMap<String, Song> corrections = HashMap();
-            for (var idMetadata in SongMetadata.idMetadata) {
+            for (var idMetadata in SongMetadata.idMetadata.sorted()) {
               var matchingSongs = allSongs
                   .where((song) => song.songId.songIdAsString == idMetadata.id)
                   .toList(growable: false);
               if (matchingSongs.length != 1) {
                 var newSong = allJamblePerformances.bestMatchesMap[idMetadata.id.toLowerCase()];
-                print('metadata: ${idMetadata.id}: ${matchingSongs.length}');
-                print('  to: ${newSong?.songId.songIdAsString}');
+                print('  metadata: ${idMetadata.id}: ${matchingSongs.length}');
+                print('    to: ${newSong?.songId.songIdAsString}');
                 if (newSong == null) {
                   exit(-1);
                 }
