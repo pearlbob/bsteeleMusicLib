@@ -2160,7 +2160,7 @@ coerced to reflect the songlist's last modification for that song.
                   song.user = 'Shari C.';
                 }
                 if (song.user != otherSong.user) {
-                  if (longVersion) out.write('\n   user: was ${song.user}, is now: ${otherSong.user}');
+                  if (longVersion) out.write('\n    user: was ${song.user}, is now: ${otherSong.user}');
                   song.user = otherSong.user;
                 }
 
@@ -2169,28 +2169,28 @@ coerced to reflect the songlist's last modification for that song.
 
                 if (song.copyright.isEmpty) {
                   if (longVersion) {
-                    out.write('\n   copyright: was "${song.copyright}", is now: "${otherSong.copyright}"');
+                    out.write('\n    copyright: was "${song.copyright}", is now: "${otherSong.copyright}"');
                   }
                   song.copyright = otherSong.copyright;
                 }
 
                 if (song.key != otherSong.key) {
                   if (longVersion) {
-                    out.write('\n   key: was ${song.key}, is now: ${otherSong.key}');
+                    out.write('\n    key: was ${song.key}, is now: ${otherSong.key}');
                   }
                   song.key = otherSong.key;
                 }
 
                 if (song.beatsPerMinute != otherSong.beatsPerMinute) {
                   if (longVersion) {
-                    out.write('\n   beatsPerMinute: was ${song.beatsPerMinute}, is now: ${otherSong.beatsPerMinute}');
+                    out.write('\n    beatsPerMinute: was ${song.beatsPerMinute}, is now: ${otherSong.beatsPerMinute}');
                   }
                   song.beatsPerMinute = otherSong.beatsPerMinute;
                 }
 
                 if (song.timeSignature != otherSong.timeSignature) {
                   if (longVersion) {
-                    out.write('\n   timeSignature: was ${song.timeSignature}, is now: ${otherSong.timeSignature}');
+                    out.write('\n    timeSignature: was ${song.timeSignature}, is now: ${otherSong.timeSignature}');
                   }
                   song.timeSignature = otherSong.timeSignature;
                 }
@@ -2198,16 +2198,18 @@ coerced to reflect the songlist's last modification for that song.
                 //  as per Shari
                 if (song.chords != otherSong.chords) {
                   out.write(
-                    '\n   chords were changed '
+                    '\n    chords were changed '
                     '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.chords, otherSong.chords)))}%',
                   );
                   song.chords = otherSong.chords;
                 }
                 if (song.rawLyrics != otherSong.rawLyrics) {
-                  out.write(
-                    '\n   lyrics were changed '
-                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.rawLyrics, otherSong.rawLyrics)))} %',
-                  );
+                  double similarity = StringSimilarity.compareTwoStrings(song.rawLyrics, otherSong.rawLyrics);
+                  if (similarity < 1.0) {
+                    out.write('\n    lyrics were changed ${to1(100 * (1 - similarity))} %');
+                  } else {
+                    //  don't comment on white space changes
+                  }
                   song.rawLyrics = otherSong.rawLyrics;
                 }
                 if (out.isNotEmpty) {
