@@ -2686,6 +2686,28 @@ coerced to reflect the songlist's last modification for that song.
             }
           }
 
+          //  write the allJamblePerformances file
+          {
+            allJamblePerformances.rebuildAllPerformancesFromHistory(lastSungLimitMs: lastSungLimitMs);
+
+            //  write the corrected performances
+            File allJambleSongPerformancesFile = File(
+              '${Util.homePath()}/$_junkRelativeDirectory/allJamblePerformances${AllSongPerformances.fileExtension}',
+            );
+            if (allJambleSongPerformancesFile.existsSync()) {
+              try {
+                allJambleSongPerformancesFile.deleteSync();
+              } catch (e) {
+                logger.e(e.toString());
+                exit(-1);
+              }
+            }
+            await allJambleSongPerformancesFile.writeAsString(
+              allJamblePerformances.toJsonString(prettyPrint: true),
+              flush: true,
+            );
+          }
+
           // for (var songIdAsString in allJamblePerformances.bestMatchesMap.keys) {
           //   print(
           //     'old id: ${songIdAsString} '
