@@ -3694,14 +3694,14 @@ v:
       expect(
           a.chordMarkupForLyrics(),
           'I:\n'
-          '[A B C D] x1/2 [A B C D] x2/2\n'
-          'V:\n'
-          '[G G G G\n'
-          ' C C G G\n'
-          ' D C G D] x1/4\n'
-          '[G G G G\n'
-          ' C C G G\n'
-          ' D C G D] x2/4 [G G G G, C C G G, D C G D] x3/4 [G G G G, C C G G, D C G D] x4/4\n');
+              '[A B C D] x1/2 [A B C D] x2/2\n'
+              'V:\n'
+              '[G G G G\n'
+              ' C C G G\n'
+              ' D C G D] x1/4\n'
+              '[G G G G\n'
+              ' C C G G\n'
+              ' D C G D] x2/4 [G G G G, C C G G, D C G D] x3/4 [G G G G, C C G G, D C G D] x4/4\n');
     }
     {
       var a = Song(

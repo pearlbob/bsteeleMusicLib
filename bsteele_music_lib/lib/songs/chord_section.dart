@@ -827,9 +827,9 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
         repeatMeasureCount == other.repeatMeasureCount)) {
       return false;
     }
-//  deal with empty-ish phrases
+    //  deal with empty-ish phrases
     if (phraseRowCount == 0) {
-//  only works since the measure counts are identical
+      //  only works since the measure counts are identical
       return true;
     }
     return listsEqual(_phrases, other._phrases);

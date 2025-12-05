@@ -656,7 +656,7 @@ void main() {
     expect(
         chordSection.toMarkupInRows(0),
         'I: A B, A B C D [A B C D, E F G G#, A# Bb] x1/2'
-        ' [A B C D, E F G G#, A# Bb] x2/2\n');
+            ' [A B C D, E F G G#, A# Bb] x2/2\n');
     expect(
         chordSection.toMarkupInRows(1),
         'I: A B, A B C D [A B C D, E F G G#, A# Bb] x1/2'
