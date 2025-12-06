@@ -194,6 +194,9 @@ class Song extends SongBase implements Comparable<Song> {
           }
           song.chords = sb.toString();
           break;
+        case 'dateCreated':
+          logger.i('not supported:  dateCreated: ${jsonSong[name]}');
+          break;
         case 'lyrics':
           dynamic lyricRows = jsonSong[name];
           StringBuffer sb = StringBuffer();

@@ -47,7 +47,7 @@ const String _allSongPerformancesGithubFileLocation =
     '$_allSongDirectory/allSongPerformances${AllSongPerformances.fileExtension}';
 const String _allSongsFileLocation = '$_allSongDirectory/allSongs.songlyrics';
 const String _missingSongsFilePrefix = 'missing_songs_';
-// final String _missingSongsFileLocation = '${Util.homePath()}/Downloads/$_missingSongsFilePrefix';
+final String _missingSongsFileLocation = '${Util.homePath()}/Downloads/$_missingSongsFilePrefix';
 
 final _allSongsFile = File('${Util.homePath()}/$_allSongsFileLocation');
 final _allSongMetadataFileName = 'allSongs.songmetadata';
@@ -1344,10 +1344,8 @@ coerced to reflect the songlist's last modification for that song.
                 '-${lastSungDateTime.day.toString().padLeft(2, '0')}'
                 '.log',
               );
-              print('missing: ${p.lastSungDateTime}: ${file.path}  ${dateFormat.format(lastSungDateTime)}');
-
-              if (p.songIdAsString.startsWith('Song_Little_')) {
-                print('breakpoint');
+              if (_verbose) {
+                print('missing: ${p.lastSungDateTime}: ${file.path}  ${dateFormat.format(lastSungDateTime)}');
               }
 
               dynamic songJson;
@@ -1368,7 +1366,9 @@ coerced to reflect the songlist's last modification for that song.
                 var song = Song.fromJson(songJson);
                 song.chordSectionGrid; //  force the parse of chords
                 assert(song.songId.toString() == p.songIdAsString);
-                print('   song: ${song.songId}  vs ${p.songIdAsString} ${p.song}');
+                if (_verbose) {
+                  print('   song: ${song.songId}  vs ${p.songIdAsString} ${p.song}');
+                }
 
                 //  validate the song
                 {
@@ -1409,7 +1409,7 @@ coerced to reflect the songlist's last modification for that song.
 
               // print(sb.toString());
               final outputFile = File(
-                '%_missingSongsFileLocation'
+                '$_missingSongsFileLocation'
                 '${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}'
                 '.songlyrics',
               );
@@ -1420,7 +1420,7 @@ coerced to reflect the songlist's last modification for that song.
                 print('$song');
                 SongMetadata.addSong(song, NameValue('status', 'uncurated'));
               }
-              print(SongMetadata.toJson());
+              // print(SongMetadata.toJson());
               print('fixme:  finish the implementation for missing metadata!!!!');
             } else {
               print('there are no missing songs.');

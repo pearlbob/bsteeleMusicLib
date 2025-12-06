@@ -4584,8 +4584,7 @@ class SongBase {
   }
 
   int lastModifiedTime = 0;
-
-  int originalEntryTime = DateTime(2017).millisecondsSinceEpoch;
+  DateTime? dateTimeCreated;
 
   //  chords as a string is only valid on input or output
   String get chords => _getChords();
