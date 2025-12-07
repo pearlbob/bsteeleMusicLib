@@ -177,6 +177,7 @@ void main() {
 "title": "A",
 "artist": "bobby",
 "user": "bob",
+"dateCreated": 0,
 "lastModifiedDate": 0,
 "copyright": "bsteele.com",
 "key": "C",

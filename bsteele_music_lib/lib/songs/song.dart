@@ -11,6 +11,7 @@ import 'time_signature.dart';
 enum SongComparatorType {
   title,
   artist,
+  dateCreated,
   lastModifiedDate,
   lastModifiedDateLast,
   versionNumber,
@@ -39,23 +40,23 @@ class Song extends SongBase implements Comparable<Song> {
     String? user,
     required super.chords,
     required super.rawLyrics,
-  }) : super(
-            coverArtist: coverArtist ?? '', user: user ?? defaultUser);
+  }) : super(coverArtist: coverArtist ?? '', user: user ?? defaultUser);
 
   /// Create a minimal song to be used internally as a place holder.
   static Song createEmptySong({int? currentBeatsPerMinute, Key? currentKey}) {
     //  note: this is not a valid song!
     return Song(
-        title: '',
-        artist: '',
-        copyright: '',
-        key: currentKey ?? Key.getDefault(),
-        beatsPerMinute: currentBeatsPerMinute ?? 100,
-        beatsPerBar: 4,
-        unitsPerMeasure: 4,
-        user: '',
-        chords: '',
-        rawLyrics: '');
+      title: '',
+      artist: '',
+      copyright: '',
+      key: currentKey ?? Key.getDefault(),
+      beatsPerMinute: currentBeatsPerMinute ?? 100,
+      beatsPerBar: 4,
+      unitsPerMeasure: 4,
+      user: '',
+      chords: '',
+      rawLyrics: '',
+    );
   }
 
   /// Copy the song to a new instance.
@@ -75,6 +76,7 @@ class Song extends SongBase implements Comparable<Song> {
       rawLyrics: rawLyrics,
     );
     ret.setFileName(getFileName());
+    ret.dateCreated = dateCreated;
     ret.lastModifiedTime = lastModifiedTime;
     ret.totalBeats = totalBeats;
     ret.setCurrentChordSectionLocation(ChordSectionLocation.copy(getCurrentChordSectionLocation()));
@@ -111,6 +113,7 @@ class Song extends SongBase implements Comparable<Song> {
       rawLyrics: rawLyrics ?? this.rawLyrics,
     );
     ret.setFileName(getFileName());
+    ret.dateCreated = dateCreated;
     ret.lastModifiedTime = lastModifiedTime;
     ret.totalBeats = totalBeats;
     ret.setCurrentChordSectionLocation(ChordSectionLocation.copy(getCurrentChordSectionLocation()));
@@ -173,7 +176,7 @@ class Song extends SongBase implements Comparable<Song> {
           song.beatsPerMinute = (jsonSong[name] as int);
           break;
         case 'timeSignature':
-        //  most of this is coping with real old events with poor formatting
+          //  most of this is coping with real old events with poor formatting
           String timeSignatureString = jsonSong[name];
           RegExpMatch? mr = _timeSignatureExp.firstMatch(timeSignatureString);
           if (mr != null) {
@@ -194,9 +197,6 @@ class Song extends SongBase implements Comparable<Song> {
           }
           song.chords = sb.toString();
           break;
-        case 'dateCreated':
-          logger.i('not supported:  dateCreated: ${jsonSong[name]}');
-          break;
         case 'lyrics':
           dynamic lyricRows = jsonSong[name];
           StringBuffer sb = StringBuffer();
@@ -206,10 +206,18 @@ class Song extends SongBase implements Comparable<Song> {
           }
           song.rawLyrics = sb.toString(); // no trim!
           break;
+        case 'dateCreated':
+          {
+            DateTime dateCreated = DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
+            song.dateCreated = dateCreated.millisecondsSinceEpoch;
+          }
+          break;
         case 'lastModifiedDate':
-          DateTime songDateTime = DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
-          if (songDateTime.isAfter(fileDateTime)) {
-            song.lastModifiedTime = songDateTime.millisecondsSinceEpoch;
+          {
+            DateTime songDateTime = DateTime.fromMillisecondsSinceEpoch(jsonSong[name]);
+            if (songDateTime.isAfter(fileDateTime)) {
+              song.lastModifiedTime = songDateTime.millisecondsSinceEpoch;
+            }
           }
           break;
         case 'user':
@@ -261,6 +269,9 @@ class Song extends SongBase implements Comparable<Song> {
     }
     sb.write('"user": ');
     sb.write(jsonEncode(user));
+    sb.write(',\n');
+    sb.write('"dateCreated": ');
+    sb.write(dateCreated);
     sb.write(',\n');
     sb.write('"lastModifiedDate": ');
     sb.write(lastModifiedTime);
@@ -354,9 +365,13 @@ class Song extends SongBase implements Comparable<Song> {
       ret.add(StringTriple('+more', '', ''));
     }
     ret.insert(
-        0,
-        StringTriple('file date', DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
-            DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime).toString()));
+      0,
+      StringTriple(
+        'file date',
+        DateTime.fromMillisecondsSinceEpoch(a.lastModifiedTime).toString(),
+        DateTime.fromMillisecondsSinceEpoch(b.lastModifiedTime).toString(),
+      ),
+    );
     return ret;
   }
 
@@ -366,6 +381,8 @@ class Song extends SongBase implements Comparable<Song> {
         return _comparatorByArtist;
       case SongComparatorType.lastModifiedDate:
         return _comparatorByLastModifiedDate;
+      case SongComparatorType.dateCreated:
+        return _comparatorByDateCreated;
       case SongComparatorType.lastModifiedDateLast:
         return _comparatorByLastModifiedDateLast;
       case SongComparatorType.versionNumber:
@@ -445,9 +462,24 @@ int _compareByLastModifiedDate(Song o1, Song o2) {
   return mod1 < mod2 ? 1 : -1;
 }
 
+int _compareByDateCreated(Song o1, Song o2) {
+  int mod1 = o1.dateCreated;
+  int mod2 = o2.dateCreated;
+
+  if (mod1 == mod2) {
+    return o1.compareTo(o2);
+  }
+  return mod1 < mod2 ? 1 : -1;
+}
+
 /// Compares its two arguments for order my most recent modification date.
 Comparator<Song> _comparatorByLastModifiedDate = (Song o1, Song o2) {
   return _compareByLastModifiedDate(o1, o2);
+};
+
+/// Compares its two arguments for order my most recent modification date.
+Comparator<Song> _comparatorByDateCreated = (Song o1, Song o2) {
+  return _compareByDateCreated(o1, o2);
 };
 
 /// Compares its two arguments for order my most recent modification date, reversed

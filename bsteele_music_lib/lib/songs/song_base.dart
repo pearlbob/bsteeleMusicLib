@@ -4583,8 +4583,8 @@ class SongBase {
     lastModifiedTime = DateTime.now().millisecondsSinceEpoch;
   }
 
-  int lastModifiedTime = 0;
-  DateTime? dateTimeCreated;
+  int lastModifiedTime = 0; //  utc
+  int dateCreated = 0; //  utc
 
   //  chords as a string is only valid on input or output
   String get chords => _getChords();

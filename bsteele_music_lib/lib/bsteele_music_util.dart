@@ -2165,6 +2165,7 @@ coerced to reflect the songlist's last modification for that song.
                 }
 
                 song.fileName = otherSong.fileName;
+                song.dateCreated = otherSong.dateCreated;
                 song.lastModifiedTime = otherSong.lastModifiedTime;
 
                 if (song.copyright.isEmpty) {
