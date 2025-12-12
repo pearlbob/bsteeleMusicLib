@@ -9,7 +9,7 @@ import 'package:compute/compute.dart';
 void main() {
   Logger.level = Level.info;
 
-  test('song performance', () async {
+  test('song performance basic', () async {
     var a = Song(
       title: 'A',
       artist: 'bob',
@@ -77,6 +77,7 @@ void main() {
         'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
         ' _singer: \'vicki\', key: A, _bpm: 120, last sung: 12/18/2021 10:31:19}',
       );
+
       expect(songPerformance.songIdAsString, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
       expect(songPerformance.key, Key.A);

@@ -250,9 +250,10 @@ class SongPerformance implements Comparable<SongPerformance> {
       _lastSung == 0 ? '' : DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
   static DateFormat yMdHmDateFormat = DateFormat.yMd().add_jm();
+  static DateFormat yMdHmsDateFormat = DateFormat.yMd().add_Hms();
 
   String get lastSungDateTimeString =>
-      _lastSung == 0 ? '' : yMdHmDateFormat.format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
+      _lastSung == 0 ? '' : yMdHmsDateFormat.format(DateTime.fromMillisecondsSinceEpoch(_lastSung));
 
   DateTime get lastSungDateTime => DateTime.fromMillisecondsSinceEpoch(_lastSung);
 
