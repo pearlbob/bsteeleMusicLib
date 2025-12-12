@@ -13,7 +13,7 @@ set returnStatus=$status
 echo returnStatus
 
 if ( $returnStatus != 0 ) then
-  return $returnStatus
+  exit $returnStatus
 endif
 
 cd ~/junk

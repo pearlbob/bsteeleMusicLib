@@ -2126,7 +2126,7 @@ coerced to reflect the songlist's last modification for that song.
                   renameMap[song] = best!;
                 } else {
                   print('$song NOT replaced by:\n   $best  ($bestSimilarity)');
-                  exit(-1);
+                  // exit(-1);  //  fixme?
                 }
               }
             }
@@ -2222,7 +2222,6 @@ coerced to reflect the songlist's last modification for that song.
               }
             } else {
               print('$song:  not found in new song list\n');
-              exit(-1);
             }
           }
 
@@ -2438,16 +2437,20 @@ coerced to reflect the songlist's last modification for that song.
                 var matches = _allSongPerformances.allSongPerformanceHistory.where((p) {
                   return p.songIdAsString == jamblePerformance.songIdAsString &&
                       p.singer == jamblePerformance.singer &&
-                      (p.lastSung == jamblePerformance.lastSung ||
-                          //  fixme: the jamble utc dates were double adjusted!
-                          p.lastSung + 8 * 60 * 60 * 1000 == jamblePerformance.lastSung ||
-                          p.lastSung + 7 * 60 * 60 * 1000 == jamblePerformance.lastSung);
+                      (p.lastSung == jamblePerformance.lastSung
+                          // ||
+                          // //  fixme: the jamble utc dates were double adjusted!
+                          // p.lastSung + 8 * 60 * 60 * 1000 == jamblePerformance.lastSung ||
+                          // p.lastSung + 7 * 60 * 60 * 1000 == jamblePerformance.lastSung
+                          ||
+                          //  fixme: the jamble dates were offset?
+                          p.lastSung + 1 * 60 * 60 * 1000 == jamblePerformance.lastSung ||
+                          p.lastSung + -1 * 60 * 60 * 1000 == jamblePerformance.lastSung);
                 });
 
                 if (matches.isEmpty) {
                   //  fixme: the jamble utc dates were double adjusted!
-                  var adjustLastSung =
-                      jamblePerformance.lastSung - 8 * 60 * 60 * 1000; //  fixme: often wrong by an hour!!!!
+                  var adjustLastSung = jamblePerformance.lastSung; //  fixme: often wrong by an hour!!!!
 
                   //  add performance with adjustment
                   var adjustedJamblePerformance = jamblePerformance.copyWith(
@@ -2459,8 +2462,8 @@ coerced to reflect the songlist's last modification for that song.
                   jamblePerformanceAdditions.add(adjustedJamblePerformance);
                   print(
                     '   added: ${adjustedJamblePerformance.toShortString()}'
-                    '\n       ${SongPerformance.yMdHmsDateFormat.format(DateTime.fromMillisecondsSinceEpoch(adjustLastSung))}'
-                    ' adjusted local, ${adjustedJamblePerformance.lastSung}',
+                    '\n       ${SongPerformance.yMdHmDateFormat.format(DateTime.fromMillisecondsSinceEpoch(adjustLastSung))}'
+                    ', lastSung: ${adjustedJamblePerformance.lastSung}',
                   );
                   print(
                     '       from: ${jamblePerformance.toShortString()}'
@@ -2469,17 +2472,28 @@ coerced to reflect the songlist's last modification for that song.
                   assert(_allSongPerformances.allSongPerformanceHistory.contains(adjustedJamblePerformance));
                   count++;
                 } else if (matches.length == 1) {
+                  var performance = matches.first;
+                  if (performance.lastSung != jamblePerformance.lastSung) {
+                    DateTime bsteeleTime = DateTime.fromMillisecondsSinceEpoch(performance.lastSung);
+                    DateTime jambleTime = DateTime.fromMillisecondsSinceEpoch(jamblePerformance.lastSung);
+                    print(
+                      '   lastSung timing issue: ${performance.toShortString()}'
+                      '\n     bsteele: ${SongPerformance.yMdHmDateFormat.format(bsteeleTime)} (${performance.lastSung})'
+                      ' vs jamble: ${SongPerformance.yMdHmDateFormat.format(jambleTime)} (${jamblePerformance.lastSung})'
+                      ', delta: ${jambleTime.difference(bsteeleTime)}',
+                    );
+                  }
                   matchCount++;
                 } else {
-                  // if (jamblePerformance.lastSung != matches.first.lastSung) {
-                  //   print(
-                  //     '  match: $jamblePerformance'
-                  //     '\n      jamble: ${jamblePerformance.lastSung} vs ${matches.first.lastSung},'
-                  //     ' delta: ${jamblePerformance.lastSung - matches.first.lastSung}'
-                  //     ' = ${DateTime.fromMillisecondsSinceEpoch(jamblePerformance.lastSung).toUtc()} utc'
-                  //     ' = ${DateTime.fromMillisecondsSinceEpoch(jamblePerformance.lastSung)}',
-                  //   );
-                  // }
+                  if (jamblePerformance.lastSung != matches.first.lastSung) {
+                    print(
+                      '  match: $jamblePerformance'
+                      '\n      jamble: ${jamblePerformance.lastSung} vs ${matches.first.lastSung},'
+                      ' delta: ${jamblePerformance.lastSung - matches.first.lastSung}'
+                      ' = ${DateTime.fromMillisecondsSinceEpoch(jamblePerformance.lastSung).toUtc()} utc'
+                      ' = ${DateTime.fromMillisecondsSinceEpoch(jamblePerformance.lastSung)}',
+                    );
+                  }
                   print('too many matches for: $jamblePerformance,\n');
                   for (var m in matches) {
                     print('  $m');

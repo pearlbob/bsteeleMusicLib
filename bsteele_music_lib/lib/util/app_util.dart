@@ -1,14 +1,14 @@
 //  note: keep this file dart only!
 
-String to12(final double v, {int pad = 10}) {
+String to12(final double v, {int pad = 15}) {
   return v.toStringAsFixed(12).padLeft(pad);
 }
 
-String to9(final double v, {int pad = 10}) {
+String to9(final double v, {int pad = 12}) {
   return v.toStringAsFixed(9).padLeft(pad);
 }
 
-String to6(final double v, {int pad = 10}) {
+String to6(final double v, {int pad = 9}) {
   return v.toStringAsFixed(6).padLeft(pad);
 }
 
