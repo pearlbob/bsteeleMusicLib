@@ -1261,33 +1261,62 @@ coerced to reflect the songlist's last modification for that song.
 
         case '-longlyrics':
           {
-            Map<Song, int> longLyrics = {};
-            for (Song song in allSongs) {
-              int maxLength = 0;
-              for (var lyricSection in song.lyricSections) {
-                for (var line in lyricSection.lyricsLines) {
-                  maxLength = max(maxLength, line.length);
+            allSongs.clear();
+            _addAllSongsFromFile(File('allSongs.songlyrics'));
+            {
+              Map<Song, int> longLyrics = {};
+              for (Song song in allSongs) {
+                int maxLength = 0;
+                for (var lyricSection in song.lyricSections) {
+                  for (var line in lyricSection.lyricsLines) {
+                    maxLength = max(maxLength, line.length);
+                  }
+                }
+                if (maxLength > 150) {
+                  longLyrics[song] = maxLength;
                 }
               }
-              if (maxLength > 60) {
-                longLyrics[song] = maxLength;
-              }
-            }
 
-            SplayTreeSet<int> sortedValues = SplayTreeSet();
-            sortedValues.addAll(longLyrics.values);
-            for (int i in sortedValues.toList(growable: false).reversed) {
-              SplayTreeSet<Song> sortedSongs = SplayTreeSet();
-              for (Song song in longLyrics.keys) {
-                if (longLyrics[song] == i) {
-                  sortedSongs.add(song);
-                }
-              }
-              for (Song song in sortedSongs) {
+              SplayTreeSet<Song> sortedValues = SplayTreeSet((song1, song2) {
+                int ret;
+                if ((ret = -longLyrics[song1]!.compareTo(longLyrics[song2]!)) != 0) return ret;
+                return song1.compareTo(song2);
+              });
+              sortedValues.addAll(longLyrics.keys);
+              print('');print('long lyrics:');
+              for (Song song in sortedValues) {
                 print(
                   '"${song.title}" by "${song.artist}"'
                   '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
-                  ': maxLength: $i',
+                  ': maxLength: ${longLyrics[song]}',
+                );
+              }
+            }
+
+            {
+              Map<Song, int> highRowCounts = {};
+              for (Song song in allSongs) {
+                int maxLength = 0;
+                for (var lyricSection in song.lyricSections) {
+                  maxLength = max(maxLength, lyricSection.lyricsLines.length);
+                }
+                if (maxLength > 10) {
+                  highRowCounts[song] = maxLength;
+                }
+              }
+
+              SplayTreeSet<Song> sortedValues = SplayTreeSet((song1, song2) {
+                int ret;
+                if ((ret = -highRowCounts[song1]!.compareTo(highRowCounts[song2]!)) != 0) return ret;
+                return song1.compareTo(song2);
+              });
+              sortedValues.addAll(highRowCounts.keys);
+              print('');print('high row counts:');
+              for (Song song in sortedValues.toList(growable: false).reversed) {
+                print(
+                  '"${song.title}" by "${song.artist}"'
+                  '${song.coverArtist.isNotEmpty ? ' cover by "${song.coverArtist}' : ''}'
+                  ': rowCounts: ${highRowCounts[song]}',
                 );
               }
             }
