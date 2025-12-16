@@ -2784,6 +2784,23 @@ coerced to reflect the songlist's last modification for that song.
             );
           }
 
+          // //  diagnostics
+          // print('');
+          // print('bsteele:');
+          // for (var p in _allSongPerformances.allSongPerformanceHistory.where(
+          //   (p) => (p.song?.title.startsWith('Brandy') ?? false) //&& p.singer == 'Rob \'Bodhi\' Wolff',
+          // )) {
+          //   print(p.toJsonString());
+          // }
+          //
+          // print('');
+          // print('jamble:');
+          // for (var p in allJamblePerformances.allSongPerformanceHistory.where(
+          //   (p) => (p.song?.title.startsWith('Brandy') ?? false) //&& p.singer == 'Rob \'Bodhi\' Wolff',
+          // )) {
+          //   print(p.toJsonString());
+          // }
+
           break;
 
         case '-test':

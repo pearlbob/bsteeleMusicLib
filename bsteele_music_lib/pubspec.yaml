@@ -5,7 +5,7 @@ publish_to: none
 # homepage: https://pub.dev/packages?q=
 
 environment:
-  sdk: ^3.10.3
+  sdk: ^3.10.4
 
 dependencies:
   logger:
