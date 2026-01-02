@@ -1832,9 +1832,9 @@ c2:
     expect(a.getFirstSongMomentAtNextRow(32), null);
     expect(a.getFirstSongMomentAtNextRow(33), null);
 
-    expect(a.getFirstSongMomentAtPriorRow(-3), a.getSongMoment(0));
-    expect(a.getFirstSongMomentAtPriorRow(0), isNotNull);
-    expect(a.getFirstSongMomentAtPriorRow(0), a.getSongMoment(0));
+    expect(a.getFirstSongMomentAtPriorRow(-3), isNull);
+    expect(a.getFirstSongMomentAtPriorRow(0), isNull);
+    expect(a.getFirstSongMomentAtPriorRow(0), isNull);
     expect(a.getFirstSongMomentAtPriorRow(4), a.getSongMoment(0));
     expect(a.getFirstSongMomentAtPriorRow(8), a.getSongMoment(4));
     expect(a.getFirstSongMomentAtPriorRow(9), a.getSongMoment(4));

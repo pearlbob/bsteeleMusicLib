@@ -3484,7 +3484,7 @@ class SongBase {
     return null;
   }
 
-  SongMoment? getFirstSongMomentAtNextRow(int givenMomentNumber) {
+  SongMoment? getFirstSongMomentAtNextRow(final int givenMomentNumber) {
     //  forwards
     int limit = songMoments.length;
     int oldRow = getSongMoment(givenMomentNumber)?.row ?? 0;
@@ -3501,13 +3501,11 @@ class SongBase {
     return null;
   }
 
-  SongMoment? getFirstSongMomentAtPriorRow(int givenMomentNumber) {
-    if (givenMomentNumber >= songMoments.length) {
+  SongMoment? getFirstSongMomentAtPriorRow(final int givenMomentNumber) {
+    if (givenMomentNumber <= 0 || givenMomentNumber >= songMoments.length) {
       return null;
     }
-    if (givenMomentNumber <= 0) {
-      return getSongMoment(0);
-    }
+
     //  prior
     int oldRow = getSongMoment(givenMomentNumber)?.row ?? 0;
     for (int momentNumber = givenMomentNumber; momentNumber > 0; momentNumber--) {
