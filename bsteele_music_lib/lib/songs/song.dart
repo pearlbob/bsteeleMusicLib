@@ -17,6 +17,7 @@ enum SongComparatorType {
   versionNumber,
   complexity,
   copyrightYear,
+  popularity,
 }
 
 /// A song is a wrapper class for {@link SongBase} that provides
@@ -377,19 +378,19 @@ class Song extends SongBase implements Comparable<Song> {
 
   static Comparator<Song> getComparatorByType(SongComparatorType type) {
     switch (type) {
-      case SongComparatorType.artist:
+      case .artist:
         return _comparatorByArtist;
-      case SongComparatorType.lastModifiedDate:
+      case .lastModifiedDate:
         return _comparatorByLastModifiedDate;
-      case SongComparatorType.dateCreated:
+      case .dateCreated:
         return _comparatorByDateCreated;
-      case SongComparatorType.lastModifiedDateLast:
+      case .lastModifiedDateLast:
         return _comparatorByLastModifiedDateLast;
-      case SongComparatorType.versionNumber:
+      case .versionNumber:
         return _comparatorByVersionNumber;
-      case SongComparatorType.complexity:
+      case .complexity:
         return _comparatorByComplexity;
-      case SongComparatorType.copyrightYear:
+      case .copyrightYear:
         return _comparatorByCopyrightYear;
       default:
         return _comparatorByTitle;
@@ -499,7 +500,7 @@ Comparator<Song> _comparatorByVersionNumber = (Song o1, Song o2) {
   return _compareByLastModifiedDate(o1, o2);
 };
 
-/// Compares its two arguments for order my most recent modification date.
+/// Compares its two arguments for order by most recent modification date.
 Comparator<Song> _comparatorByComplexity = (Song o1, Song o2) {
   if (o1.getComplexity() != o2.getComplexity()) {
     return o1.getComplexity() < o2.getComplexity() ? -1 : 1;

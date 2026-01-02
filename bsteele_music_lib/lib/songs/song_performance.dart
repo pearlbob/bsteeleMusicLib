@@ -22,6 +22,8 @@ const Level _logLostSongs = Level.debug;
 const Level _logListAllSongs = Level.debug;
 const Level _logHistory = Level.debug;
 
+HashMap<SongId, int> songPopularity = HashMap();
+
 final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
 String _cleanPerformer(final String? value) {
@@ -899,4 +901,14 @@ class AllSongPerformances {
   final SplayTreeSet<SongRequest> _allSongPerformanceRequests = SplayTreeSet<SongRequest>();
 
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
+}
+
+void computeSongPopularity(final AllSongPerformances allSongPerformances) {
+  songPopularity.clear();
+  for (var performance in allSongPerformances._allSongPerformanceHistory) {
+    if (performance.song != null) {
+      var song = performance.song!;
+      songPopularity[song.songId] = (songPopularity[song.songId] ?? 0) + 1;
+    }
+  }
 }
