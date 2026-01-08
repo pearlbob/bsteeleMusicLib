@@ -1283,7 +1283,8 @@ coerced to reflect the songlist's last modification for that song.
                 return song1.compareTo(song2);
               });
               sortedValues.addAll(longLyrics.keys);
-              print('');print('long lyrics:');
+              print('');
+              print('long lyrics:');
               for (Song song in sortedValues) {
                 print(
                   '"${song.title}" by "${song.artist}"'
@@ -1311,7 +1312,8 @@ coerced to reflect the songlist's last modification for that song.
                 return song1.compareTo(song2);
               });
               sortedValues.addAll(highRowCounts.keys);
-              print('');print('high row counts:');
+              print('');
+              print('high row counts:');
               for (Song song in sortedValues.toList(growable: false).reversed) {
                 print(
                   '"${song.title}" by "${song.artist}"'
@@ -2459,6 +2461,7 @@ coerced to reflect the songlist's last modification for that song.
               //  join the performance lists
               print('');
               print('added performances from Jamble:');
+              print('    jambleBpmCorrectedPerformances:  ${jambleBpmCorrectedPerformances.length}');
               historyLength = _allSongPerformances.allSongPerformanceHistory.length;
               count = 0;
               int matchCount = 0;
@@ -2586,8 +2589,6 @@ coerced to reflect the songlist's last modification for that song.
             print(missingCount == 0 ? '  no errors.' : '   $missingCount errors!');
           }
 
-          // exit(-1);
-
           _allSongPerformances.rebuildAllPerformancesFromHistory(lastSungLimitMs: lastSungLimitMs);
 
           //  assure all performance additions were added
@@ -2662,6 +2663,22 @@ coerced to reflect the songlist's last modification for that song.
                     }
                   }
                 }
+              }
+            }
+          }
+
+          //  long lyrics
+          {
+            print('');
+            print('long lyric sections: ');
+            Song? lastSong;
+            for (var song in allSongs) {
+              int maxLength = 0;
+              for (var lyricSection in song.lyricSections) {
+                maxLength = max(maxLength, lyricSection.lyricsLines.length);
+              }
+              if (maxLength >= 8) {
+                print('${song}: max lyric length: $maxLength');
               }
             }
           }
