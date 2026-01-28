@@ -2108,7 +2108,7 @@ coerced to reflect the songlist's last modification for that song.
           File? jambleSongListFile;
           {
             final RegExp jambleSonglistRegexp = RegExp(
-              r'.*/JambleallSongs_\d{8}_\d{6}.songlyrics$',
+              r'.*/jamble_allSongs_\d{8}_\d{6}.songlyrics$',
               caseSensitive: false,
             );
 
@@ -2354,7 +2354,7 @@ coerced to reflect the songlist's last modification for that song.
           {
             // jambleallSongPerformances_20251117_010352.songperformances
             final RegExp jambleSonglistRegexp = RegExp(
-              r'.*/jambleallSongPerformances_\d{8}_\d{6}.songperformances$',
+              r'.*/jamble_allSongPerformances_\d{8}_\d{6}.songperformances$',
               caseSensitive: false,
             );
 
@@ -2376,7 +2376,7 @@ coerced to reflect the songlist's last modification for that song.
 
           SplayTreeSet<SongPerformance> jamblePerformanceList = SplayTreeSet(_compareSongPerformanceLastSung);
           SplayTreeSet<SongPerformance> jamblePerformanceAdditions = SplayTreeSet();
-          AllSongPerformances allJamblePerformances = AllSongPerformances();
+          AllSongPerformances jambleAllPerformances = AllSongPerformances();
           int historyLength = 0;
           {
             int length = _allSongPerformances.allSongPerformanceHistory.length;
@@ -2392,7 +2392,7 @@ coerced to reflect the songlist's last modification for that song.
               //  singer update
               json = json.replaceAll(RegExp(r'"singer" *: *"Rob W."'), '"singer":"Rob \'Bodhi\' Wolff"');
 
-              allJamblePerformances.updateFromJsonString(json);
+              jambleAllPerformances.updateFromJsonString(json);
             }
             if (length != _allSongPerformances.allSongPerformanceHistory.length) {
               print('length change!');
@@ -2402,16 +2402,16 @@ coerced to reflect the songlist's last modification for that song.
               );
               exit(-1);
             }
-            allJamblePerformances.loadSongs(allSongs);
+            jambleAllPerformances.loadSongs(allSongs);
             jamblePerformanceList.addAll(
-              allJamblePerformances.allSongPerformanceHistory.where((p) => p.lastSung > lastSungLimitMs),
+              jambleAllPerformances.allSongPerformanceHistory.where((p) => p.lastSung > lastSungLimitMs),
             );
 
             //  show renames applied
             print('');
             print('song renames applied:');
-            for (var songId in allJamblePerformances.bestMatchesMap.keys.sorted()) {
-              var best = allJamblePerformances.bestMatchesMap[songId]!.songId.songIdAsString;
+            for (var songId in jambleAllPerformances.bestMatchesMap.keys.sorted()) {
+              var best = jambleAllPerformances.bestMatchesMap[songId]!.songId.songIdAsString;
               if (songId != best && songId != best.toLowerCase()) {
                 print(
                   '  "$songId" =>'
@@ -2425,7 +2425,7 @@ coerced to reflect the songlist's last modification for that song.
               print('');
               print('find old songs in allSongs: ');
               for (var song in allSongs) {
-                var otherSong = allJamblePerformances.bestMatchesMap[song.songId.songIdAsString.toLowerCase()];
+                var otherSong = jambleAllPerformances.bestMatchesMap[song.songId.songIdAsString.toLowerCase()];
                 if (otherSong != null) {
                   print('   found old song: $song');
                 }
@@ -2735,7 +2735,7 @@ coerced to reflect the songlist's last modification for that song.
                   .where((song) => song.songId.songIdAsString == idMetadata.id)
                   .toList(growable: false);
               if (matchingSongs.length != 1) {
-                var newSong = allJamblePerformances.bestMatchesMap[idMetadata.id.toLowerCase()];
+                var newSong = jambleAllPerformances.bestMatchesMap[idMetadata.id.toLowerCase()];
                 print('  metadata: ${idMetadata.id}: ${matchingSongs.length}');
                 print('    to: ${newSong?.songId.songIdAsString}');
                 if (newSong == null) {
@@ -2749,13 +2749,13 @@ coerced to reflect the songlist's last modification for that song.
             }
           }
 
-          //  write the allJamblePerformances file
+          //  write the jamble all performances file
           {
-            allJamblePerformances.rebuildAllPerformancesFromHistory(lastSungLimitMs: lastSungLimitMs);
+            jambleAllPerformances.rebuildAllPerformancesFromHistory(lastSungLimitMs: lastSungLimitMs);
 
             //  write the corrected performances
             File allJambleSongPerformancesFile = File(
-              '${Util.homePath()}/$_junkRelativeDirectory/allJamblePerformances${AllSongPerformances.fileExtension}',
+              '${Util.homePath()}/$_junkRelativeDirectory/jamble_allPerformances${AllSongPerformances.fileExtension}',
             );
             if (allJambleSongPerformancesFile.existsSync()) {
               try {
@@ -2766,7 +2766,7 @@ coerced to reflect the songlist's last modification for that song.
               }
             }
             await allJambleSongPerformancesFile.writeAsString(
-              allJamblePerformances.toJsonString(prettyPrint: true),
+              jambleAllPerformances.toJsonString(prettyPrint: true),
               flush: true,
             );
           }
