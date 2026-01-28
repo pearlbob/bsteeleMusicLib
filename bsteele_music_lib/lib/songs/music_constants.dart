@@ -45,6 +45,10 @@ class MusicConstants {
     return pow(2, (halfSteps / 12)).toDouble();
   }
 
+  static double centsToRatio(final int cents) {
+    return pow(2, (cents / 1200)).toDouble();
+  }
+
   static const double halfStepFrequencyRatio = 1.0594630943592953;
 
   //  has to be ahead of it's use since it's static

@@ -303,6 +303,32 @@ void main() {
     }
   });
 
+  test('test frequency with cents', () {
+    Pitch? lastPitch;
+    double lastF = 0;
+    for (var pitch in Pitch.sharps) {
+      logger.i(
+        '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
+        ' ${pitch.frequency.toStringAsFixed(12).padLeft(12 + 1 + 4)}',
+      );
+      for (int cents = -50; cents <= 50; cents += 5) {
+        double f = pitch.frequencyWithCents(cents);
+        logger.i('    cents: ${cents}:  f: $f');
+        if (cents == 0) {
+          expect(f, closeTo(pitch.frequency, 1e-300));
+        } else if (lastPitch != null) {
+          if (cents == -50) {
+            expect(f, lastF);
+          } else {
+            assert(f > lastF);
+          }
+        }
+        lastF = f;
+      }
+      lastPitch = pitch;
+    }
+  });
+
   test('test all pitches', () {
     int number = 0;
     for (var pitch in Pitch.sharps) {

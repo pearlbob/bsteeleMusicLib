@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
+import '../util/util.dart';
 import 'music_constants.dart';
 import 'scale_note.dart';
 
@@ -433,6 +434,11 @@ class Pitch implements Comparable<Pitch> {
   bool get isNatural => _scaleNote.isNatural;
 
   bool get isFlat => _scaleNote.isFlat;
+
+  double frequencyWithCents(int cents) {
+    cents = Util.intLimit(cents, -50, 50);
+    return 440.0 * MusicConstants.centsToRatio(100 * ((_number + 1) - 49) + cents);
+  }
 
   @override
   int compareTo(Pitch other) {
