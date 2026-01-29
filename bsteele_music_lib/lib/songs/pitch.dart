@@ -230,7 +230,7 @@ class Pitch implements Comparable<Pitch> {
     }
     _number = n;
 
-    _frequency = 440.0 * MusicConstants.halfStepsToRatio((_number + 1) - 49);
+    _frequency = MusicConstants.tuningStandardHz * MusicConstants.halfStepsToRatio((_number + 1) - 49);
   }
 
   static const a0MidiNoteNumber = 21;
@@ -437,7 +437,13 @@ class Pitch implements Comparable<Pitch> {
 
   double frequencyWithCents(int cents) {
     cents = Util.intLimit(cents, -50, 50);
-    return 440.0 * MusicConstants.centsToRatio(100 * ((_number + 1) - 49) + cents);
+    return MusicConstants.tuningStandardHz * MusicConstants.centsToRatio(100 * ((_number + 1) - 49) + cents);
+  }
+
+  int centsFromFrequency(final double f) {
+    double cents = 1200 * (log((f / MusicConstants.tuningStandardHz).abs()) / log(2));
+    cents -= 100 * (number + 1 - 49);
+    return cents.round();
   }
 
   @override

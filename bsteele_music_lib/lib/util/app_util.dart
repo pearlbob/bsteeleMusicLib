@@ -1,5 +1,9 @@
 //  note: keep this file dart only!
 
+String to16(final double v, {int pad = 16 + 3}) {
+  return v.toStringAsFixed(16).padLeft(pad);
+}
+
 String to12(final double v, {int pad = 15}) {
   return v.toStringAsFixed(12).padLeft(pad);
 }
