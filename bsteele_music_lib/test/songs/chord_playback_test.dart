@@ -37,7 +37,7 @@ void main() {
     expect(_stringChord(Chord.parseString('Fb5/Fb', beatsPerBar)),
         'Fb5/Fb: F♭4 B4 bass: E1');
     expect(_stringChord(Chord.parseString('Fb69', beatsPerBar)),
-        'Fb69: F♭4 G♭4 A♭4 B4 D♭5 bass: E1');
+        'Fb69: F♭4 A♭4 B4 D♭5 G♭5 bass: E1');
     expect(_stringChord(Chord.parseString('Em6', beatsPerBar)),
         'Em6: E4 G4 B4 D♭5 bass: E1');
     expect(_stringChord(Chord.parseString('C/C', beatsPerBar)),
@@ -45,7 +45,7 @@ void main() {
 
     // invent some
     expect(_stringChord(Chord.parseString('Gmadd9', beatsPerBar)),
-        'Gmadd9: G4 A4 B♭4 D5 G♭5 B5 bass: G1');
+        'Gmadd9: G4 B♭4 D5 A5 bass: G1');
     expect(_stringChord(Chord.parseString('C/G', beatsPerBar)),
         'C/G: C4 E4 G4 bass: G1');
     expect(_stringChord(Chord.parseString('Am7/G', beatsPerBar)),

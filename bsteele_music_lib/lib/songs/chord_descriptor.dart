@@ -28,7 +28,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _sevenSus = ChordDescriptor._('sevenSus', '7sus', 'R 5 m7');
 
   static ChordDescriptor get maug => _maug;
-  static final ChordDescriptor _maug = ChordDescriptor._('maug', 'maug', 'R m3 3 #5');
+  static final ChordDescriptor _maug = ChordDescriptor._('maug', 'maug', 'R m3 5');
 
   static ChordDescriptor get dominant13 => _dominant13;
   static final ChordDescriptor _dominant13 = ChordDescriptor._('dominant13', '13', 'R 3 5 m7 9 11 13');
@@ -49,13 +49,13 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _msus4 = ChordDescriptor._('msus4', 'msus4', 'R m3 4 5');
 
   static ChordDescriptor get add9 => _add9;
-  static final ChordDescriptor _add9 = ChordDescriptor._('add9', 'add9', 'R 3 5 7 9');
+  static final ChordDescriptor _add9 = ChordDescriptor._('add9', 'add9', 'R 3 5 9');
 
   static ChordDescriptor get madd9 => _madd9;
-  static final ChordDescriptor _madd9 = ChordDescriptor._('madd9', 'madd9', 'R 2 m3 5 7 9');
+  static final ChordDescriptor _madd9 = ChordDescriptor._('madd9', 'madd9', 'R m3 5 9');
 
   static ChordDescriptor get jazz7b9 => _jazz7b9;
-  static final ChordDescriptor _jazz7b9 = ChordDescriptor._('jazz7b9', 'jazz7b9', 'R m2 3 5');
+  static final ChordDescriptor _jazz7b9 = ChordDescriptor._('jazz7b9', 'jazz7b9', 'R 3 5 m7 m9');
 
   static ChordDescriptor get sevenSharp5 => _sevenSharp5;
   static final ChordDescriptor _sevenSharp5 = ChordDescriptor._('sevenSharp5', '7#5', 'R 3 #5 m7');
@@ -67,16 +67,16 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _sevenFlat5 = ChordDescriptor._('sevenFlat5', '7b5', 'R 3 b5 m7');
 
   static ChordDescriptor get sevenSharp9 => _sevenSharp9;
-  static final ChordDescriptor _sevenSharp9 = ChordDescriptor._('sevenSharp9', '7#9', 'R m3 5 m7');
+  static final ChordDescriptor _sevenSharp9 = ChordDescriptor._('sevenSharp9', '7#9', 'R 3 b5 m7');
 
   static ChordDescriptor get sevenFlat9 => _sevenFlat9;
-  static final ChordDescriptor _sevenFlat9 = ChordDescriptor._('sevenFlat9', '7b9', 'R 2 3 5 7');
+  static final ChordDescriptor _sevenFlat9 = ChordDescriptor._('sevenFlat9', '7b9', 'R 3 5 m7 b9');
 
   static ChordDescriptor get dominant9 => _dominant9;
   static final ChordDescriptor _dominant9 = ChordDescriptor._('dominant9', '9', 'R 3 5 m7 9');
 
   static ChordDescriptor get six9 => _six9;
-  static final ChordDescriptor _six9 = ChordDescriptor._('six9', '69', 'R 2 3 5 6');
+  static final ChordDescriptor _six9 = ChordDescriptor._('six9', '69', 'R 3 5 6 9');
 
   static ChordDescriptor get major6 => _major6;
   static final ChordDescriptor _major6 = ChordDescriptor._('major6', '6', 'R 3 5 6', nashvilleRaise: true);
@@ -104,7 +104,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   static ChordDescriptor get augmented5 => _augmented5;
   static final ChordDescriptor _augmented5 =
-      ChordDescriptor._('augmented5', 'aug5', 'R 3 #5', nashville: '+', nashvilleRaise: true);
+  ChordDescriptor._('augmented5', 'aug5', 'R 3 5', nashville: '+', nashvilleRaise: true);
 
   static ChordDescriptor get augmented7 => _augmented7;
   static final ChordDescriptor _augmented7 =
@@ -135,10 +135,10 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _minor9 = ChordDescriptor._('minor9', 'm9', 'R m3 5 m7 9');
 
   static ChordDescriptor get minor11 => _minor11;
-  static final ChordDescriptor _minor11 = ChordDescriptor._('minor11', 'm11', 'R m3 5 m7 11');
+  static final ChordDescriptor _minor11 = ChordDescriptor._('minor11', 'm11', 'R m3 5 m7 9 11');
 
   static ChordDescriptor get minor13 => _minor13;
-  static final ChordDescriptor _minor13 = ChordDescriptor._('minor13', 'm13', 'R m3 5 m7 13');
+  static final ChordDescriptor _minor13 = ChordDescriptor._('minor13', 'm13', 'R m3 5 m7 9 11 13');
 
   static ChordDescriptor get minor6 => _minor6;
   static final ChordDescriptor _minor6 = ChordDescriptor._('minor6', 'm6', 'R m3 5 6');

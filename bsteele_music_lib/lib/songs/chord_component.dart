@@ -20,9 +20,11 @@ class ChordComponent implements Comparable<ChordComponent> {
   static const sixth = ChordComponent._('6', 6, 9);
   static const minorSeventh = ChordComponent._('m7', 7, 10);
   static const seventh = ChordComponent._('7', 7, 11);
-  static const ninth = ChordComponent._('9', 9, 12 + 4);
-  static const eleventh = ChordComponent._('11', 11, 12 + 7);
-  static const thirteenth = ChordComponent._('13', 13, 12 + 11);
+  static const octave = ChordComponent._('8', 8, 12);
+  static const minorNinth = ChordComponent._('m9', 9, 12 + 1);
+  static const ninth = ChordComponent._('9', 9, 12 + 2);
+  static const eleventh = ChordComponent._('11', 11, 12 + 5);
+  static const thirteenth = ChordComponent._('13', 13, 12 + 9);
 
   static List<ChordComponent> get values => _majorChordComponentByHalfSteps;
 
@@ -55,6 +57,10 @@ class ChordComponent implements Comparable<ChordComponent> {
             break;
           case '#5':
             cc = sharpFifth;
+            break;
+          case 'm9':
+          case 'b9':
+            cc = minorNinth;
             break;
           case '9':
             cc = ninth;
@@ -119,6 +125,11 @@ class ChordComponent implements Comparable<ChordComponent> {
     minorSixth,
     sixth,
     minorSeventh,
-    seventh
+    seventh,
+    octave,
+    minorNinth,
+    ninth,
+    eleventh,
+    thirteenth,
   ];
 }

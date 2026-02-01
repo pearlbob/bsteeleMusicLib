@@ -2056,6 +2056,12 @@ coerced to reflect the songlist's last modification for that song.
 
           allSongs.clear();
           _addAllSongsFromFile(_allSongsFile);
+          var original_allSongs = SplayTreeSet<Song>()
+            ..addAll(
+              allSongs.map((song) {
+                return song.copySong();
+              }),
+            );
 
           {
             final RegExp missingSongsRegexp = RegExp(
@@ -2282,8 +2288,6 @@ coerced to reflect the songlist's last modification for that song.
             print('     jamble allSongs.length: ${allSongs.length}');
             outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
           }
-
-          // exit(-1);
 
           //  read the local directory's list of song performance files
           _allSongPerformances.clear();
@@ -2678,7 +2682,7 @@ coerced to reflect the songlist's last modification for that song.
                 maxLength = max(maxLength, lyricSection.lyricsLines.length);
               }
               if (maxLength >= 8) {
-                print('${song}: max lyric length: $maxLength');
+                print('    ${song}: max lyric length: $maxLength');
               }
             }
           }

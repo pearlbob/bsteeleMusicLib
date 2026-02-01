@@ -38,7 +38,25 @@ void main() {
   });
 
   test('ChordComponent values', () {
-    logger.d(ChordComponent.values.toString());
-    expect(ChordComponent.values.toString(), '[R, m2, 2, m3, 3, 4, b5, 5, m6, 6, m7, 7]');
+    logger.i(ChordComponent.values.toString());
+    expect(ChordComponent.root.halfSteps, 0);
+    expect(ChordComponent.minorSecond.halfSteps, 1);
+    expect(ChordComponent.second.halfSteps, 2);
+    expect(ChordComponent.minorThird.halfSteps, 3);
+    expect(ChordComponent.third.halfSteps, 4);
+    expect(ChordComponent.fourth.halfSteps, 5);
+    expect(ChordComponent.flatFifth.halfSteps, 6);
+    expect(ChordComponent.fifth.halfSteps, 7);
+    expect(ChordComponent.minorSixth.halfSteps, 8);
+    expect(ChordComponent.sixth.halfSteps, 9);
+    expect(ChordComponent.minorSeventh.halfSteps, 10);
+    expect(ChordComponent.seventh.halfSteps, 11);
+
+    expect(ChordComponent.octave.halfSteps, 12);
+
+    expect(ChordComponent.minorNinth.halfSteps, 13);
+    expect(ChordComponent.ninth.halfSteps, 14);
+    expect(ChordComponent.eleventh.halfSteps, 17);
+    expect(ChordComponent.thirteenth.halfSteps, 21);
   });
 }

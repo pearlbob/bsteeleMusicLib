@@ -441,6 +441,9 @@ class Pitch implements Comparable<Pitch> {
   }
 
   int centsFromFrequency(final double f) {
+    if (f <= 0) {
+      return 0;
+    }
     double cents = 1200 * (log((f / MusicConstants.tuningStandardHz).abs()) / log(2));
     cents -= 100 * (number + 1 - 49);
     return cents.round();
