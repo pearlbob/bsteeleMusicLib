@@ -107,6 +107,10 @@ void main() {
     test('testChordParse testing', () {
       Chord? chord;
       int beatsPerBar = 4;
+
+      logger.i('"${Chord.parseString('F....', beatsPerBar)}"'); //  exception throw should not happen
+      logger.i('"${Chord.parseString('(F....)', beatsPerBar)}"'); //  exception throw should not happen
+
       chord = chordByScaleChord(ScaleChord.fromScaleNoteEnumAndChordDescriptor(.D, ChordDescriptor.diminished));
       chord.slashScaleNote = .G;
 

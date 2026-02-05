@@ -2049,6 +2049,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-jamble':
+          String original_transposition_string = '';
           print('');
           print('${DateTime.now()}');
           print('allSongs:');
@@ -2062,8 +2063,26 @@ coerced to reflect the songlist's last modification for that song.
                 return song.copySong();
               }),
             );
+          AllSongPerformances original_allSongPerformances = AllSongPerformances();
+          {
+            original_allSongPerformances.clear();
+            original_allSongPerformances.updateFromJsonString(
+              File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+            );
+            original_allSongPerformances.loadSongs(original_allSongs);
+            //  print the history, include the first chord in the song
+            print('');
+            print('original history:');
+
+            original_transposition_string = performanceTranspositionsToString(
+              original_allSongPerformances,
+              id: 'bsteele',
+            );
+            print(original_transposition_string);
+          }
 
           {
+            //  look for missing songs
             final RegExp missingSongsRegexp = RegExp(
               r'.*/'
               '$_missingSongsFilePrefix'
@@ -2102,8 +2121,9 @@ coerced to reflect the songlist's last modification for that song.
             exit(-1);
           }
           print('allSongs.length: ${allSongs.length}');
-          //  write the original allSongs file
+
           {
+            //  write the original allSongs file
             var json = _jsonDecoder.convert(Song.listToJson(allSongs.toList()));
             File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/allSongs.songlyrics');
             outputFile.writeAsStringSync(_jsonEncoder.convert(json), flush: true);
@@ -2113,7 +2133,7 @@ coerced to reflect the songlist's last modification for that song.
           print('jamble:');
           File? jambleSongListFile;
           {
-            final RegExp jambleSonglistRegexp = RegExp(
+            final RegExp jambleSongListRegexp = RegExp(
               r'.*/jamble_allSongs_\d{8}_\d{6}.songlyrics$',
               caseSensitive: false,
             );
@@ -2121,7 +2141,7 @@ coerced to reflect the songlist's last modification for that song.
             for (var e in SplayTreeSet<FileSystemEntity>(
               (key1, key2) => -key1.path.compareTo(key2.path),
             )..addAll(Directory(_downloadsDirectory).listSync())) {
-              if (e is File && e.existsSync() && jambleSonglistRegexp.firstMatch(e.path) != null) {
+              if (e is File && e.existsSync() && jambleSongListRegexp.firstMatch(e.path) != null) {
                 jambleSongListFile = e;
                 break;
               }
@@ -2832,6 +2852,18 @@ coerced to reflect the songlist's last modification for that song.
               _jsonEncoder.convert(_jsonDecoder.convert(SongMetadata.toJson())),
               flush: true,
             );
+          }
+
+          {
+            String s = performanceTranspositionsToString(jambleAllPerformances, id: 'jamble');
+            File file = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_transpositions.txt');
+            file.writeAsStringSync(s, flush: true);
+          }
+          {
+            String s = performanceTranspositionsToString(original_allSongPerformances, id: 'bsteele');
+            assert(original_transposition_string == s);
+            File file = File('${Util.homePath()}/$_junkRelativeDirectory/original_transpositions.txt');
+            file.writeAsStringSync(s, flush: true);
           }
 
           // //  diagnostics
@@ -4191,4 +4223,38 @@ int _compareSongPerformanceLastSung(final SongPerformance perf, final SongPerfor
   // }
 
   return 0;
+}
+
+String performanceTranspositionsToString(final AllSongPerformances allSongPerformances, {final String id = ''}) {
+  StringBuffer sb = StringBuffer();
+  DateFormat format = DateFormat('yyyy-MM-dd HH:mm:ss');
+  for (var p in allSongPerformances.allSongPerformanceHistory) {
+    if (p.song == null) {
+      sb.writeln(
+        '${format.format(DateTime.fromMillisecondsSinceEpoch(p.lastSung))}'
+        ' singer: ${p.singer}: MISSING SONG!, singing key: ${p.key}',
+      );
+      continue;
+    }
+
+    var song = p.song!;
+    sb.write(
+      '${format.format(DateTime.fromMillisecondsSinceEpoch(p.lastSung))}'
+      '${id.isEmpty ? '' : ', ${id.padLeft(7)}'}'
+      ', singer: ${p.singer}: "${p.song.toString()}", song key: ${song.key}, singing key: ${p.key}',
+    );
+    var chords = song.songMoments.first.measure.chords;
+    if (chords.isNotEmpty) {
+      int transpositionOffset = p.key.getHalfStep() - song.key.getHalfStep();
+      var chord = chords.first;
+      var transposedChord = chord.transpose(song.key, transpositionOffset);
+      sb.write(',  first chord: $chord, transposed: $transposedChord');
+    } else {
+      sb.write(',  first chord: empty');
+    }
+    sb.writeln('');
+  }
+  sb.writeln('');
+
+  return sb.toString();
 }

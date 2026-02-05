@@ -832,6 +832,23 @@ class AllSongPerformances {
     allSongPerformanceRequestsName: _allSongPerformanceRequests.toList(growable: false),
   };
 
+  AllSongPerformances copyWith() {
+    AllSongPerformances ret = AllSongPerformances();
+    for (var p in _allSongPerformances) {
+      ret._allSongPerformances.add(p.copyWith());
+    }
+    for (var p in _allSongPerformanceHistory) {
+      ret._allSongPerformanceHistory.add(p.copyWith());
+    }
+    for (var r in _allSongPerformanceRequests) {
+      ret._allSongPerformanceRequests.add(r.copyWith());
+    }
+    for (var p in _missingSongsFromPerformanceHistory) {
+      ret._missingSongsFromPerformanceHistory.add(p.copyWith());
+    }
+    return ret;
+  }
+
   void clear() {
     _allSongPerformances.clear();
     _allSongPerformanceHistory.clear();

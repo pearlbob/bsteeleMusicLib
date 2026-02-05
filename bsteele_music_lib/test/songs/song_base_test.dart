@@ -829,48 +829,49 @@ void main() {
     }
   });
 
-  test('test parsing comments', () {
-    SongBase a;
-    SplayTreeSet<ChordSection> chordSections = SplayTreeSet();
-    ChordSection chordSection;
-    List<Measure> measures;
-
-    a = SongBase(
-      title: 'A',
-      artist: 'bob',
-      copyright: 'bsteele.com',
-      key: music_key.Key.getDefault(),
-      beatsPerMinute: 100,
-      beatsPerBar: 4,
-      unitsPerMeasure: 4,
-      chords: 'v: A B C D',
-      rawLyrics: 'v: bob, bob, bob berand',
-    );
-    chordSections.addAll(a.getChordSections());
-    expect(1, chordSections.length);
-    chordSection = chordSections.first;
-    measures = chordSection.phrases[0].measures;
-    expect(4, measures.length);
-
-    a = SongBase(
-      title: 'A',
-      artist: 'bob',
-      copyright: 'bsteele.com',
-      key: music_key.Key.getDefault(),
-      beatsPerMinute: 100,
-      beatsPerBar: 4,
-      unitsPerMeasure: 4,
-      chords: 'v: A B C D (yo)',
-      rawLyrics: 'v: bob, bob, bob berand',
-    );
-    chordSections.clear();
-    chordSections.addAll(a.getChordSections());
-    expect(1, chordSections.length);
-    chordSection = chordSections.first;
-    measures = chordSection.phrases[0].measures;
-    expect(5, measures.length);
-    expect(measures[4].toMarkup(), '(yo)');
-  });
+  //  measure comments are deprecated
+  // test('test parsing comments', () {
+  //   SongBase a;
+  //   SplayTreeSet<ChordSection> chordSections = SplayTreeSet();
+  //   ChordSection chordSection;
+  //   List<Measure> measures;
+  //
+  //   a = SongBase(
+  //     title: 'A',
+  //     artist: 'bob',
+  //     copyright: 'bsteele.com',
+  //     key: music_key.Key.getDefault(),
+  //     beatsPerMinute: 100,
+  //     beatsPerBar: 4,
+  //     unitsPerMeasure: 4,
+  //     chords: 'v: A B C D',
+  //     rawLyrics: 'v: bob, bob, bob berand',
+  //   );
+  //   chordSections.addAll(a.getChordSections());
+  //   expect(1, chordSections.length);
+  //   chordSection = chordSections.first;
+  //   measures = chordSection.phrases[0].measures;
+  //   expect(4, measures.length);
+  //
+  //   a = SongBase(
+  //     title: 'A',
+  //     artist: 'bob',
+  //     copyright: 'bsteele.com',
+  //     key: music_key.Key.getDefault(),
+  //     beatsPerMinute: 100,
+  //     beatsPerBar: 4,
+  //     unitsPerMeasure: 4,
+  //     chords: 'v: A B C D (yo)',
+  //     rawLyrics: 'v: bob, bob, bob berand',
+  //   );
+  //   chordSections.clear();
+  //   chordSections.addAll(a.getChordSections());
+  //   expect(1, chordSections.length);
+  //   chordSection = chordSections.first;
+  //   measures = chordSection.phrases[0].measures;
+  //   expect(5, measures.length);
+  //   expect(measures[4].toMarkup(), '(yo)');
+  // });
 
   test('testGetGrid', () {
     SongBase a;

@@ -9,9 +9,14 @@ import 'scale_note.dart';
 
 ///
 class Chord implements Comparable<Chord> {
-  Chord(ScaleChord scaleChord, this.beats, int beatsPerBar, this.slashScaleNote,
-      ChordAnticipationOrDelay anticipationOrDelay, this.implicitBeats)
-      : _anticipationOrDelay = anticipationOrDelay {
+  Chord(
+    ScaleChord scaleChord,
+    this.beats,
+    int beatsPerBar,
+    this.slashScaleNote,
+    ChordAnticipationOrDelay anticipationOrDelay,
+    this.implicitBeats,
+  ) : _anticipationOrDelay = anticipationOrDelay {
     _scaleChord = scaleChord;
     _beatsPerBar = beatsPerBar;
   }
@@ -24,11 +29,12 @@ class Chord implements Comparable<Chord> {
     implicitBeats = chord.implicitBeats;
   }
 
-  static Chord? parseString(String s, int beatsPerBar) {
+  static Chord? parseString(String s, final int beatsPerBar) {
+    s = s.replaceAll('(', '')..replaceAll(')', ''); //  measure comments are dead
     return parse(MarkedString(s), beatsPerBar);
   }
 
-  static Chord? parse(final MarkedString markedString, int beatsPerBar) {
+  static Chord? parse(final MarkedString markedString, final int beatsPerBar) {
     if (markedString.isEmpty) {
       throw 'no data to parse';
     }
@@ -62,7 +68,8 @@ class Chord implements Comparable<Chord> {
       }
     }
 
-    if (beats > beatsPerBar) {
+    if (beats > 2 * beatsPerBar) {
+      //  safety only.  More beats per bar are largely accepted now
       assert(false);
       throw 'too many beats in the chord';
     } //  whoops
@@ -71,17 +78,23 @@ class Chord implements Comparable<Chord> {
     return ret;
   }
 
-// Chord(ScaleChord scaleChord) {
-//  this(scaleChord, 4, 4, null, ChordAnticipationOrDelay.none, true);
-//}
-//
-// Chord(ScaleChord scaleChord, int beats, int beatsPerBar) {
-//  this(scaleChord, beats, beatsPerBar, null, ChordAnticipationOrDelay.none, true);
-//}
+  // Chord(ScaleChord scaleChord) {
+  //  this(scaleChord, 4, 4, null, ChordAnticipationOrDelay.none, true);
+  //}
+  //
+  // Chord(ScaleChord scaleChord, int beats, int beatsPerBar) {
+  //  this(scaleChord, beats, beatsPerBar, null, ChordAnticipationOrDelay.none, true);
+  //}
 
   Chord transpose(Key key, int halfSteps) {
-    return Chord(_scaleChord.transpose(key, halfSteps), beats, _beatsPerBar, slashScaleNote?.transpose(key, halfSteps),
-        _anticipationOrDelay, implicitBeats);
+    return Chord(
+      _scaleChord.transpose(key, halfSteps),
+      beats,
+      _beatsPerBar,
+      slashScaleNote?.transpose(key, halfSteps),
+      _anticipationOrDelay,
+      implicitBeats,
+    );
   }
 
   /// Compares this object with the specified object for order.  Returns a
@@ -123,7 +136,8 @@ class Chord implements Comparable<Chord> {
   /// Returns a string representation of the object.
   @override
   String toString() {
-    String ret = _scaleChord.toString() +
+    String ret =
+        _scaleChord.toString() +
         (slashScaleNote == null ? '' : '/$slashScaleNote') +
         _anticipationOrDelay.toString() +
         beatsToString();
@@ -194,22 +208,23 @@ class Chord implements Comparable<Chord> {
   }
 
   Map<String, dynamic> toJson() => {
-        'scaleChord': scaleChord.toJson(),
-        'beats': beats,
-        'beatsPerBar': beatsPerBar,
-        'slashScaleNote': slashScaleNote?.toJson(),
-        'anticipationOrDelay': anticipationOrDelay.toJson(),
-        'implicitBeats': implicitBeats
-      };
+    'scaleChord': scaleChord.toJson(),
+    'beats': beats,
+    'beatsPerBar': beatsPerBar,
+    'slashScaleNote': slashScaleNote?.toJson(),
+    'anticipationOrDelay': anticipationOrDelay.toJson(),
+    'implicitBeats': implicitBeats,
+  };
 
   factory Chord.fromJson(Map<String, dynamic> json) {
     return Chord(
-        ScaleChord.fromJson(json['scaleChord']),
-        json['beats'],
-        json['beatsPerBar'],
-        json['slashScaleNote'] == null ? null : ScaleNote.fromJson(json['slashScaleNote']),
-        ChordAnticipationOrDelay.fromJson(json['anticipationOrDelay']),
-        json['implicitBeats']);
+      ScaleChord.fromJson(json['scaleChord']),
+      json['beats'],
+      json['beatsPerBar'],
+      json['slashScaleNote'] == null ? null : ScaleNote.fromJson(json['slashScaleNote']),
+      ChordAnticipationOrDelay.fromJson(json['anticipationOrDelay']),
+      json['implicitBeats'],
+    );
   }
 
   @override

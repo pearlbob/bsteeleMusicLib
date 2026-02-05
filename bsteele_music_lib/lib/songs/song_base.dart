@@ -798,7 +798,9 @@ class SongBase {
     if (_chords.isNotEmpty) {
       logger.d('parseChords for: $title');
       SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
-      MarkedString markedString = MarkedString(_chords);
+      MarkedString markedString = MarkedString(
+        _chords.replaceAll('(', '').replaceAll(')', ''), //  measure comments are dead
+      );
       ChordSection chordSection;
       while (markedString.isNotEmpty) {
         markedString.stripLeadingWhitespace();

@@ -240,47 +240,48 @@ void main() {
     ts.resultChords('V: C F C C, F F C C, G F C G  PC: []');
     ts.post(MeasureEditType.append, 'PC:', 'PC: []');
 
-    ts.startingChords('V: (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.edit(MeasureEditType.delete, 'V:0:0', '(Prechorus)', 'null');
-    ts.resultChords('V: C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-
-    ts.startingChords('V: (Verse) [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.edit(MeasureEditType.delete, 'V:0:0', '(Verse)', 'null');
-    ts.resultChords('V: [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.post(MeasureEditType.delete, 'V:0:0', 'C♯m');
-    _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:0'));
-    expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong.deMusic('[C♯m A♭ F A♭ ] x4 '));
-    _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:1:0'));
-    expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), '(Prechorus)');
-
-    ts.edit(MeasureEditType.delete, 'V:1:0', '(Prechorus)', 'null');
-    ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.post(MeasureEditType.delete, 'V:1:0', 'C');
-
-    ts.edit(MeasureEditType.delete, 'V:1:1', '(C/)', 'null');
-    ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.post(MeasureEditType.delete, 'V:1:1', '(chorus)');
-
-    ts.edit(MeasureEditType.delete, 'V:1:1', '(chorus)', 'null');
-    ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4 (Tag Chorus)  ');
-    ts.post(MeasureEditType.delete, 'V:1:0', 'C');
-
-    ts.edit(MeasureEditType.delete, 'V:3:0', '(Tag Chorus)', 'null');
-    ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4  ');
-    ts.post(MeasureEditType.delete, 'V:2:3', 'F');
-
-    ts.startingChords(
-        'I: CXCC XCCC CXCC XCCC (bass-only)  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Cmaj7 Cmaj7'
-        '  C: A♭ A♭ E♭ E♭ B♭ B♭ G G'
-        '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Em A7'
-        ' F F G G Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 (fade)  ');
-    ts.edit(MeasureEditType.append, 'I:0:4', '(bass-only)', 'XCCC ');
-    ts.resultChords(
-        'I: CXCC XCCC CXCC XCCC (bass-only) XCCC  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Cmaj7 Cmaj7'
-        '  C: Ab Ab Eb Eb Bb Bb G G'
-        '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Em A7,'
-        ' F F G G, Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 Cmaj7 (fade)');
-    ts.post(MeasureEditType.append, 'I:0:5', 'XCCC');
+    //  measure comments are deprecated
+    // ts.startingChords('V: (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
+    // ts.edit(MeasureEditType.delete, 'V:0:0', '(Prechorus)', 'null');
+    // ts.resultChords('V: C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
+    //
+    // ts.startingChords('V: (Verse) [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
+    // ts.edit(MeasureEditType.delete, 'V:0:0', '(Verse)', 'null');
+    // ts.resultChords('V: [C♯m A♭ F A♭ ] x4 (Prechorus) C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
+    // ts.post(MeasureEditType.delete, 'V:0:0', 'C♯m');
+    // _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:0'));
+    // expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), TestSong.deMusic('[C♯m A♭ F A♭ ] x4 '));
+    // _a.setCurrentChordSectionLocation(ChordSectionLocation.parseString('V:1:0'));
+    // expect(_a.getCurrentChordSectionLocationMeasureNode()!.toMarkup(), '(Prechorus)');
+    //
+    // ts.edit(MeasureEditType.delete, 'V:1:0', '(Prechorus)', 'null');
+    // ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (C/) (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
+    // ts.post(MeasureEditType.delete, 'V:1:0', 'C');
+    //
+    // ts.edit(MeasureEditType.delete, 'V:1:1', '(C/)', 'null');
+    // ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C (chorus) [C G B♭ F ] x4 (Tag Chorus)  ');
+    // ts.post(MeasureEditType.delete, 'V:1:1', '(chorus)');
+    //
+    // ts.edit(MeasureEditType.delete, 'V:1:1', '(chorus)', 'null');
+    // ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4 (Tag Chorus)  ');
+    // ts.post(MeasureEditType.delete, 'V:1:0', 'C');
+    //
+    // ts.edit(MeasureEditType.delete, 'V:3:0', '(Tag Chorus)', 'null');
+    // ts.resultChords('V: [C♯m A♭ F A♭ ] x4 C [C G B♭ F ] x4  ');
+    // ts.post(MeasureEditType.delete, 'V:2:3', 'F');
+    //
+    // ts.startingChords(
+    //     'I: CXCC XCCC CXCC XCCC (bass-only)  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Cmaj7 Cmaj7'
+    //     '  C: A♭ A♭ E♭ E♭ B♭ B♭ G G'
+    //     '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 C7 F F Dm G Em Am F G Em A7'
+    //     ' F F G G Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 Cmaj7 (fade)  ');
+    // ts.edit(MeasureEditType.append, 'I:0:4', '(bass-only)', 'XCCC ');
+    // ts.resultChords(
+    //     'I: CXCC XCCC CXCC XCCC (bass-only) XCCC  V: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Cmaj7 Cmaj7'
+    //     '  C: Ab Ab Eb Eb Bb Bb G G'
+    //     '  O: Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 C7 F F, Dm G Em Am, F G Em A7,'
+    //     ' F F G G, Cmaj7 Cmaj7 Cmaj7 Cmaj7, Cmaj7 Cmaj7 (fade)');
+    // ts.post(MeasureEditType.append, 'I:0:5', 'XCCC');
 
     ts.startingChords('I: V: [Am Am/G Am/F♯ FE ] x4  I2: [Am Am/G Am/F♯ FE ] x2  C: F F C C G G F F  O: Dm C B B♭ A  ');
     ts.edit(MeasureEditType.append, 'I:0', '[Am Am/G Am/F♯ FE ] x4 ', 'E ');

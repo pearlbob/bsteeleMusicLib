@@ -173,6 +173,12 @@ class Song extends SongBase implements Comparable<Song> {
         case 'key':
           song.key = Key.parseString(jsonSong[name]) ?? Key.getDefault();
           break;
+        case 'musicalMode':
+          //  fixme: unused
+          break;
+        case 'keySignature':
+          //  fixme: unused
+          break;
         case 'defaultBpm':
           song.beatsPerMinute = (jsonSong[name] as int);
           break;
