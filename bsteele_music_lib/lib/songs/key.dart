@@ -4,6 +4,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
+import 'mode.dart';
 import 'music_constants.dart';
 import 'pitch.dart';
 import 'scale_chord.dart';
@@ -56,7 +57,7 @@ enum KeyEnum {
 
   /// F sharp (aka. G flat)
   // ignore: constant_identifier_names
-  Fs
+  Fs,
 }
 
 //  local private universal values
@@ -76,7 +77,7 @@ final List<dynamic> _initialization = [
   [KeyEnum.A, 3, 0],
   [KeyEnum.E, 4, 7],
   [KeyEnum.B, 5, 2],
-  [KeyEnum.Fs, 6, 9]
+  [KeyEnum.Fs, 6, 9],
 ];
 Map<String, KeyEnum> keyEnumMap = {};
 
@@ -89,8 +90,8 @@ Map<String, KeyEnum> keyEnumMap = {};
 @immutable
 class Key implements Comparable<Key> {
   Key._(this.keyEnum, this.keyValue, this.halfStep, this.capoLocation)
-      : _name = keyEnumToString(keyEnum),
-        keyScaleNote = ScaleNote.valueOf(keyEnumToString(keyEnum))!;
+    : _name = keyEnumToString(keyEnum),
+      keyScaleNote = ScaleNote.valueOf(keyEnumToString(keyEnum))!;
 
   static final Gb = get(.Gb);
   static final Db = get(.Db);
@@ -338,6 +339,12 @@ class Key implements Comparable<Key> {
     return keysByHalfStep()[halfStep % halfStepsPerOctave];
   }
 
+  static Key getKeyByScaleNote(final ScaleNote scaleNote) {
+    var keyEnums = KeyEnum.values.where((e) => Key.get(e).keyScaleNote == scaleNote);
+    if (keyEnums.isEmpty) return Key.getDefault();
+    return Key.get(keyEnums.first);
+  }
+
   /// Return this major key representation as a minor key.
   Key getMinorKey() {
     // the key's tonic    fixme: should be calculated once only
@@ -427,6 +434,10 @@ class Key implements Comparable<Key> {
   ScaleNote getMajorScaleByNote(int note) {
     note = note % MusicConstants.notesPerScale;
     return getKeyScaleNoteByHalfStep(_majorScale[note]);
+  }
+
+  int getMajorScaleHalfStepsByNote(int note) {
+    return _majorScale[note % _majorScale.length];
   }
 
   int? getMajorScaleNumberByHalfStep(int halfStep) {
@@ -544,8 +555,8 @@ class Key implements Comparable<Key> {
   }
 
   /// Counts from zero.
-  ScaleNote getKeyScaleNoteByHalfStep(int halfStep) {
-    halfStep += keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC;
+  ScaleNote getKeyScaleNoteByHalfStep(int halfStep, {Mode mode = Mode.ionian}) {
+    halfStep += keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC + mode.halfStep;
     return getScaleNoteByHalfStep(halfStep);
   }
 
@@ -675,8 +686,8 @@ class Key implements Comparable<Key> {
     return keyScaleNote.toString();
   }
 
-  //                                   1  2  3  4  5  6  7
-  //                                   0  1  2  3  4  5  6
+  //                                    1  2  3  4  5  6  7
+  //                                    0  1  2  3  4  5  6
   static const List<int> _majorScale = [0, 2, 4, 5, 7, 9, 11];
 
   // static const List<int> _majorScaleHalfstepsToScale = [
@@ -708,18 +719,18 @@ class Key implements Comparable<Key> {
   //   ChordDescriptor.minor7b5, //  6 + 1 = 7
   // ];
   static const List<KeyEnum> _flatKeyEnumsByHalfStep = <KeyEnum>[
-        .A,
-        .Bb,
-        .B,
-        .C,
-        .Db,
-        .D,
-        .Eb,
-        .E,
-        .F,
-        .Gb, //  the problem child, is it F#?
-        .G,
-        .Ab
+    .A,
+    .Bb,
+    .B,
+    .C,
+    .Db,
+    .D,
+    .Eb,
+    .E,
+    .F,
+    .Gb, //  the problem child, is it F#?
+    .G,
+    .Ab,
   ];
 
   static const int halfStepsPerOctave = MusicConstants.halfStepsPerOctave;

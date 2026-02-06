@@ -26,6 +26,7 @@ import 'measure_node.dart';
 import 'measure_repeat.dart';
 import 'measure_repeat_extension.dart';
 import 'measure_repeat_marker.dart';
+import 'mode.dart';
 import 'music_constants.dart';
 import 'phrase.dart';
 import 'scale_chord.dart';
@@ -4556,6 +4557,8 @@ class SongBase {
   }
 
   Key _key = Key.C; //  default
+
+  Mode mode = Mode.ionian; //  default
 
   int get beatsPerMinute => _beatsPerMinute;
 
