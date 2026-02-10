@@ -1,8 +1,10 @@
 import 'dart:collection';
 
 import 'package:bsteele_music_lib/app_logger.dart';
+import 'package:bsteele_music_lib/songs/chord_component.dart';
 import 'package:bsteele_music_lib/songs/chord_descriptor.dart';
 import 'package:bsteele_music_lib/songs/key.dart';
+import 'package:bsteele_music_lib/songs/mode.dart';
 import 'package:bsteele_music_lib/songs/music_constants.dart';
 import 'package:bsteele_music_lib/songs/pitch.dart';
 import 'package:bsteele_music_lib/songs/scale_chord.dart';
@@ -172,9 +174,10 @@ void main() {
     for (int i = -6; i <= 6; i++) {
       Key key = Key.getKeyByValue(i);
       expect(i, key.getKeyValue());
-      logger.t('${i >= 0 ? ' ' : ''}$i ${key.name} ($key)\t'
-          //+ " html: " + key.toHtml()
-          );
+      logger.t(
+        '${i >= 0 ? ' ' : ''}$i ${key.name} ($key)\t',
+        //+ " html: " + key.toHtml()
+      );
 
       logger.i('\tscale: ');
       for (int j = 0; j < 7; j++) {
@@ -236,58 +239,58 @@ void main() {
     expect('B    C#m  D#m  E    F#7  G#m  A#m7b5', _Help.diatonicByDegree(Key.B));
     expect('F#   G#m  A#m  B    C#7  D#m  E#m7b5', _Help.diatonicByDegree(Key.Fs));
 
-//        -6 Gb toString: G♭ html: G&#9837;
-//        G♭ A♭ B♭ C♭ D♭ E♭ F
-//        G♭ D♭ A♭ E♭ B♭ F  C
-//        G♭ G  A♭ A  B♭ C♭ C  D♭ D  E♭ E  F
-//        -5 Db toString: D♭ html: D&#9837;
-//        D♭ E♭ F  G♭ A♭ B♭ C
-//        D♭ A♭ E♭ B♭ F  C  G
-//        D♭ D  E♭ E  F  G♭ G  A♭ A  B♭ B  C
-//        -4 Ab toString: A♭ html: A&#9837;
-//        A♭ B♭ C  D♭ E♭ F  G
-//        A♭ E♭ B♭ F  C  G  D
-//        A♭ A  B♭ B  C  D♭ D  E♭ E  F  G♭ G
-//                -3 Eb toString: E♭ html: E&#9837;
-//        E♭ F  G  A♭ B♭ C  D
-//        E♭ B♭ F  C  G  D  A
-//        E♭ E  F  G♭ G  A♭ A  B♭ B  C  D♭ D
-//                -2 Bb toString: B♭ html: B&#9837;
-//        B♭ C  D  E♭ F  G  A
-//        B♭ F  C  G  D  A  E
-//        B♭ B  C  D♭ D  E♭ E  F  G♭ G  A♭ A
-//                -1 F toString: F html: F
-//        F  G  A  B♭ C  D  E
-//        F  C  G  D  A  E  B
-//        F  G♭ G  A♭ A  B♭ B  C  D♭ D  E♭ E
-//        0 C toString: C html: C
-//        C  D  E  F  G  A  B
-//        C  G  D  A  E  B  F♯
-//        C  C♯ D  D♯ E  F  F♯ G  G♯ A  A♯ B
-//        1 G toString: G html: G
-//        G  A  B  C  D  E  F♯
-//        G  D  A  E  B  F♯ C♯
-//        G  G♯ A  A♯ B  C  C♯ D  D♯ E  F  F♯
-//        2 D toString: D html: D
-//        D  E  F♯ G  A  B  C♯
-//        D  A  E  B  F♯ C♯ G♯
-//        D  D♯ E  F  F♯ G  G♯ A  A♯ B  C  C♯
-//        3 A toString: A html: A
-//        A  B  C♯ D  E  F♯ G♯
-//        A  E  B  F♯ C♯ G♯ D♯
-//        A  A♯ B  C  C♯ D  D♯ E  F  F♯ G  G♯
-//        4 E toString: E html: E
-//        E  F♯ G♯ A  B  C♯ D♯
-//        E  B  F♯ C♯ G♯ D♯ A♯
-//        E  F  F♯ G  G♯ A  A♯ B  C  C♯ D  D♯
-//        5 B toString: B html: B
-//        B  C♯ D♯ E  F♯ G♯ A♯
-//        B  F♯ C♯ G♯ D♯ A♯ F
-//        B  C  C♯ D  D♯ E  F  F♯ G  G♯ A  A♯
-//        6 Fs toString: F♯ html: F&#9839;
-//        F♯ G♯ A♯ B  C♯ D♯ E♯
-//        F♯ C♯ G♯ D♯ A♯ E♯ C
-//        F♯ G  G♯ A  A♯ B  C  C♯ D  D♯ E  E♯
+    //        -6 Gb toString: G♭ html: G&#9837;
+    //        G♭ A♭ B♭ C♭ D♭ E♭ F
+    //        G♭ D♭ A♭ E♭ B♭ F  C
+    //        G♭ G  A♭ A  B♭ C♭ C  D♭ D  E♭ E  F
+    //        -5 Db toString: D♭ html: D&#9837;
+    //        D♭ E♭ F  G♭ A♭ B♭ C
+    //        D♭ A♭ E♭ B♭ F  C  G
+    //        D♭ D  E♭ E  F  G♭ G  A♭ A  B♭ B  C
+    //        -4 Ab toString: A♭ html: A&#9837;
+    //        A♭ B♭ C  D♭ E♭ F  G
+    //        A♭ E♭ B♭ F  C  G  D
+    //        A♭ A  B♭ B  C  D♭ D  E♭ E  F  G♭ G
+    //                -3 Eb toString: E♭ html: E&#9837;
+    //        E♭ F  G  A♭ B♭ C  D
+    //        E♭ B♭ F  C  G  D  A
+    //        E♭ E  F  G♭ G  A♭ A  B♭ B  C  D♭ D
+    //                -2 Bb toString: B♭ html: B&#9837;
+    //        B♭ C  D  E♭ F  G  A
+    //        B♭ F  C  G  D  A  E
+    //        B♭ B  C  D♭ D  E♭ E  F  G♭ G  A♭ A
+    //                -1 F toString: F html: F
+    //        F  G  A  B♭ C  D  E
+    //        F  C  G  D  A  E  B
+    //        F  G♭ G  A♭ A  B♭ B  C  D♭ D  E♭ E
+    //        0 C toString: C html: C
+    //        C  D  E  F  G  A  B
+    //        C  G  D  A  E  B  F♯
+    //        C  C♯ D  D♯ E  F  F♯ G  G♯ A  A♯ B
+    //        1 G toString: G html: G
+    //        G  A  B  C  D  E  F♯
+    //        G  D  A  E  B  F♯ C♯
+    //        G  G♯ A  A♯ B  C  C♯ D  D♯ E  F  F♯
+    //        2 D toString: D html: D
+    //        D  E  F♯ G  A  B  C♯
+    //        D  A  E  B  F♯ C♯ G♯
+    //        D  D♯ E  F  F♯ G  G♯ A  A♯ B  C  C♯
+    //        3 A toString: A html: A
+    //        A  B  C♯ D  E  F♯ G♯
+    //        A  E  B  F♯ C♯ G♯ D♯
+    //        A  A♯ B  C  C♯ D  D♯ E  F  F♯ G  G♯
+    //        4 E toString: E html: E
+    //        E  F♯ G♯ A  B  C♯ D♯
+    //        E  B  F♯ C♯ G♯ D♯ A♯
+    //        E  F  F♯ G  G♯ A  A♯ B  C  C♯ D  D♯
+    //        5 B toString: B html: B
+    //        B  C♯ D♯ E  F♯ G♯ A♯
+    //        B  F♯ C♯ G♯ D♯ A♯ F
+    //        B  C  C♯ D  D♯ E  F  F♯ G  G♯ A  A♯
+    //        6 Fs toString: F♯ html: F&#9839;
+    //        F♯ G♯ A♯ B  C♯ D♯ E♯
+    //        F♯ C♯ G♯ D♯ A♯ E♯ C
+    //        F♯ G  G♯ A  A♯ B  C  C♯ D  D♯ E  E♯
   });
 
   test('testIsDiatonic testing', () {
@@ -481,19 +484,19 @@ void main() {
         ScaleNote fsn = ScaleNote.getFlatByHalfStep(i);
         ScaleNote ssn = ScaleNote.getSharpByHalfStep(i);
         expect(fsn.halfStep, ssn.halfStep);
-//                logger.i(" " + i + ":");
-//                if ( i < 10)
-//                    logger.i(" ");
+        //                logger.i(" " + i + ":");
+        //                if ( i < 10)
+        //                    logger.i(" ");
         for (int j = 0; j <= MusicConstants.halfStepsPerOctave; j++) {
           ScaleNote fTranSn = key.transpose(fsn, j);
           ScaleNote sTranSn = key.transpose(ssn, j);
           expect(fTranSn.halfStep, sTranSn.halfStep);
-//                    logger.i(" ");
-//                    ScaleNoteEnum3 sn =  key.getScaleNoteByHalfStep(fTranSn.getHalfStep());
-//                    String s = sn.toString();
-//                    logger.i(s);
-//                    if ( s.length() < 2)
-//                        logger.i(" ");
+          //                    logger.i(" ");
+          //                    ScaleNoteEnum3 sn =  key.getScaleNoteByHalfStep(fTranSn.getHalfStep());
+          //                    String s = sn.toString();
+          //                    logger.i(s);
+          //                    if ( s.length() < 2)
+          //                        logger.i(" ");
         }
       }
     }
@@ -710,9 +713,11 @@ void main() {
             .sharps[(i + MusicConstants.halfStepsFromAtoC + key.getKeyValue() * 7) % MusicConstants.halfStepsPerOctave];
         pitch = key.isSharp ? pitch.asSharp() : pitch.asFlat();
         ScaleNote keyScaleNote = key.getKeyScaleNoteFor(pitch.scaleNote);
-        logger.d('\t${key.toString().padLeft(2)} ${key.getKeyScaleNote()}: ${key.getKeyScaleNote().halfStep}:'
-            ' ${pitch.scaleNote.toString().padLeft(2)} $i  $keyScaleNote  ${key.accidentalString(pitch)}'
-            '  ${key.accidental(pitch)}');
+        logger.d(
+          '\t${key.toString().padLeft(2)} ${key.getKeyScaleNote()}: ${key.getKeyScaleNote().halfStep}:'
+          ' ${pitch.scaleNote.toString().padLeft(2)} $i  $keyScaleNote  ${key.accidentalString(pitch)}'
+          '  ${key.accidental(pitch)}',
+        );
       }
     }
 
@@ -780,15 +785,18 @@ void main() {
           expect(accidental.contains(MusicConstants.sharpChar), false);
         }
         if (lastAccidental != null) {
-          logger.t('acc: "$accidental" ${accidental[0].codeUnitAt(0).toString()}'
-              ', last: "${lastAccidental.toString()}"  ${lastAccidental[0].codeUnitAt(0).toString()}');
+          logger.t(
+            'acc: "$accidental" ${accidental[0].codeUnitAt(0).toString()}'
+            ', last: "${lastAccidental.toString()}"  ${lastAccidental[0].codeUnitAt(0).toString()}',
+          );
 
           //  same scale letter or the next one
           expect(
-              accidental[0] == lastAccidental[0] ||
-                  (accidental.codeUnitAt(0) == lastAccidental.codeUnitAt(0) + 1) ||
-                  (accidental.codeUnitAt(0) == 'A'.codeUnitAt(0) && lastAccidental.codeUnitAt(0) == 'G'.codeUnitAt(0)),
-              true);
+            accidental[0] == lastAccidental[0] ||
+                (accidental.codeUnitAt(0) == lastAccidental.codeUnitAt(0) + 1) ||
+                (accidental.codeUnitAt(0) == 'A'.codeUnitAt(0) && lastAccidental.codeUnitAt(0) == 'G'.codeUnitAt(0)),
+            true,
+          );
 
           // {
           //     //  check that sharps are following   fixme: what is this testing?
@@ -814,9 +822,11 @@ void main() {
   test('test capo suggestions', () {
     for (KeyEnum keyEnum in KeyEnum.values) {
       Key key = Key.get(keyEnum);
-      logger.i('key: ${key.toString().padRight(2)}: '
-          '${key.halfStep.toString().padLeft(2)} '
-          '=> ${key.capoKey} + capo at ${key.capoLocation}');
+      logger.i(
+        'key: ${key.toString().padRight(2)}: '
+        '${key.halfStep.toString().padLeft(2)} '
+        '=> ${key.capoKey} + capo at ${key.capoLocation}',
+      );
     }
 
     expect(Key.C.capoLocation, 0);
@@ -916,15 +926,18 @@ void main() {
       for (var note = 0; note < MusicConstants.notesPerScale; note++) {
         var halfStepFromKey =
             (key.getMajorScaleByNote(note).halfStep - key.halfStep) % MusicConstants.halfStepsPerOctave;
-        logger.d('$note: ${key.getMajorScaleByNote(note)}'
-            '  $halfStepFromKey');
+        logger.d(
+          '$note: ${key.getMajorScaleByNote(note)}'
+          '  $halfStepFromKey',
+        );
         majorScaleNoteHalfSteps.add(halfStepFromKey);
       }
 
       logger.i('major key $key:');
       for (var halfSteps = 0; halfSteps < MusicConstants.halfStepsPerOctave; halfSteps++) {
         logger.d(
-            '$halfSteps: ${key.getKeyScaleNoteByHalfStep(halfSteps)} ${key.getMajorScaleNumberByHalfStep(halfSteps)}');
+          '$halfSteps: ${key.getKeyScaleNoteByHalfStep(halfSteps)} ${key.getMajorScaleNumberByHalfStep(halfSteps)}',
+        );
         logger.d('  majorScaleNoteHalfSteps: ${majorScaleNoteHalfSteps.contains(halfSteps).toString()} ');
 
         if (majorScaleNoteHalfSteps.contains(halfSteps)) {
@@ -941,15 +954,18 @@ void main() {
       for (var note = 0; note < MusicConstants.notesPerScale; note++) {
         var halfStepFromKey =
             (key.getMinorScaleByNote(note).halfStep - key.halfStep) % MusicConstants.halfStepsPerOctave;
-        logger.d('$note: ${key.getMinorScaleByNote(note)}'
-            '  $halfStepFromKey');
+        logger.d(
+          '$note: ${key.getMinorScaleByNote(note)}'
+          '  $halfStepFromKey',
+        );
         minorScaleNoteHalfSteps.add(halfStepFromKey);
       }
 
       logger.i('minor key $key:');
       for (var halfSteps = 0; halfSteps < MusicConstants.halfStepsPerOctave; halfSteps++) {
         logger.d(
-            '$halfSteps: ${key.getKeyScaleNoteByHalfStep(halfSteps)} ${key.getMinorScaleNumberByHalfStep(halfSteps)}');
+          '$halfSteps: ${key.getKeyScaleNoteByHalfStep(halfSteps)} ${key.getMinorScaleNumberByHalfStep(halfSteps)}',
+        );
         logger.d('  minorScaleNoteHalfSteps: ${minorScaleNoteHalfSteps.contains(halfSteps).toString()} ');
 
         if (minorScaleNoteHalfSteps.contains(halfSteps)) {
@@ -959,6 +975,76 @@ void main() {
         }
       }
     }
+  });
+
+  test('test modes', () {
+    //  for inspection:
+    for (var mode in Mode.values) {
+      print('${mode.name.toString().padLeft(10)}: ${mode.formula}');
+    }
+    print('');
+
+    {
+      for (var mode in [Mode.mixolydian]) {
+        for (KeyEnum keyEnum in KeyEnum.values.reversed) {
+          Key key = Key.get(keyEnum);
+
+          final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
+          // print('key: $key ${key.keyValue} ${key.isSharp ? '#' : ''}, modal Key: $modalKey');
+
+          final StringBuffer sb = StringBuffer('$key: ');
+          for (int i = 0; i < MusicConstants.notesPerScale; i++) {
+            var note = getModeNote(key, mode, i);
+            sb.write(' $note');
+          }
+          print(sb.toString());
+        }
+      }
+      print('');
+    }
+
+    Key key = Key.get(KeyEnum.D);
+    for (var mode in Mode.values) {
+      final List<ChordComponent> components = getModeChordComponents(mode);
+      {
+        final StringBuffer sb = StringBuffer();
+        for (int i = 0; i < components.length; i++) {
+          var component = components[i];
+          sb.write(' $component');
+        }
+        print(sb.toString());
+      }
+      final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
+      print('key: $key, mode: $mode, modalKey: $modalKey');
+      {
+        final StringBuffer sb = StringBuffer();
+        for (int i = 0; i < MusicConstants.notesPerScale; i++) {
+          sb.write(' ${modalKey.getKeyScaleNoteByHalfStep(components[i].halfSteps)}');
+        }
+        print(sb.toString());
+      }
+    }
+
+    //  random sanity tests only
+    //  note index starts on 0
+    expect(getModeNote(Key.get(KeyEnum.C), Mode.ionian, 3 - 1), ScaleNote.E);
+    expect(getModeNote(Key.get(KeyEnum.D), Mode.ionian, 3 - 1), ScaleNote.Fs);
+    expect(getModeNote(Key.get(KeyEnum.D), Mode.ionian, 6 - 1), ScaleNote.B);
+    expect(getModeNote(Key.get(KeyEnum.D), Mode.ionian, 7 - 1), ScaleNote.Cs);
+    expect(getModeNote(Key.get(KeyEnum.D), Mode.dorian, 2 - 1), ScaleNote.Fs);
+    expect(getModeNote(Key.get(KeyEnum.Ab), Mode.dorian, 3 - 1), ScaleNote.Db);
+    expect(getModeNote(Key.get(KeyEnum.Ab), Mode.phrygian, 3 - 1), ScaleNote.Eb);
+    expect(getModeNote(Key.get(KeyEnum.Ab), Mode.phrygian, 6 - 1), ScaleNote.Ab);
+    expect(getModeNote(Key.get(KeyEnum.B), Mode.phrygian, 3 - 1), ScaleNote.Fs);
+    expect(getModeNote(Key.get(KeyEnum.Db), Mode.lydian, 2 - 1), ScaleNote.Ab);
+    expect(getModeNote(Key.get(KeyEnum.D), Mode.lydian, 5 - 1), ScaleNote.D);
+    expect(getModeNote(Key.get(KeyEnum.E), Mode.lydian, 7 - 1), ScaleNote.Gs);
+    expect(getModeNote(Key.get(KeyEnum.E), Mode.mixolydian, 6 - 1), ScaleNote.Gs);
+    expect(getModeNote(Key.get(KeyEnum.E), Mode.mixolydian, 2 - 1), ScaleNote.Cs);
+    expect(getModeNote(Key.get(KeyEnum.E), Mode.aeolian, 4 - 1), ScaleNote.Fs);
+    expect(getModeNote(Key.get(KeyEnum.A), Mode.locrian, 3 - 1), ScaleNote.B);
+    expect(getModeNote(Key.get(KeyEnum.A), Mode.locrian, 4 - 1), ScaleNote.Cs);
+    expect(getModeNote(Key.get(KeyEnum.Gb), Mode.locrian, 6 - 1), ScaleNote.Db);
   });
 }
 

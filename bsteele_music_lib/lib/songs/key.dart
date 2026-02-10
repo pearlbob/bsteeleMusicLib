@@ -555,8 +555,8 @@ class Key implements Comparable<Key> {
   }
 
   /// Counts from zero.
-  ScaleNote getKeyScaleNoteByHalfStep(int halfStep, {Mode mode = Mode.ionian}) {
-    halfStep += keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC + mode.halfStep;
+  ScaleNote getKeyScaleNoteByHalfStep(int halfStep) {
+    halfStep += keyValue * MusicConstants.halfStepsToFifth + MusicConstants.halfStepsFromAtoC;
     return getScaleNoteByHalfStep(halfStep);
   }
 

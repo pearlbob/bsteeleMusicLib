@@ -2051,6 +2051,7 @@ coerced to reflect the songlist's last modification for that song.
         case '-jamble':
           String original_transposition_string = '';
           print('');
+
           print('${DateTime.now()}');
           print('allSongs:');
           print('note: songs performed prior to $oldestSungDateTime have been removed.');
@@ -2865,6 +2866,9 @@ coerced to reflect the songlist's last modification for that song.
             File file = File('${Util.homePath()}/$_junkRelativeDirectory/original_transpositions.txt');
             file.writeAsStringSync(s, flush: true);
           }
+
+          print('ignore major or minor for mode... understanding that they are only notes to yourself.');
+          print('read Shari\'s AI input for keys.');
 
           // //  diagnostics
           // print('');

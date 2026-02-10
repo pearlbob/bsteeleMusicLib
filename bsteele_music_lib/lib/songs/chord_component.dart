@@ -7,17 +7,22 @@ import 'music_constants.dart';
 //
 @immutable
 class ChordComponent implements Comparable<ChordComponent> {
-  static const ChordComponent root = ChordComponent._('R', 1, 0);
-  static const ChordComponent minorSecond = ChordComponent._('m2', 2, 1);
+  static const root = ChordComponent._('R', 1, 0);
+  static const minorSecond = ChordComponent._('m2', 2, 1);
+  static const flatSecond = ChordComponent._('b2', 2, 1);
   static const second = ChordComponent._('2', 2, 2);
   static const minorThird = ChordComponent._('m3', 3, 3);
+  static const flatThird = ChordComponent._('b3', 3, 3);
   static const third = ChordComponent._('3', 3, 4);
   static const fourth = ChordComponent._('4', 4, 5);
+  static const sharpFourth = ChordComponent._('#4', 4, 6);
   static const flatFifth = ChordComponent._('b5', 5, 6);
   static const fifth = ChordComponent._('5', 5, 7);
   static const sharpFifth = ChordComponent._('#5', 5, 8);
   static const minorSixth = ChordComponent._('m6', 6, 8);
+  static const flatSixth = ChordComponent._('b6', 6, 8);
   static const sixth = ChordComponent._('6', 6, 9);
+  static const flatSeventh = ChordComponent._('b7', 7, 10);
   static const minorSeventh = ChordComponent._('m7', 7, 10);
   static const seventh = ChordComponent._('7', 7, 11);
   static const octave = ChordComponent._('8', 8, 12);
@@ -52,11 +57,29 @@ class ChordComponent implements Comparable<ChordComponent> {
           case '1':
             cc = root;
             break;
+          case 'm2':
+            cc = minorSecond;
+            break;
+          case 'b2':
+            cc = flatSecond;
+            break;
+          case 'b3':
+            cc = flatThird;
+            break;
+          case '#4':
+            cc = sharpFourth;
+            break;
           case 'm5':
             cc = flatFifth;
             break;
           case '#5':
             cc = sharpFifth;
+            break;
+          case 'b6':
+            cc = flatSixth;
+            break;
+          case 'b7':
+            cc = flatSeventh;
             break;
           case 'm9':
           case 'b9':
