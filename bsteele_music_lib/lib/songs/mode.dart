@@ -35,10 +35,15 @@ List<ChordComponent> getModeChordComponents(final Mode mode) {
   return ret;
 }
 
-ScaleNote getModeNote(final Key key, final Mode mode, final int note) {
+ScaleNote getModeScaleNote(final Key key, final Mode mode, final int note) {
   final List<ChordComponent> components = getModeChordComponents(mode);
   final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
   return modalKey
       .getKeyScaleNoteByHalfStep(components[note % MusicConstants.notesPerScale].halfSteps)
       .asSharp(value: key.isSharp);
+}
+
+ScaleNote getModeChromaticNote(final Key key, final Mode mode, final int halfStep) {
+  final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
+  return modalKey.getKeyScaleNoteByHalfStep(halfStep).asSharp(value: key.isSharp);
 }
