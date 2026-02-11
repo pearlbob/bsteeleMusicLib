@@ -989,9 +989,6 @@ void main() {
         for (KeyEnum keyEnum in KeyEnum.values.reversed) {
           Key key = Key.get(keyEnum);
 
-          final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
-          // print('key: $key ${key.keyValue} ${key.isSharp ? '#' : ''}, modal Key: $modalKey');
-
           final StringBuffer sb = StringBuffer('$key: ');
           for (int i = 0; i < MusicConstants.notesPerScale; i++) {
             var note = getModeScaleNote(key, mode, i);
@@ -1003,7 +1000,7 @@ void main() {
       print('');
     }
 
-    Key key = Key.get(KeyEnum.D);
+    Key parentMajorKey = Key.get(KeyEnum.D);
     for (var mode in Mode.values) {
       final List<ChordComponent> components = getModeChordComponents(mode);
       {
@@ -1014,12 +1011,11 @@ void main() {
         }
         print(sb.toString());
       }
-      final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
-      print('key: $key, mode: $mode, modalKey: $modalKey');
+      print('parentMajorKey: $parentMajorKey, mode: $mode');
       {
         final StringBuffer sb = StringBuffer();
         for (int i = 0; i < MusicConstants.notesPerScale; i++) {
-          sb.write(' ${modalKey.getKeyScaleNoteByHalfStep(components[i].halfSteps)}');
+          sb.write(' ${parentMajorKey.getKeyScaleNoteByHalfStep(components[i].halfSteps)}');
         }
         print(sb.toString());
       }
@@ -1031,28 +1027,28 @@ void main() {
     expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.ionian, 3 - 1), ScaleNote.Fs);
     expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.ionian, 6 - 1), ScaleNote.B);
     expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.ionian, 7 - 1), ScaleNote.Cs);
-    expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.dorian, 2 - 1), ScaleNote.Fs);
-    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.dorian, 3 - 1), ScaleNote.Db);
-    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.phrygian, 3 - 1), ScaleNote.Eb);
-    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.phrygian, 6 - 1), ScaleNote.Ab);
-    expect(getModeScaleNote(Key.get(KeyEnum.B), Mode.phrygian, 3 - 1), ScaleNote.Fs);
-    expect(getModeScaleNote(Key.get(KeyEnum.Db), Mode.lydian, 2 - 1), ScaleNote.Ab);
-    expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.lydian, 5 - 1), ScaleNote.D);
-    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.lydian, 7 - 1), ScaleNote.Gs);
-    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.mixolydian, 6 - 1), ScaleNote.Gs);
-    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.mixolydian, 2 - 1), ScaleNote.Cs);
-    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.aeolian, 4 - 1), ScaleNote.Fs);
-    expect(getModeScaleNote(Key.get(KeyEnum.A), Mode.locrian, 3 - 1), ScaleNote.B);
-    expect(getModeScaleNote(Key.get(KeyEnum.A), Mode.locrian, 4 - 1), ScaleNote.Cs);
-    expect(getModeScaleNote(Key.get(KeyEnum.Gb), Mode.locrian, 6 - 1), ScaleNote.Db);
+    expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.dorian, 2 - 1), ScaleNote.E);
+    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.dorian, 3 - 1), ScaleNote.B);
+    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.phrygian, 3 - 1), ScaleNote.B);
+    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.phrygian, 4 - 1), ScaleNote.Db);
+    expect(getModeScaleNote(Key.get(KeyEnum.Ab), Mode.phrygian, 6 - 1), ScaleNote.E);
+    expect(getModeScaleNote(Key.get(KeyEnum.B), Mode.phrygian, 3 - 1), ScaleNote.D);
+    expect(getModeScaleNote(Key.get(KeyEnum.Db), Mode.lydian, 2 - 1), ScaleNote.Eb);
+    expect(getModeScaleNote(Key.get(KeyEnum.D), Mode.lydian, 5 - 1), ScaleNote.A);
+    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.lydian, 7 - 1), ScaleNote.Ds);
+    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.mixolydian, 6 - 1), ScaleNote.Cs);
+    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.mixolydian, 2 - 1), ScaleNote.Fs);
+    expect(getModeScaleNote(Key.get(KeyEnum.E), Mode.aeolian, 4 - 1), ScaleNote.A);
+    expect(getModeScaleNote(Key.get(KeyEnum.A), Mode.locrian, 3 - 1), ScaleNote.C);
+    expect(getModeScaleNote(Key.get(KeyEnum.A), Mode.locrian, 4 - 1), ScaleNote.D);
+    expect(getModeScaleNote(Key.get(KeyEnum.Gb), Mode.locrian, 6 - 1), ScaleNote.D);
   });
 
   test('test mode chromatic scales', () {
     for (var keyEnum in KeyEnum.values) {
-      Key key = Key.get(keyEnum);
+      Key parentMajorkey = Key.get(keyEnum);
       for (var mode in Mode.values) {
-        final modalKey = Key.getKeyByHalfStep(key.halfStep + mode.halfStep);
-        print('key: $key, mode: $mode, modalKey: $modalKey');
+        print('parentMajorkey: $parentMajorkey, mode: $mode');
 
         final List<ChordComponent> components = getModeChordComponents(mode);
 
@@ -1077,16 +1073,16 @@ void main() {
         {
           final StringBuffer sb = StringBuffer();
           for (int i = 0; i < MusicConstants.notesPerScale; i++) {
-            sb.write(' ${modalKey.getKeyScaleNoteByHalfStep(components[i].halfSteps).toString().padRight(2)}');
+            sb.write(' ${parentMajorkey.getKeyScaleNoteByHalfStep(components[i].halfSteps).toString().padRight(2)}');
           }
           print(sb.toString());
         }
         int scaleNoteCount = 0;
         for (int i = 0; i < MusicConstants.halfStepsPerOctave; i++) {
-          var chromaticNote = getModeChromaticNote(key, mode, i);
+          var chromaticNote = getModeChromaticNote(parentMajorkey, mode, i);
           ScaleNote? scaleNote;
           if (componentHalfSteps.contains(i)) {
-            scaleNote = getModeScaleNote(key, mode, scaleNoteCount);
+            scaleNote = getModeScaleNote(parentMajorkey, mode, scaleNoteCount);
             scaleNoteCount++;
           }
           // print( '$i: $chromaticNote $scaleNote');
