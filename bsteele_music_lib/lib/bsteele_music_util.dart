@@ -2867,8 +2867,15 @@ coerced to reflect the songlist's last modification for that song.
             file.writeAsStringSync(s, flush: true);
           }
 
-          print('ignore major or minor for mode... understanding that they are only notes to yourself.');
-          print('read Shari\'s AI input for keys.');
+          print('''
+
+  vi ~/junk/jamble_update_report
+  vi -d ~/junk/jamble_allSongs.songlyrics ~/junk/updated_allSongs.songlyrics
+  vi -d ~/junk/jamble_allPerformances.songperformances ~/junk/updated_allSongPerformances.songperformances 
+
+# ignore major or minor for mode... understanding that they are only notes to yourself.');
+# print('read Shari\'s AI input for keys.');
+          ''');
 
           // //  diagnostics
           // print('');

@@ -4,7 +4,6 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
-import 'mode.dart';
 import 'music_constants.dart';
 import 'pitch.dart';
 import 'scale_chord.dart';
