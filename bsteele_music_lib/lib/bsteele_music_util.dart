@@ -2696,7 +2696,6 @@ coerced to reflect the songlist's last modification for that song.
           {
             print('');
             print('long lyric sections: ');
-            Song? lastSong;
             for (var song in allSongs) {
               int maxLength = 0;
               for (var lyricSection in song.lyricSections) {

@@ -5,6 +5,7 @@ import '../app_logger.dart';
 import '../util/util.dart';
 import 'chord_section_location.dart';
 import 'key.dart';
+import 'mode.dart';
 import 'song_base.dart';
 import 'time_signature.dart';
 
@@ -171,14 +172,34 @@ class Song extends SongBase implements Comparable<Song> {
           song.copyright = jsonSong[name];
           break;
         case 'key':
-          song.key = Key.parseString(jsonSong[name]) ?? Key.getDefault();
+          {
+            Key? key = Key.parseString(jsonSong[name]);
+            if (key != null) {
+              //  major key found
+              song.key = key;
+            } else {
+              //  Jamble key stuff
+              song.importKey = jsonSong[name];
+            }
+          }
+          break;
+        //  Jamble key stuff
+        case 'keyMode':
+          song.keyMode = jsonSong[name];
           break;
         case 'musicalMode':
-          //  fixme: unused
+          song.musicalMode = jsonSong[name];
+          break;
+        case 'parentMajor':
+          song.parentMajor = Key.parseString(jsonSong[name]) ?? Key.getDefault();
+          break;
+        case 'relativeMajor':
+          song.relativeMajor = Key.parseString(jsonSong[name]) ?? Key.getDefault();
           break;
         case 'keySignature':
-          //  fixme: unused
+          song.keySignature = jsonSong[name];
           break;
+
         case 'defaultBpm':
           song.beatsPerMinute = (jsonSong[name] as int);
           break;
@@ -235,6 +256,25 @@ class Song extends SongBase implements Comparable<Song> {
           break;
       }
     }
+
+    //  figure the bsteele key from the jamble stuff
+    //  the cheapest fix:
+    if (song.musicalMode.isNotEmpty) {
+      assert(song.parentMajor != null);
+      song.key = song.parentMajor!;
+    }
+    // if (song.keyMode == 'major' || song.mode == Mode.ionian) {
+    //   //  key was found, not the (currently) unknown minor key
+    //   if ( song.importKey.isNotEmpty)
+    //   assert(song.importKey.isEmpty);
+    // } else {
+    //   //  otherwise use the parentMajor as the bsteele key
+    //   assert(song.parentMajor != null);
+    //   song.key = song.parentMajor!;
+    // }
+    // if (song.parentMajor!=null && song.key != song.parentMajor)
+    // assert(song.key == song.parentMajor);
+
     return song;
   }
 
@@ -442,6 +482,14 @@ class Song extends SongBase implements Comparable<Song> {
 
   bool get isTheEmptySong => identical(this, theEmptySong);
   static final Song theEmptySong = createEmptySong();
+
+  //  Jamble import stuff
+  String importKey = ''; //  major + minor keys
+  String keyMode = ''; //  major or minor
+  String musicalMode = ''; //  minor or mode
+  Key? parentMajor; //  key
+  Key? relativeMajor; //  key
+  String keySignature = ''; //  missing
 }
 
 /// A comparator that sorts by song title and then artist.

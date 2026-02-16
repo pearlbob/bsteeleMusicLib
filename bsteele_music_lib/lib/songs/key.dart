@@ -59,6 +59,10 @@ enum KeyEnum {
   Fs,
 }
 
+// Each major key has a relative minor, with which it shares a key signature.
+// The relative minor is found on the sixth scale degree of a major key,
+//     or three semitones down from its corresponding major key.
+
 //  local private universal values
 Map<KeyEnum, Key> _keyMap = {};
 List<Key> _keysByHalfStep = [];
