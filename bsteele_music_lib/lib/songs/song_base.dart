@@ -800,7 +800,7 @@ class SongBase {
       logger.d('parseChords for: $title');
       SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
       MarkedString markedString = MarkedString(
-        _chords.replaceAll('(', '').replaceAll(')', ''), //  measure comments are dead
+        _chords.replaceAll(_badChordCharacterRegExp, ''), //  measure comments are dead
       );
       ChordSection chordSection;
       while (markedString.isNotEmpty) {
@@ -4739,3 +4739,5 @@ String debugGridToString(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayS
   }
   return '';
 }
+
+final RegExp _badChordCharacterRegExp = RegExp(r'(\{\d+\}|[(){}])');

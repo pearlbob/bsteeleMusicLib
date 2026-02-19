@@ -250,6 +250,7 @@ coerced to reflect the songlist's last modification for that song.
         case '-bpm':
           {
             Map<int, int> bpms = {};
+            //  list song speeds, accumulate the bpm spread
             for (Song song in allSongs) {
               int bpm = song.beatsPerMinute;
               var n = bpms[bpm];
@@ -262,6 +263,8 @@ coerced to reflect the songlist's last modification for that song.
                   ..toList()) {
               print('$n: ${bpms[n]}');
             }
+
+            //  list the fastest songs by bpm
             for (Song song
                 in SplayTreeSet<Song>((song1, song2) {
                     var ret = song1.beatsPerMinute.compareTo(song2.beatsPerMinute);
@@ -275,9 +278,20 @@ coerced to reflect the songlist's last modification for that song.
               int bpm = song.beatsPerMinute;
               if (bpm > 200) {
                 print('${song.title} by ${song.artist}, bpm: $bpm, beats: ${song.beatsPerBar}');
+
+                int maxChordsPerMeasure = 1;
+                for (final chordSection in song.getChordSections()) {
+                  for (final phrase in chordSection.phrases) {
+                    for (final measure in phrase.measures) {
+                      maxChordsPerMeasure = max(maxChordsPerMeasure, measure.chords.length);
+                    }
+                  }
+                }
+                print('    maxChordsPerMeasure: $maxChordsPerMeasure');
               }
             }
           }
+
           break;
 
         case '-chord':
@@ -2071,15 +2085,26 @@ coerced to reflect the songlist's last modification for that song.
               File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
             );
             original_allSongPerformances.loadSongs(original_allSongs);
-            //  print the history, include the first chord in the song
-            print('');
-            print('original history:');
+            // //  print the history, include the first chord in the song
+            // print('');
+            // print('original history:');
+            //
+            // original_transposition_string = performanceTranspositionsToString(
+            //   original_allSongPerformances,
+            //   id: 'bsteele',
+            // );
+            // print(original_transposition_string);
+          }
 
-            original_transposition_string = performanceTranspositionsToString(
-              original_allSongPerformances,
-              id: 'bsteele',
-            );
-            print(original_transposition_string);
+          {
+            //  print diagnostic performance history file
+            var list = SplayTreeSet<SongPerformance>.from(
+              original_allSongPerformances.allSongPerformanceHistory,
+              SongPerformance.compareByLastSungSongIdAndSinger,
+            ).toList(growable: false);
+
+            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/original_performance_history.json');
+            outputFile.writeAsStringSync(_jsonEncoder.convert(list), flush: true);
           }
 
           {
@@ -2234,7 +2259,8 @@ coerced to reflect the songlist's last modification for that song.
                 }
 
                 if (song.key != otherSong.key) {
-                  if (longVersion) {
+                  // if (longVersion)
+                  {
                     out.write('\n    key: was ${song.key}, is now: ${otherSong.key}');
                   }
                   song.key = otherSong.key;
@@ -2465,6 +2491,7 @@ coerced to reflect the songlist's last modification for that song.
               SplayTreeSet<SongPerformance> jambleBpmCorrectedPerformances = SplayTreeSet(
                 (key1, key2) => -SongPerformance.compareByLastSungSongIdAndSinger(key1, key2),
               );
+              List<SongPerformance> removals = [];
               for (var perf in jamblePerformanceList) {
                 //  reject performances that are too old
                 if (perf.lastSung < lastSungLimitMs) {
@@ -2473,6 +2500,7 @@ coerced to reflect the songlist's last modification for that song.
 
                 if (perf.bpm == 0 && perf.song != null) {
                   // print('$perf: bpm: ${perf.song?.beatsPerMinute}');
+                  removals.add(perf);
                   jambleBpmCorrectedPerformances.add(
                     perf.copyWith(bpm: (perf.bpm == 0 && perf.song != null) ? perf.song!.beatsPerMinute : perf.bpm),
                   );
@@ -2480,29 +2508,27 @@ coerced to reflect the songlist's last modification for that song.
                 }
               }
               if (count > 0) {
-                print('   zero Jamble BPM\'s update count: $count');
+                print('');
+                print('corrected performances from Jamble:');
+                print('    jambleBpmCorrectedPerformances:  ${jambleBpmCorrectedPerformances.length}');
+                for (var perf in removals) {
+                  print('        $perf');
+                }
+                jamblePerformanceList.removeAll(removals);
+                jamblePerformanceList.addAll(jambleBpmCorrectedPerformances);
               }
+            }
 
-              //  join the performance lists
-              print('');
-              print('added performances from Jamble:');
-              print('    jambleBpmCorrectedPerformances:  ${jambleBpmCorrectedPerformances.length}');
+            {
+              //  merge the performance lists
               historyLength = _allSongPerformances.allSongPerformanceHistory.length;
-              count = 0;
+              int count = 0;
               int matchCount = 0;
-              for (var jamblePerformance in jambleBpmCorrectedPerformances) {
+              for (var jamblePerformance in jamblePerformanceList) {
                 var matches = _allSongPerformances.allSongPerformanceHistory.where((p) {
                   return p.songIdAsString == jamblePerformance.songIdAsString &&
                       p.singer == jamblePerformance.singer &&
-                      (p.lastSung == jamblePerformance.lastSung
-                          // ||
-                          // //  fixme: the jamble utc dates were double adjusted!
-                          // p.lastSung + 8 * 60 * 60 * 1000 == jamblePerformance.lastSung ||
-                          // p.lastSung + 7 * 60 * 60 * 1000 == jamblePerformance.lastSung
-                          ||
-                          //  fixme: the jamble dates were offset?
-                          p.lastSung + 1 * 60 * 60 * 1000 == jamblePerformance.lastSung ||
-                          p.lastSung + -1 * 60 * 60 * 1000 == jamblePerformance.lastSung);
+                      (p.lastSung == jamblePerformance.lastSung);
                 });
 
                 if (matches.isEmpty) {
@@ -2539,6 +2565,10 @@ coerced to reflect the songlist's last modification for that song.
                       ' vs jamble: ${SongPerformance.yMdHmDateFormat.format(jambleTime)} (${jamblePerformance.lastSung})'
                       ', delta: ${jambleTime.difference(bsteeleTime)}',
                     );
+                  }
+                  if (performance.key != jamblePerformance.key) {
+                    print('performance: $performance');
+                    print('    bsteele key: ${performance.key}, jamble key: ${jamblePerformance.key}');
                   }
                   matchCount++;
                 } else {
@@ -2854,16 +2884,37 @@ coerced to reflect the songlist's last modification for that song.
             );
           }
 
+          // {
+          //   String s = performanceTranspositionsToString(jambleAllPerformances, id: 'jamble');
+          //   File file = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_transpositions.txt');
+          //   file.writeAsStringSync(s, flush: true);
+          // }
+          // {
+          //   String s = performanceTranspositionsToString(original_allSongPerformances, id: 'bsteele');
+          //   assert(original_transposition_string == s);
+          //   File file = File('${Util.homePath()}/$_junkRelativeDirectory/original_transpositions.txt');
+          //   file.writeAsStringSync(s, flush: true);
+          // }
+
           {
-            String s = performanceTranspositionsToString(jambleAllPerformances, id: 'jamble');
-            File file = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_transpositions.txt');
-            file.writeAsStringSync(s, flush: true);
+            //  print diagnostic performance history file
+            var list = SplayTreeSet<SongPerformance>.from(
+              _allSongPerformances.allSongPerformanceHistory,
+              SongPerformance.compareByLastSungSongIdAndSinger,
+            ).toList(growable: false);
+
+            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/updated_performance_history.json');
+            outputFile.writeAsStringSync(_jsonEncoder.convert(list), flush: true);
           }
           {
-            String s = performanceTranspositionsToString(original_allSongPerformances, id: 'bsteele');
-            assert(original_transposition_string == s);
-            File file = File('${Util.homePath()}/$_junkRelativeDirectory/original_transpositions.txt');
-            file.writeAsStringSync(s, flush: true);
+            //  print diagnostic performance history file
+            var list = SplayTreeSet<SongPerformance>.from(
+              jambleAllPerformances.allSongPerformanceHistory,
+              SongPerformance.compareByLastSungSongIdAndSinger,
+            ).toList(growable: false);
+
+            File outputFile = File('${Util.homePath()}/$_junkRelativeDirectory/jamble_performance_history.json');
+            outputFile.writeAsStringSync(_jsonEncoder.convert(list), flush: true);
           }
 
           print('''

@@ -455,6 +455,10 @@ class Pitch implements Comparable<Pitch> {
     return number.compareTo(other.number);
   }
 
+  bool operator <=(Pitch other) {
+    return number <= other.number;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is Pitch && runtimeType == other.runtimeType && _pitchEnum == other._pitchEnum;

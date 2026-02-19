@@ -5351,6 +5351,18 @@ Grid{
       expect(beats, [0, 1, 5, 3, 16, 0, 16, 16, 0, 16][r]);
     }
   });
+
+  test('test bad chord characters', () {
+    RegExp badChordCharacterRegExp = RegExp(r'(\{\d+\}|[(){}])');
+    var s = '({3}F/AC/GBb)';
+    print('s: "$s"');
+    var s2 = s.replaceAll(badChordCharacterRegExp, '');
+    print('s2: "$s2"');
+    s = '(F/AC/GBb)';
+    print('s: "$s"');
+    s2 = s.replaceAll(badChordCharacterRegExp, '');
+    print('s2: "$s2"');
+  });
 }
 
 void _testSongMomentToGrid(Song a, UserDisplayStyle userDisplayStyle) {

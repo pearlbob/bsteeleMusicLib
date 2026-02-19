@@ -725,7 +725,23 @@ class AllSongPerformances {
     for (var songPerformance in _allSongPerformanceHistory.sorted(
       (perf1, perf2) => -perf1.lastSung.compareTo(perf2.lastSung),
     )) {
-      uniqueSongIdAndSinger.add(songPerformance);
+      if (!uniqueSongIdAndSinger.contains(songPerformance)) {
+        //  find the first and last singing of this song by this singer
+        var otherPerformances = _allSongPerformanceHistory.where((p) {
+          return p.song?.songId == songPerformance.song?.songId && p.singer == songPerformance.singer;
+        }).toList();
+        otherPerformances.sort((a, b) => a._lastSung.compareTo(b._lastSung));
+        if (otherPerformances.length > 1) {
+          // print('first: ${otherPerformances.first._lastSung}, last: ${otherPerformances.last._lastSung}');
+          songPerformance = songPerformance.copyWith(
+            firstSung: otherPerformances.first._lastSung,
+            lastSung: otherPerformances.last._lastSung,
+          );
+        }
+        uniqueSongIdAndSinger.add(songPerformance);
+      } else {
+        //  the song/singer has already been added
+      }
     }
     _allSongPerformances.clear();
     _allSongPerformances.addAll(uniqueSongIdAndSinger);
@@ -827,8 +843,14 @@ class AllSongPerformances {
   }
 
   Map<String, dynamic> toJson() => {
-    allSongPerformancesName: _allSongPerformances.toList(growable: false),
-    allSongPerformanceHistoryName: _allSongPerformanceHistory.toList(growable: false),
+    allSongPerformancesName: SplayTreeSet<SongPerformance>.from(
+      _allSongPerformances,
+      SongPerformance.compareByLastSungSongIdAndSinger,
+    ).toList(growable: false),
+    allSongPerformanceHistoryName: SplayTreeSet<SongPerformance>.from(
+      _allSongPerformanceHistory,
+      SongPerformance.compareByLastSungSongIdAndSinger,
+    ).toList(growable: false),
     allSongPerformanceRequestsName: _allSongPerformanceRequests.toList(growable: false),
   };
 
