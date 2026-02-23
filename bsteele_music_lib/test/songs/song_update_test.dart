@@ -133,7 +133,7 @@ void main() {
           title: 'A',
           artist: 'bobby',
           copyright: 'bsteele.com',
-          key: Key.getDefault(),
+          key: MajorKey.getDefault(),
           beatsPerMinute: 106,
           beatsPerBar: 4,
           unitsPerMeasure: 4,

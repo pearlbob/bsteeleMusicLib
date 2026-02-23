@@ -46,7 +46,7 @@ class Scale {
     }
   }
 
-  List<ScaleNote> inKey(Key key) {
+  List<ScaleNote> inKey(MajorKey key) {
     var ret = <ScaleNote>[];
     for (var halfStep in _halfSteps) {
       ret.add(key.getKeyScaleNoteByHalfStep(halfStep));

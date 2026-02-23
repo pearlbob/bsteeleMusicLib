@@ -43,7 +43,7 @@ class ScaleChord implements Comparable<ScaleChord> {
     return ScaleChord(retScaleNote, retChordDescriptor);
   }
 
-  ScaleChord transpose(Key key, int halfSteps) {
+  ScaleChord transpose(MajorKey key, int halfSteps) {
     return ScaleChord(scaleNote.transpose(key, halfSteps), chordDescriptor);
   }
 
@@ -51,7 +51,7 @@ class ScaleChord implements Comparable<ScaleChord> {
 //return new ScaleChord(scaleNote.transpose(key, halfSteps), chordDescriptor);
 //}
 
-  List<ScaleNote> chordNotes(Key key) {
+  List<ScaleNote> chordNotes(MajorKey key) {
     var ret = <ScaleNote>[];
     for (var component in _chordDescriptor.chordComponents) {
       ret.add(scaleNote.transpose(key, component.halfSteps));

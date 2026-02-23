@@ -14,7 +14,7 @@ void main() {
       title: 'A',
       artist: 'bob',
       copyright: 'bsteele.com',
-      key: Key.getDefault(),
+      key: MajorKey.getDefault(),
       beatsPerMinute: 100,
       beatsPerBar: 4,
       unitsPerMeasure: 4,
@@ -27,7 +27,7 @@ void main() {
       title: 'B',
       artist: 'bob',
       copyright: 'bsteele.com',
-      key: Key.G,
+      key: MajorKey.G,
       beatsPerMinute: 120,
       beatsPerBar: 4,
       unitsPerMeasure: 4,
@@ -38,8 +38,8 @@ void main() {
 
     var singer1 = 'bodhi';
     for (var song in [a, b]) {
-      for (var key in Key.values) {
-        if (key == Key.Fs) {
+      for (var key in MajorKey.values) {
+        if (key == MajorKey.Fs) {
           continue; //  skip the duplicate
         }
         SongPerformance songPerformance = SongPerformance(song.songId.toString(), singer1, key: key);
@@ -54,8 +54,8 @@ void main() {
     const int lastSung = 1639852279322;
     allSongPerformances.loadSongs(songs);
     for (var song in [a, b]) {
-      for (var key in Key.values.toList().reversed) {
-        if (key == Key.Fs) {
+      for (var key in MajorKey.values.toList().reversed) {
+        if (key == MajorKey.Fs) {
           continue; //  skip the duplicate
         }
         SongPerformance songPerformance = SongPerformance.fromSong(song, singer1, key: key, lastSung: lastSung);
@@ -71,7 +71,7 @@ void main() {
       expect(allSongPerformances.bySinger(singer1).length, 2);
       var singer2 = 'vicki';
       expect(allSongPerformances.bySinger(singer2).length, 0);
-      SongPerformance songPerformance = SongPerformance.fromSong(a, singer2, key: Key.A, bpm: 120, lastSung: lastSung);
+      SongPerformance songPerformance = SongPerformance.fromSong(a, singer2, key: MajorKey.A, bpm: 120, lastSung: lastSung);
       expect(
         songPerformance.toString(),
         'SongPerformance{song: A by bob, _songId: Song_A_by_bob,'
@@ -80,7 +80,7 @@ void main() {
 
       expect(songPerformance.songIdAsString, 'Song_A_by_bob');
       expect(songPerformance.singer, 'vicki');
-      expect(songPerformance.key, Key.A);
+      expect(songPerformance.key, MajorKey.A);
       expect(songPerformance.bpm, 120);
       expect(songPerformance.lastSung, lastSung);
       logger.d('songPerformance: $songPerformance');
@@ -148,7 +148,7 @@ void main() {
         }).toString(),
         '(A by bob in G♭)',
       );
-      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: Key.G));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: MajorKey.G));
       expect(
         allSongPerformances.bySinger(singer1).map((e) {
           return '${e.song?.title} by ${e.song?.artist} in ${e.key}';
@@ -164,8 +164,8 @@ void main() {
       allSongPerformances.removeSinger(singer2);
       expect(allSongPerformances.length, 0);
 
-      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: Key.G));
-      allSongPerformances.addSongPerformance(SongPerformance('Song_A_by_bob', singer1, key: Key.F));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_B_by_bob', singer1, key: MajorKey.G));
+      allSongPerformances.addSongPerformance(SongPerformance('Song_A_by_bob', singer1, key: MajorKey.F));
       expect(allSongPerformances.length, 2);
       allSongPerformances.clear();
       expect(allSongPerformances.length, 0);
@@ -181,7 +181,7 @@ void main() {
           title: 'A',
           artist: 'bob',
           copyright: 'bsteele.com',
-          key: Key.getDefault(),
+          key: MajorKey.getDefault(),
           beatsPerMinute: 100,
           beatsPerBar: 4,
           unitsPerMeasure: 4,
@@ -191,11 +191,11 @@ void main() {
         );
 
         var singer1 = 'bodhi';
-        SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: Key.A);
+        SongPerformance songPerformance = SongPerformance.fromSong(a, singer1, key: MajorKey.A);
         logger.d('$songPerformance');
         expect(songPerformance.lastSungDateString, matches(r'^\d{1,2}/\d{1,2}/202\d$'));
 
-        var next = SongPerformance.fromSong(a, singer1, key: Key.A);
+        var next = SongPerformance.fromSong(a, singer1, key: MajorKey.A);
         await Future.delayed(const Duration(seconds: 2));
         logger.i('songPerformance: $songPerformance');
         logger.i('next: $next');
@@ -261,7 +261,7 @@ void main() {
       title: 'A',
       artist: 'bob',
       copyright: 'bsteele.com',
-      key: Key.getDefault(),
+      key: MajorKey.getDefault(),
       beatsPerMinute: 100,
       beatsPerBar: 4,
       unitsPerMeasure: 4,
@@ -278,7 +278,7 @@ void main() {
         title: 'All I Have to Do Is Dream',
         artist: 'Everly Brothers',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: 4,
         unitsPerMeasure: 4,
@@ -290,7 +290,7 @@ void main() {
         title: 'All You Need is Love',
         artist: 'The Beatles',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: 4,
         unitsPerMeasure: 4,
@@ -302,7 +302,7 @@ void main() {
         title: 'Back in the USSR',
         artist: 'The Beatles',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: 4,
         unitsPerMeasure: 4,
@@ -314,7 +314,7 @@ void main() {
         title: 'Don\'t Let Me Down',
         artist: 'The Beatles',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: 4,
         unitsPerMeasure: 4,
@@ -326,7 +326,7 @@ void main() {
         title: 'Angie',
         artist: 'The Rolling Stones',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: 4,
         unitsPerMeasure: 4,
@@ -516,7 +516,7 @@ void main() {
         title: 'A',
         artist: 'bob',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: 4,
         unitsPerMeasure: 4,
@@ -526,21 +526,21 @@ void main() {
       );
 
       var singer1 = 'bodhi';
-      var performance = SongPerformance.fromSong(a, singer1, key: Key.A);
+      var performance = SongPerformance.fromSong(a, singer1, key: MajorKey.A);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       await Future.delayed(const Duration(milliseconds: 2));
       expect(allSongPerformances.updateSongPerformance(performance), false);
-      performance = SongPerformance.fromSong(a, singer1, key: Key.A);
+      performance = SongPerformance.fromSong(a, singer1, key: MajorKey.A);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       await Future.delayed(const Duration(milliseconds: 2));
       expect(allSongPerformances.updateSongPerformance(performance), false);
-      performance = SongPerformance.fromSong(a, singer1, key: Key.B);
+      performance = SongPerformance.fromSong(a, singer1, key: MajorKey.B);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       await Future.delayed(const Duration(milliseconds: 2));
-      performance = SongPerformance.fromSong(a, singer1, key: Key.B);
+      performance = SongPerformance.fromSong(a, singer1, key: MajorKey.B);
       expect(allSongPerformances.updateSongPerformance(performance), true);
       expect(allSongPerformances.updateSongPerformance(performance), false);
       expect(allSongPerformances.updateSongPerformance(performance), false);
@@ -799,10 +799,10 @@ void main() {
     var singer = 'Bob S.';
     var lastSung = DateTime.now().millisecondsSinceEpoch;
 
-    for (var keySung in Key.values) {
+    for (var keySung in MajorKey.values) {
       logger.i('keySung: ${keySung.toString()}');
 
-      for (var key in Key.values) {
+      for (var key in MajorKey.values) {
         var allSongPerformances = AllSongPerformances.test();
         var a = Song(
           title: 'ive go the blanks',
@@ -849,7 +849,7 @@ void main() {
         title: 'ive go the blanks',
         artist: 'bob',
         copyright: '2022 bsteele.com',
-        key: Key.C,
+        key: MajorKey.C,
         beatsPerMinute: bpm,
         beatsPerBar: beatsPerBar,
         unitsPerMeasure: 4,
@@ -858,7 +858,7 @@ void main() {
         rawLyrics: 'i: (instrumental)\nv: line 1\no:\n',
       );
 
-      var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+      var performance1 = SongPerformance(a.songId.toString(), singer, key: MajorKey.D, bpm: bpm, lastSung: lastSung);
       allSongPerformances.addSongPerformance(performance1);
       allSongPerformances.loadSongs([a]);
       var performanceA = allSongPerformances.findBySingerSongId(songIdAsString: a.songId.toString(), singer: singer);
@@ -869,7 +869,7 @@ void main() {
         title: 'Ive Got The Blanks',
         artist: 'bob',
         copyright: '2022 bsteele.com',
-        key: Key.C,
+        key: MajorKey.C,
         beatsPerMinute: bpm,
         beatsPerBar: beatsPerBar,
         unitsPerMeasure: 4,
@@ -882,7 +882,7 @@ void main() {
       var performance2 = SongPerformance(
         b.songId.toString(),
         singer,
-        key: Key.D,
+        key: MajorKey.D,
         bpm: bpm,
         lastSung: lastSung + Duration.millisecondsPerDay,
       );
@@ -922,7 +922,7 @@ void main() {
         title: 'This is not the same song!',
         artist: 'bob',
         copyright: '2022 bsteele.com',
-        key: Key.C,
+        key: MajorKey.C,
         beatsPerMinute: bpm,
         beatsPerBar: beatsPerBar,
         unitsPerMeasure: 4,
@@ -931,7 +931,7 @@ void main() {
         rawLyrics: 'i: (instrumental)\nv: line 1\no:\n',
       );
 
-      var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+      var performance1 = SongPerformance(a.songId.toString(), singer, key: MajorKey.D, bpm: bpm, lastSung: lastSung);
       allSongPerformances.addSongPerformance(performance1);
       allSongPerformances.loadSongs([a]);
       var performanceA = allSongPerformances.findBySingerSongId(songIdAsString: a.songId.toString(), singer: singer);
@@ -942,7 +942,7 @@ void main() {
         title: 'Ive Got The Blanks',
         artist: 'bob',
         copyright: '2022 bsteele.com',
-        key: Key.C,
+        key: MajorKey.C,
         beatsPerMinute: bpm,
         beatsPerBar: beatsPerBar,
         unitsPerMeasure: 4,
@@ -954,7 +954,7 @@ void main() {
       var performance2 = SongPerformance(
         b.songId.toString(),
         singer,
-        key: Key.D,
+        key: MajorKey.D,
         bpm: bpm,
         lastSung: lastSung + Duration.millisecondsPerDay,
         song: b,
@@ -996,7 +996,7 @@ void main() {
       title: 'ive got the blanks',
       artist: 'bob',
       copyright: '2022 bsteele.com',
-      key: Key.C,
+      key: MajorKey.C,
       beatsPerMinute: bpm,
       beatsPerBar: beatsPerBar,
       unitsPerMeasure: 4,
@@ -1005,7 +1005,7 @@ void main() {
       rawLyrics: 'i: (instrumental)\nv: line 1\no:\n',
     );
 
-    var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+    var performance1 = SongPerformance(a.songId.toString(), singer, key: MajorKey.D, bpm: bpm, lastSung: lastSung);
     logger.i('performedSong: "${performance1.performedSong.title}"');
     expect(performance1.performedSong.title, 'Ive Got The Blanks by Bob');
 
@@ -1013,7 +1013,7 @@ void main() {
       title: 'Ive Got The Blanks',
       artist: 'bob',
       copyright: '2022 bsteele.com',
-      key: Key.C,
+      key: MajorKey.C,
       beatsPerMinute: bpm,
       beatsPerBar: beatsPerBar,
       unitsPerMeasure: 4,
@@ -1022,7 +1022,7 @@ void main() {
       rawLyrics: 'i: (instrumental)\nv: line 1\no:\n',
     );
 
-    var performance2 = SongPerformance(b.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung + 30000);
+    var performance2 = SongPerformance(b.songId.toString(), singer, key: MajorKey.D, bpm: bpm, lastSung: lastSung + 30000);
     logger.i('performedSong: "${performance2.performedSong.title}"');
     expect(performance1.performedSong.title, 'Ive Got The Blanks by Bob');
   });
@@ -1040,7 +1040,7 @@ void main() {
       title: 'ive got the blanks',
       artist: 'bob',
       copyright: '2022 bsteele.com',
-      key: Key.C,
+      key: MajorKey.C,
       beatsPerMinute: bpm,
       beatsPerBar: beatsPerBar,
       unitsPerMeasure: 4,
@@ -1051,7 +1051,7 @@ void main() {
 
     var allSongPerformances = AllSongPerformances.test();
 
-    var performance1 = SongPerformance(a.songId.toString(), singer, key: Key.D, bpm: bpm, lastSung: lastSung);
+    var performance1 = SongPerformance(a.songId.toString(), singer, key: MajorKey.D, bpm: bpm, lastSung: lastSung);
     logger.i('performedSong1: $performance1');
     expect(performance1.firstSung, lastSung);
     expect(performance1.lastSung, lastSung);

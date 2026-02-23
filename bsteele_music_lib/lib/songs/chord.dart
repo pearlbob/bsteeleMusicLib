@@ -86,7 +86,7 @@ class Chord implements Comparable<Chord> {
   //  this(scaleChord, beats, beatsPerBar, null, ChordAnticipationOrDelay.none, true);
   //}
 
-  Chord transpose(Key key, int halfSteps) {
+  Chord transpose(MajorKey key, int halfSteps) {
     return Chord(
       _scaleChord.transpose(key, halfSteps),
       beats,

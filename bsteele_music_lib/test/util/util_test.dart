@@ -48,9 +48,9 @@ void main() {
   });
 
   test('test util enum name', () {
-    expect(KeyEnum.F.name, 'F');
-    expect(Util.enumFromString('G', KeyEnum.values), KeyEnum.G);
-    expect(Util.enumFromString('Gkk', KeyEnum.values), null);
+    expect(MajorKeyEnum.F.name, 'F');
+    expect(Util.enumFromString('G', MajorKeyEnum.values), MajorKeyEnum.G);
+    expect(Util.enumFromString('Gkk', MajorKeyEnum.values), null);
   });
 
   test('test util readableJson()', () {

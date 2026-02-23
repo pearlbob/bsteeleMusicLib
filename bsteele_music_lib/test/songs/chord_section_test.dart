@@ -944,18 +944,18 @@ void main() {
 
     chordSection = ChordSection.parseString('I: A B C D, D C G G', beatsPerBar);
     logger.i(chordSection.phrasesToMarkup());
-    expect(chordSection.transpose(Key.C, 0), 'A B C D, D C G G ');
-    expect(chordSection.transpose(Key.C, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
-    expect(chordSection.transpose(Key.C, 2), 'B Db D E, E D A A ');
-    expect(chordSection.transpose(Key.F, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
-    expect(chordSection.transpose(Key.G, 1), 'A# C C# D#, D# C# G# G# ');
+    expect(chordSection.transpose(MajorKey.C, 0), 'A B C D, D C G G ');
+    expect(chordSection.transpose(MajorKey.C, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
+    expect(chordSection.transpose(MajorKey.C, 2), 'B Db D E, E D A A ');
+    expect(chordSection.transpose(MajorKey.F, 1), 'Bb C Db Eb, Eb Db Ab Ab ');
+    expect(chordSection.transpose(MajorKey.G, 1), 'A# C C# D#, D# C# G# G# ');
 
     chordSection = ChordSection.parseString('I: A B C X x2, D C G G x3', beatsPerBar);
     logger.i(chordSection.phrasesToMarkup());
-    expect(chordSection.transpose(Key.C, 0), '[A B C X ] x2 [D C G G ] x3 ');
-    expect(chordSection.transpose(Key.C, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
-    expect(chordSection.transpose(Key.C, 2), '[B Db D X ] x2 [E D A A ] x3 ');
-    expect(chordSection.transpose(Key.F, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
-    expect(chordSection.transpose(Key.G, 1), '[A# C C# X ] x2 [D# C# G# G# ] x3 ');
+    expect(chordSection.transpose(MajorKey.C, 0), '[A B C X ] x2 [D C G G ] x3 ');
+    expect(chordSection.transpose(MajorKey.C, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
+    expect(chordSection.transpose(MajorKey.C, 2), '[B Db D X ] x2 [E D A A ] x3 ');
+    expect(chordSection.transpose(MajorKey.F, 1), '[Bb C Db X ] x2 [Eb Db Ab Ab ] x3 ');
+    expect(chordSection.transpose(MajorKey.G, 1), '[A# C C# X ] x2 [D# C# G# G# ] x3 ');
   });
 }

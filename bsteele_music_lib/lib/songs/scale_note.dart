@@ -50,7 +50,7 @@ enum ScaleNote implements Comparable<ScaleNote> {
   /// If the note is flat, return its matching sharp equivalent.
   ScaleNote get alias => (isSharp ? asFlat() : (isFlat ? asSharp() : this));
 
-  NashvilleNote getNashvilleNote(Key key) => NashvilleNote.byHalfStep(halfStep - key.halfStep);
+  NashvilleNote getNashvilleNote(MajorKey key) => NashvilleNote.byHalfStep(halfStep - key.halfStep);
 
   @override
   String toString() {
@@ -193,14 +193,14 @@ enum ScaleNote implements Comparable<ScaleNote> {
   }
 
   /// Transpose this key to the given key with the given steps offset.
-  ScaleNote transpose(Key key, int steps) {
+  ScaleNote transpose(MajorKey key, int steps) {
     if (this == .X) {
       return .X;
     }
     return key.getScaleNoteEnum3ByHalfStep(halfStep + steps);
   }
 
-  NashvilleNote nashvilleNote(Key key) {
+  NashvilleNote nashvilleNote(MajorKey key) {
     return NashvilleNote.byHalfStep(halfStep - key.halfStep);
   }
 

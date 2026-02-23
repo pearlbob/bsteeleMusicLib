@@ -20,7 +20,7 @@ Chord chordByScaleChord(final ScaleChord scaleChord) {
   return Chord(scaleChord, 4, 4, null, ChordAnticipationOrDelay.defaultValue, false);
 }
 
-void testChordTranspose(Key key) {
+void testChordTranspose(MajorKey key) {
   int count = 0;
   for (final sn in ScaleNote.values) {
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
@@ -163,7 +163,7 @@ void main() {
 
     test('testSimpleChordTranspose testing', () {
       int count = 0;
-      for (Key key in <Key>[Key.C, Key.G]) {
+      for (MajorKey key in <MajorKey>[MajorKey.C, MajorKey.G]) {
         for (final sn in ScaleNote.values) {
           for (int halfSteps = 0; halfSteps < 12; halfSteps++) {
             var snHalfSteps = sn.transpose(key, halfSteps);
@@ -181,7 +181,7 @@ void main() {
 
     test('testChordTranspose testing', () {
       //  generate the code
-      for (KeyEnum key in KeyEnum.values) {
+      for (MajorKeyEnum key in MajorKeyEnum.values) {
         logger.t('''
   KeyEnum keyEnum = KeyEnum.$key;
 

@@ -7,7 +7,7 @@ import '../chord_test.dart';
 void main() {
   Logger.level = Level.warning;
 
-  Key key = Key.Db;
+  MajorKey key = MajorKey.Db;
 
   group('testChordTranspose', () {
     test('testChordTranspose $key', () {

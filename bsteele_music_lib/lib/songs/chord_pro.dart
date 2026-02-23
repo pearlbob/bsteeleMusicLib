@@ -225,7 +225,7 @@ class ChordPro {
         case 'year':
           break;
         case 'key':
-          _song.key = music_key.Key.parseString(value) ?? music_key.Key.getDefault();
+          _song.key = music_key.MajorKey.parseString(value) ?? music_key.MajorKey.getDefault();
           break;
         case 'time':
           _song.timeSignature = TimeSignature.parse(value);

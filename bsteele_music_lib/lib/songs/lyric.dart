@@ -39,12 +39,12 @@ class Lyric extends MeasureNode {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     return line;
   }
 
   @override
-  MeasureNode transposeToKey(Key key) {
+  MeasureNode transposeToKey(MajorKey key) {
     return this;
   }
 
@@ -54,7 +54,7 @@ class Lyric extends MeasureNode {
   }
 
   @override
-  String toNashville(Key key) {
+  String toNashville(MajorKey key) {
     return ''; //  no lyrics in Nashville!
   }
 

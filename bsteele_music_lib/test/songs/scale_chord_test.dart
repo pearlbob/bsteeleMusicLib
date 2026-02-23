@@ -18,7 +18,7 @@ String chordComponentsToString(Set<ChordComponent> chordComponents) {
   return sb.toString();
 }
 
-String chordComponentScaleNotesToString(Key key, ScaleChord scaleChord) {
+String chordComponentScaleNotesToString(MajorKey key, ScaleChord scaleChord) {
   StringBuffer sb = StringBuffer();
   Set<ChordComponent> chordComponents = scaleChord.getChordComponents();
   for (ChordComponent chordComponent in chordComponents) {
@@ -83,7 +83,7 @@ void main() {
 
         List<ScaleChord> scaleChords = [];
         scaleChords.add(builtScaleChord);
-        Key key = Key.guessKey(scaleChords);
+        MajorKey key = MajorKey.guessKey(scaleChords);
 
         sb.write(
             '<tr><td>$builtScaleChord</td><td>${chordComponentsToString(builtScaleChord.getChordComponents())}</td><td>${key.getKeyScaleNote()}</td><td>${chordComponentScaleNotesToString(key, builtScaleChord)}</td></tr>\n');
@@ -109,7 +109,7 @@ void main() {
   });
 
   test('test ScaleChord scale notes', () {
-    Key key = Key.C;
+    MajorKey key = MajorKey.C;
 
     expect(ScaleChord(.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
     expect(ScaleChord(.C, ChordDescriptor.minor).chordNotes(key).toString(), '[C, E♭, G]');
@@ -118,7 +118,7 @@ void main() {
     expect(ScaleChord(.G, ChordDescriptor.dominant9).chordNotes(key).toString(), '[G, B, D, F, A]');
     expect(ScaleChord(.G, ChordDescriptor.minor7).chordNotes(key).toString(), '[G, B♭, D, F]');
 
-    key = Key.E; //  4 #
+    key = MajorKey.E; //  4 #
     expect(ScaleChord(.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
     expect(ScaleChord(ScaleNote.C, ChordDescriptor.minor).chordNotes(key).toString(), '[C, D♯, G]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');
@@ -126,7 +126,7 @@ void main() {
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.dominant9).chordNotes(key).toString(), '[G, B, D, F, A]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.minor7).chordNotes(key).toString(), '[G, A♯, D, F]');
 
-    key = Key.Ab; //  4 b
+    key = MajorKey.Ab; //  4 b
     expect(ScaleChord(ScaleNote.C, ChordDescriptor.major).chordNotes(key).toString(), '[C, E, G]');
     expect(ScaleChord(ScaleNote.C, ChordDescriptor.minor).chordNotes(key).toString(), '[C, E♭, G]');
     expect(ScaleChord(ScaleNote.G, ChordDescriptor.major).chordNotes(key).toString(), '[G, B, D]');

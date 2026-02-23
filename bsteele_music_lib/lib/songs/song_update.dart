@@ -54,7 +54,7 @@ class SongUpdate {
     int? beat,
     int? beatsPerMeasure,
     int? currentBeatsPerMinute,
-    Key? currentKey,
+    MajorKey? currentKey,
   }) : state = state ?? .idle,
        user = user ?? 'unknown',
        singer = singer ?? unknownSinger,
@@ -63,7 +63,7 @@ class SongUpdate {
        beat = beat ?? 0,
        beatsPerMeasure = beatsPerMeasure ?? song?.beatsPerBar ?? 4,
        currentBeatsPerMinute = currentBeatsPerMinute ?? defaultBeatsPerMinute,
-       currentKey = currentKey ?? Key.getDefault() {
+       currentKey = currentKey ?? MajorKey.getDefault() {
     //  notice assignSong() is not used to keep currentKey and currentBeatsPerMinute correct
     //  that is, the update versions
     this.song = song ?? Song.createEmptySong(currentBeatsPerMinute: song?.beatsPerMinute, currentKey: song?.key);
@@ -79,7 +79,7 @@ class SongUpdate {
     int? beat,
     int? beatsPerMeasure,
     int? currentBeatsPerMinute,
-    Key? currentKey,
+    MajorKey? currentKey,
   }) {
     SongUpdate ret = SongUpdate(
       song: song ?? this.song,
@@ -194,11 +194,11 @@ class SongUpdate {
     this.currentBeatsPerMinute = currentBeatsPerMinute;
   }
 
-  Key getCurrentKey() {
+  MajorKey getCurrentKey() {
     return currentKey;
   }
 
-  void setCurrentKey(Key currentKey) {
+  void setCurrentKey(MajorKey currentKey) {
     this.currentKey = currentKey;
   }
 
@@ -290,7 +290,7 @@ class SongUpdate {
             state = SongUpdateState.fromName(jv);
             break;
           case 'currentKey':
-            setCurrentKey(Key.parseString(jv.toString()) ?? Key.getDefault());
+            setCurrentKey(MajorKey.parseString(jv.toString()) ?? MajorKey.getDefault());
             break;
           case 'song':
             setSong(Song.fromJson(jv));
@@ -406,5 +406,5 @@ class SongUpdate {
   int beatsPerMeasure; //  fixme: this should be removed
   int currentBeatsPerMinute;
   static const defaultBeatsPerMinute = 120;
-  Key currentKey;
+  MajorKey currentKey;
 }

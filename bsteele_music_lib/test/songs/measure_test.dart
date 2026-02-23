@@ -500,7 +500,7 @@ void main() {
   test('testTransposeToKey', () {
     Measure? m;
     //  fixme: test multi chord measures
-    for (Key key in Key.values) {
+    for (MajorKey key in MajorKey.values) {
       logger.i('key: $key');
       for (final scaleNote in ScaleNote.values) {
         if (scaleNote.isSilent) continue;

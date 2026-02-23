@@ -2063,7 +2063,7 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-jamble':
-          String original_transposition_string = '';
+          // String original_transposition_string = '';
           print('');
 
           print('${DateTime.now()}');
@@ -3260,9 +3260,9 @@ coerced to reflect the songlist's last modification for that song.
               weights[MajorDiatonic.IV.index] = 2;
               weights[MajorDiatonic.V.index] = 2;
 
-              Key bestKey = Key.A;
+              MajorKey bestKey = MajorKey.A;
               int max = 0;
-              for (var key in Key.keysByHalfStep()) {
+              for (var key in MajorKey.keysByHalfStep()) {
                 //print('$key: ${notes[key.halfStep]} ${key.getMajorScaleChord()}');
                 int score = 0;
                 for (int degree = 0; degree < MusicConstants.notesPerScale; degree++) {

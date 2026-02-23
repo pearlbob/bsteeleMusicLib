@@ -82,7 +82,7 @@ void main() {
         title: 'A',
         artist: 'bob',
         copyright: 'bsteele.com',
-        key: Key.getDefault(),
+        key: MajorKey.getDefault(),
         beatsPerMinute: 100,
         beatsPerBar: beatsPerBar,
         unitsPerMeasure: 4,

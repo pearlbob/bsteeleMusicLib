@@ -11,10 +11,10 @@ const int _maxCycle = 64;
 class NinJam {
   NinJam.empty()
       : bpm = 0,
-        key = Key.getDefault(),
+        key = MajorKey.getDefault(),
         keyOffset = 0;
 
-  NinJam(Song song, {Key? key, int? keyOffset})
+  NinJam(Song song, {MajorKey? key, int? keyOffset})
       : bpm = song.beatsPerMinute,
         key = key ?? song.key,
         keyOffset = keyOffset ?? (song.key.halfStep - (key ?? song.key).halfStep) {
@@ -107,7 +107,7 @@ class NinJam {
 
   final int bpm;
 
-  final Key key;
+  final MajorKey key;
   final int keyOffset;
 
   final List<Measure> _measures = [];

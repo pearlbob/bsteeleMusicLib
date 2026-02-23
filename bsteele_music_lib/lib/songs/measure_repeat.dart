@@ -259,12 +259,12 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     return '[${super.transpose(key, halfSteps)}] x${repeats.toString()} ';
   }
 
   @override
-  MeasureNode transposeToKey(Key key) {
+  MeasureNode transposeToKey(MajorKey key) {
     List<Measure> newMeasures = <Measure>[];
     for (Measure measure in measures) {
       newMeasures.add(measure.transposeToKey(key) as Measure);
@@ -439,7 +439,7 @@ class MeasureRepeat extends Phrase {
   }
 
   @override
-  String toNashville(Key key) {
+  String toNashville(MajorKey key) {
     StringBuffer sb = StringBuffer('\n');
     for (Measure measure in measures) {
       sb.write(measure.toNashville(key));

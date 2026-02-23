@@ -12,7 +12,7 @@ void main() {
   Logger.level = Level.info;
 
   test('nashville Chord Number details', () {
-    var key = Key.C;
+    var key = MajorKey.C;
     for (var halfStep = 0; halfStep <= MusicConstants.halfStepsPerOctave; halfStep++) {
       var scaleNote = key.getKeyScaleNoteByHalfStep(halfStep);
       logger.i('${halfStep + 1}: $scaleNote  ${scaleNote.getNashvilleNote(key)}');
@@ -89,7 +89,7 @@ void main() {
           title: 'a simple song',
           artist: 'bob',
           copyright: 'bob',
-          key: music_key.Key.get(music_key.KeyEnum.G),
+          key: music_key.MajorKey.get(music_key.MajorKeyEnum.G),
           beatsPerMinute: bpm,
           beatsPerBar: beatsPerBar,
           unitsPerMeasure: 4,

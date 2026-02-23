@@ -37,19 +37,19 @@ class SongPerformance implements Comparable<SongPerformance> {
   SongPerformance(
     this._songIdAsString,
     final String singer, {
-    Key? key,
+    MajorKey? key,
     int? bpm,
     int? firstSung,
     int? lastSung,
     this.song,
   }) : _lowerCaseSongIdAsString = _songIdAsString.toLowerCase(),
        _singer = _cleanPerformer(singer),
-       key = key ?? Key.getDefault(),
+       key = key ?? MajorKey.getDefault(),
        _bpm = bpm ?? MusicConstants.defaultBpm,
        _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
        _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song this.song, final String singer, {Key? key, int? bpm, int? firstSung, int? lastSung})
+  SongPerformance.fromSong(Song this.song, final String singer, {MajorKey? key, int? bpm, int? firstSung, int? lastSung})
     : _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
       _singer = _cleanPerformer(singer),
       _songIdAsString = song.songId.toString(),
@@ -64,7 +64,7 @@ class SongPerformance implements Comparable<SongPerformance> {
     final String? singer,
     int? firstSung,
     int? lastSung,
-    Key? key,
+    MajorKey? key,
     int? bpm,
   }) {
     var id = songId?.songIdAsString ?? song?.songId.toString() ?? _songIdAsString;
@@ -165,10 +165,10 @@ class SongPerformance implements Comparable<SongPerformance> {
       _lowerCaseSongIdAsString = SongId.correctSongId(json['songId']).toLowerCase(),
       _singer = _cleanPerformer(json['singer']),
       key = json['key'] == null || (json['key'] is String && (json['key'] as String).isEmpty)
-          ? Key.getDefault()
+          ? MajorKey.getDefault()
           : json['key'] is int
-          ? Key.getKeyByHalfStep(json['key'])
-          : Key.fromMarkup(json['key']),
+          ? MajorKey.getKeyByHalfStep(json['key'])
+          : MajorKey.fromMarkup(json['key']),
       _bpm = json['bpm'] ?? MusicConstants.defaultBpm,
       song = null,
       _lastSung = json['lastSung'] ?? 0 {
@@ -238,7 +238,7 @@ class SongPerformance implements Comparable<SongPerformance> {
   String get singer => _singer;
   final String _singer;
 
-  final Key key;
+  final MajorKey key;
 
   int get bpm => _bpm;
   final int _bpm;

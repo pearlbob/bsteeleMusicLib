@@ -134,12 +134,12 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     return toString();
   }
 
   @override
-  MeasureNode transposeToKey(Key key) {
+  MeasureNode transposeToKey(MajorKey key) {
     return this;
   }
 
@@ -149,7 +149,7 @@ class LyricSection extends MeasureNode implements Comparable<LyricSection> {
   }
 
   @override
-  String toNashville(Key key) {
+  String toNashville(MajorKey key) {
     return ''; //  no lyrics in Nashville!
   }
 

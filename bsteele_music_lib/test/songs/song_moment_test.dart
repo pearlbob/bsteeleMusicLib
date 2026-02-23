@@ -16,7 +16,7 @@ void main() {
           title: 'ive go the blanks',
           artist: 'bob',
           copyright: 'bob',
-          key: music_key.Key.get(music_key.KeyEnum.C),
+          key: music_key.MajorKey.get(music_key.MajorKeyEnum.C),
           beatsPerMinute: bpm,
           beatsPerBar: beatsPerBar,
           unitsPerMeasure: 4,

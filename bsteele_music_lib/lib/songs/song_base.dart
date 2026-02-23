@@ -85,7 +85,7 @@ class SongBase {
     String artist = 'unknown',
     String? coverArtist,
     String copyright = 'unknown',
-    Key? key,
+    MajorKey? key,
     int beatsPerMinute = MusicConstants.defaultBpm,
     int beatsPerBar = 4,
     int unitsPerMeasure = 4,
@@ -98,7 +98,7 @@ class SongBase {
     this.coverArtist = coverArtist ?? '';
     setSongId(title, artist, this.coverArtist);
     this.copyright = copyright;
-    this.key = key ?? Key.getDefault();
+    this.key = key ?? MajorKey.getDefault();
     setBeatsPerMinute(beatsPerMinute);
     timeSignature = TimeSignature(beatsPerBar, unitsPerMeasure);
     this.chords = chords;
@@ -449,7 +449,7 @@ class SongBase {
     }
   }
 
-  String songMomentMeasure(int momentNumber, Key key, int halfStepOffset) {
+  String songMomentMeasure(int momentNumber, MajorKey key, int halfStepOffset) {
     _computeSongMoments();
     if (momentNumber < 0 || _songMoments.isEmpty || momentNumber >= _songMoments.length) {
       return '';
@@ -457,7 +457,7 @@ class SongBase {
     return _songMoments[momentNumber].measure.transpose(key, halfStepOffset);
   }
 
-  String songNextMomentMeasure(int momentNumber, Key key, int halfStepOffset) {
+  String songNextMomentMeasure(int momentNumber, MajorKey key, int halfStepOffset) {
     _computeSongMoments();
     //  assure there is a next moment
     if (momentNumber < -1 ||
@@ -2596,7 +2596,7 @@ class SongBase {
 
   void guessTheKey() {
     //  fixme: key guess based on chords section or lyrics?
-    key = Key.guessKey(findScaleChordsUsed().keys);
+    key = MajorKey.guessKey(findScaleChordsUsed().keys);
   }
 
   HashMap<ScaleChord, int> findScaleChordsUsed() {
@@ -3000,7 +3000,7 @@ class SongBase {
     String? title,
     String? artist,
     String? copyright,
-    Key? key,
+    MajorKey? key,
     String? bpmEntry,
     String? beatsPerBarEntry,
     String? unitsPerMeasureEntry,
@@ -3020,7 +3020,7 @@ class SongBase {
       throw 'no copyright given!';
     }
 
-    key ??= Key.C; //  punt on an error
+    key ??= MajorKey.C; //  punt on an error
 
     if (bpmEntry == null || bpmEntry.isEmpty) {
       throw 'no BPM given!';
@@ -4470,7 +4470,7 @@ class SongBase {
       artist,
       coverArtist,
       copyright,
-      key.keyEnum,
+      key.majorKeyEnum,
       beatsPerMinute,
       timeSignature,
       _getChords(),
@@ -4548,15 +4548,15 @@ class SongBase {
 
   String _copyright = 'Unknown';
 
-  Key get key => _key;
+  MajorKey get key => _key;
 
-  set key(Key k) {
+  set key(MajorKey k) {
     if (_key != k) {
       _key = k;
     }
   }
 
-  Key _key = Key.C; //  default
+  MajorKey _key = MajorKey.C; //  default
 
   Mode mode = Mode.ionian; //  default
 

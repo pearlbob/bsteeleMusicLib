@@ -51,7 +51,7 @@ void main() {
       title: 'the song',
       artist: 'bob',
       copyright: '2023 bob',
-      key: Key.C,
+      key: MajorKey.C,
       beatsPerMinute: 105,
       beatsPerBar: 4,
       unitsPerMeasure: 4,

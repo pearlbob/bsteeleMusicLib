@@ -160,7 +160,7 @@ class Phrase extends MeasureNode {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     StringBuffer sb = StringBuffer();
     for (Measure measure in _measures) {
       sb.write(measure.transpose(key, halfSteps));
@@ -170,7 +170,7 @@ class Phrase extends MeasureNode {
   }
 
   @override
-  String toNashville(Key key) {
+  String toNashville(MajorKey key) {
     StringBuffer sb = StringBuffer();
     for (Measure measure in _measures) {
       sb.write(measure.toNashville(key));
@@ -180,7 +180,7 @@ class Phrase extends MeasureNode {
   }
 
   @override
-  MeasureNode transposeToKey(Key key) {
+  MeasureNode transposeToKey(MajorKey key) {
     List<Measure> newMeasures = <Measure>[];
     for (Measure measure in _measures) {
       newMeasures.add(measure.transposeToKey(key) as Measure);

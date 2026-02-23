@@ -5,7 +5,6 @@ import '../app_logger.dart';
 import '../util/util.dart';
 import 'chord_section_location.dart';
 import 'key.dart';
-import 'mode.dart';
 import 'song_base.dart';
 import 'time_signature.dart';
 
@@ -35,7 +34,7 @@ class Song extends SongBase implements Comparable<Song> {
     required super.artist,
     String? coverArtist,
     required super.copyright,
-    required Key super.key,
+    required MajorKey super.key,
     required super.beatsPerMinute,
     required super.beatsPerBar, //  beats per bar, i.e. timeSignature numerator
     required super.unitsPerMeasure,
@@ -45,13 +44,13 @@ class Song extends SongBase implements Comparable<Song> {
   }) : super(coverArtist: coverArtist ?? '', user: user ?? defaultUser);
 
   /// Create a minimal song to be used internally as a place holder.
-  static Song createEmptySong({int? currentBeatsPerMinute, Key? currentKey}) {
+  static Song createEmptySong({int? currentBeatsPerMinute, MajorKey? currentKey}) {
     //  note: this is not a valid song!
     return Song(
       title: '',
       artist: '',
       copyright: '',
-      key: currentKey ?? Key.getDefault(),
+      key: currentKey ?? MajorKey.getDefault(),
       beatsPerMinute: currentBeatsPerMinute ?? 100,
       beatsPerBar: 4,
       unitsPerMeasure: 4,
@@ -92,7 +91,7 @@ class Song extends SongBase implements Comparable<Song> {
     String? artist,
     String? coverArtist,
     String? copyright,
-    Key? key,
+    MajorKey? key,
     int? beatsPerMinute,
     int? beatsPerBar,
     int? unitsPerMeasure,
@@ -173,7 +172,7 @@ class Song extends SongBase implements Comparable<Song> {
           break;
         case 'key':
           {
-            Key? key = Key.parseString(jsonSong[name]);
+            MajorKey? key = MajorKey.parseString(jsonSong[name]);
             if (key != null) {
               //  major key found
               song.key = key;
@@ -191,10 +190,10 @@ class Song extends SongBase implements Comparable<Song> {
           song.musicalMode = jsonSong[name];
           break;
         case 'parentMajor':
-          song.parentMajor = Key.parseString(jsonSong[name]) ?? Key.getDefault();
+          song.parentMajor = MajorKey.parseString(jsonSong[name]) ?? MajorKey.getDefault();
           break;
         case 'relativeMajor':
-          song.relativeMajor = Key.parseString(jsonSong[name]) ?? Key.getDefault();
+          song.relativeMajor = MajorKey.parseString(jsonSong[name]) ?? MajorKey.getDefault();
           break;
         case 'keySignature':
           song.keySignature = jsonSong[name];
@@ -487,8 +486,8 @@ class Song extends SongBase implements Comparable<Song> {
   String importKey = ''; //  major + minor keys
   String keyMode = ''; //  major or minor
   String musicalMode = ''; //  minor or mode
-  Key? parentMajor; //  key
-  Key? relativeMajor; //  key
+  MajorKey? parentMajor; //  key
+  MajorKey? relativeMajor; //  key
   String keySignature = ''; //  missing
 }
 

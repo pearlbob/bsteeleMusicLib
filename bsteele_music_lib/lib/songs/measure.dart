@@ -230,7 +230,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     if (chords.isNotEmpty) {
       StringBuffer sb = StringBuffer();
       for (Chord chord in chords) {
@@ -242,7 +242,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  MeasureNode transposeToKey(Key key) {
+  MeasureNode transposeToKey(MajorKey key) {
     if (chords.isNotEmpty) {
       List<Chord> newChords = [];
       for (Chord chord in chords) {
@@ -278,7 +278,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   @override
-  String toNashville(Key key) {
+  String toNashville(MajorKey key) {
     var sb = StringBuffer();
     var keyOffset = key.getHalfStep();
     for (var chord in chords) {

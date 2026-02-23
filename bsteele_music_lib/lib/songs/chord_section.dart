@@ -460,7 +460,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     StringBuffer sb = StringBuffer();
     // sb.write(sectionVersion.toString());
     for (var phrase in _phrases) {
@@ -479,7 +479,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   @override
-  String toNashville(Key key) {
+  String toNashville(MajorKey key) {
     var sb = StringBuffer();
     for (var phrase in _phrases) {
       sb.write(phrase.toNashville(key));
@@ -491,7 +491,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   dynamic noSuchMethod(Invocation invocation) {}
 
   @override
-  MeasureNode transposeToKey(Key? key) {
+  MeasureNode transposeToKey(MajorKey? key) {
     if (key == null) {
       return this;
     }

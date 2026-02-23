@@ -35,7 +35,7 @@ class MeasureRepeatExtension extends MeasureComment {
   }
 
   @override
-  String transpose(Key key, int halfSteps) {
+  String transpose(MajorKey key, int halfSteps) {
     return toString();
   }
 

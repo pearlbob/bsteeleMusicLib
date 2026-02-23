@@ -53,19 +53,19 @@ abstract class MeasureNode {
   }
 
   /// Transpose the measure node the given number of half steps from the given key.
-  String transpose(Key key, int halfSteps);
+  String transpose(MajorKey key, int halfSteps);
 
   /// If required, transpose the measure node to the given key.
   /// This is used to represent the scale note(s) in the proper expression
   /// of flats or sharps based on the key.
   ///
   /// Note that the key of C is considered sharp.
-  MeasureNode transposeToKey(Key key);
+  MeasureNode transposeToKey(MajorKey key);
 
   /// Represent the measure node in Nashville notation at the text level.
   /// This is only a rough presentation of the Nashville notation.
   // fixme: inversions need to be graphical!
-  String toNashville(Key key);
+  String toNashville(MajorKey key);
 
   /// Represent the measure node to the user in a string form and from storage encoding.
   String toMarkup({bool withInversion = true});

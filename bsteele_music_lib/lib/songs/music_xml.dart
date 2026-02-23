@@ -17,7 +17,7 @@ class MusicXml {
 
   String songAsMusicXml(Song song) {
     _song = song;
-    music_key.Key key = _song.key;
+    music_key.MajorKey key = _song.key;
 
     StringBuffer sb = StringBuffer();
 
