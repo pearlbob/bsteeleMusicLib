@@ -3262,7 +3262,7 @@ coerced to reflect the songlist's last modification for that song.
 
               MajorKey bestKey = MajorKey.A;
               int max = 0;
-              for (var key in MajorKey.keysByHalfStep()) {
+              for (var key in Key.parentKeysByHalfStep()) {
                 //print('$key: ${notes[key.halfStep]} ${key.getMajorScaleChord()}');
                 int score = 0;
                 for (int degree = 0; degree < MusicConstants.notesPerScale; degree++) {

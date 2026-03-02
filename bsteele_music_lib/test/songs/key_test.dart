@@ -1109,19 +1109,19 @@ void main() {
     expect(MajorKey.B.minorKey, MinorKey.gs);
     expect(MajorKey.Fs.minorKey, MinorKey.ds);
 
-    expect(MinorKey.eb.majorKey, MajorKey.Gb);
-    expect(MinorKey.bb.majorKey, MajorKey.Db);
-    expect(MinorKey.f.majorKey, MajorKey.Ab);
-    expect(MinorKey.c.majorKey, MajorKey.Eb);
-    expect(MinorKey.g.majorKey, MajorKey.Bb);
-    expect(MinorKey.d.majorKey, MajorKey.F);
-    expect(MinorKey.a.majorKey, MajorKey.C);
-    expect(MinorKey.e.majorKey, MajorKey.G);
-    expect(MinorKey.b.majorKey, MajorKey.D);
-    expect(MinorKey.fs.majorKey, MajorKey.A);
-    expect(MinorKey.cs.majorKey, MajorKey.E);
-    expect(MinorKey.gs.majorKey, MajorKey.B);
-    expect(MinorKey.ds.majorKey, MajorKey.Fs);
+    expect(MinorKey.eb.parentKey, MajorKey.Gb);
+    expect(MinorKey.bb.parentKey, MajorKey.Db);
+    expect(MinorKey.f.parentKey, MajorKey.Ab);
+    expect(MinorKey.c.parentKey, MajorKey.Eb);
+    expect(MinorKey.g.parentKey, MajorKey.Bb);
+    expect(MinorKey.d.parentKey, MajorKey.F);
+    expect(MinorKey.a.parentKey, MajorKey.C);
+    expect(MinorKey.e.parentKey, MajorKey.G);
+    expect(MinorKey.b.parentKey, MajorKey.D);
+    expect(MinorKey.fs.parentKey, MajorKey.A);
+    expect(MinorKey.cs.parentKey, MajorKey.E);
+    expect(MinorKey.gs.parentKey, MajorKey.B);
+    expect(MinorKey.ds.parentKey, MajorKey.Fs);
 
     for (var keyEnum in MajorKeyEnum.values) {
       MajorKey majorKey = MajorKey.get(keyEnum);
@@ -1130,7 +1130,7 @@ void main() {
       // print('expect(MinorKey.${minorKey.name}.majorKey, MajorKey.${majorKey.name});');
       expect(minorKey.minorKey, minorKey);
       expect(majorKey.minorKey, minorKey);
-      expect(minorKey.majorKey, majorKey);
+      expect(minorKey.parentKey, majorKey);
     }
   });
 }

@@ -140,7 +140,7 @@ Map<String, MajorKeyEnum> keyEnumMap = {};
 /// Six flats (G♭) and six sharps (F♯) are labeled differently but are otherwise the same key.
 /// Seven flats and seven sharps are not included.
 @immutable
-class MajorKey extends Key implements Comparable<MajorKey> {
+final class MajorKey extends Key implements Comparable<MajorKey> {
   MajorKey._(this.majorKeyEnum, this.keyValue, this.halfStep, this.capoLocation, this.minorKeyEnum)
     : keyScaleNote = ScaleNote.valueOf(keyEnumToString(majorKeyEnum))!,
       _minorKey = MinorKey.get(minorKeyEnum);
@@ -163,24 +163,13 @@ class MajorKey extends Key implements Comparable<MajorKey> {
     return ke.toString().split('.').last;
   }
 
-  static List<MajorKey> keysByHalfStep() {
-    if (_keysByHalfStep.isEmpty) {
-      SplayTreeSet<MajorKey> sortedSet = SplayTreeSet((a1, a2) {
-        return a1.halfStep.compareTo(a2.halfStep);
-      });
-      sortedSet.addAll(_getMajorKeys().values);
-      _keysByHalfStep = List.unmodifiable(sortedSet.toList());
-    }
-    return _keysByHalfStep;
-  }
-
   static MajorKey byHalfStep({int offset = 0}) {
     var off = offset % halfStepsPerOctave;
     if (offset > 0 && off == MusicConstants.halfStepsFromAtoC + halfStepsPerOctave / 2) {
       //  the F# vs Gb split
       return MajorKey.Fs;
     }
-    return keysByHalfStep()[off];
+    return Key.parentKeysByHalfStep()[off];
   }
 
   static List<MajorKey> keysByHalfStepFrom(MajorKey key) {
@@ -189,66 +178,11 @@ class MajorKey extends Key implements Comparable<MajorKey> {
     });
   }
 
-  static Map<MajorKeyEnum, MajorKey> _getMajorKeys() {
-    if (_keyMap.isEmpty) {
-      _keyMap = Map<MajorKeyEnum, MajorKey>.identity();
-
-      //  calculation constants
-      const int keyCHalfStep = 3;
-      const int keyGHalfStep = 10;
-
-      for (var init in _initialization) {
-        MajorKeyEnum keInit = init[0];
-        var halfStep = init[2];
-
-        //  compute capo location
-        var capoLocation = halfStep;
-        if (halfStep >= keyGHalfStep) {
-          capoLocation = halfStep - keyGHalfStep;
-        } else if (halfStep >= keyCHalfStep) {
-          capoLocation = halfStep - keyCHalfStep;
-        } else {
-          capoLocation = (halfStep + MusicConstants.halfStepsPerOctave) - keyGHalfStep;
-        }
-
-        _keyMap[keInit] = MajorKey._(keInit, init[1], halfStep, capoLocation, init[3]);
-      }
-
-      //  majorDiatonics needs majorScale which is initialized after the initialization
-      final MajorKey keyC = _keyMap[MajorKeyEnum.C]!;
-      final MajorKey keyG = _keyMap[MajorKeyEnum.G]!;
-      for (MajorKey key in _keyMap.values) {
-        //  compute capo key... now that keys mostly exist
-        if (key.halfStep >= keyGHalfStep) {
-          key._capoKey = keyG;
-        } else if (key.halfStep >= keyCHalfStep) {
-          key._capoKey = keyC;
-        } else {
-          key._capoKey = keyG;
-        }
-
-        key._majorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
-          return ScaleChord(key.getMajorScaleByNote(i), MusicConstants.getMajorDiatonicChordModifier(i));
-        });
-
-        key._minorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
-          return ScaleChord(key.getMinorScaleByNote(i), MusicConstants.getMinorDiatonicChordModifier(i));
-        });
-      }
-
-      //  compute the minor scale note
-      for (MajorKey key in _keyMap.values) {
-        key._keyMinorScaleNote = key.getMajorDiatonicByDegree(6 - 1).scaleNote;
-      }
-    }
-    return _keyMap;
-  }
-
   static MajorKey get(MajorKeyEnum ke) {
-    return _getMajorKeys()[ke]!;
+    return Key._getMajorKeys()[ke]!;
   }
 
-  static Iterable<MajorKey> get values => _getMajorKeys().values;
+  static Iterable<MajorKey> get values => Key._getMajorKeys().values;
 
   static MajorKeyEnum? _getKeyEnum(String s) {
     //  lazy eval
@@ -306,7 +240,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
   }
 
   @override
-  MajorKey get majorKey => this;
+  MajorKey get parentKey => this;
 
   @override
   MinorKey get minorKey => _minorKey;
@@ -342,7 +276,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
       //  the F# vs Gb split
       return MajorKey.Fs;
     }
-    return _getMajorKeys()[_flatKeyEnumsByHalfStep[step]]!;
+    return Key._getMajorKeys()[_flatKeyEnumsByHalfStep[step]]!;
   }
 
   ScaleNote inKey(ScaleNote scaleNote) {
@@ -388,7 +322,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
 
   /// Return the key represented by the given integer value.
   static MajorKey getKeyByValue(int keyValue) {
-    for (MajorKey key in _getMajorKeys().values) {
+    for (MajorKey key in Key._getMajorKeys().values) {
       if (key.keyValue == keyValue) {
         return key;
       }
@@ -397,7 +331,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
   }
 
   static MajorKey getKeyByHalfStep(int halfStep) {
-    return keysByHalfStep()[halfStep % halfStepsPerOctave];
+    return Key.parentKeysByHalfStep()[halfStep % halfStepsPerOctave];
   }
 
   static MajorKey getKeyByScaleNote(final ScaleNote scaleNote) {
@@ -436,7 +370,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
       int? count;
       ScaleChord? diatonic;
       ScaleNote diatonicScaleNote;
-      for (MajorKey key in _getMajorKeys().values) {
+      for (MajorKey key in Key._getMajorKeys().values) {
         //  score by weighted uses of the scale chords
         int score = 0;
         for (int i = 0; i < key._majorDiatonics.length; i++) {
@@ -640,8 +574,8 @@ class MajorKey extends Key implements Comparable<MajorKey> {
   }
 
   /// Return the scale note offset by the given half steps in the accidental required by this key.
-  ScaleNote getScaleNoteEnum3ByHalfStep(int halfSteps) {
-    ScaleNote ret = _getScaleNoteEnum3ByHalfStepNoAdjustment(halfSteps);
+  ScaleNote getScaleNoteEnum3ByHalfStep(final int halfSteps) {
+    ScaleNote ret = _getScaleNoteEnumByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
     if (keyValue == 6 && ret == .F) {
       return .Es;
@@ -651,7 +585,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
     return ret;
   }
 
-  ScaleNote _getScaleNoteEnum3ByHalfStepNoAdjustment(int halfSteps) {
+  ScaleNote _getScaleNoteEnumByHalfStepNoAdjustment(int halfSteps) {
     halfSteps = halfSteps % halfStepsPerOctave;
     ScaleNote ret = isSharp ? ScaleNote.getSharpByHalfStep(halfSteps) : ScaleNote.getFlatByHalfStep(halfSteps);
     return ret;
@@ -729,7 +663,7 @@ class MajorKey extends Key implements Comparable<MajorKey> {
       return MajorKey.C;
     }
     try {
-      return _getMajorKeys().values.where((k) => k.keyScaleNote == sn).first;
+      return Key._getMajorKeys().values.where((k) => k.keyScaleNote == sn).first;
     } catch (e) {
       return MajorKey.C;
     }
@@ -832,10 +766,76 @@ class MajorKey extends Key implements Comparable<MajorKey> {
 }
 
 @immutable
-abstract class Key {
+abstract final class Key {
+  static List<MajorKey> parentKeysByHalfStep() {
+    if (_keysByHalfStep.isEmpty) {
+      SplayTreeSet<MajorKey> sortedSet = SplayTreeSet((a1, a2) {
+        return a1.halfStep.compareTo(a2.halfStep);
+      });
+      sortedSet.addAll(_getMajorKeys().values);
+      _keysByHalfStep = List.unmodifiable(sortedSet.toList());
+    }
+    return _keysByHalfStep;
+  }
+
+  static Map<MajorKeyEnum, MajorKey> _getMajorKeys() {
+    if (_keyMap.isEmpty) {
+      _keyMap = Map<MajorKeyEnum, MajorKey>.identity();
+
+      //  calculation constants
+      const int keyCHalfStep = 3;
+      const int keyGHalfStep = 10;
+
+      for (var init in _initialization) {
+        MajorKeyEnum keInit = init[0];
+        var halfStep = init[2];
+
+        //  compute capo location
+        var capoLocation = halfStep;
+        if (halfStep >= keyGHalfStep) {
+          capoLocation = halfStep - keyGHalfStep;
+        } else if (halfStep >= keyCHalfStep) {
+          capoLocation = halfStep - keyCHalfStep;
+        } else {
+          capoLocation = (halfStep + MusicConstants.halfStepsPerOctave) - keyGHalfStep;
+        }
+
+        _keyMap[keInit] = MajorKey._(keInit, init[1], halfStep, capoLocation, init[3]);
+      }
+
+      //  majorDiatonics needs majorScale which is initialized after the initialization
+      final MajorKey keyC = _keyMap[MajorKeyEnum.C]!;
+      final MajorKey keyG = _keyMap[MajorKeyEnum.G]!;
+      for (MajorKey key in _keyMap.values) {
+        //  compute capo key... now that keys mostly exist
+        if (key.halfStep >= keyGHalfStep) {
+          key._capoKey = keyG;
+        } else if (key.halfStep >= keyCHalfStep) {
+          key._capoKey = keyC;
+        } else {
+          key._capoKey = keyG;
+        }
+
+        key._majorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
+          return ScaleChord(key.getMajorScaleByNote(i), MusicConstants.getMajorDiatonicChordModifier(i));
+        });
+
+        key._minorDiatonics = List<ScaleChord>.generate(MusicConstants.notesPerScale, (i) {
+          return ScaleChord(key.getMinorScaleByNote(i), MusicConstants.getMinorDiatonicChordModifier(i));
+        });
+      }
+
+      //  compute the minor scale note
+      for (MajorKey key in _keyMap.values) {
+        key._keyMinorScaleNote = key.getMajorDiatonicByDegree(6 - 1).scaleNote;
+      }
+    }
+    return _keyMap;
+  }
+
   ScaleNote get keyMinorScaleNote;
 
-  MajorKey get majorKey;
+  MajorKey get parentKey;
 
   MinorKey get minorKey;
 
@@ -843,7 +843,7 @@ abstract class Key {
 }
 
 @immutable
-class MinorKey implements Key, Comparable<MinorKey> {
+final class MinorKey implements Key, Comparable<MinorKey> {
   static final eb = get(.eb);
   static final bb = get(.bb);
   static final f = get(.f);
@@ -873,7 +873,7 @@ class MinorKey implements Key, Comparable<MinorKey> {
   static Map<MinorKeyEnum, MinorKey>? _minorMap;
 
   @override
-  MajorKey get majorKey => _majorKey;
+  MajorKey get parentKey => _majorKey;
 
   @override
   MinorKey get minorKey => this;
