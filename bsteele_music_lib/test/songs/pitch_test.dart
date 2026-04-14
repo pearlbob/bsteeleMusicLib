@@ -312,7 +312,7 @@ void main() {
         '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
         ' ${to12(pitch.frequency)}',
       );
-      for (int cents = -50; cents <= 50; cents += 5) {
+      for (double cents = -50; cents <= 50; cents += 5) {
         double f = pitch.frequencyWithCents(cents);
         logger.i('    cents: ${cents.toString().padLeft(3)}:  f: ${to12(f)}');
         if (cents == 0) {
@@ -336,7 +336,7 @@ void main() {
         '${pitch.toString().padRight(3)} ${pitch.number.toString().padLeft(2)}'
         ' ${to12(pitch.frequency)}',
       );
-      for (int cents = -50; cents <= 50; cents += 5) {
+      for (double cents = -50; cents <= 50; cents += 5) {
         double f = pitch.frequencyWithCents(cents);
         int centsFromFrequency = pitch.centsFromFrequency(f);
         logger.i(

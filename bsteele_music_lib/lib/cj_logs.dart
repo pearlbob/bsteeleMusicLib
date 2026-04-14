@@ -44,29 +44,22 @@ void main(List<String> args) {
 
 class CjLog {
   void _help() {
-    print('cjlogs {-v} {-V} --host=hostname --tomcat=tomcatCatalinaBase');
+    print('cjlogs {-v} {-V} --host=hostname');
   }
 
-  /// Process the augmented tomcat logs to a performance history JSON file
+  /// Process the augmented logs to a performance history JSON file
   void runMain(List<String> args) async {
     //  setup
     var gZipDecoder = GZipCodec().decoder;
     Utf8Decoder utf8Decoder = const Utf8Decoder();
     var dateFormat = DateFormat('dd-MMM-yyyy HH:mm:ss.SSS'); //  20-Aug-2022 06:08:20.127
 
-    _catalinaBase = null;
     _host = 'cj';
 
     //  process the args
-    // if (args.isEmpty) {
-    //   _help(); //  help if nothing to do
-    //   exit(-1);
-    // }
     for (var arg in args) {
       if (arg.startsWith('--host=')) {
         _host = arg.substring(arg.indexOf('=') + 1);
-      } else if (arg.startsWith('--tomcat=')) {
-        _catalinaBase = arg.substring(arg.indexOf('=') + 1);
       } else {
         switch (arg) {
           case '-v':
@@ -84,7 +77,7 @@ class CjLog {
     }
 
     if (_verbose > 0) {
-      print('CjLogs: -verbose: $_verbose, _host: $_host, _catalinaBase: $_catalinaBase');
+      print('CjLogs: -verbose: $_verbose, _host: $_host');
     }
 
     //  prepare the file stuff
@@ -98,17 +91,8 @@ class CjLog {
     var usTimer = UsTimer();
     Directory logs;
     var processedLogs = Directory(downloadsDirString);
-    if (_catalinaBase != null) {
-      if (_catalinaBase!.isEmpty) {
-        print('Empty CATALINA_BASE environment variable: "$_catalinaBase"');
-        exit(-1);
-      }
-      logger.log(_cjLogFiles, 'CATALINA_BASE: $_catalinaBase');
-      //  look at the tomcat logs directly
-      logs = Directory('$_catalinaBase/logs');
-    } else {
-      logs = processedLogs;
-    }
+
+    logs = processedLogs;
 
     logger.log(_cjLogFiles, 'logs: $logs');
     logger.log(_cjLogFiles, 'processedLogs: $processedLogs');
@@ -147,7 +131,7 @@ class CjLog {
       var file = fileSystemEntity;
       DateTime date;
 
-      RegExpMatch? m = catalinaLogRegExp.firstMatch(file.path);
+      RegExpMatch? m = serverLogRegExp.firstMatch(file.path);
       if (m == null) {
         continue;
       }
@@ -383,15 +367,15 @@ class CjLog {
     }));
 
     //  write the corrected performances
-    File localSongperformances = File('$downloadsDirString/allSongPerformances$songPerformanceExtension');
+    File localSongPerformances = File('$downloadsDirString/allSongPerformances$songPerformanceExtension');
     {
       try {
-        localSongperformances.deleteSync();
+        localSongPerformances.deleteSync();
       } catch (e) {
         logger.e(e.toString());
         //assert(false);
       }
-      localSongperformances.writeAsStringSync(allSongPerformances.toJsonString(), flush: true);
+      localSongPerformances.writeAsStringSync(allSongPerformances.toJsonString(), flush: true);
     }
 
     //  time the reload
@@ -402,7 +386,7 @@ class CjLog {
       print('\nreload:');
       var usTimer = UsTimer();
 
-      allSongPerformances.updateFromJsonString(localSongperformances.readAsStringSync());
+      allSongPerformances.updateFromJsonString(localSongPerformances.readAsStringSync());
       print('performances: ${usTimer.deltaToString()}');
 
       var json = _allSonglyricsGithubFile.readAsStringSync();
@@ -487,17 +471,14 @@ class CjLog {
   }
 
   AllSongPerformances allSongPerformances = AllSongPerformances();
-  String? _catalinaBase;
   String _host = 'cj';
-  var _verbose = 0;
+  var _verbose = 1;
 
-  final RegExp catalinaLogRegExp = RegExp(
-    r'.*/catalina\.(\d{4})-(\d{2})-(\d{2})\.log',
+  final RegExp serverLogRegExp = RegExp(
+    r'.*/bsteeleMusicServer_(\d{4})-(\d{2})-(\d{2})\.log',
   ); //  note: no end to allow for both .log and .log.gz
   final RegExp messageRegExp = RegExp(
-    r'(\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) INFO .*'
-    r' com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage'
-    r' onMessage\("(.*)"\)\s*$',
+    r'(\d{1,2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) +INFO +(.*)\s*$',
   );
 
   //  tempo:{ "songId": "Song_1234_by_Feist", "currentBeatsPerMinute": 119, "user": "tempo" }

@@ -435,8 +435,8 @@ class Pitch implements Comparable<Pitch> {
 
   bool get isFlat => _scaleNote.isFlat;
 
-  double frequencyWithCents(int cents) {
-    cents = Util.intLimit(cents, -50, 50);
+  double frequencyWithCents(double cents) {
+    cents = Util.doubleLimit(cents, -50, 50);
     return MusicConstants.tuningStandardHz * MusicConstants.centsToRatio(100 * ((_number + 1) - 49) + cents);
   }
 

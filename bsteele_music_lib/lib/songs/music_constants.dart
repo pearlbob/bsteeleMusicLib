@@ -47,7 +47,7 @@ class MusicConstants {
     return pow(2, (halfSteps / 12)).toDouble();
   }
 
-  static double centsToRatio(final int cents) {
+  static double centsToRatio(final double cents) {
     return pow(2, (cents / 1200)).toDouble();
   }
 
