@@ -5353,15 +5353,16 @@ Grid{
   });
 
   test('test bad chord characters', () {
-    RegExp badChordCharacterRegExp = RegExp(r'(\{\d+\}|[(){}])');
-    var s = '({3}F/AC/GBb)';
-    print('s: "$s"');
-    var s2 = s.replaceAll(badChordCharacterRegExp, '');
-    print('s2: "$s2"');
-    s = '(F/AC/GBb)';
-    print('s: "$s"');
-    s2 = s.replaceAll(badChordCharacterRegExp, '');
-    print('s2: "$s2"');
+    expect(SongBase.cleanChords(".EX.."), 'EX..');
+    expect(SongBase.cleanChords("(.EX..)"), 'EX..');
+    expect(SongBase.cleanChords("(.EX..,)"), 'EX..,');
+    expect(SongBase.cleanChords('({3}F/AC/GBb)'), 'F/AC/GBb');
+    expect(SongBase.cleanChords('(F/AC/GBb)'), 'F/AC/GBb');
+    expect(SongBase.cleanChords(".EX.."), 'EX..');
+
+    final int beatsPerBar = 4;
+    expect(SongBase.validateChords('i: .EX..', beatsPerBar).toString(), '.EX..');
+    expect(SongBase.validateChords('i: A B C .EX..', beatsPerBar).toString(), '.EX..');
   });
 }
 

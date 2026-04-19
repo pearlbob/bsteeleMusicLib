@@ -131,6 +131,7 @@ arguments:
 -user               list contributing users
 -v                  verbose output utility's allSongs list
 -V                  very verbose output
+-validateChords      validate the chord sections of all songs
 -w {file}           write the utility's allSongs list to the given file
 -words              show word statistics
 -x                  experimental
@@ -3163,6 +3164,28 @@ coerced to reflect the songlist's last modification for that song.
           _verbose = true;
           _veryVerbose = true;
           Logger.level = Level.info;
+          break;
+
+        case '-validateChords':
+          if (allSongs.isEmpty) {
+            allSongs.addAll(
+              Song.songListFromJson(File('${Util.homePath()}/$_allSongsFileLocation').readAsStringSync()),
+            );
+          }
+          for (var song in allSongs) {
+            if (_verbose) {
+              print(song.title);
+            }
+            var error = SongBase.validateChords(song.chords, song.beatsPerBar);
+            if (error != null) {
+              if (!_verbose) {
+                print(song.title);
+              }
+              print('error: $error');
+            }
+
+            //       song.static MarkedString? validateChords(final String chords, int beatsPerBar)
+          }
           break;
 
         case '-url':

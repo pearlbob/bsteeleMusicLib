@@ -721,6 +721,17 @@ class SongBase {
       return MarkedString('missing chords'); //  invalid
     }
 
+    {
+      final RegExp whiteRegExp = RegExp(r'\n| ');
+      var cleanChords = SongBase.cleanChords(chords);
+      if (cleanChords != chords) {
+        final cleanSet = cleanChords.split(whiteRegExp).toSet();
+        final dirtySet = chords.split(whiteRegExp).toSet();
+        var diff = dirtySet.difference(cleanSet);
+        return MarkedString(diff.toString());
+      }
+    }
+
     SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
     MarkedString markedString = MarkedString(chords);
     ChordSection chordSection;
@@ -799,9 +810,7 @@ class SongBase {
     if (_chords.isNotEmpty) {
       logger.d('parseChords for: $title');
       SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
-      MarkedString markedString = MarkedString(
-        _chords.replaceAll(_badChordCharacterRegExp, ''), //  measure comments are dead
-      );
+      MarkedString markedString = MarkedString(cleanChords(_chords));
       ChordSection chordSection;
       while (markedString.isNotEmpty) {
         markedString.stripLeadingWhitespace();
@@ -4463,6 +4472,10 @@ class SongBase {
     return true;
   }
 
+  static String cleanChords(final String s) {
+    return s.replaceAll(badChordCharacterRegExp, '').replaceAll(badChordCharacterRegExp2, '');
+  }
+
   @override
   int get hashCode {
     int ret = Object.hash(
@@ -4694,6 +4707,9 @@ class SongBase {
   //SplayTreeSet<Metadata> metadata = new SplayTreeSet();
   static const String defaultUser = 'Unknown';
   static const bool _debugging = false; //  true false
+
+  static final RegExp badChordCharacterRegExp = RegExp(r'(\{\d+\}|[(){}])'); //  measure comments are dead
+  static final RegExp badChordCharacterRegExp2 = RegExp(r'^\.');
 }
 
 @immutable
@@ -4739,5 +4755,3 @@ String debugGridToString(Grid<MeasureNode> grid, {UserDisplayStyle? userDisplayS
   }
   return '';
 }
-
-final RegExp _badChordCharacterRegExp = RegExp(r'(\{\d+\}|[(){}])');
