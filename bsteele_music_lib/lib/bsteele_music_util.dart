@@ -2234,7 +2234,7 @@ coerced to reflect the songlist's last modification for that song.
           for (var song in allSongs) {
             if (jambleSongs.contains(song)) {
               try {
-                var otherSong = jambleSongs.firstWhere((otherSong) {
+                var jambleSong = jambleSongs.firstWhere((otherSong) {
                   return otherSong.compareBySongId(song) == 0;
                 });
                 StringBuffer out = StringBuffer();
@@ -2243,60 +2243,60 @@ coerced to reflect the songlist's last modification for that song.
                 if (song.user == 'Unknown' || song.user == 'Shari') {
                   song.user = 'Shari C.';
                 }
-                if (song.user != otherSong.user) {
-                  if (longVersion) out.write('\n    user: was ${song.user}, is now: ${otherSong.user}');
-                  song.user = otherSong.user;
+                if (song.user != jambleSong.user) {
+                  if (longVersion) out.write('\n    user: was ${song.user}, is now: ${jambleSong.user}');
+                  song.user = jambleSong.user;
                 }
 
-                song.fileName = otherSong.fileName;
-                song.dateCreated = otherSong.dateCreated;
-                song.lastModifiedTime = otherSong.lastModifiedTime;
+                song.fileName = jambleSong.fileName;
+                song.dateCreated = jambleSong.dateCreated;
+                song.lastModifiedTime = jambleSong.lastModifiedTime;
 
-                if (song.copyright.isEmpty) {
+                if (song.copyright != jambleSong.copyright) {
                   if (longVersion) {
-                    out.write('\n    copyright: was "${song.copyright}", is now: "${otherSong.copyright}"');
+                    out.write('\n    copyright: was "${song.copyright}", is now: "${jambleSong.copyright}"');
                   }
-                  song.copyright = otherSong.copyright;
+                  song.copyright = jambleSong.copyright;
                 }
 
-                if (song.key != otherSong.key) {
+                if (song.key != jambleSong.key) {
                   // if (longVersion)
                   {
-                    out.write('\n    key: was ${song.key}, is now: ${otherSong.key}');
+                    out.write('\n    key: was ${song.key}, is now: ${jambleSong.key}');
                   }
-                  song.key = otherSong.key;
+                  song.key = jambleSong.key;
                 }
 
-                if (song.beatsPerMinute != otherSong.beatsPerMinute) {
+                if (song.beatsPerMinute != jambleSong.beatsPerMinute) {
                   if (longVersion) {
-                    out.write('\n    beatsPerMinute: was ${song.beatsPerMinute}, is now: ${otherSong.beatsPerMinute}');
+                    out.write('\n    beatsPerMinute: was ${song.beatsPerMinute}, is now: ${jambleSong.beatsPerMinute}');
                   }
-                  song.beatsPerMinute = otherSong.beatsPerMinute;
+                  song.beatsPerMinute = jambleSong.beatsPerMinute;
                 }
 
-                if (song.timeSignature != otherSong.timeSignature) {
+                if (song.timeSignature != jambleSong.timeSignature) {
                   if (longVersion) {
-                    out.write('\n    timeSignature: was ${song.timeSignature}, is now: ${otherSong.timeSignature}');
+                    out.write('\n    timeSignature: was ${song.timeSignature}, is now: ${jambleSong.timeSignature}');
                   }
-                  song.timeSignature = otherSong.timeSignature;
+                  song.timeSignature = jambleSong.timeSignature;
                 }
 
                 //  as per Shari
-                if (song.chords != otherSong.chords) {
+                if (song.chords != jambleSong.chords) {
                   out.write(
                     '\n    chords were changed '
-                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.chords, otherSong.chords)))}%',
+                    '${to1(100 * (1 - StringSimilarity.compareTwoStrings(song.chords, jambleSong.chords)))}%',
                   );
-                  song.chords = otherSong.chords;
+                  song.chords = jambleSong.chords;
                 }
-                if (song.rawLyrics != otherSong.rawLyrics) {
-                  double similarity = StringSimilarity.compareTwoStrings(song.rawLyrics, otherSong.rawLyrics);
+                if (song.rawLyrics != jambleSong.rawLyrics) {
+                  double similarity = StringSimilarity.compareTwoStrings(song.rawLyrics, jambleSong.rawLyrics);
                   if (similarity < 1.0) {
                     out.write('\n    lyrics were changed ${to1(100 * (1 - similarity))} %');
                   } else {
                     //  don't comment on white space changes
                   }
-                  song.rawLyrics = otherSong.rawLyrics;
+                  song.rawLyrics = jambleSong.rawLyrics;
                 }
                 if (out.isNotEmpty) {
                   print('  $song:$out');

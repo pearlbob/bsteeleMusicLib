@@ -716,21 +716,12 @@ class SongBase {
 
   /// Validate the string representation of a chord entry
   /// Return null if valid.  Return a marked string of the offending portion if not valid.
-  static MarkedString? validateChords(final String chords, int beatsPerBar) {
+  static MarkedString? validateChords(String chords, int beatsPerBar) {
     if (chords.isEmpty) {
       return MarkedString('missing chords'); //  invalid
     }
 
-    {
-      final RegExp whiteRegExp = RegExp(r'\n| ');
-      var cleanChords = SongBase.cleanChords(chords);
-      if (cleanChords != chords) {
-        final cleanSet = cleanChords.split(whiteRegExp).toSet();
-        final dirtySet = chords.split(whiteRegExp).toSet();
-        var diff = dirtySet.difference(cleanSet);
-        return MarkedString(diff.toString());
-      }
-    }
+    chords = SongBase.cleanChords(chords);
 
     SplayTreeSet<ChordSection> emptyChordSections = SplayTreeSet<ChordSection>();
     MarkedString markedString = MarkedString(chords);
@@ -4473,7 +4464,10 @@ class SongBase {
   }
 
   static String cleanChords(final String s) {
-    return s.replaceAll(badChordCharacterRegExp, '').replaceAll(badChordCharacterRegExp2, '');
+    return s
+        .replaceAll(badChordCharacterRegExp, '') //  parenthesis, braces, and leading beat counts
+        .replaceAll(badChordCharacterRegExp2, ' X')
+        .trim(); // leading dots
   }
 
   @override
@@ -4709,7 +4703,7 @@ class SongBase {
   static const bool _debugging = false; //  true false
 
   static final RegExp badChordCharacterRegExp = RegExp(r'(\{\d+\}|[(){}])'); //  measure comments are dead
-  static final RegExp badChordCharacterRegExp2 = RegExp(r'^\.');
+  static final RegExp badChordCharacterRegExp2 = RegExp(r'(?:^|\s)\.');
 }
 
 @immutable

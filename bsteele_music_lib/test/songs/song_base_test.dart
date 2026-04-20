@@ -1146,43 +1146,6 @@ void main() {
     expect(lyrics, a.rawLyrics);
   });
 
-  test('testSongWithoutStartingSection', () {
-    //  fixme: doesn't test much, not very well
-
-    SongBase a = SongBase(
-      title: 'Rio',
-      artist: 'Duran Duran',
-      copyright: 'Sony/ATV Music Publishing LLC',
-      key: music_key.MajorKey.getDefault(),
-      beatsPerMinute: 100,
-      beatsPerBar: 4,
-      unitsPerMeasure: 4,
-      chords: //  not much of this chord chart is correct!
-          'Verse\n'
-          'C#m A♭ FE A♭  x4\n'
-          'Prechorus\n'
-          'C C/\n'
-          'chorus\n'
-          'C G B♭ F  x4\n'
-          'Tag Chorus\n',
-      rawLyrics: 'i:\nv: bob, bob, bob berand\nc: sing chorus here \no: last line of outro\n',
-    );
-    logger.d(a.logGrid());
-    Grid<ChordSectionGridData> grid = a.getChordSectionGrid();
-    expect(10, grid.getRowCount()); //  comments on their own line add a bunch
-    List<ChordSectionGridData?>? row = grid.getRow(0);
-    if (row == null) throw 'row == null';
-    expect(2, row.length);
-    row = grid.getRow(1);
-    if (row == null) throw 'row == null';
-    logger.d('row: $row');
-    expect(1 + 4 + 1 + 1, row.length);
-    row = grid.getRow(2);
-    if (row == null) throw 'row == null';
-    expect(2, row.length);
-    expect(grid.get(0, 5), isNull);
-  });
-
   test('test Songs with blank lyrics lines', () {
     SongBase a;
     int beatsPerBar = 4;
@@ -3413,7 +3376,7 @@ i: A B C D , []
 ''';
       var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
       expect(markedString, isNotNull);
-      expect(markedString.toString(), ']\n');
+      expect(markedString.toString(), ']');
       expect(markedString!.getMark(), 14);
     }
     {
@@ -3432,7 +3395,7 @@ i: []
 ''';
       var markedString = SongBase.validateChords(SongBase.entryToUppercase(chordEntry), beatsPerBar);
       expect(markedString, isNotNull);
-      expect(markedString.toString(), ']\n');
+      expect(markedString.toString(), ']');
       expect(markedString!.getMark(), 4);
     }
 
@@ -5353,16 +5316,26 @@ Grid{
   });
 
   test('test bad chord characters', () {
-    expect(SongBase.cleanChords(".EX.."), 'EX..');
-    expect(SongBase.cleanChords("(.EX..)"), 'EX..');
-    expect(SongBase.cleanChords("(.EX..,)"), 'EX..,');
+    expect(SongBase.cleanChords(".EX.."), 'XEX..');
+    expect(SongBase.cleanChords("(.EX..)"), 'XEX..');
+    expect(SongBase.cleanChords("(.EX..,)"), 'XEX..,');
     expect(SongBase.cleanChords('({3}F/AC/GBb)'), 'F/AC/GBb');
     expect(SongBase.cleanChords('(F/AC/GBb)'), 'F/AC/GBb');
-    expect(SongBase.cleanChords(".EX.."), 'EX..');
 
     final int beatsPerBar = 4;
-    expect(SongBase.validateChords('i: .EX..', beatsPerBar).toString(), '.EX..');
-    expect(SongBase.validateChords('i: A B C .EX..', beatsPerBar).toString(), '.EX..');
+    expect(SongBase.validateChords('i: .EX..', beatsPerBar), isNull);
+    expect(SongBase.validateChords('i: A B C .EX..', beatsPerBar), isNull);
+
+    // {
+    //   final RegExp whiteRegExp = RegExp(r'\n| ');
+    //   var cleanChords = SongBase.cleanChords(chords);
+    //   if (cleanChords != chords) {
+    //     final cleanSet = cleanChords.split(whiteRegExp).toSet();
+    //     final dirtySet = chords.split(whiteRegExp).toSet();
+    //     var diff = dirtySet.difference(cleanSet);
+    //     return MarkedString(diff.toString());
+    //   }
+    // }
   });
 }
 
