@@ -259,8 +259,13 @@ class Song extends SongBase implements Comparable<Song> {
     //  figure the bsteele key from the jamble stuff
     //  the cheapest fix:
     if (song.musicalMode.isNotEmpty) {
-      assert(song.parentMajor != null);
-      song.key = song.parentMajor!;
+      if (song.parentMajor != null) {
+        song.key = song.parentMajor!;
+      } else if (song.relativeMajor != null) {
+        song.key = song.relativeMajor!;
+      } else {
+        //  can't correct anything!  fixme
+      }
     }
     // if (song.keyMode == 'major' || song.mode == Mode.ionian) {
     //   //  key was found, not the (currently) unknown minor key

@@ -2073,7 +2073,7 @@ coerced to reflect the songlist's last modification for that song.
 
           allSongs.clear();
           _addAllSongsFromFile(_allSongsFile);
-          var original_allSongs = SplayTreeSet<Song>()
+          final original_allSongs = SplayTreeSet<Song>()
             ..addAll(
               allSongs.map((song) {
                 return song.copySong();
@@ -2160,6 +2160,7 @@ coerced to reflect the songlist's last modification for that song.
           print('jamble:');
           File? jambleSongListFile;
           {
+            //  find the most recent jamble song list file
             final RegExp jambleSongListRegexp = RegExp(
               r'.*/jamble_allSongs_\d{8}_\d{6}.songlyrics$',
               caseSensitive: false,
@@ -2196,15 +2197,21 @@ coerced to reflect the songlist's last modification for that song.
                 var lyrics = song.lyricsAsString();
                 Song? best;
                 double bestSimilarity = 0;
+                bool idMatch = false;
                 for (var jambleSong in jambleSongs) {
-                  double similarity = lyrics.similarityTo(jambleSong.lyricsAsString());
+                  if (song.songId.songIdAsString.toLowerCase() == jambleSong.songId.songIdAsString.toLowerCase()) {
+                    // print( 'title match: "$song" and "$jambleSong"');
+                    idMatch = true;
+                    best = jambleSong;
+                  }
+                  double similarity = lyrics.toLowerCase().similarityTo(jambleSong.lyricsAsString().toLowerCase());
                   if (similarity >= bestSimilarity) {
                     best = jambleSong;
                     bestSimilarity = similarity;
                   }
                 }
                 // print('  best match: $best,  $bestSimilarity');
-                if (bestSimilarity > 0.9) {
+                if (bestSimilarity > 0.9 || idMatch) {
                   //  assume it's the same song
                   print('$song\n    replaced by: $best  ($bestSimilarity)');
                   renameMap[song] = best!;
