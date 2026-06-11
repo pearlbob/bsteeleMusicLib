@@ -340,7 +340,7 @@ void main() {
         double f = pitch.frequencyWithCents(cents);
         int centsFromFrequency = pitch.centsFromFrequency(f);
         logger.i(
-          '    cents: ${cents.toString().padLeft(3)}:  f: ${to12(f)}'
+          '    cents: ${cents.toString().padLeft(6)}:  f: ${to12(f)}'
           ', cents: ${centsFromFrequency.toString().padLeft(3)}',
         );
         expect(centsFromFrequency, cents);
