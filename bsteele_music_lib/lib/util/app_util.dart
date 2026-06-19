@@ -27,3 +27,23 @@ String to1(final double v, {int pad = 5}) {
 String to0(final double v, {int pad = 5}) {
   return v.toStringAsFixed(0).padLeft(pad);
 }
+
+String iTo2(final int i) {
+  return i.toString().padLeft(2);
+}
+
+String iTo3(final int i) {
+  return i.toString().padLeft(3);
+}
+
+String iTo4(final int i) {
+  return i.toString().padLeft(4);
+}
+
+String iTo5(final int i) {
+  return i.toString().padLeft(5);
+}
+
+String iTo6(final int i) {
+  return i.toString().padLeft(6);
+}
