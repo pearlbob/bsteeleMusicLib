@@ -25,7 +25,7 @@ String to1(final double v, {int pad = 5}) {
 }
 
 String to0(final double v, {int pad = 5}) {
-  return v.toStringAsFixed(0).padLeft(pad);
+  return v.round().toString().padLeft(pad);
 }
 
 String iTo2(final int i) {

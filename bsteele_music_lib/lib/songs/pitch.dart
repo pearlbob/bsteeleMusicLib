@@ -429,6 +429,10 @@ class Pitch implements Comparable<Pitch> {
     return '${_scaleNote.toString()}${_octaveNumber.toString()}';
   }
 
+  String toMarkup() {
+    return '${_scaleNote.toMarkup()}${_octaveNumber.toString()}';
+  }
+
   bool get isSharp => _scaleNote.isSharp;
 
   bool get isNatural => _scaleNote.isNatural;
@@ -441,7 +445,7 @@ class Pitch implements Comparable<Pitch> {
   }
 
   int centsFromFrequency(final double f) {
-    if (f <= 0) {
+    if (f <= 0 || f.isNaN || f.isInfinite) {
       return 0;
     }
     double cents = 1200 * (log((f / MusicConstants.tuningStandardHz).abs()) / log(2));

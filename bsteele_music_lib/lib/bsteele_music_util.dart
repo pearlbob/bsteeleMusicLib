@@ -2064,6 +2064,13 @@ coerced to reflect the songlist's last modification for that song.
           break;
 
         case '-jamble':
+          /*
+          Performances:
+          https://jpsfrhxjhtuwgitfeanr.supabase.co/functions/v1/export-performances
+
+          Library:
+          https://jpsfrhxjhtuwgitfeanr.supabase.co/functions/v1/export-library
+          */
           // String original_transposition_string = '';
           print('');
 
