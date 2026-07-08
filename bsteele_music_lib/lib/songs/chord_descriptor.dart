@@ -82,33 +82,61 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _major6 = ChordDescriptor._('major6', '6', 'R 3 5 6', nashvilleRaise: true);
 
   static ChordDescriptor get diminished7 => _diminished7;
-  static final ChordDescriptor _diminished7 =
-      ChordDescriptor._('diminished7', 'dim7', 'R m3 b5 6', nashville: '°7', nashvilleRaise: true);
+  static final ChordDescriptor _diminished7 = ChordDescriptor._(
+    'diminished7',
+    'dim7',
+    'R m3 b5 6',
+    nashville: '°7',
+    nashvilleRaise: true,
+  );
 
   //  todo: ø = ø7 = half diminished seventh
 
   static ChordDescriptor get dimMasculineOrdinalIndicator7 => _dimMasculineOrdinalIndicator7;
-  static final ChordDescriptor _dimMasculineOrdinalIndicator7 =
-      ChordDescriptor._('dimMasculineOrdinalIndicator7', 'º7', 'R m3 b5 6', alias: diminished7);
+  static final ChordDescriptor _dimMasculineOrdinalIndicator7 = ChordDescriptor._(
+    'dimMasculineOrdinalIndicator7',
+    'º7',
+    'R m3 b5 6',
+    alias: diminished7,
+  );
 
   //  todo: diminished Major 7  nashville: '°M7'
 
   static ChordDescriptor get diminished => _diminished;
-  static final ChordDescriptor _diminished =
-      ChordDescriptor._('diminished', 'dim', 'R m3 b5', nashville: '°', nashvilleRaise: true);
+  static final ChordDescriptor _diminished = ChordDescriptor._(
+    'diminished',
+    'dim',
+    'R m3 b5',
+    nashville: '°',
+    nashvilleRaise: true,
+  );
 
   static ChordDescriptor get diminishedAsCircle => _diminishedAsCircle;
   static final ChordDescriptor _diminishedAsCircle = ChordDescriptor._(
-      'diminishedAsCircle', MusicConstants.diminishedCircle, 'R m3 b5',
-      alias: diminished, nashville: '°');
+    'diminishedAsCircle',
+    MusicConstants.diminishedCircle,
+    'R m3 b5',
+    alias: diminished,
+    nashville: '°',
+  );
 
   static ChordDescriptor get augmented5 => _augmented5;
-  static final ChordDescriptor _augmented5 =
-  ChordDescriptor._('augmented5', 'aug5', 'R 3 5', nashville: '+', nashvilleRaise: true);
+  static final ChordDescriptor _augmented5 = ChordDescriptor._(
+    'augmented5',
+    'aug5',
+    'R 3 5',
+    nashville: '+',
+    nashvilleRaise: true,
+  );
 
   static ChordDescriptor get augmented7 => _augmented7;
-  static final ChordDescriptor _augmented7 =
-      ChordDescriptor._('augmented7', 'aug7', 'R 3 #5 m7', nashville: '+7', nashvilleRaise: true);
+  static final ChordDescriptor _augmented7 = ChordDescriptor._(
+    'augmented7',
+    'aug7',
+    'R 3 #5 m7',
+    nashville: '+7',
+    nashvilleRaise: true,
+  );
 
   static ChordDescriptor get augmented => _augmented;
   static final ChordDescriptor _augmented = ChordDescriptor._('augmented', 'aug', 'R 3 #5');
@@ -147,8 +175,12 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _major7 = ChordDescriptor._('major7', 'maj7', 'R 3 5 7', nashville: 'Δ');
 
   static ChordDescriptor get deltaMajor7 => _deltaMajor7;
-  static final ChordDescriptor _deltaMajor7 =
-      ChordDescriptor._('deltaMajor7', MusicConstants.greekCapitalDelta, 'R 3 5 7', alias: major7);
+  static final ChordDescriptor _deltaMajor7 = ChordDescriptor._(
+    'deltaMajor7',
+    MusicConstants.greekCapitalDelta,
+    'R 3 5 7',
+    alias: major7,
+  );
 
   static ChordDescriptor get capMajor7 => _capMajor7;
   static final ChordDescriptor _capMajor7 = ChordDescriptor._('capMajor7', 'Maj7', 'R 3 5 7', alias: major7);
@@ -166,16 +198,28 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _majorSeven = ChordDescriptor._('majorSeven', 'M7', 'R 3 5 7', nashville: 'Δ');
 
   static ChordDescriptor get suspendedSecond => _suspendedSecond;
-  static final ChordDescriptor _suspendedSecond =
-      ChordDescriptor._('suspendedSecond', '2', 'R 2 5', nashvilleRaise: true); //  alias for  suspended2
+  static final ChordDescriptor _suspendedSecond = ChordDescriptor._(
+    'suspendedSecond',
+    '2',
+    'R 2 5',
+    nashvilleRaise: true,
+  ); //  alias for  suspended2
 
   static ChordDescriptor get suspendedFourth => _suspendedFourth;
-  static final ChordDescriptor _suspendedFourth =
-      ChordDescriptor._('suspendedFourth', '4', 'R 4 5', nashvilleRaise: true); //  alias for suspended 4
+  static final ChordDescriptor _suspendedFourth = ChordDescriptor._(
+    'suspendedFourth',
+    '4',
+    'R 4 5',
+    nashvilleRaise: true,
+  ); //  alias for suspended 4
 
   static ChordDescriptor get power5 => _power5;
-  static final ChordDescriptor _power5 =
-      ChordDescriptor._('power5', '5', 'R 5', nashvilleRaise: true); //  3rd omitted typically to avoid distortions
+  static final ChordDescriptor _power5 = ChordDescriptor._(
+    'power5',
+    '5',
+    'R 5',
+    nashvilleRaise: true,
+  ); //  3rd omitted typically to avoid distortions
 
   static ChordDescriptor get minor7 => _minor7;
   static final ChordDescriptor _minor7 = ChordDescriptor._('minor7', 'm7', 'R m3 5 m7');
@@ -190,8 +234,12 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static final ChordDescriptor _capMajor = ChordDescriptor._('capMajor', 'M', 'R 3 5');
 
   static ChordDescriptor get dimMasculineOrdinalIndicator => _dimMasculineOrdinalIndicator;
-  static final ChordDescriptor _dimMasculineOrdinalIndicator =
-      ChordDescriptor._('dimMasculineOrdinalIndicator', 'º', 'R m3 b5', alias: diminished);
+  static final ChordDescriptor _dimMasculineOrdinalIndicator = ChordDescriptor._(
+    'dimMasculineOrdinalIndicator',
+    'º',
+    'R m3 b5',
+    alias: diminished,
+  );
 
   ///  Default chord descriptor.
   static ChordDescriptor get major => _major;
@@ -201,24 +249,29 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static const String _defaultStructure = 'R 3 5';
 
   ChordDescriptor()
-      : name = 'major',
-        shortName = '',
-        structure = _defaultStructure,
-        _chordComponents = ChordComponent.parse(_defaultStructure),
-        _nashville = '',
-        nashvilleRaise = false,
-        _alias = null;
+    : name = 'major',
+      shortName = '',
+      structure = _defaultStructure,
+      _chordComponents = ChordComponent.parse(_defaultStructure),
+      _nashville = '',
+      nashvilleRaise = false,
+      _alias = null;
 
   static ChordDescriptor defaultChordDescriptor() {
     return _major;
   }
 
-  ChordDescriptor._(this.name, this.shortName, this.structure,
-      {ChordDescriptor? alias, String? nashville, bool? nashvilleRaise})
-      : _alias = alias,
-        _nashville = nashville,
-        nashvilleRaise = nashvilleRaise ?? false,
-        _chordComponents = ChordComponent.parse(structure) {
+  ChordDescriptor._(
+    this.name,
+    this.shortName,
+    this.structure, {
+    ChordDescriptor? alias,
+    String? nashville,
+    bool? nashvilleRaise,
+  }) : _alias = alias,
+       _nashville = nashville,
+       nashvilleRaise = nashvilleRaise ?? false,
+       _chordComponents = ChordComponent.parse(structure) {
     _everyChordDescriptor.add(this);
   }
 
@@ -227,7 +280,7 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   }
 
   ///
-//    Parse the start of the given string for a chord description.
+  //    Parse the start of the given string for a chord description.
   static ChordDescriptor parse(MarkedString markedString) {
     if (markedString.isNotEmpty) {
       //  arbitrary cutoff, larger than the max short name
@@ -272,9 +325,9 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     return sb.toString();
   }
 
-//public final TreeSet<ChordComponent> getChordComponents() {
-//return chordComponents;
-//}
+  //public final TreeSet<ChordComponent> getChordComponents() {
+  //return chordComponents;
+  //}
 
   ChordDescriptor deAlias() {
     return _alias ?? this;
@@ -292,29 +345,31 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
 
   @override
   int compareTo(ChordDescriptor other) {
+    int ret;
+    if ((ret = shortName.compareTo(other.shortName)) != 0) return ret;
     return name.compareTo(other.name);
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name, //
-      };
+    'name': name, //
+  };
 
   factory ChordDescriptor.fromJson(Map<String, dynamic> json) {
     return ChordDescriptor.values.firstWhere((v) => v.name == json['name']);
   }
 
   //public static final ChordDescriptor[] getOtherChordDescriptorsOrdered() {
-//  return otherChordDescriptorsOrdered;
-//}
-//
-//public static final ChordDescriptor[] getPrimaryChordDescriptorsOrdered() {
-//  return primaryChordDescriptorsOrdered;
-//}
-//
-//
-//public static final ChordDescriptor[] getAllChordDescriptorsOrdered() {
-//  return allChordDescriptorsOrdered;
-//}
+  //  return otherChordDescriptorsOrdered;
+  //}
+  //
+  //public static final ChordDescriptor[] getPrimaryChordDescriptorsOrdered() {
+  //  return primaryChordDescriptorsOrdered;
+  //}
+  //
+  //
+  //public static final ChordDescriptor[] getAllChordDescriptorsOrdered() {
+  //  return allChordDescriptorsOrdered;
+  //}
 
   bool isMinor() {
     return _chordComponents.contains(ChordComponent.minorThird);
@@ -509,29 +564,29 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
     return _allChordDescriptorsOrdered;
   }
 
-//  static String generateGrammar() {
-//    StringBuffer sb = StringBuffer();
-//    sb.write('\t//\tChordDescriptor\n');
-//    sb.write('\t(');
-//    bool first = true;
-//    for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
-//      sb.write('\n\t\t');
-//      String s = chordDescriptor.shortName;
-//      if (s.length > 0) {
-//        if (first)
-//          first = false;
-//        else
-//          sb.write('| ');
-//        sb.write('\"");
-//        sb.write(s);
-//        sb.write('\"");
-//      }
-//      sb.write('\t//\t');
-//      sb.write(chordDescriptor.name);
-//    }
-//    sb.write('\n\t)');
-//    return sb.toString();
-//  }
+  //  static String generateGrammar() {
+  //    StringBuffer sb = StringBuffer();
+  //    sb.write('\t//\tChordDescriptor\n');
+  //    sb.write('\t(');
+  //    bool first = true;
+  //    for (ChordDescriptor chordDescriptor in ChordDescriptor.values) {
+  //      sb.write('\n\t\t');
+  //      String s = chordDescriptor.shortName;
+  //      if (s.length > 0) {
+  //        if (first)
+  //          first = false;
+  //        else
+  //          sb.write('| ');
+  //        sb.write('\"");
+  //        sb.write(s);
+  //        sb.write('\"");
+  //      }
+  //      sb.write('\t//\t');
+  //      sb.write(chordDescriptor.name);
+  //    }
+  //    sb.write('\n\t)');
+  //    return sb.toString();
+  //  }
   static int completenessTest() {
     var ret = 0;
 

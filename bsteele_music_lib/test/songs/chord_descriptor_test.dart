@@ -55,7 +55,7 @@ void main() {
         if (cd1 == cd2) {
           expect(compareValue, 0);
         } else {
-          expect(compareValue, cd2.name.compareTo(cd1.name));
+          expect(compareValue, cd2.shortName.compareTo(cd1.shortName));
         }
       }
     }

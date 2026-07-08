@@ -20,7 +20,6 @@ enum Accidental {
 
 /// Musical scale notes and their properties
 enum ScaleNote implements Comparable<ScaleNote> {
-  Ab(11, 'Ab', 'A♭', false, true, scaleNumber: 0, isSilent: false),
   A(0, 'A', 'A', false, false, scaleNumber: 0, isSilent: false),
   As(1, 'A#', 'A♯', true, false, scaleNumber: 0, isSilent: false),
   Bb(1, 'Bb', 'B♭', false, true, scaleNumber: 1, isSilent: false),
@@ -41,6 +40,7 @@ enum ScaleNote implements Comparable<ScaleNote> {
   Gb(9, 'Gb', 'G♭', false, true, scaleNumber: 6, isSilent: false),
   G(10, 'G', 'G', false, false, scaleNumber: 6, isSilent: false),
   Gs(11, 'G#', 'G♯', true, false, scaleNumber: 6, isSilent: false),
+  Ab(11, 'Ab', 'A♭', false, true, scaleNumber: 0, isSilent: false),
 
   /// As a convenience, silence is considered a scale note.
   X(0, 'X', 'X', false, false, scaleNumber: -1, isSilent: true); //  No scale note!  Used to avoid testing for null
@@ -101,6 +101,7 @@ enum ScaleNote implements Comparable<ScaleNote> {
   }
 
   //  all sharps
+  static List<ScaleNote> get sharps => _sharps;
   static final List<ScaleNote> _sharps = [
         .A,
         .As,
@@ -117,6 +118,7 @@ enum ScaleNote implements Comparable<ScaleNote> {
   ];
 
   //  all flats
+  static List<ScaleNote> get flats => _flats;
   static final List<ScaleNote> _flats = [
         .A,
         .Bb,
@@ -213,10 +215,11 @@ enum ScaleNote implements Comparable<ScaleNote> {
     }
   }
 
-  Map<String, dynamic> toJson() => {
-    'name': name, //
-    'accidental': accidental.toJson(), //  for restful api only?????
-  };
+  Map<String, dynamic> toJson() =>
+      {
+        'name': name, //
+        'accidental': accidental.toJson(), //  for restful api only?????
+      };
 
   factory ScaleNote.fromJson(Map<String, dynamic> json) {
     return ScaleNote.values.byName(json['name']);

@@ -121,6 +121,7 @@ class ScaleChord implements Comparable<ScaleChord> {
     return ret;
   }
 
+  static Set<ScaleChord> get easyGuitarChords => _getEasyGuitarChords();
   static final Set<ScaleChord> _easyGuitarChords = <ScaleChord>{};
 
   static Set<ScaleChord> _getEasyGuitarChords() {

@@ -5161,7 +5161,7 @@ Grid{
     );
 
     logger.i('scaleChordsUsed: ${a.scaleChordsUsed()}');
-    expect(a.scaleChordsUsed().toString(), '[A♭, B♭maj7, Bsus4, C, Cm, D, G, G5, G7b5, G7#9]');
+    expect(a.scaleChordsUsed().toString(), '[B♭maj7, Bsus4, C, Cm, D, G, G5, G7#9, G7b5, A♭]');
   });
 
   test('test short measures', () {
