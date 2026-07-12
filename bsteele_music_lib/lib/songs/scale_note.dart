@@ -227,7 +227,8 @@ enum ScaleNote implements Comparable<ScaleNote> {
 
   @override
   int compareTo(ScaleNote other) {
-    return index - other.index;
+    final int diff = index - other.index;
+    return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
   }
 
   const ScaleNote(this._halfStep,

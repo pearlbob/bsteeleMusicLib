@@ -61,6 +61,33 @@ void main() {
       }
     }
   });
+  test('pitch operators', () {
+    final Pitch G2 = Pitch.get(PitchEnum.G2);
+    final Pitch A2 = Pitch.get(PitchEnum.A2);
+    final Pitch A3 = Pitch.get(PitchEnum.A3);
+    final Pitch As2 = Pitch.get(PitchEnum.As2);
+    final Pitch Bb2 = Pitch.get(PitchEnum.Bb2);
+    final Pitch B2 = Pitch.get(PitchEnum.B2);
+    final Pitch C3 = Pitch.get(PitchEnum.C3);
+    final Pitch Cb3 = Pitch.get(PitchEnum.Cb3);
+
+    expect(A2 > A3, false);
+    expect(A2 < A3, true);
+    expect(A2 >= A3, false);
+    expect(A2 <= A3, true);
+    expect(A3 <= A3, true);
+    expect(A3 == A3, true);
+    expect(A3 < A3, false);
+    expect(A3 > A3, false);
+    expect(A3 >= A3, true);
+    expect(C3 >= Cb3, true);
+    expect(B2.aliasFor(Cb3), true);
+    expect(G2 < A2, true);
+
+    expect(As2 == Bb2, false); //  in the dart sense
+    expect(As2.aliasFor(Bb2), true); //  in pitch sense
+    expect(As2.aliasFor(As2), true);
+  });
 
   test('testParsing', () {
     //  print table

@@ -93,6 +93,8 @@ arguments:
 -bpm                list the bpm's used
 -chord              list the chord descriptors used
 -blues              look for blues songs
+-chordstats         chord statistics
+-chordlookup        chord lookup map
 -cjcsvread {file}   read a cj csv format the song metadata file
 -cjcsvwrite {file}  format the song data as a CSV version of the CJ ranking metadata
 -cjdiff             diff songlist
@@ -1170,6 +1172,117 @@ coerced to reflect the songlist's last modification for that song.
           File('/home/bob/junk/bsteeleMusicAppHistory_${Util.utcNow()}.xlsx')
             ..createSync(recursive: true)
             ..writeAsBytesSync(fileBytes!);
+          break;
+
+        case '-chordstats':
+          _addAllSongsFromFile(_allSongsFile);
+
+          _allSongPerformances.updateFromJsonString(
+            File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+          );
+          _allSongPerformances.loadSongs(allSongs);
+
+          {
+            //  add all the songs
+            Map<Song, int> singings = {};
+            for (var song in allSongs) {
+              singings[song] = 0;
+            }
+
+            //  sum them up
+            for (var performance in _allSongPerformances.allSongPerformanceHistory) {
+              if (performance.song != null) {
+                var v = singings[performance.song!];
+                singings[performance.song!] = (v ?? 0) + 1;
+              }
+            }
+
+            //  measures sung
+            Map<String, int> chordDescriptorUsage = {};
+            //  load all the descriptors
+            for (final chordDescriptor in ChordDescriptor.values) {
+              chordDescriptorUsage[chordDescriptor.name] = 0;
+            }
+            {
+              for (var song in allSongs) {
+                // final singingsCount = singings[song] ?? 0;
+                for (var lyricSection in song.lyricSections) {
+                  var chordSection = song.findChordSectionByLyricSection(lyricSection);
+                  chordSection = chordSection!;
+                  for (var phrase in chordSection.phrases) {
+                    for (int repeat = 0; repeat < phrase.repeatRowCount; repeat++) {
+                      for (int m = 0; m < phrase.phraseMeasureCount; m++) {
+                        var measure = phrase.phraseMeasureAt(m);
+                        measure = measure!;
+                        for (var chord in measure.chords) {
+                          final name = chord.scaleChord.chordDescriptor.name;
+                          // logger.i(
+                          //   '$singingsCount * $song: ${lyricSection.sectionVersion}  '
+                          //   '$repeat:  beats: ${chord.beats}:'
+                          //   ' $name',
+                          // );
+
+                          chordDescriptorUsage[name] = (chordDescriptorUsage[name] ?? 0) + 1;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              int totalSum = 0;
+              {
+                for (final value in chordDescriptorUsage.values) {
+                  totalSum += value;
+                }
+              }
+              print('');
+              print('// generated code by bsteele_music_util -chordstats');
+              print('// total usages: $totalSum');
+              print('static final Map<ChordDescriptor,double> usageFactors = {');
+
+              for (final name in chordDescriptorUsage.keys.sorted((a, b) {
+                return -(chordDescriptorUsage[a]?.compareTo(chordDescriptorUsage[b] ?? 0) ?? -1);
+              })) {
+                final int count = chordDescriptorUsage[name] ?? 0;
+                print(
+                  '  ${'ChordDescriptor.$name'.toString().padLeft(32)}'
+                  ': ${to6(1.0 + count / totalSum).padLeft(5)},'
+                  ' //  ${count.toString().padLeft(7)}',
+                );
+              }
+              print('};\n');
+            }
+          }
+          break;
+
+        case '-chordlookup':
+          print('chordLookup: ');
+
+          Map<List<ScaleNote>, ScaleChord> chordLookup = {};
+          MajorKey key = MajorKey.getDefault();
+
+          //  load complete chords
+          for (final flat in ScaleNote.flats) {
+            for (final descriptor in ChordDescriptor.values) {
+              final chord = ScaleChord(flat, descriptor);
+              final notes = chord.chordNotes(key);
+              // print('  $chord: $notes');
+              if (chordLookup[notes] == null) {
+                chordLookup[notes] = chord;
+              }
+            }
+          }
+          for (List<ScaleNote> list in chordLookup.keys.sorted((a, b) {
+            int ret;
+            if ((ret = a.length.compareTo(b.length)) != 0) return ret;
+            for (int i = 0; i < a.length; i++) {
+              if ((ret = a[i].compareTo(b[i])) != 0) return ret;
+            }
+            return 0;
+          })) {
+            print('$list: ${chordLookup[list]}');
+          }
+
           break;
 
         case '-f':

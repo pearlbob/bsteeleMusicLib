@@ -344,7 +344,13 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   }
 
   @override
-  int compareTo(ChordDescriptor other) {
+  int compareTo(final ChordDescriptor other) {
+    int ret;
+    if ((ret = shortName.compareTo(other.shortName)) != 0) return ret;
+    return name.compareTo(other.name);
+  }
+
+  int compareByPopularity(final ChordDescriptor other) {
     int ret;
     if ((ret = shortName.compareTo(other.shortName)) != 0) return ret;
     return name.compareTo(other.name);
@@ -602,4 +608,62 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   }
 
   static final SplayTreeSet<ChordDescriptor> _everyChordDescriptor = SplayTreeSet();
+
+  // generated code by bsteele_music_util -chordstats
+  // total usages: 849958
+  static final Map<ChordDescriptor, double> usageFactors = {
+    ChordDescriptor.major: 1.633743, //   538655
+    ChordDescriptor.minor: 1.166476, //   141498
+    ChordDescriptor.dominant7: 1.069749, //    59284
+    ChordDescriptor.minor7: 1.045354, //    38549
+    ChordDescriptor.major7: 1.019147, //    16274
+    ChordDescriptor.power5: 1.011896, //    10111
+    ChordDescriptor.add9: 1.010958, //     9314
+    ChordDescriptor.suspended2: 1.009840, //     8364
+    ChordDescriptor.major6: 1.007771, //     6605
+    ChordDescriptor.suspended4: 1.007183, //     6105
+    ChordDescriptor.dominant9: 1.002986, //     2538
+    ChordDescriptor.sevenSus4: 1.001733, //     1473
+    ChordDescriptor.minor9: 1.001697, //     1442
+    ChordDescriptor.major9: 1.001459, //     1240
+    ChordDescriptor.diminished: 1.001293, //     1099
+    ChordDescriptor.minor6: 1.001285, //     1092
+    ChordDescriptor.minor7b5: 1.000858, //      729
+    ChordDescriptor.augmented: 1.000769, //      654
+    ChordDescriptor.diminished7: 1.000493, //      419
+    ChordDescriptor.dominant11: 1.000492, //      418
+    ChordDescriptor.sevenSharp9: 1.000484, //      411
+    ChordDescriptor.suspended: 1.000458, //      389
+    ChordDescriptor.six9: 1.000407, //      346
+    ChordDescriptor.minor11: 1.000399, //      339
+    ChordDescriptor.majorSeven: 1.000394, //      335
+    ChordDescriptor.dominant13: 1.000315, //      268
+    ChordDescriptor.suspendedSecond: 1.000293, //      249
+    ChordDescriptor.msus4: 1.000280, //      238
+    ChordDescriptor.sevenSharp5: 1.000278, //      236
+    ChordDescriptor.sevenSus2: 1.000262, //      223
+    ChordDescriptor.suspendedFourth: 1.000247, //      210
+    ChordDescriptor.msus2: 1.000242, //      206
+    ChordDescriptor.mmaj7: 1.000220, //      187
+    ChordDescriptor.sevenFlat9: 1.000165, //      140
+    ChordDescriptor.madd9: 1.000104, //       88
+    ChordDescriptor.sevenFlat5: 1.000095, //       81
+    ChordDescriptor.maj: 1.000054, //       46
+    ChordDescriptor.sevenSus: 1.000053, //       45
+    ChordDescriptor.augmented7: 1.000035, //       30
+    ChordDescriptor.capMajor: 1.000019, //       16
+    ChordDescriptor.suspended7: 1.000009, //        8
+    ChordDescriptor.minor13: 1.000005, //        4
+    ChordDescriptor.augmented5: 1.000000, //        0
+    ChordDescriptor.jazz7b9: 1.000000, //        0
+    ChordDescriptor.capMajor7: 1.000000, //        0
+    ChordDescriptor.deltaMajor7: 1.000000, //        0
+    ChordDescriptor.dimMasculineOrdinalIndicator: 1.000000, //        0
+    ChordDescriptor.dimMasculineOrdinalIndicator7: 1.000000, //        0
+    ChordDescriptor.diminishedAsCircle: 1.000000, //        0
+    ChordDescriptor.maug: 1.000000, //        0
+    ChordDescriptor.majorNine: 1.000000, //        0
+    ChordDescriptor.nineSus4: 1.000000, //        0
+    ChordDescriptor.flat5: 1.000000, //        0
+  };
 }

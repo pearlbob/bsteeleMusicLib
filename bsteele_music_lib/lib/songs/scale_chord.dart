@@ -56,7 +56,7 @@ class ScaleChord implements Comparable<ScaleChord> {
     for (var component in _chordDescriptor.chordComponents) {
       ret.add(scaleNote.transpose(key, component.halfSteps));
     }
-    return ret;
+    return ret.toList(growable: false);
   }
 
   ScaleChord getAlias() {

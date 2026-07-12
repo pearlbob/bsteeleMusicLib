@@ -459,8 +459,24 @@ class Pitch implements Comparable<Pitch> {
     return number.compareTo(other.number);
   }
 
+  bool operator <(Pitch other) {
+    return number < other.number;
+  }
+
   bool operator <=(Pitch other) {
     return number <= other.number;
+  }
+
+  bool operator >=(Pitch other) {
+    return number >= other.number;
+  }
+
+  bool operator >(Pitch other) {
+    return number > other.number;
+  }
+
+  bool aliasFor(Pitch other) {
+    return number == other.number;
   }
 
   @override

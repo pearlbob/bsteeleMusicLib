@@ -363,7 +363,7 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
 
     //  find the key with the longest greatest parse to the major chord
     int maxScore = 0;
-    int minKeyValue = 2 ^ 63 - 1;
+    int minKeyValue = 1 << 63 - 1;
 
     //  find the key with the greatest parse to it's diatonic chords
     {
