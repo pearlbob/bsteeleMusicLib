@@ -637,6 +637,8 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
   /// That is, true if the key accidental is sharp.
   bool get isSharp => keyValue > 0;
 
+  bool get isFlat => !isSharp;
+
   String toJsonString() {
     return '"key":      $halfStep';
   }
