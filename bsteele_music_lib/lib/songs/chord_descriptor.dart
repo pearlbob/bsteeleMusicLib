@@ -425,9 +425,9 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   static List<ChordDescriptor> get primaryChordDescriptorsOrdered => _primaryChordDescriptorsOrdered;
   static final List<ChordDescriptor> _primaryChordDescriptorsOrdered = [
     //  most common
-    _major,
-    _minor,
-    _dominant7,
+    _major, //  112560
+    _minor, //  31564
+    _dominant7, //  9666
   ];
 
   static List<ChordDescriptor> get otherChordDescriptorsOrdered => _otherChordDescriptorsOrdered;

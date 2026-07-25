@@ -29,9 +29,13 @@ void main() {
     for (var e in PitchEnum.values) {
       var pitch = Pitch.get(e);
 
+      //  87: 4186.009044810  C8
+      //  12345678901234567890
       logger.i(
-        '${e.name.padLeft(4)}: ${pitch.toString().padLeft(4)}: ${pitch.number.toString().padLeft(2)}'
-        ': ${to16(pitch.frequency, pad: 21)}',
+        '${pitch.number.toString().padLeft(2)}:'
+                ' ${to9(pitch.frequency, pad: 9 + 5)}'
+                ' ${pitch.toString().padLeft(3)}'
+            .padLeft(25),
       );
 
       if (pitch.frequency != lastPitch.frequency) {
@@ -40,6 +44,27 @@ void main() {
         expect((fRatio - refRatio) < 2.23e-16, isTrue);
       }
       lastPitch = pitch;
+    }
+  });
+
+  test('piano print', () {
+    logger.i('piano notes:');
+    final StringBuffer sb = StringBuffer();
+    int count = 0;
+    for (final pitch in Pitch.flats) {
+      //  87: 4186.009044810  C8
+      //  1234567890123456789012
+      sb.write(
+        '${(pitch.number + 1).toString().padLeft(2)}:'
+                ' ${to9(pitch.frequency, pad: 9 + 5)}'
+                ' ${pitch.toMarkup().padLeft(3)}'
+            .padLeft(26),
+      );
+      count++;
+      if (count % 4 == 0) {
+        logger.i(sb.toString().trimRight());
+        sb.clear();
+      }
     }
   });
 
@@ -61,6 +86,7 @@ void main() {
       }
     }
   });
+
   test('pitch operators', () {
     final Pitch G2 = Pitch.get(PitchEnum.G2);
     final Pitch A2 = Pitch.get(PitchEnum.A2);
