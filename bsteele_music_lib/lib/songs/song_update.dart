@@ -24,7 +24,7 @@ enum SongUpdateState {
     return SongUpdateState.fromName(json['name']);
   }
 
-  factory SongUpdateState.fromName(final String name) {
+  factory SongUpdateState.fromName(String name) {
     //  workaround for old historical value: manualPlay
     if (name == 'manualPlay') return .playing;
     try {
@@ -265,7 +265,7 @@ class SongUpdate {
     return ret;
   }
 
-  static SongUpdate? fromJson(final String jsonString) {
+  static SongUpdate? fromJson(String jsonString) {
     logger.d(jsonString);
 
     if (jsonString.isEmpty) {
@@ -275,13 +275,13 @@ class SongUpdate {
     return fromJsonObject(_jsonDecoder.convert(jsonString));
   }
 
-  static SongUpdate? fromJsonObject(final dynamic json) {
+  static SongUpdate? fromJsonObject(dynamic json) {
     SongUpdate songUpdate = SongUpdate();
     songUpdate._updateFromJsonObject(json);
     return songUpdate;
   }
 
-  void _updateFromJsonObject(final dynamic json) {
+  void _updateFromJsonObject(dynamic json) {
     if (json is Map) {
       for (String name in json.keys) {
         var jv = json[name];
@@ -323,8 +323,9 @@ class SongUpdate {
         }
       }
       setMomentNumber(momentNumber);
-      songMoment =
-          song.songMoments.isNotEmpty ? song.songMoments[min(max(0, momentNumber), song.songMoments.length - 1)] : null;
+      songMoment = song.songMoments.isNotEmpty
+          ? song.songMoments[min(max(0, momentNumber), song.songMoments.length - 1)]
+          : null;
     }
   }
 

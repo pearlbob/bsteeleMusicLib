@@ -27,18 +27,17 @@ class Measure extends MeasureNode implements Comparable<Measure> {
 
   /// for subclasses
   Measure.zeroArgs()
-      : beatCount = MusicConstants.defaultBeatsPerBar,
-        beatsPerBar = MusicConstants.defaultBeatsPerBar,
-        chords = [];
+    : beatCount = MusicConstants.defaultBeatsPerBar,
+      beatsPerBar = MusicConstants.defaultBeatsPerBar,
+      chords = [];
 
   /// Convenience method for testing only
-  static Measure parseString(String s, final int beatsPerBar, {final bool endOfRow = false}) {
+  static Measure parseString(String s, int beatsPerBar, {bool endOfRow = false}) {
     return parse(MarkedString(s), beatsPerBar, null, endOfRow: endOfRow);
   }
 
   /// Parse a measure from the input string
-  static Measure parse(final MarkedString markedString, final int beatsPerBar, final Measure? priorMeasure,
-      {bool endOfRow = false}) {
+  static Measure parse(MarkedString markedString, int beatsPerBar, Measure? priorMeasure, {bool endOfRow = false}) {
     //  should not be white space, even leading, in a measure
     if (markedString.isEmpty) {
       throw 'no data to parse';
@@ -123,7 +122,7 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     return ret;
   }
 
-  void _allocateTheBeats(final int maxBeatCount) {
+  void _allocateTheBeats(int maxBeatCount) {
     // allocate the beats
     //  try to deal with over-specified beats: eg. in 4/4:  E....A...
     if (chords.isEmpty) {
@@ -282,11 +281,13 @@ class Measure extends MeasureNode implements Comparable<Measure> {
     var sb = StringBuffer();
     var keyOffset = key.getHalfStep();
     for (var chord in chords) {
-      sb.write('${NashvilleNote.byHalfStep(chord.scaleChord.scaleNote.halfStep - keyOffset)}'
-          '${chord.scaleChord.chordDescriptor.toNashville()}'
-          //  fixme: strict Nashville inversions call for fractions
-          '${chord.slashScaleNote != null ? '/${NashvilleNote.byHalfStep(chord.slashScaleNote!.halfStep - keyOffset)}' : ''}'
-          ' ');
+      sb.write(
+        '${NashvilleNote.byHalfStep(chord.scaleChord.scaleNote.halfStep - keyOffset)}'
+        '${chord.scaleChord.chordDescriptor.toNashville()}'
+        //  fixme: strict Nashville inversions call for fractions
+        '${chord.slashScaleNote != null ? '/${NashvilleNote.byHalfStep(chord.slashScaleNote!.halfStep - keyOffset)}' : ''}'
+        ' ',
+      );
     }
     return sb.toString().trimRight();
   }
@@ -336,10 +337,10 @@ class Measure extends MeasureNode implements Comparable<Measure> {
   }
 
   Map<String, dynamic> toJson() => {
-        'beatCount': beatCount,
-        'chords': chords.map((m) => m.toJson()).toList(growable: false),
-        'beatsPerBar': beatsPerBar
-      };
+    'beatCount': beatCount,
+    'chords': chords.map((m) => m.toJson()).toList(growable: false),
+    'beatsPerBar': beatsPerBar,
+  };
 
   factory Measure.fromJson(Map<String, dynamic> json) {
     return Measure(

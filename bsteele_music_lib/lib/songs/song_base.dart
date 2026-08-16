@@ -759,7 +759,7 @@ class SongBase {
 
   /// Validate the string representation of a potential lyrics entry for the current song.
   /// Return null if valid.  Return a marked string of the offending portion if not valid.
-  LyricParseException? validateLyrics(final String lyrics) {
+  LyricParseException? validateLyrics(String lyrics) {
     if (lyrics.isEmpty) {
       return null;
     }
@@ -794,7 +794,7 @@ class SongBase {
   }
 
   /// Parse the current string representation of the song's chords into the song internal structures.
-  void _parseChords(final String? chords) {
+  void _parseChords(String? chords) {
     _chords = chords ?? ''; //  safety only
     _clearCachedValues(); //  force lazy eval
 
@@ -843,7 +843,7 @@ class SongBase {
   }
 
   /// Will always return something, even if errors have to be commented out
-  List<MeasureNode> parseChordEntry(final String? entry) {
+  List<MeasureNode> parseChordEntry(String? entry) {
     List<MeasureNode> ret = [];
 
     if (entry != null) {
@@ -2627,7 +2627,7 @@ class SongBase {
     _isLyricsParseRequired = false;
   }
 
-  List<LyricSection> _parseLyricSections(final String lyrics, {bool strict = false}) {
+  List<LyricSection> _parseLyricSections(String lyrics, {bool strict = false}) {
     int state = 0;
     StringBuffer lyricsBuffer = StringBuffer();
     LyricSection? lyricSection;
@@ -3468,7 +3468,7 @@ class SongBase {
     return _beatsToMoment[songBeat]?.momentNumber;
   }
 
-  SongMoment? songMomentAtBeatNumber(final int beatNumber) {
+  SongMoment? songMomentAtBeatNumber(int beatNumber) {
     return _beatsToMoment[beatNumber];
   }
 
@@ -3487,7 +3487,7 @@ class SongBase {
     return null;
   }
 
-  SongMoment? getFirstSongMomentAtNextRow(final int givenMomentNumber) {
+  SongMoment? getFirstSongMomentAtNextRow(int givenMomentNumber) {
     //  forwards
     int limit = songMoments.length;
     int oldRow = getSongMoment(givenMomentNumber)?.row ?? 0;
@@ -3504,7 +3504,7 @@ class SongBase {
     return null;
   }
 
-  SongMoment? getFirstSongMomentAtPriorRow(final int givenMomentNumber) {
+  SongMoment? getFirstSongMomentAtPriorRow(int givenMomentNumber) {
     if (givenMomentNumber <= 0 || givenMomentNumber >= songMoments.length) {
       return null;
     }
@@ -3541,7 +3541,7 @@ class SongBase {
     return ret;
   }
 
-  int displayRowBeats(final int row) {
+  int displayRowBeats(int row) {
     if (_displayGrid.isEmpty) {
       return 0;
     }
@@ -3763,9 +3763,8 @@ class SongBase {
   }
 
   ///  the player and both display styles only differ by the display of the lyrics text
-  Grid<MeasureNode> _toBothGrid({bool? expanded}) {
+  Grid<MeasureNode> _toBothGrid() {
     var grid = Grid<MeasureNode>();
-    expanded = expanded ?? false;
 
     //  find the required chord columns across all sections in the song
     var lastColumn = 0;
@@ -4093,7 +4092,7 @@ class SongBase {
     return grid;
   }
 
-  (int, int) songMomentToRepeatMomentRange(final UserDisplayStyle userDisplayStyle, final int momentNumber) {
+  (int, int) songMomentToRepeatMomentRange(UserDisplayStyle userDisplayStyle, int momentNumber) {
     int min = momentNumber;
     int max = momentNumber;
     switch (userDisplayStyle) {
@@ -4120,7 +4119,7 @@ class SongBase {
     return (min, max);
   }
 
-  (int, int) songMomentToRepeatRowRange(final int momentNumber) {
+  (int, int) songMomentToRepeatRowRange(int momentNumber) {
     if (_songMomentNumberToRowRangeList.isNotEmpty &&
         momentNumber >= 0 &&
         momentNumber < _songMomentNumberToRowRangeList.length) {
@@ -4153,7 +4152,7 @@ class SongBase {
   /// Note that the output is in terms of measure nodes
   /// but the node grid is still difficult enough to do without
   /// complications from the flutter widgets.
-  Grid<MeasureNode> toDisplayGrid(final UserDisplayStyle userDisplayStyle) {
+  Grid<MeasureNode> toDisplayGrid(UserDisplayStyle userDisplayStyle) {
     _songMomentToGridCoordinate = [];
     _measureNodeIdToGridCoordinate = {};
 
@@ -4463,7 +4462,7 @@ class SongBase {
     return true;
   }
 
-  static String cleanChords(final String s) {
+  static String cleanChords(String s) {
     return s
         .replaceAll(badChordCharacterRegExp, '') //  parenthesis, braces, and leading beat counts
         .replaceAll(badChordCharacterRegExp2, ' X')
@@ -4501,9 +4500,9 @@ class SongBase {
   String get title => _title;
 
   set title(String s) {
-    s = _theToTheEnd(s);
-    if (_title != s) {
-      _title = s;
+    var endS = _theToTheEnd(s);
+    if (_title != endS) {
+      _title = endS;
       computeSongIdFromSongData();
     }
   }
@@ -4513,9 +4512,9 @@ class SongBase {
   String get artist => _artist;
 
   set artist(String s) {
-    s = _theToTheEnd(s);
-    if (_artist != s) {
-      _artist = s;
+    var endS = _theToTheEnd(s);
+    if (_artist != endS) {
+      _artist = endS;
       computeSongIdFromSongData();
     }
   }
@@ -4535,9 +4534,9 @@ class SongBase {
   String get coverArtist => _coverArtist;
 
   set coverArtist(String s) {
-    s = _theToTheEnd(s); //  fixme: null or empty?
-    if (_coverArtist != s) {
-      _coverArtist = s;
+    var endS = _theToTheEnd(s); //  fixme: null or empty?
+    if (_coverArtist != endS) {
+      _coverArtist = endS;
       computeSongIdFromSongData();
     }
   }

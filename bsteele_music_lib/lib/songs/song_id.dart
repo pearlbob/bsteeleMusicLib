@@ -9,7 +9,7 @@ class SongId implements Comparable<SongId> {
   /// For uninitialized values
   SongId.noArgs() : songIdAsString = '${prefix}Unknown_Song_by_Unknown';
 
-  SongId.fromString(final String s) : songIdAsString = s {
+  SongId.fromString(String s) : songIdAsString = s {
     assert(songIdRegExp.hasMatch(songIdAsString));
   }
 
@@ -19,8 +19,10 @@ class SongId implements Comparable<SongId> {
   /// Generated song id from input [title], [artist], [coverArtist].
   /// Previously generated id's will be reused.
   SongId.computeSongId(String? title, String? artist, String? coverArtist)
-      : songIdAsString = _findSongId('$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
-            '${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}');
+    : songIdAsString = _findSongId(
+        '$prefix${_toSongId(title)}_by_${_toSongId(artist)}'
+        '${coverArtist == null || coverArtist.isEmpty ? '' : '_coverBy_${_toSongId(coverArtist)}'}',
+      );
 
   /// Eliminate special characters. Replace spaces with an underscore.
   static String _toSongId(String? s) {
@@ -30,7 +32,7 @@ class SongId implements Comparable<SongId> {
     return correctSongId(s);
   }
 
-  static String correctSongId(final String s) {
+  static String correctSongId(String s) {
     return s
         .trim()
         .replaceAllMapped(notWordOrSpaceRegExp, (Match m) => '')
@@ -93,5 +95,8 @@ class SongId implements Comparable<SongId> {
 
   static final RegExp notWordOrSpaceRegExp = RegExp(r'[^\w\s]');
   static final RegExp dupUnderscoreOrSpaceRegExp = RegExp('[ _]+');
-  static final RegExp songIdRegExp = RegExp('$prefix' r'[\w_]+_by_[\w_]+(_coverBy_[\w_]+)?$');
+  static final RegExp songIdRegExp = RegExp(
+    '$prefix'
+    r'[\w_]+_by_[\w_]+(_coverBy_[\w_]+)?$',
+  );
 }

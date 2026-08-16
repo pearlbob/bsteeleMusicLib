@@ -12,17 +12,17 @@ final guitarNotThisString = -1;
 /// note: they source json file format is terrible.  Odd stuff is done to get around this.
 class GuitarChord {
   GuitarChord.unknown()
-      : name = 'unknown',
-        positions = List<int>.generate(guitarStringCount, (i) {
-          return guitarNotThisString;
-        }),
-        fingerings = List<int>.generate(guitarStringCount, (i) {
-          return 0;
-        });
+    : name = 'unknown',
+      positions = List<int>.generate(guitarStringCount, (i) {
+        return guitarNotThisString;
+      }),
+      fingerings = List<int>.generate(guitarStringCount, (i) {
+        return 0;
+      });
 
   GuitarChord(this.name, this.positions, this.fingerings);
 
-  factory GuitarChord.fromJson(final Map<String, dynamic> json) {
+  factory GuitarChord.fromJson(Map<String, dynamic> json) {
     if (json.isNotEmpty) {
       var key = json.keys.first;
       if (key == 'name') {
@@ -34,7 +34,7 @@ class GuitarChord {
     return GuitarChord.unknown();
   }
 
-  static List<GuitarChord> fromJsonList(final Map<String, dynamic> json) {
+  static List<GuitarChord> fromJsonList(Map<String, dynamic> json) {
     List<GuitarChord> ret = [];
     for (var key in json.keys) {
       if (key.contains('/')) {
@@ -50,7 +50,7 @@ class GuitarChord {
     return ret;
   }
 
-  static GuitarChord _fromJsonPartial(final String name, final Map<String, dynamic> json) {
+  static GuitarChord _fromJsonPartial(String name, Map<String, dynamic> json) {
     var positions = List<int>.generate(guitarStringCount, (i) {
       return guitarNotThisString;
     });
@@ -73,8 +73,11 @@ class GuitarChord {
           case 'fingerings':
             var optionFingerings = json[param];
             if (optionFingerings.isNotEmpty) {
-              var optionFingering = optionFingerings.first is List //
-                  ? optionFingerings.first //  original input
+              var optionFingering =
+                  optionFingerings.first
+                      is List //
+                  ? optionFingerings
+                        .first //  original input
                   : optionFingerings;
               assert(optionFingering.length == guitarStringCount);
               for (int i = 0; i < guitarStringCount; i++) {
@@ -97,10 +100,10 @@ class GuitarChord {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'positions': positions.map((c) => c).toList(),
-        'fingerings': fingerings.map((c) => c).toList(),
-      };
+    'name': name,
+    'positions': positions.map((c) => c).toList(),
+    'fingerings': fingerings.map((c) => c).toList(),
+  };
 
   @override
   String toString() {

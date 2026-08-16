@@ -95,7 +95,7 @@ class NameValueMatcher extends NameValue {
 
   NameValueMatcher.anyValue(String name) : this(name, '', type: NameValueType.anyValue);
 
-  bool testAll(final Iterable<NameValue> nameValues) {
+  bool testAll(Iterable<NameValue> nameValues) {
     switch (type) {
       case NameValueType.value:
         //  name and value match required
@@ -125,7 +125,7 @@ class NameValueMatcher extends NameValue {
     return false;
   }
 
-  bool test(final NameValue nameValue) {
+  bool test(NameValue nameValue) {
     switch (type) {
       case NameValueType.value:
         //  name and value match required
@@ -157,7 +157,7 @@ class NameValueMatcher extends NameValue {
 
 //  a filter for name values that match the initial given values
 class NameValueFilter {
-  NameValueFilter(final Iterable<NameValueMatcher> nameValueMatchers) {
+  NameValueFilter(Iterable<NameValueMatcher> nameValueMatchers) {
     Map<String, SplayTreeSet<NameValueMatcher>> map = {};
     for (var nv in nameValueMatchers) {
       var mappedList = map[nv.name];
@@ -168,7 +168,7 @@ class NameValueFilter {
     filterMap = map;
   }
 
-  bool isOr(final NameValue nameValue) {
+  bool isOr(NameValue nameValue) {
     var values = filterMap[nameValue.name];
     return values != null && values.length > 1 && test(nameValue);
   }
@@ -182,7 +182,7 @@ class NameValueFilter {
     return ret;
   }
 
-  bool testAll(final Iterable<NameValue>? nameValues) {
+  bool testAll(Iterable<NameValue>? nameValues) {
     if (nameValues == null || nameValues.isEmpty) {
       return false;
     }
@@ -204,7 +204,7 @@ class NameValueFilter {
     return true;
   }
 
-  bool test(final NameValue nameValue) {
+  bool test(NameValue nameValue) {
     SplayTreeSet<NameValueMatcher>? matchers = filterMap[nameValue.name];
     if (matchers == null) {
       return false;
@@ -352,16 +352,17 @@ class SongIdMetadata implements Comparable<SongIdMetadata> {
 }
 
 String mapYearToDecade(int year) {
-  if (year < 0) {
-    year = 0;
+  var y = year;
+  if (y < 0) {
+    y = 0;
   }
-  if (year < 1940) {
+  if (y < 1940) {
     return 'prior to 1940';
   }
-  if (year >= 2030) {
-    return '${year ~/ 10}0\'s';
+  if (y >= 2030) {
+    return '${y ~/ 10}0\'s';
   }
-  return '${(year ~/ 10) % 10}0\'s';
+  return '${(y ~/ 10) % 10}0\'s';
 }
 
 /// system metadata registry that is a set of id metadata
@@ -401,11 +402,11 @@ class SongMetadata {
     }
   }
 
-  static void renameSong(final Song oldSong, final Song newSong) {
+  static void renameSong(Song oldSong, Song newSong) {
     return renameSongId(oldSong.songId.songIdAsString, newSong);
   }
 
-  static void renameSongId(final String oldSongIdAsString, final Song newSong) {
+  static void renameSongId(String oldSongIdAsString, Song newSong) {
     HashMap<String, Song> repairs = HashMap();
     for (var songIdMetadata in _singleton._idMetadata.where((idMetadata) => idMetadata.id == oldSongIdAsString)) {
       repairs[songIdMetadata.id] = newSong;
@@ -442,11 +443,11 @@ class SongMetadata {
     isDirty = true;
   }
 
-  static SongIdMetadata? songIdMetadata(final Song song) {
+  static SongIdMetadata? songIdMetadata(Song song) {
     return _singleton._idMetadata.lookup(SongIdMetadata(song.songId.toString()));
   }
 
-  static SongIdMetadata? byId(final String id) {
+  static SongIdMetadata? byId(String id) {
     return _singleton._idMetadata.lookup(SongIdMetadata(id));
   }
 
@@ -477,14 +478,14 @@ class SongMetadata {
     }
   }
 
-  static void removeSongIdMetadata(final SongIdMetadata songIdMetadata) {
+  static void removeSongIdMetadata(SongIdMetadata songIdMetadata) {
     if (_singleton._idMetadata.contains(songIdMetadata)) {
       isDirty = true;
       _singleton._idMetadata.remove(songIdMetadata);
     }
   }
 
-  static void addSongIdMetadata(final SongIdMetadata songIdMetadata) {
+  static void addSongIdMetadata(SongIdMetadata songIdMetadata) {
     if (!_singleton._idMetadata.contains(songIdMetadata)) {
       isDirty = true;
       _singleton._idMetadata.add(songIdMetadata);
@@ -540,11 +541,11 @@ class SongMetadata {
     return ret;
   }
 
-  static SplayTreeSet<NameValue> songMetadata(final Song song, final String name) {
+  static SplayTreeSet<NameValue> songMetadata(Song song, String name) {
     return songMetadataAt(song.songId.toString(), name);
   }
 
-  static SplayTreeSet<NameValue> songMetadataAt(final String id, final String name) {
+  static SplayTreeSet<NameValue> songMetadataAt(String id, String name) {
     var set = where(idIs: id, nameIs: name);
     // assert(set.length == 1); fixme: why was this here?
     var ret = SplayTreeSet<NameValue>();

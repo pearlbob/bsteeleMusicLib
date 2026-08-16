@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 
 import '../custom_matchers.dart';
 
-Chord chordByScaleChordAndBeats(final ScaleChord scaleChord, final int beats, final int beatsPerBar) {
+Chord chordByScaleChordAndBeats(ScaleChord scaleChord, int beats, int beatsPerBar) {
   return Chord(scaleChord, beats, beatsPerBar, null, .defaultValue, (beats == beatsPerBar));
 }
 
@@ -288,8 +288,7 @@ void main() {
       expect(beatsPerBar, m.beatCount);
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
-      expect(chord,
-          CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(.A), beatsPerBar, beatsPerBar)));
+      expect(chord, CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(.A), beatsPerBar, beatsPerBar)));
     }
 
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
@@ -302,8 +301,7 @@ void main() {
       int beat = beatsPerBar ~/ 2;
       Chord refChord = chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(.B), beat, beatsPerBar);
       expect(chord0, CompareTo(refChord));
-      expect(
-          chord1, CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(.C), beat, beatsPerBar)));
+      expect(chord1, CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(.C), beat, beatsPerBar)));
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('E#m7. ', beatsPerBar);
@@ -313,9 +311,15 @@ void main() {
       expect(1, m.chords.length);
       Chord chord0 = m.chords[0];
       expect(
-          chord0,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Es, ChordDescriptor.minor7), 2, beatsPerBar)));
+        chord0,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Es, ChordDescriptor.minor7),
+            2,
+            beatsPerBar,
+          ),
+        ),
+      );
     }
     for (int beatsPerBar = 2; beatsPerBar <= 4; beatsPerBar += 2) {
       m = Measure.parseString('E#m7Gb7', beatsPerBar);
@@ -327,17 +331,25 @@ void main() {
       int beat1 = beatsPerBar ~/ 2;
       int beat0 = beatsPerBar - beat1;
       expect(
-          chord0,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Es, ChordDescriptor.minor7),
-              beat0,
-              beatsPerBar)));
+        chord0,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Es, ChordDescriptor.minor7),
+            beat0,
+            beatsPerBar,
+          ),
+        ),
+      );
       expect(
-          chord1,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Gb, ChordDescriptor.dominant7),
-              beat1,
-              beatsPerBar)));
+        chord1,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Gb, ChordDescriptor.dominant7),
+            beat1,
+            beatsPerBar,
+          ),
+        ),
+      );
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('F#m7.Asus4', beatsPerBar);
@@ -349,17 +361,25 @@ void main() {
       int beat0 = 2;
       int beat1 = 1;
       expect(
-          chord0,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Fs, ChordDescriptor.minor7),
-              beat0,
-              beatsPerBar)));
+        chord0,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Fs, ChordDescriptor.minor7),
+            beat0,
+            beatsPerBar,
+          ),
+        ),
+      );
       expect(
-          chord1,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.A, ChordDescriptor.suspended4),
-              beat1,
-              beatsPerBar)));
+        chord1,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.A, ChordDescriptor.suspended4),
+            beat1,
+            beatsPerBar,
+          ),
+        ),
+      );
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('F#m7.A9sus4', beatsPerBar);
@@ -371,17 +391,25 @@ void main() {
       int beat0 = 2;
       int beat1 = 1;
       expect(
-          chord0,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Fs, ChordDescriptor.minor7),
-              beat0,
-              beatsPerBar)));
+        chord0,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.Fs, ChordDescriptor.minor7),
+            beat0,
+            beatsPerBar,
+          ),
+        ),
+      );
       expect(
-          chord1,
-          CompareTo(chordByScaleChordAndBeats(
-              ScaleChord.fromScaleNoteEnumAndChordDescriptor(.A, ChordDescriptor.nineSus4),
-              beat1,
-              beatsPerBar)));
+        chord1,
+        CompareTo(
+          chordByScaleChordAndBeats(
+            ScaleChord.fromScaleNoteEnumAndChordDescriptor(.A, ChordDescriptor.nineSus4),
+            beat1,
+            beatsPerBar,
+          ),
+        ),
+      );
     }
 
     ChordAnticipationOrDelay delayNone = .get(.none);
@@ -391,29 +419,22 @@ void main() {
       expect(beatsPerBar, m.beatCount);
       expect(1, m.chords.length);
       Chord chord = m.chords[0];
-      expect(
-          chord,
-          CompareTo(Chord(
-              ScaleChord.fromScaleNoteEnum(.A), beatsPerBar, beatsPerBar, .Gs, delayNone, true)));
+      expect(chord, CompareTo(Chord(ScaleChord.fromScaleNoteEnum(.A), beatsPerBar, beatsPerBar, .Gs, delayNone, true)));
     }
     for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
       m = Measure.parseString('C/F#.G', beatsPerBar);
       _jsonMeasureTest(m);
-      expect(
-        m.beatCount,
-        3,
-      );
+      expect(m.beatCount, 3);
       expect(2, m.chords.length);
       Chord chord0 = m.chords[0];
       Chord chord1 = m.chords[1];
       int beat0 = 2;
       int beat1 = 1;
+      expect(chord0, CompareTo(Chord(ScaleChord.fromScaleNoteEnum(.C), beat0, beatsPerBar, .Fs, delayNone, true)));
       expect(
-          chord0,
-          CompareTo(
-              Chord(ScaleChord.fromScaleNoteEnum(.C), beat0, beatsPerBar, .Fs, delayNone, true)));
-      expect(
-          chord1, CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.G), beat1, beatsPerBar)));
+        chord1,
+        CompareTo(chordByScaleChordAndBeats(ScaleChord.fromScaleNoteEnum(ScaleNote.G), beat1, beatsPerBar)),
+      );
     }
     {
       for (int beatsPerBar = 3; beatsPerBar <= 4; beatsPerBar++) {
@@ -486,9 +507,15 @@ void main() {
         expect(1, m.chords.length);
         Chord chord0 = m.chords[0];
         expect(
-            chord0,
-            CompareTo(chordByScaleChordAndBeats(
-                ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Es, ChordDescriptor.minor7), 3, beatsPerBar)));
+          chord0,
+          CompareTo(
+            chordByScaleChordAndBeats(
+              ScaleChord.fromScaleNoteEnumAndChordDescriptor(ScaleNote.Es, ChordDescriptor.minor7),
+              3,
+              beatsPerBar,
+            ),
+          ),
+        );
       } catch (e) {
         //  parseString failed
         if (beatsPerBar < 3) continue;
@@ -888,7 +915,7 @@ void main() {
     expect(measure.getChordAtBeat(3), expected);
     expect(measure.getChordAtBeat(4), null);
 
-/*
+    /*
     beats  bpb    forms, in order of preference
     1       4     1A
     2       4     A. 2A 2AB
@@ -912,8 +939,14 @@ void main() {
     measure = _shortMeasureTest(beatsPerBar, 2, 'A.', 'A.');
     expect(measure.hasReducedBeats, isTrue);
     expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
-    expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
-        ChordAnticipationOrDelay.defaultValue, true);
+    expected = Chord(
+      ScaleChord(ScaleNote.A, ChordDescriptor.major),
+      2,
+      beatsPerBar,
+      null,
+      ChordAnticipationOrDelay.defaultValue,
+      true,
+    );
     expect(measure.getChordAtBeat(0), expected);
     expect(measure.getChordAtBeat(1), expected);
     measure = Measure.parseString('A.', beatsPerBar);
@@ -926,8 +959,14 @@ void main() {
     expect(measure.requiresNashvilleBeats, !Measure.reducedNashvilleDots);
     expect(measure.beatCount, 2);
     expect(measure.toMarkup(), 'A.');
-    expected = Chord(ScaleChord(ScaleNote.A, ChordDescriptor.major), 2, beatsPerBar, null,
-        ChordAnticipationOrDelay.defaultValue, true);
+    expected = Chord(
+      ScaleChord(ScaleNote.A, ChordDescriptor.major),
+      2,
+      beatsPerBar,
+      null,
+      ChordAnticipationOrDelay.defaultValue,
+      true,
+    );
     expect(measure.getChordAtBeat(0), expected);
     expect(measure.getChordAtBeat(1), expected);
     measure = Measure.parseString('A.', beatsPerBar);
@@ -1163,7 +1202,7 @@ void main() {
   });
 }
 
-Measure _shortMeasureTest(int beatsPerBar, int beats, String input, String expected, {final String comment = ''}) {
+Measure _shortMeasureTest(int beatsPerBar, int beats, String input, String expected, {String comment = ''}) {
   var log = '$beatsPerBar, $beats, "$input", "$expected", ${comment.isEmpty ? '' : '"$comment"'}';
   logger.i(log);
   var measure = Measure.parseString(input, beatsPerBar);
@@ -1186,7 +1225,7 @@ _shortMeasureTestJSON(int beatsPerBar, String input, String expected) {
   _jsonMeasureTest(measure);
 }
 
-_jsonMeasureTest(final Measure measure) {
+_jsonMeasureTest(Measure measure) {
   //  test the restful json
   final encoded = measure.toJson();
   // logger.i('$measure: $encoded');

@@ -26,10 +26,10 @@ class Util {
 
   static String userHome() {
     Map<String, String> envVars = Platform.environment;
-    if ( Platform.isLinux) {
+    if (Platform.isLinux) {
       return '/home/${envVars['USER'] ?? 'unknown'}';
     }
-    if (Platform.isMacOS ) {
+    if (Platform.isMacOS) {
       return '/Users/${envVars['USER'] ?? 'unknown'}';
     }
     return '';
@@ -43,11 +43,11 @@ class Util {
     if (s.isEmpty) {
       return '';
     }
-    s = s.replaceAll("'", "'").replaceAll('\n', "\\n'\n'");
-    return "'$s'";
+    var ret = s.replaceAll("'", "'").replaceAll('\n', "\\n'\n'");
+    return "'$ret'";
   }
 
-  static num? limit(final num? n, final num? limit1, final num? limit2) {
+  static num? limit(num? n, num? limit1, num? limit2) {
     if (n == null) {
       return n;
     }
@@ -64,19 +64,19 @@ class Util {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
-  static int intLimit(final int n, final int limit1, final int limit2) {
+  static int intLimit(int n, int limit1, int limit2) {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
-  static int indexLimit(final int n, final List list) {
+  static int indexLimit(int n, List list) {
     return intLimit(n, 0, list.isEmpty ? 0 : list.length - 1); //  fixme: return 0 on empty list?
   }
 
-  static double doubleLimit(final double n, final double limit1, final double limit2) {
+  static double doubleLimit(double n, double limit1, double limit2) {
     return min(max(n, min(limit1, limit2)), max(limit1, limit2)); //  cope with backwards limits, i.e. limit1 > limit2
   }
 
-  static String readableJson(final String json) {
+  static String readableJson(String json) {
     return json.replaceAll(_jsonJunkRegexp, '').replaceAll(',\n', '\n');
   }
 
@@ -178,9 +178,11 @@ class Util {
   }
 
   static String camelCaseToSpace(String s) {
-    return firstToUpper(s.replaceAllMapped(_singleCapRegExp, (Match match) {
-      return ' ${match.group(1)!}';
-    }).trimLeft());
+    return firstToUpper(
+      s.replaceAllMapped(_singleCapRegExp, (Match match) {
+        return ' ${match.group(1)!}';
+      }).trimLeft(),
+    );
   }
 
   static String underScoresToCamelCase(String s) {
@@ -190,9 +192,11 @@ class Util {
   }
 
   static String underScoresToSpaceUpperCase(String s) {
-    return firstToUpper(s.replaceAllMapped(_underScoreRegExp, (Match match) {
-      return ' ${match.group(1)!.toUpperCase()}';
-    }).trimLeft());
+    return firstToUpper(
+      s.replaceAllMapped(_underScoreRegExp, (Match match) {
+        return ' ${match.group(1)!.toUpperCase()}';
+      }).trimLeft(),
+    );
   }
 
   static String jsonEncodeNewLines(String s) {

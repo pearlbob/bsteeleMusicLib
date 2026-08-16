@@ -46,7 +46,7 @@ class ChordSectionGridData {
 
   SectionVersion get sectionVersion => chordSection.sectionVersion;
 
-  String transpose(final music_key.MajorKey key, final int halfSteps) {
+  String transpose(music_key.MajorKey key, int halfSteps) {
     if (isSection) {
       return chordSectionLocation.sectionVersion.toString();
     }

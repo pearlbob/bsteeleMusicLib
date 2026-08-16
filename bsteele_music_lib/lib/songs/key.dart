@@ -334,7 +334,7 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
     return Key.parentKeysByHalfStep()[halfStep % halfStepsPerOctave];
   }
 
-  static MajorKey getKeyByScaleNote(final ScaleNote scaleNote) {
+  static MajorKey getKeyByScaleNote(ScaleNote scaleNote) {
     var keyEnums = MajorKeyEnum.values.where((e) => MajorKey.get(e).keyScaleNote == scaleNote);
     if (keyEnums.isEmpty) return MajorKey.getDefault();
     return MajorKey.get(keyEnums.first);
@@ -469,7 +469,7 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
 
   /// Return the required accidental for this pitch in terms of the key.
   /// Note that a null return means that no accidental should be applied.
-  Accidental? accidental(final Pitch pitch) {
+  Accidental? accidental(Pitch pitch) {
     //  adjust the pitch to the key's accidental
     var scaleNote = mappedPitch(pitch).scaleNote;
 
@@ -500,7 +500,7 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
   }
 
   /// Return an expression of the pitch expressed in terms of the key.
-  String accidentalString(final Pitch pitch) {
+  String accidentalString(Pitch pitch) {
     //  adjust the pitch to the key's accidental
     ScaleNote scaleNote = mappedPitch(pitch).scaleNote;
 
@@ -574,7 +574,7 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
   }
 
   /// Return the scale note offset by the given half steps in the accidental required by this key.
-  ScaleNote getScaleNoteEnum3ByHalfStep(final int halfSteps) {
+  ScaleNote getScaleNoteEnum3ByHalfStep(int halfSteps) {
     ScaleNote ret = _getScaleNoteEnumByHalfStepNoAdjustment(halfSteps);
     //  deal with exceptions at +-6
     if (keyValue == 6 && ret == .F) {
@@ -862,7 +862,7 @@ final class MinorKey implements Key, Comparable<MinorKey> {
 
   MinorKey._(this.minorKeyEnum) : _majorKeyEnum = MajorKeyEnum.values[minorKeyEnum.index];
 
-  static MinorKey get(final MinorKeyEnum ke) {
+  static MinorKey get(MinorKeyEnum ke) {
     if (_minorMap == null) {
       _minorMap = {};
       for (var ke in MinorKeyEnum.values) {
@@ -884,7 +884,7 @@ final class MinorKey implements Key, Comparable<MinorKey> {
   ScaleNote get keyMinorScaleNote => _majorKey.keyMinorScaleNote;
 
   @override
-  int compareTo(final MinorKey other) {
+  int compareTo(MinorKey other) {
     return minorKeyEnum.index.compareTo(other.minorKeyEnum.index);
   }
 

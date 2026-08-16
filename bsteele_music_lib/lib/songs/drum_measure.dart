@@ -5,12 +5,7 @@ import '../app_logger.dart';
 import '../util/util.dart';
 import 'song.dart';
 
-enum DrumSubBeatEnum {
-  subBeat,
-  subBeatE,
-  subBeatAnd,
-  subBeatAndA,
-}
+enum DrumSubBeatEnum { subBeat, subBeatE, subBeatAnd, subBeatAndA }
 
 final drumSubBeatsPerBeat = DrumSubBeatEnum.values.length;
 const maxDrumBeatsPerBar = 6; //  fixme eventually
@@ -24,14 +19,7 @@ String drumShortSubBeatName(DrumSubBeatEnum drumSubBeatEnum) {
 
 /// Map from beats counting from 1 to counting from 0
 //  Must be in order!
-enum DrumBeat {
-  beat1,
-  beat2,
-  beat3,
-  beat4,
-  beat5,
-  beat6;
-}
+enum DrumBeat { beat1, beat2, beat3, beat4, beat5, beat6 }
 
 enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
   closedHighHat,
@@ -50,8 +38,8 @@ enum DrumTypeEnum implements Comparable<DrumTypeEnum> {
 /// Descriptor of a single drum in the measure.
 class DrumPart implements Comparable<DrumPart> {
   DrumPart(this.drumType, {required beats})
-      : _beats = beatsLimit(beats),
-        _beatSelection = List.filled(maxDrumBeatsPerBar * drumSubBeatsPerBeat, false, growable: false) {
+    : _beats = beatsLimit(beats),
+      _beatSelection = List.filled(maxDrumBeatsPerBar * drumSubBeatsPerBeat, false, growable: false) {
     assert(beats >= 2);
     assert(beats <= maxDrumBeatsPerBar);
   }
@@ -72,7 +60,7 @@ class DrumPart implements Comparable<DrumPart> {
     }
   }
 
-  List<double> timings(final double t0, final int bpm, final int beats) {
+  List<double> timings(double t0, int bpm, int beats) {
     List<double> ret = [];
     double offsetPeriod = 60.0 / (bpm * drumSubBeatsPerBeat);
     if (bpm > 0) {
@@ -89,11 +77,11 @@ class DrumPart implements Comparable<DrumPart> {
   }
 
   /// Count from zero
-  bool beatSelection(final DrumBeat beat, DrumSubBeatEnum subBeat) {
+  bool beatSelection(DrumBeat beat, DrumSubBeatEnum subBeat) {
     return _beatSelection[_offset(beat.index, subBeat)];
   }
 
-  void setBeatSelection(final DrumBeat beat, DrumSubBeatEnum subBeat, bool b) {
+  void setBeatSelection(DrumBeat beat, DrumSubBeatEnum subBeat, bool b) {
     _beatSelection[_offset(beat.index, subBeat)] = b;
   }
 
@@ -120,11 +108,11 @@ class DrumPart implements Comparable<DrumPart> {
     return ret;
   }
 
-  void addBeat(final DrumBeat beat, {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
+  void addBeat(DrumBeat beat, {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
     setBeatSelection(beat, subBeat, true);
   }
 
-  void removeBeat(final DrumBeat beat, {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
+  void removeBeat(DrumBeat beat, {DrumSubBeatEnum subBeat = DrumSubBeatEnum.subBeat}) {
     setBeatSelection(beat, subBeat, false);
   }
 
@@ -194,8 +182,11 @@ class DrumPart implements Comparable<DrumPart> {
       if (drumType != null && beats > 0) {
         var ret = DrumPart(drumType, beats: beats);
         for (var beat in selections) {
-          ret.setBeatSelection(DrumBeat.values[beat ~/ DrumSubBeatEnum.values.length],
-              DrumSubBeatEnum.values[beat % DrumSubBeatEnum.values.length], true);
+          ret.setBeatSelection(
+            DrumBeat.values[beat ~/ DrumSubBeatEnum.values.length],
+            DrumSubBeatEnum.values[beat % DrumSubBeatEnum.values.length],
+            true,
+          );
         }
         return ret;
       }
@@ -457,13 +448,13 @@ class DrumParts implements Comparable<DrumParts> {
       return true;
     }
     if (!(other is DrumParts &&
-            runtimeType == other.runtimeType &&
-            name == other.name &&
-            _beats == other._beats &&
-            _volume == other._volume
-        //  doesn't cope with matching empty part with a null part
-        //&& deepUnorderedCollectionEquality.equals(parts.keys, other.parts.keys)
-        )) {
+        runtimeType == other.runtimeType &&
+        name == other.name &&
+        _beats == other._beats &&
+        _volume == other._volume
+    //  doesn't cope with matching empty part with a null part
+    //&& deepUnorderedCollectionEquality.equals(parts.keys, other.parts.keys)
+    )) {
       return false;
     }
 
@@ -537,44 +528,64 @@ class DrumPartsList {
   addDefaults() {
     for (var drumPart in [
       //  minimum default entries
-      DrumParts(name: DrumPartsList.defaultName, beats: 6, parts: [
-        DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
-          ..addBeat(DrumBeat.beat1)
-          ..addBeat(DrumBeat.beat3)
-          ..addBeat(DrumBeat.beat5),
-        DrumPart(DrumTypeEnum.snare, beats: 6)
-          ..addBeat(DrumBeat.beat2)
-          ..addBeat(DrumBeat.beat4)
-          ..addBeat(DrumBeat.beat6),
-      ]),
-      DrumParts(name: '${DrumPartsList.defaultName}2', beats: 2, parts: [
-        DrumPart(DrumTypeEnum.closedHighHat, beats: 2)..addBeat(DrumBeat.beat1),
-        DrumPart(DrumTypeEnum.snare, beats: 2)..addBeat(DrumBeat.beat2),
-      ]),
-      DrumParts(name: '${DrumPartsList.defaultName}3', beats: 3, parts: [
-        DrumPart(DrumTypeEnum.closedHighHat, beats: 3)
-          ..addBeat(DrumBeat.beat2)
-          ..addBeat(DrumBeat.beat3),
-        DrumPart(DrumTypeEnum.snare, beats: 3)..addBeat(DrumBeat.beat1),
-      ]),
-      DrumParts(name: '${DrumPartsList.defaultName}4', beats: 4, parts: [
-        DrumPart(DrumTypeEnum.closedHighHat, beats: 4)
-          ..addBeat(DrumBeat.beat1)
-          ..addBeat(DrumBeat.beat3),
-        DrumPart(DrumTypeEnum.snare, beats: 4)
-          ..addBeat(DrumBeat.beat2)
-          ..addBeat(DrumBeat.beat4),
-      ]),
-      DrumParts(name: '${DrumPartsList.defaultName}6', beats: 6, parts: [
-        DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
-          ..addBeat(DrumBeat.beat1)
-          ..addBeat(DrumBeat.beat3)
-          ..addBeat(DrumBeat.beat5),
-        DrumPart(DrumTypeEnum.snare, beats: 6)
-          ..addBeat(DrumBeat.beat2)
-          ..addBeat(DrumBeat.beat4)
-          ..addBeat(DrumBeat.beat6),
-      ]),
+      DrumParts(
+        name: DrumPartsList.defaultName,
+        beats: 6,
+        parts: [
+          DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
+            ..addBeat(DrumBeat.beat1)
+            ..addBeat(DrumBeat.beat3)
+            ..addBeat(DrumBeat.beat5),
+          DrumPart(DrumTypeEnum.snare, beats: 6)
+            ..addBeat(DrumBeat.beat2)
+            ..addBeat(DrumBeat.beat4)
+            ..addBeat(DrumBeat.beat6),
+        ],
+      ),
+      DrumParts(
+        name: '${DrumPartsList.defaultName}2',
+        beats: 2,
+        parts: [
+          DrumPart(DrumTypeEnum.closedHighHat, beats: 2)..addBeat(DrumBeat.beat1),
+          DrumPart(DrumTypeEnum.snare, beats: 2)..addBeat(DrumBeat.beat2),
+        ],
+      ),
+      DrumParts(
+        name: '${DrumPartsList.defaultName}3',
+        beats: 3,
+        parts: [
+          DrumPart(DrumTypeEnum.closedHighHat, beats: 3)
+            ..addBeat(DrumBeat.beat2)
+            ..addBeat(DrumBeat.beat3),
+          DrumPart(DrumTypeEnum.snare, beats: 3)..addBeat(DrumBeat.beat1),
+        ],
+      ),
+      DrumParts(
+        name: '${DrumPartsList.defaultName}4',
+        beats: 4,
+        parts: [
+          DrumPart(DrumTypeEnum.closedHighHat, beats: 4)
+            ..addBeat(DrumBeat.beat1)
+            ..addBeat(DrumBeat.beat3),
+          DrumPart(DrumTypeEnum.snare, beats: 4)
+            ..addBeat(DrumBeat.beat2)
+            ..addBeat(DrumBeat.beat4),
+        ],
+      ),
+      DrumParts(
+        name: '${DrumPartsList.defaultName}6',
+        beats: 6,
+        parts: [
+          DrumPart(DrumTypeEnum.closedHighHat, beats: 6)
+            ..addBeat(DrumBeat.beat1)
+            ..addBeat(DrumBeat.beat3)
+            ..addBeat(DrumBeat.beat5),
+          DrumPart(DrumTypeEnum.snare, beats: 6)
+            ..addBeat(DrumBeat.beat2)
+            ..addBeat(DrumBeat.beat4)
+            ..addBeat(DrumBeat.beat6),
+        ],
+      ),
     ]) {
       if (!_drumPartsMap.keys.contains(drumPart.name)) {
         _drumPartsMap[drumPart.name] = drumPart;
@@ -582,7 +593,7 @@ class DrumPartsList {
     }
   }
 
-  DrumParts? findByName(final String name) {
+  DrumParts? findByName(String name) {
     return _drumPartsMap[name];
   }
 
@@ -590,13 +601,15 @@ class DrumPartsList {
     _drumPartsMap.remove(drumParts.name);
   }
 
-  DrumParts? songMatch(final Song song) {
-    logger.t('songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
-        '${_drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]]}');
+  DrumParts? songMatch(Song song) {
+    logger.t(
+      'songMatch($song): ${_songIdToDrumPartsNameMap[song.songId.toString()]}  '
+      '${_drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]]}',
+    );
     return _drumPartsMap[_songIdToDrumPartsNameMap[song.songId.toString()]];
   }
 
-  match(final Song song, DrumParts? drumParts) {
+  match(Song song, DrumParts? drumParts) {
     if (drumParts != null) {
       assert(_drumPartsMap.values.contains(drumParts));
       _songIdToDrumPartsNameMap[song.songId.toString()] = drumParts.name;
@@ -633,7 +646,7 @@ class DrumPartsList {
     return '{${_drumPartsMap.keys.length}: ${_drumPartsMap.keys} }';
   }
 
-  String toJson({final bool asObject = true}) {
+  String toJson({bool asObject = true}) {
     StringBuffer partsBuffer = StringBuffer();
     bool first = true;
     for (var dp in drumParts) {

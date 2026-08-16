@@ -24,7 +24,7 @@ class SongTempoUpdate {
     return sb.toString();
   }
 
-  static SongTempoUpdate? fromJson(final String jsonString) {
+  static SongTempoUpdate? fromJson(String jsonString) {
     logger.d(jsonString);
 
     if (jsonString.isEmpty) {

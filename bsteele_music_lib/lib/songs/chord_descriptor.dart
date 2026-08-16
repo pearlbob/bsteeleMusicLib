@@ -344,13 +344,13 @@ class ChordDescriptor implements Comparable<ChordDescriptor> {
   }
 
   @override
-  int compareTo(final ChordDescriptor other) {
+  int compareTo(ChordDescriptor other) {
     int ret;
     if ((ret = shortName.compareTo(other.shortName)) != 0) return ret;
     return name.compareTo(other.name);
   }
 
-  int compareByPopularity(final ChordDescriptor other) {
+  int compareByPopularity(ChordDescriptor other) {
     int ret;
     if ((ret = shortName.compareTo(other.shortName)) != 0) return ret;
     return name.compareTo(other.name);

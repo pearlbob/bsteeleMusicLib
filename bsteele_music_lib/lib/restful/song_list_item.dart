@@ -6,7 +6,7 @@ class SongListItem {
     songId = SongId.computeSongId(title, artist, coverArtist);
   }
 
-  SongListItem.fromSong(final Song song) : this(song.title, song.artist, song.coverArtist);
+  SongListItem.fromSong(Song song) : this(song.title, song.artist, song.coverArtist);
 
   Map<String, dynamic> toJson() => {'songId': songId, 'title': title, 'artist': artist, 'coverArtist': coverArtist};
 

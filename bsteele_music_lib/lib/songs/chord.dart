@@ -29,12 +29,12 @@ class Chord implements Comparable<Chord> {
     implicitBeats = chord.implicitBeats;
   }
 
-  static Chord? parseString(String s, final int beatsPerBar) {
+  static Chord? parseString(String s, int beatsPerBar) {
     s = s.replaceAll('(', '')..replaceAll(')', ''); //  measure comments are dead
     return parse(MarkedString(s), beatsPerBar);
   }
 
-  static Chord? parse(final MarkedString markedString, final int beatsPerBar) {
+  static Chord? parse(MarkedString markedString, int beatsPerBar) {
     if (markedString.isEmpty) {
       throw 'no data to parse';
     }

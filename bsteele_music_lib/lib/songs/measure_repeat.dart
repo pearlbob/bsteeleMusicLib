@@ -15,7 +15,7 @@ import 'section.dart';
 
 class MeasureRepeat extends Phrase {
   MeasureRepeat(super.measures, super.phraseIndex, int repeats)
-      : _repeatMarker = MeasureRepeatMarker(repeats, measures.length);
+    : _repeatMarker = MeasureRepeatMarker(repeats, measures.length);
 
   static MeasureRepeat parseString(String s, int phraseIndex, int beatsPerBar, Measure? priorMeasure) {
     return parse(MarkedString(s), phraseIndex, beatsPerBar, priorMeasure);
@@ -177,7 +177,7 @@ class MeasureRepeat extends Phrase {
 
   /// get a edit chord row at the index, including the repeat markers
   @override
-  List<Measure> rowAt(final int index) {
+  List<Measure> rowAt(int index) {
     var ret = <Measure>[];
 
     if (measures.isEmpty) {
@@ -224,7 +224,7 @@ class MeasureRepeat extends Phrase {
 
   //  return the first measure of the given row
   @override
-  Measure firstMeasureInRow(final int row) {
+  Measure firstMeasureInRow(int row) {
     int n = phraseRowCount;
     var r = Util.intLimit(row, 0, n * repeats) % n;
     return super.firstMeasureInRow(r);
@@ -379,11 +379,11 @@ class MeasureRepeat extends Phrase {
     var rowCount = repeatMeasureCount;
     bool hasExtensions = phraseRowCount > 1;
     int maxCol = max(
-        chordColumns ?? 0,
-        maxMeasuresPerChordRow() +
-            (hasExtensions ? 1 : 0) //  for repeat extension
-            +
-            1 //  for repeat marker
+      chordColumns ?? 0,
+      maxMeasuresPerChordRow() +
+          (hasExtensions ? 1 : 0) //  for repeat extension
+          +
+          1, //  for repeat marker
     );
 
     var repetition = 1;
@@ -424,8 +424,11 @@ class MeasureRepeat extends Phrase {
         }
         grid.set(row, col++, MeasureRepeatExtension.lowerRightMeasureRepeatExtension);
       }
-      grid.set(row, col,
-          (repeats > 1 ? MeasureRepeatMarker(repeats, measures.length, repetition: repetition++) : _repeatMarker));
+      grid.set(
+        row,
+        col,
+        (repeats > 1 ? MeasureRepeatMarker(repeats, measures.length, repetition: repetition++) : _repeatMarker),
+      );
       row++;
       rowMod = row % rowCount;
       col = 0;

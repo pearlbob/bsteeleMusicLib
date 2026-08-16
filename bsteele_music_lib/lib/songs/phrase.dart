@@ -38,8 +38,13 @@ class Phrase extends MeasureNode {
     return parse(MarkedString(string), phraseIndex, beatsPerBar, priorMeasure);
   }
 
-  static Phrase parse(MarkedString markedString, int phraseIndex, int beatsPerBar, Measure? priorMeasure,
-      {bool allowEndOfRow = false}) {
+  static Phrase parse(
+    MarkedString markedString,
+    int phraseIndex,
+    int beatsPerBar,
+    Measure? priorMeasure, {
+    bool allowEndOfRow = false,
+  }) {
     if (markedString.isEmpty) {
       throw 'no data to parse';
     }
@@ -545,7 +550,7 @@ class Phrase extends MeasureNode {
   }
 
   /// Return the expanded row count for the given measure index
-  int expandedRowIndexAt(final int measureIndex) {
+  int expandedRowIndexAt(int measureIndex) {
     if (measureIndex <= 0) {
       return 0;
     }
@@ -586,11 +591,11 @@ class Phrase extends MeasureNode {
     return ret;
   }
 
-  Measure? repeatMeasureAt(final int measureIndex) {
+  Measure? repeatMeasureAt(int measureIndex) {
     return phraseMeasureAt(measureIndex);
   }
 
-  Measure? phraseMeasureAt(final int measureIndex) {
+  Measure? phraseMeasureAt(int measureIndex) {
     if (measureIndex < 0 || measureIndex >= _measures.length) {
       return null;
     }
@@ -848,10 +853,13 @@ class Phrase extends MeasureNode {
     if (identical(this, other)) {
       return true;
     }
-    return runtimeType == other.runtimeType //  distinguish yourself from subclasses
-        &&
-        other is Phrase //  required for the following:
-        &&
+    return runtimeType ==
+            other
+                .runtimeType //  distinguish yourself from subclasses
+                &&
+        other
+            is Phrase //  required for the following:
+            &&
         _phraseIndex == other._phraseIndex &&
         listsEqual(_measures, other._measures);
   }

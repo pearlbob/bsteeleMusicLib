@@ -90,9 +90,7 @@ class TestSong {
     if (s == null) return null;
 
     //  de-music characters in the string
-    s = s.replaceAll('♯', '#');
-    s = s.replaceAll('♭', 'b');
-    return s;
+    return s.replaceAll('♯', '#').replaceAll('♭', 'b');
   }
 
   SongBase get myA => _myA;

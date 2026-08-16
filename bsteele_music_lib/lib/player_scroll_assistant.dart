@@ -11,15 +11,11 @@ import 'util/util.dart';
 const _logPlayerScrollBumps = Level.debug;
 const _logComputeBpm = Level.debug;
 
-enum PlayerScrollAssistantState {
-  noClue,
-  tooEarly,
-  forward,
-}
+enum PlayerScrollAssistantState { noClue, tooEarly, forward }
 
 class PlayerScrollAssistant {
-  PlayerScrollAssistant(this.song, {required final UserDisplayStyle userDisplayStyle, int? bpm})
-      : _bpm = bpm ?? song.beatsPerMinute {
+  PlayerScrollAssistant(this.song, {required UserDisplayStyle userDisplayStyle, int? bpm})
+    : _bpm = bpm ?? song.beatsPerMinute {
     logger.i('PlayerScrollAssistant(bpm: $bpm)');
 
     //  generate table of minimum phrase row indices
@@ -42,9 +38,10 @@ class PlayerScrollAssistant {
           _lyricSectionFirstRows.add(row);
         }
         if (!identical(lyricSection, lastLyricSection) ||
-                songMoment.phraseIndex != lastPhraseIndex ||
-                !songMoment.phrase.isRepeat() //  non-repeats use their own row
-            ) {
+            songMoment.phraseIndex != lastPhraseIndex ||
+            !songMoment.phrase
+                .isRepeat() //  non-repeats use their own row
+                ) {
           lastLyricSection = lyricSection;
           lastPhraseIndex = songMoment.phraseIndex;
           minRow = row;
@@ -70,30 +67,32 @@ class PlayerScrollAssistant {
   }
 
   /// Suggest a row for the player list using the current time
-  int? rowSuggestion(final DateTime dateTime) {
+  int? rowSuggestion(DateTime dateTime) {
     int? ret;
     var beatNumber = beatNumberAt(dateTime);
     ret = rowAtBeatNumber(beatNumber.round());
     logger.log(
-        _logPlayerScrollBumps,
-        'beatNumber: ${beatNumber.toStringAsFixed(1)}, row: $ret'
-        ', moment: ${song.getFirstSongMomentAtRow(ret ?? -1)}'
-        ', bpm: $_bpm');
+      _logPlayerScrollBumps,
+      'beatNumber: ${beatNumber.toStringAsFixed(1)}, row: $ret'
+      ', moment: ${song.getFirstSongMomentAtRow(ret ?? -1)}'
+      ', bpm: $_bpm',
+    );
     _lastRowSuggestion = ret ?? _lastRowSuggestion;
     return ret;
   }
 
   ///  Update the assistant with the given section request
-  sectionRequest(final DateTime dateTime, int sectionIndex) {
+  sectionRequest(DateTime dateTime, int sectionIndex) {
     sectionIndex = Util.indexLimit(sectionIndex, song.lyricSections);
     var beatNumber = 0;
     if (sectionIndex >= _lastSectionIndex) {
       var newSongMomentIndex = song.firstMomentInLyricSection(song.lyricSections[sectionIndex]).momentNumber;
       beatNumber = song.songMoments[newSongMomentIndex].beatNumber;
       logger.log(
-          _logPlayerScrollBumps,
-          'section: from $_lastSectionIndex to $sectionIndex, moment: $newSongMomentIndex'
-          ', row: ${songMomentsToMinRowIndex[newSongMomentIndex]}, beat: $beatNumber');
+        _logPlayerScrollBumps,
+        'section: from $_lastSectionIndex to $sectionIndex, moment: $newSongMomentIndex'
+        ', row: ${songMomentsToMinRowIndex[newSongMomentIndex]}, beat: $beatNumber',
+      );
     } else {
       //  going backwards
       _state = PlayerScrollAssistantState.noClue;
@@ -124,14 +123,15 @@ class PlayerScrollAssistant {
         break;
     }
     logger.log(
-        _logPlayerScrollBumps,
-        'forward: $beatNumber/${dateTime.difference(_refDateTime!)}'
-        ' = $_bpm bpm'
-        ', row: ${rowAtBeatNumber(beatNumber)}'
-        ', error: ${error?.toStringAsFixed(3)}');
+      _logPlayerScrollBumps,
+      'forward: $beatNumber/${dateTime.difference(_refDateTime!)}'
+      ' = $_bpm bpm'
+      ', row: ${rowAtBeatNumber(beatNumber)}'
+      ', error: ${error?.toStringAsFixed(3)}',
+    );
   }
 
-  int _computeBpmAt(final DateTime dateTime, final int beatNumber) {
+  int _computeBpmAt(DateTime dateTime, int beatNumber) {
     var diff = dateTime.difference(_refDateTime!).inMicroseconds;
     var songMoment = song.songMomentAtBeatNumber(beatNumber);
 
@@ -152,22 +152,23 @@ class PlayerScrollAssistant {
       }
     }
     logger.log(
-        _logComputeBpm,
-        '_computeBpmAt($dateTime, $beatNumber) = $ret'
-        ', _bpm: $_bpm, $songMoment');
+      _logComputeBpm,
+      '_computeBpmAt($dateTime, $beatNumber) = $ret'
+      ', _bpm: $_bpm, $songMoment',
+    );
     return ret;
   }
 
   /// Compute the beat number for the given time
   /// Requires a valid BPM.
-  double beatNumberAt(final DateTime dateTime) {
+  double beatNumberAt(DateTime dateTime) {
     return _refDateTime == null
         ? 0.0
         : _refBeatNumber +
-            _bpm * dateTime.difference(_refDateTime!).inMicroseconds / (60 * Duration.microsecondsPerSecond);
+              _bpm * dateTime.difference(_refDateTime!).inMicroseconds / (60 * Duration.microsecondsPerSecond);
   }
 
-  int? rowAtBeatNumber(final int beatNumber) {
+  int? rowAtBeatNumber(int beatNumber) {
     var moment = song.songMomentAtBeatNumber(beatNumber);
     if (moment == null) {
       return null;
@@ -175,15 +176,17 @@ class PlayerScrollAssistant {
     return songMomentsToMinRowIndex[moment.momentNumber];
   }
 
-  bool isLyricSectionFirstRow(final DateTime dateTime) {
+  bool isLyricSectionFirstRow(DateTime dateTime) {
     var moment = song.songMomentAtBeatNumber(beatNumberAt(dateTime).ceil());
     if (moment == null) {
       return false;
     }
-    return moment.phraseIndex == 0 //  in the first phrase
-        &&
-        moment.repeat == 0 //  in the first repeat
-        &&
+    return moment.phraseIndex ==
+            0 //  in the first phrase
+            &&
+        moment.repeat ==
+            0 //  in the first repeat
+            &&
         //  in the first row
         moment.chordSection.phrases[moment.phraseIndex].expandedRowIndexAt(moment.measureIndex) == 0;
   }
@@ -194,7 +197,7 @@ class PlayerScrollAssistant {
         '${error != null ? ', error: ${error?.toStringAsFixed(1)}' : ''}}';
   }
 
-  set bpm(final int value) {
+  set bpm(int value) {
     if (_bpm != value) {
       //  reset the reference time based on the new bpm and the current position
       if (_refDateTime != null) {

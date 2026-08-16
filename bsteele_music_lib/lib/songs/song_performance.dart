@@ -26,7 +26,7 @@ HashMap<SongId, int> songPopularity = HashMap();
 
 final RegExp _multipleWhiteCharactersRegexp = RegExp('\\s+');
 
-String _cleanPerformer(final String? value) {
+String _cleanPerformer(String? value) {
   if (value == null) {
     return '';
   }
@@ -36,7 +36,7 @@ String _cleanPerformer(final String? value) {
 class SongPerformance implements Comparable<SongPerformance> {
   SongPerformance(
     this._songIdAsString,
-    final String singer, {
+    String singer, {
     MajorKey? key,
     int? bpm,
     int? firstSung,
@@ -49,7 +49,7 @@ class SongPerformance implements Comparable<SongPerformance> {
        _firstSung = firstSung ?? lastSung ?? DateTime.now().millisecondsSinceEpoch,
        _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
-  SongPerformance.fromSong(Song this.song, final String singer, {MajorKey? key, int? bpm, int? firstSung, int? lastSung})
+  SongPerformance.fromSong(Song this.song, String singer, {MajorKey? key, int? bpm, int? firstSung, int? lastSung})
     : _lowerCaseSongIdAsString = song.songId.toString().toLowerCase(),
       _singer = _cleanPerformer(singer),
       _songIdAsString = song.songId.toString(),
@@ -59,9 +59,9 @@ class SongPerformance implements Comparable<SongPerformance> {
       _lastSung = lastSung ?? DateTime.now().millisecondsSinceEpoch;
 
   SongPerformance copyWith({
-    final Song? song,
-    final SongId? songId,
-    final String? singer,
+    Song? song,
+    SongId? songId,
+    String? singer,
     int? firstSung,
     int? lastSung,
     MajorKey? key,
@@ -215,9 +215,9 @@ class SongPerformance implements Comparable<SongPerformance> {
   }
 
   String _prepIdAsTitle() {
-    return Util.underScoresToSpaceUpperCase(
-      _songIdAsString.replaceAll(_songIdRegExp, ''),
-    ).replaceAll(' Cover By ', ' cover by ').replaceAll(' By ', ' by ');
+    return Util.underScoresToSpaceUpperCase(_songIdAsString.replaceAll(_songIdRegExp, ''))
+        .replaceAll(' Cover By ', ' cover by ')
+        .replaceAll(' By ', ' by ');
   }
 
   static final _songIdRegExp = RegExp('^${SongId.prefix}');
@@ -341,7 +341,7 @@ class SongRequest implements Comparable<SongRequest> {
 
 /// Find the best match against the current songs to replace songs where the song id has been changed.
 class SongRepair {
-  SongRepair(final Iterable<Song> songs) {
+  SongRepair(Iterable<Song> songs) {
     for (var song in songs) {
       var key = song.songId.toString().toLowerCase();
       _songMap[key] = song;
@@ -363,7 +363,7 @@ class SongRepair {
     _allLowerCaseIds = _songMap.keys.toList();
   }
 
-  Song? findBestSong(final String id) {
+  Song? findBestSong(String id) {
     var lowerCaseId = id.toLowerCase();
     var song = _songMap[lowerCaseId];
     if (song != null) {
@@ -400,14 +400,14 @@ class SongRepair {
     return null;
   }
 
-  void addSong(final Song? song) {
+  void addSong(Song? song) {
     if (song != null) {
       var key = song.songId.toString().toLowerCase();
       _songMap[key] = song;
     }
   }
 
-  bool removeSong(final Song? song) {
+  bool removeSong(Song? song) {
     var key = song?.songId.toString().toLowerCase() ?? '';
     return _songMap.remove(key) != null;
   }
@@ -552,7 +552,7 @@ class AllSongPerformances {
   }
 
   /// add a song performance to the song history and add it if it was sung more recently than the current entry
-  SongPerformance addSongPerformance(final SongPerformance songPerformance) {
+  SongPerformance addSongPerformance(SongPerformance songPerformance) {
     var newSong = _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString);
     if (newSong != null) {
       //  clear the previous song performance.  needed to change auxiliary data such as key and bpm
@@ -571,7 +571,7 @@ class AllSongPerformances {
   }
 
   /// remove a song performance to the song history and add it if it was sung more recently than the current entry
-  bool removeSongPerformance(final SongPerformance songPerformance) {
+  bool removeSongPerformance(SongPerformance songPerformance) {
     //  clear the previous song performance.  needed to change auxiliary data such as key and bpm
     var ret = _allSongPerformances.remove(songPerformance);
     if (ret) {
@@ -590,7 +590,7 @@ class AllSongPerformances {
     _allSongPerformanceRequests.remove(songRequest);
   }
 
-  bool updateSongPerformance(final SongPerformance songPerformance) {
+  bool updateSongPerformance(SongPerformance songPerformance) {
     var newPerformance = songPerformance.copyWith(
       song: _songRepair.findBestSong(songPerformance._lowerCaseSongIdAsString),
     );
@@ -614,11 +614,11 @@ class AllSongPerformances {
     return true;
   }
 
-  SongPerformance? find({required final String singer, required final Song song}) {
+  SongPerformance? find({required String singer, required Song song}) {
     return findBySingerSongId(songIdAsString: song.songId.toString(), singer: singer);
   }
 
-  SongPerformance? findBySingerSongId({required final String songIdAsString, required final String singer}) {
+  SongPerformance? findBySingerSongId({required String songIdAsString, required String singer}) {
     try {
       var lowerSongIdAsString = songIdAsString.toLowerCase();
       return _allSongPerformances.firstWhere(
@@ -629,7 +629,7 @@ class AllSongPerformances {
     }
   }
 
-  List<SongPerformance> bySinger(final String singer) {
+  List<SongPerformance> bySinger(String singer) {
     List<SongPerformance> ret = [];
     ret.addAll(
       _allSongPerformances.where((songPerformance) {
@@ -705,7 +705,7 @@ class AllSongPerformances {
     return _allSongPerformanceHistory.remove(songPerformance);
   }
 
-  void rebuildAllPerformancesFromHistory({final int lastSungLimitMs = 0 /* since epoch */}) {
+  void rebuildAllPerformancesFromHistory({int lastSungLimitMs = 0 /* since epoch */}) {
     //  limit history as well
     if (lastSungLimitMs > 0) {
       final SplayTreeSet<SongPerformance> newHistory = SplayTreeSet(SongPerformance.compareByLastSungSongIdAndSinger);
@@ -922,7 +922,7 @@ class AllSongPerformances {
     SongPerformance.compareBySongIdAndSinger,
   );
 
-  Set<SongPerformance> historyDifference(final AllSongPerformances other) {
+  Set<SongPerformance> historyDifference(AllSongPerformances other) {
     return _allSongPerformanceHistory.difference(other._allSongPerformanceHistory);
   }
 
@@ -942,7 +942,7 @@ class AllSongPerformances {
   static const String fileExtension = '.songperformances'; //  intentionally all lower case
 }
 
-void computeSongPopularity(final AllSongPerformances allSongPerformances) {
+void computeSongPopularity(AllSongPerformances allSongPerformances) {
   songPopularity.clear();
   for (var performance in allSongPerformances._allSongPerformanceHistory) {
     if (performance.song != null) {

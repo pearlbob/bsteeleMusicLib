@@ -4404,7 +4404,7 @@ class TempoMoment implements Comparable<TempoMoment> {
   int referenceBpm;
 }
 
-int _compareSongPerformanceLastSung(final SongPerformance perf, final SongPerformance other) {
+int _compareSongPerformanceLastSung(SongPerformance perf, SongPerformance other) {
   if (identical(perf, other)) {
     return 0;
   }
@@ -4436,7 +4436,7 @@ int _compareSongPerformanceLastSung(final SongPerformance perf, final SongPerfor
   return 0;
 }
 
-String performanceTranspositionsToString(final AllSongPerformances allSongPerformances, {final String id = ''}) {
+String performanceTranspositionsToString(AllSongPerformances allSongPerformances, {String id = ''}) {
   StringBuffer sb = StringBuffer();
   DateFormat format = DateFormat('yyyy-MM-dd HH:mm:ss');
   for (var p in allSongPerformances.allSongPerformanceHistory) {

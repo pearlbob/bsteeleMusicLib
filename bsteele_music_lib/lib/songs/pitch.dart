@@ -241,7 +241,7 @@ class Pitch implements Comparable<Pitch> {
     return list[index];
   }
 
-  static Pitch get(final PitchEnum se) {
+  static Pitch get(PitchEnum se) {
     return _getPitchMap()[se]!;
   }
 
@@ -337,7 +337,7 @@ class Pitch implements Comparable<Pitch> {
     return lastPitch; //  only close, better than nothing
   }
 
-  static Pitch findFlatFromFrequency(final double frequency) {
+  static Pitch findFlatFromFrequency(double frequency) {
     Pitch ret = flats[0];
     double bestError = (ret.frequency - frequency).abs();
     for (Pitch p in flats) {
@@ -351,7 +351,7 @@ class Pitch implements Comparable<Pitch> {
     return ret;
   }
 
-  static Pitch findSharpFromFrequency(final double frequency) {
+  static Pitch findSharpFromFrequency(double frequency) {
     Pitch ret = sharps[0];
     double bestError = (ret.frequency - frequency).abs();
     for (Pitch p in sharps) {
@@ -365,11 +365,11 @@ class Pitch implements Comparable<Pitch> {
     return ret;
   }
 
-  static Pitch findFlatByNumber(final int number) {
+  static Pitch findFlatByNumber(int number) {
     return flats[max(0, min(flats.length - 1, number))];
   }
 
-  static Pitch findSharpByNumber(final int number) {
+  static Pitch findSharpByNumber(int number) {
     return sharps[max(0, min(flats.length - 1, number))];
   }
 
@@ -405,7 +405,7 @@ class Pitch implements Comparable<Pitch> {
   }
 
   /// Return the pitch offset by the given number of half steps.
-  Pitch? offsetByHalfSteps(final int halfSteps) {
+  Pitch? offsetByHalfSteps(int halfSteps) {
     if (halfSteps == 0) {
       return this;
     }
@@ -444,7 +444,7 @@ class Pitch implements Comparable<Pitch> {
     return MusicConstants.tuningStandardHz * MusicConstants.centsToRatio(100 * ((_number + 1) - 49) + cents);
   }
 
-  int centsFromFrequency(final double f) {
+  int centsFromFrequency(double f) {
     if (f <= 0 || f.isNaN || f.isInfinite) {
       return 0;
     }

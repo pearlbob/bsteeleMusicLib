@@ -23,7 +23,7 @@ enum Mode {
 
 Map<Mode, List<ChordComponent>> _map = Map();
 
-List<ChordComponent> getModeChordComponents(final Mode mode) {
+List<ChordComponent> getModeChordComponents(Mode mode) {
   //  lazy eval
   List<ChordComponent>? ret = _map[mode];
   if (ret != null) {
@@ -35,13 +35,13 @@ List<ChordComponent> getModeChordComponents(final Mode mode) {
   return ret;
 }
 
-ScaleNote getModeScaleNote(final MajorKey key, final Mode mode, final int note) {
+ScaleNote getModeScaleNote(MajorKey key, Mode mode, int note) {
   final List<ChordComponent> components = getModeChordComponents(mode);
   return key
       .getKeyScaleNoteByHalfStep(components[note % MusicConstants.notesPerScale].halfSteps)
       .asSharp(value: key.isSharp);
 }
 
-ScaleNote getModeChromaticNote(final MajorKey key, final Mode mode, final int halfStep) {
+ScaleNote getModeChromaticNote(MajorKey key, Mode mode, int halfStep) {
   return key.getKeyScaleNoteByHalfStep(halfStep).asSharp(value: key.isSharp);
 }

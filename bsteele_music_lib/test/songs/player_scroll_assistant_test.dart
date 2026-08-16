@@ -62,7 +62,11 @@ void main() {
     // var displayGrid =
     song.toDisplayGrid(UserDisplayStyle.both);
     List<GridCoordinate> songMomentToGridCoordinate = song.songMomentToGridCoordinate;
-    PlayerScrollAssistant assistant = PlayerScrollAssistant(song, userDisplayStyle: UserDisplayStyle.both, bpm: song.beatsPerMinute);
+    PlayerScrollAssistant assistant = PlayerScrollAssistant(
+      song,
+      userDisplayStyle: UserDisplayStyle.both,
+      bpm: song.beatsPerMinute,
+    );
     final start = DateTime.now();
     assistant.sectionRequest(start, 0);
     final List<int> firstRowMoments = [
@@ -73,16 +77,18 @@ void main() {
       //  c:
       16, 17, 18, 19,
       //  o:
-      33, 34, 35
+      33, 34, 35,
     ];
     for (var m in song.songMoments) {
       var t = song.getSongTimeAtMoment(m.momentNumber);
       var songTime = start.add(Duration(microseconds: (Duration.microsecondsPerSecond * t).round()));
       var gc = songMomentToGridCoordinate[m.momentNumber];
       var isFirstRow = assistant.isLyricSectionFirstRow(songTime);
-      logger.i('${m.momentNumber}: ${m.lyricSection.sectionVersion} ${m.measure}'
-          ' $songTime, offset: ${songTime.difference(start)}'
-          ', row: ${gc.row}, firstRow? $isFirstRow');
+      logger.i(
+        '${m.momentNumber}: ${m.lyricSection.sectionVersion} ${m.measure}'
+        ' $songTime, offset: ${songTime.difference(start)}'
+        ', row: ${gc.row}, firstRow? $isFirstRow',
+      );
       expect(isFirstRow, firstRowMoments.contains(m.momentNumber));
     }
   });
@@ -166,8 +172,9 @@ class CjLog {
     processedLogs.createSync();
 
     //  add the github version
-    allSongPerformances
-        .updateFromJsonString(File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync());
+    allSongPerformances.updateFromJsonString(
+      File('${Util.homePath()}/$_allSongPerformancesGithubFileLocation').readAsStringSync(),
+    );
 
     //  process the logs
     var list = logs.listSync();
@@ -212,8 +219,9 @@ class CjLog {
 
       logger.log(_cjLogFiles, '');
       logger.log(_cjLogFiles, '${file.path}:  $date');
-      var log = utf8Decoder
-          .convert(file.path.endsWith('.gz') ? gZipDecoder.convert(file.readAsBytesSync()) : file.readAsBytesSync());
+      var log = utf8Decoder.convert(
+        file.path.endsWith('.gz') ? gZipDecoder.convert(file.readAsBytesSync()) : file.readAsBytesSync(),
+      );
       SongUpdate lastSongUpdate = SongUpdate();
       //allSongPerformances.clear();
       var dateTime = DateTime(1970);
@@ -246,8 +254,11 @@ class CjLog {
 
         //  exclude the time distribution requests
         var msg = m.group(2);
-        if (msg == null || msg.isEmpty || msg == 't:' //  a time request can show up when a new client starts!
-            ) {
+        if (msg == null ||
+            msg.isEmpty ||
+            msg ==
+                't:' //  a time request can show up when a new client starts!
+                ) {
           continue;
         }
         logger.log(_cjLogLines, '$dateTime: string: $msg');
@@ -265,10 +276,7 @@ class CjLog {
         //  see if this is a new song
         if (lastSong == null || lastSong?.songId != songUpdate.song.songId) {
           if (lastSong != null) {
-            _simulateManualPlay(
-              lastSong!,
-              bumps,
-            );
+            _simulateManualPlay(lastSong!, bumps);
           }
 
           //  prep the next song
@@ -287,13 +295,15 @@ class CjLog {
           continue;
         }
         var sectionIndex = songMoment.lyricSection.index;
-        var bpm =
-            duration.inMilliseconds > 0 ? 60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds : 0;
+        var bpm = duration.inMilliseconds > 0
+            ? 60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds
+            : 0;
         logger.log(
-            _cjLogManualBumps,
-            'manual bump at moment: section: ${songMoment.lyricSection.index}'
-            ', moment: ${songMoment.momentNumber}'
-            ', $dateTime: ${sectionIndex > (lastSectionIndex ?? 0) ? 1 : -1}');
+          _cjLogManualBumps,
+          'manual bump at moment: section: ${songMoment.lyricSection.index}'
+          ', moment: ${songMoment.momentNumber}'
+          ', $dateTime: ${sectionIndex > (lastSectionIndex ?? 0) ? 1 : -1}',
+        );
         bumps.add((dateTime: dateTime, sectionIndex: sectionIndex));
 
         if (lastMoment < songMoment.momentNumber) {
@@ -319,8 +329,8 @@ class CjLog {
               baseBeatsTotal = null;
             }
           } else if (sectionIndex < lastSectionIndex
-              //  gone backwards? lets forget what we thought we knew.
-              ) {
+          //  gone backwards? lets forget what we thought we knew.
+          ) {
             baseSectionCount = null;
             baseTime = null;
             baseBeat = null;
@@ -343,24 +353,26 @@ class CjLog {
           //  diagnostics
           if ((baseSectionCount ?? -1) >= 2) {
             logger.log(
-                _cjLogDetails,
-                '$dateTime: ${_shortString(songUpdate.song.toString())}: $hasStarted'
-                ', ${songUpdate.state.name}'
-                ', momentNumber: ${songUpdate.momentNumber}/$songMomentsLength'
-                ': $beatCount in $duration => '
-                '${(Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} b/s = '
-                '${(60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} BPM'
-                // ', lyricSection: ${songMoment?.lyricSection.index}'
-                ', section: $sectionIndex');
+              _cjLogDetails,
+              '$dateTime: ${_shortString(songUpdate.song.toString())}: $hasStarted'
+              ', ${songUpdate.state.name}'
+              ', momentNumber: ${songUpdate.momentNumber}/$songMomentsLength'
+              ': $beatCount in $duration => '
+              '${(Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} b/s = '
+              '${(60 * Duration.millisecondsPerSecond * beatCount / duration.inMilliseconds).toStringAsFixed(2)} BPM'
+              // ', lyricSection: ${songMoment?.lyricSection.index}'
+              ', section: $sectionIndex',
+            );
             var b = (baseBeatsTotal ?? 0) - (baseBeat ?? 0);
             var d = dateTime.difference(baseTime ?? dateTime);
             logger.log(
-                _cjLogDetails,
-                '   $b beats in $d since $baseTime =>'
-                ' ${(Duration.millisecondsPerSecond * b / d.inMilliseconds).toStringAsFixed(2)} b/s ='
-                ' ${(60 * Duration.millisecondsPerSecond * b / d.inMilliseconds).toStringAsFixed(2)}'
-                ' bpm, section: $sectionIndex'
-                '${sectionIndex == baseSectionCount ? '' : ', baseSectionCount: $baseSectionCount'}');
+              _cjLogDetails,
+              '   $b beats in $d since $baseTime =>'
+              ' ${(Duration.millisecondsPerSecond * b / d.inMilliseconds).toStringAsFixed(2)} b/s ='
+              ' ${(60 * Duration.millisecondsPerSecond * b / d.inMilliseconds).toStringAsFixed(2)}'
+              ' bpm, section: $sectionIndex'
+              '${sectionIndex == baseSectionCount ? '' : ', baseSectionCount: $baseSectionCount'}',
+            );
           }
 
           //  the song has ended
@@ -381,22 +393,19 @@ class CjLog {
         }
       }
       if (lastSong != null) {
-        _simulateManualPlay(
-          lastSong!,
-          bumps,
-        ); //  do the last song of that day
+        _simulateManualPlay(lastSong!, bumps); //  do the last song of that day
       }
 
       break; //fixme: only one file for the moment
     }
   }
 
-  String _shortString(final String s) {
+  String _shortString(String s) {
     var len = s.length;
     return s.substring(0, min(35, len));
   }
 
-  SongPerformance toSongPerformance(final SongUpdate songUpdate, final DateTime dateTime) {
+  SongPerformance toSongPerformance(SongUpdate songUpdate, DateTime dateTime) {
     logger.log(_cjLogPerformances, 'output: $songUpdate');
     var ret = SongPerformance.fromSong(
       songUpdate.song,
@@ -417,14 +426,17 @@ class CjLog {
   String _host = 'cj';
   var _verbose = 0;
 
-  final RegExp catalinaLogRegExp =
-      RegExp(r'.*/catalina\.(\d{4})-(\d{2})-(\d{2})\.log'); //  note: no end to allow for both .log and .log.gz
-  final RegExp messageRegExp = RegExp(r'(\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) INFO .*'
-      r' com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage'
-      r' onMessage\("(.*)"\)\s*$');
+  final RegExp catalinaLogRegExp = RegExp(
+    r'.*/catalina\.(\d{4})-(\d{2})-(\d{2})\.log',
+  ); //  note: no end to allow for both .log and .log.gz
+  final RegExp messageRegExp = RegExp(
+    r'(\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}) INFO .*'
+    r' com.bsteele.bsteeleMusicApp.WebSocketServer.onMessage'
+    r' onMessage\("(.*)"\)\s*$',
+  );
 }
 
-_simulateManualPlay(final Song song, final List<({DateTime dateTime, int sectionIndex})> bumps) {
+_simulateManualPlay(Song song, List<({DateTime dateTime, int sectionIndex})> bumps) {
   if (bumps.isEmpty || song.songMoments.isEmpty) {
     logger.i('invalid play: $song, $bumps');
     return;
@@ -449,11 +461,12 @@ _simulateManualPlay(final Song song, final List<({DateTime dateTime, int section
       if (row != lastRow) {
         lastRow = row;
         logger.log(
-            _cjLogDetails,
-            '   ${rowTime.difference(baseTime)}'
-            ', section: ${bump.sectionIndex} ${song.lyricSections[bump.sectionIndex].sectionVersion}'
-            ', assistant row: $row'
-            ' $assistant');
+          _cjLogDetails,
+          '   ${rowTime.difference(baseTime)}'
+          ', section: ${bump.sectionIndex} ${song.lyricSections[bump.sectionIndex].sectionVersion}'
+          ', assistant row: $row'
+          ' $assistant',
+        );
       }
       rowTime = rowTime.add(const Duration(milliseconds: 400));
     }
@@ -466,13 +479,16 @@ _simulateManualPlay(final Song song, final List<({DateTime dateTime, int section
         maxErrorAmplitude = error;
         maxErrorSection = bump.sectionIndex;
         logger.log(
-            _cjLogErrors,
-            'sectionRequest(${bump.dateTime}, section: ${bump.sectionIndex})'
-            ', assistant.error: ${assistant.error}');
+          _cjLogErrors,
+          'sectionRequest(${bump.dateTime}, section: ${bump.sectionIndex})'
+          ', assistant.error: ${assistant.error}',
+        );
       }
     }
   }
-  logger.i('errorAmplitude: ${maxErrorAmplitude.toStringAsFixed(1).padLeft(7)}'
-      ' at section ${maxErrorSection.toString().padLeft(2)}/${song.lyricSections.length.toString().padRight(2)}'
-      ': ${song.songId}, BPM: ${assistant.bpm} (${song.beatsPerMinute})');
+  logger.i(
+    'errorAmplitude: ${maxErrorAmplitude.toStringAsFixed(1).padLeft(7)}'
+    ' at section ${maxErrorSection.toString().padLeft(2)}/${song.lyricSections.length.toString().padRight(2)}'
+    ': ${song.songId}, BPM: ${assistant.bpm} (${song.beatsPerMinute})',
+  );
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../grid.dart';
+
 import 'package:quiver/collection.dart';
 import 'package:quiver/core.dart';
 
@@ -729,7 +730,7 @@ class ChordSection extends MeasureNode implements Comparable<ChordSection> {
   }
 
   //  used for edit row chording
-  List<Measure> rowAt(final int desiredIndex) {
+  List<Measure> rowAt(int desiredIndex) {
     //  walk through all prior measures //  fixme: efficiency?
     var index = desiredIndex;
     for (var phrase in _phrases) {
