@@ -5,18 +5,23 @@ import 'key.dart';
 import 'music_constants.dart';
 
 enum Mode {
-  ionian(0, '1 2 3 4 5 6 7'), // The standard major scale (e.g., C-D-E-F-G-A-B-C).
-  dorian(2, '1 2 b3 4 5 6 b7'), // A minor mode with a raised 6th (e.g., D-E-F-G-A-B-C-D).
-  phrygian(4, '1 b2 b3 4 5 b6 b7'), // A minor mode with a lowered 2nd (e.g., E-F-G-A-B-C-D-E).
-  lydian(5, '1 2 3 #4 5 6 7'), // A major mode with a raised 4th (e.g., F-G-A-B-C-D-E-F).
-  mixolydian(7, '1 2 3 4 5 6 b7'), // A major mode with a lowered 7th (e.g., G-A-B-C-D-E-F-G).
-  aeolian(9, '1 2 b3 4 5 b6 b7'), // The natural minor scale (e.g., A-B-C-D-E-F-G-A).
-  locrian(11, '1 b2 b3 4 b5 b6 b7'); // A diminished mode, rarely used (e.g., B-C-D-E-F-G-A-B).
+  ionian(0, '1 2 3 4 5 6 7', true), // The standard major scale (e.g., C-D-E-F-G-A-B-C).
+  dorian(2, '1 2 b3 4 5 6 b7', false), // A minor mode with a raised 6th (e.g., D-E-F-G-A-B-C-D).
+  phrygian(4, '1 b2 b3 4 5 b6 b7', false), // A minor mode with a lowered 2nd (e.g., E-F-G-A-B-C-D-E).
+  lydian(5, '1 2 3 #4 5 6 7', true), // A major mode with a raised 4th (e.g., F-G-A-B-C-D-E-F).
+  mixolydian(7, '1 2 3 4 5 6 b7', true), // A major mode with a lowered 7th (e.g., G-A-B-C-D-E-F-G).
+  aeolian(9, '1 2 b3 4 5 b6 b7', false), // The natural minor scale (e.g., A-B-C-D-E-F-G-A).
+  locrian(11, '1 b2 b3 4 b5 b6 b7', false); // A diminished mode, rarely used (e.g., B-C-D-E-F-G-A-B).
 
-  const Mode(this.halfStep, this.formula);
+  const Mode(this.halfStep, this.formula, this._isMajor);
+
+  bool get isMajor => _isMajor;
+
+  bool get isMinor => !_isMajor;
 
   final int halfStep;
   final String formula;
+  final _isMajor;
 
   List<ChordComponent> get chordComponents => ChordComponent.parse(formula).toList(growable: false);
 }

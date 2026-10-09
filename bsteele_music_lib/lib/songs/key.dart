@@ -198,8 +198,7 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
   static final RegExp _hashSignRegExp = RegExp(r'[♯#]');
 
   static MajorKey? parseString(String s) {
-    s = s.replaceAll('♭', 'b').replaceAll(_hashSignRegExp, 's');
-    MajorKeyEnum? keyEnum = _getKeyEnum(s);
+    MajorKeyEnum? keyEnum = _getKeyEnum(s.replaceAll('♭', 'b').replaceAll(_hashSignRegExp, 's'));
     if (keyEnum != null) {
       return get(keyEnum);
     }
@@ -271,12 +270,12 @@ final class MajorKey extends Key implements Comparable<MajorKey> {
   }
 
   MajorKey _getKeyByHalfStep(int step) {
-    step = step % _flatKeyEnumsByHalfStep.length;
-    if (isSharp && step == MusicConstants.halfStepsFromAtoC + halfStepsPerOctave / 2) {
+    final modStep = step % _flatKeyEnumsByHalfStep.length;
+    if (isSharp && modStep == MusicConstants.halfStepsFromAtoC + halfStepsPerOctave / 2) {
       //  the F# vs Gb split
       return MajorKey.Fs;
     }
-    return Key._getMajorKeys()[_flatKeyEnumsByHalfStep[step]]!;
+    return Key._getMajorKeys()[_flatKeyEnumsByHalfStep[modStep]]!;
   }
 
   ScaleNote inKey(ScaleNote scaleNote) {

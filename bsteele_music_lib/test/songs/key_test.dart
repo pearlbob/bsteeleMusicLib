@@ -984,6 +984,15 @@ void main() {
     }
     print('');
 
+    expect(Mode.ionian.isMajor, true);
+    expect(Mode.dorian.isMajor, false);
+    expect(Mode.phrygian.isMajor, false);
+    expect(Mode.lydian.isMajor, true);
+    expect(Mode.mixolydian.isMajor, true);
+    expect(Mode.mixolydian.isMinor, false);
+    expect(Mode.aeolian.isMajor, false);
+    expect(Mode.locrian.isMajor, false);
+
     {
       for (var mode in [Mode.mixolydian]) {
         for (MajorKeyEnum keyEnum in MajorKeyEnum.values.reversed) {
