@@ -41,6 +41,7 @@ List<ChordComponent> getModeChordComponents(Mode mode) {
 }
 
 ScaleNote getModeScaleNote(MajorKey key, Mode mode, int note) {
+  //  note counts from zero, not one!
   final List<ChordComponent> components = getModeChordComponents(mode);
   return key
       .getKeyScaleNoteByHalfStep(components[note % MusicConstants.notesPerScale].halfSteps)

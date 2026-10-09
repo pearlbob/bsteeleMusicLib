@@ -1009,7 +1009,7 @@ void main() {
       print('');
     }
 
-    MajorKey parentMajorKey = MajorKey.D;
+    MajorKey parentMajorKey = MajorKey.C;
     for (var mode in Mode.values) {
       final List<ChordComponent> components = getModeChordComponents(mode);
       {
@@ -1051,6 +1051,21 @@ void main() {
     expect(getModeScaleNote(MajorKey.A, Mode.locrian, 3 - 1), ScaleNote.C);
     expect(getModeScaleNote(MajorKey.A, Mode.locrian, 4 - 1), ScaleNote.D);
     expect(getModeScaleNote(MajorKey.Gb, Mode.locrian, 6 - 1), ScaleNote.D);
+
+    //  C Mixolydian Pentatonic is made by: C, E, F, G, Bb
+    expect(getModeScaleNote(MajorKey.C, Mode.mixolydian, 1 - 1), ScaleNote.C);
+    expect(getModeScaleNote(MajorKey.C, Mode.mixolydian, 3 - 1), ScaleNote.E);
+    expect(getModeScaleNote(MajorKey.C, Mode.mixolydian, 4 - 1), ScaleNote.F);
+    expect(getModeScaleNote(MajorKey.C, Mode.mixolydian, 5 - 1), ScaleNote.G);
+    expect(getModeScaleNote(MajorKey.C, Mode.mixolydian, 7 - 1), ScaleNote.Bb);
+
+    //  A Mixolydian Pentatonic is made by: A, C#, D, E, G
+    expect(getModeScaleNote(MajorKey.A, Mode.mixolydian, 1 - 1), ScaleNote.A);
+    expect(getModeScaleNote(MajorKey.A, Mode.mixolydian, 3 - 1), ScaleNote.Cs);
+    expect(getModeScaleNote(MajorKey.A, Mode.mixolydian, 4 - 1), ScaleNote.D);
+    expect(getModeScaleNote(MajorKey.A, Mode.mixolydian, 5 - 1), ScaleNote.E);
+    expect(getModeScaleNote(MajorKey.A, Mode.mixolydian, 7 - 1), ScaleNote.G);
+
   });
 
   test('test mode chromatic scales', () {
