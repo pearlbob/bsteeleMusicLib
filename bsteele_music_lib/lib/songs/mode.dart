@@ -4,6 +4,23 @@ import 'chord_component.dart';
 import 'key.dart';
 import 'music_constants.dart';
 
+enum PentatonicScale {
+  major([ChordComponent.root, ChordComponent.second, ChordComponent.third, ChordComponent.fifth, ChordComponent.sixth]),
+  minor([
+    ChordComponent.root,
+    ChordComponent.flatThird,
+    ChordComponent.fourth,
+    ChordComponent.fifth,
+    ChordComponent.flatSeventh,
+  ]);
+
+  const PentatonicScale(this.degrees);
+
+  static final int notesPerScale = 5;
+
+  final List<ChordComponent> degrees;
+}
+
 enum Mode {
   ionian(0, '1 2 3 4 5 6 7', true), // The standard major scale (e.g., C-D-E-F-G-A-B-C).
   dorian(2, '1 2 b3 4 5 6 b7', false), // A minor mode with a raised 6th (e.g., D-E-F-G-A-B-C-D).
@@ -14,6 +31,8 @@ enum Mode {
   locrian(11, '1 b2 b3 4 b5 b6 b7', false); // A diminished mode, rarely used (e.g., B-C-D-E-F-G-A-B).
 
   const Mode(this.halfStep, this.formula, this._isMajor);
+
+  PentatonicScale get pentatonicScale => isMajor ? PentatonicScale.major : PentatonicScale.minor;
 
   bool get isMajor => _isMajor;
 
