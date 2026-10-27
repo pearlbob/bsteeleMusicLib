@@ -2,6 +2,52 @@ import 'dart:math';
 
 import 'chord_descriptor.dart';
 
+enum Diatonic {
+  major_I('I'),
+  mm_ii('ii'),
+  major_iii('iii'),
+  major_IV('IV'),
+  major_V('V'),
+  mm_VI('VI'),
+  major_vii('vii'),
+  minor_i('i'),
+  //mm_ii('ii'),
+  minor_III('III'),
+  minor_iv('iv'),
+  minor_v('v'),
+  //mm_VI('VI'),
+  minor_VII('VII');
+
+  Diatonic(this._label);
+
+  static List<Diatonic> parse(String s) {
+    List<Diatonic> ret = [];
+
+    for (String diatonicLabel in s.split(' ')) {
+      Diatonic? diatonic;
+      for (Diatonic d in Diatonic.values) {
+        if (diatonicLabel == d._label) {
+          diatonic = d;
+          break;
+        }
+      }
+      if (diatonic == null) {
+        throw ('Diatonic not found for: "$diatonicLabel"');
+      } else
+        ret.add(diatonic);
+    }
+
+    return ret;
+  }
+
+  String get label => _label;
+  final String _label;
+}
+
+const List<Diatonic> majorDiatonics = [.major_I, .mm_ii, .major_iii, .major_IV, .major_V, .mm_VI, .major_vii];
+
+const List<Diatonic> minorDiatonics = [.minor_i, .mm_ii, .minor_III, .minor_iv, .minor_v, .mm_VI, .minor_VII];
+
 // ignore: constant_identifier_names
 enum MajorDiatonic { I, ii, iii, IV, V, VI, vii }
 
