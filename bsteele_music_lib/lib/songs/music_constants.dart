@@ -3,22 +3,22 @@ import 'dart:math';
 import 'chord_descriptor.dart';
 
 enum Diatonic {
-  major_I('I'),
-  mm_ii('ii'),
-  major_iii('iii'),
-  major_IV('IV'),
-  major_V('V'),
-  mm_VI('VI'),
-  major_vii('vii'),
-  minor_i('i'),
-  //mm_ii('ii'),
-  minor_III('III'),
-  minor_iv('iv'),
-  minor_v('v'),
-  //mm_VI('VI'),
-  minor_VII('VII');
+  major_I('I', 0),
+  mm_ii('ii', 2),
+  major_iii('iii', 4),
+  major_IV('IV', 5),
+  major_V('V', 7),
+  mm_VI('VI', 9),
+  major_vii('vii', 10),
+  minor_i('i', 1),
+  //mm_ii('ii', 2),
+  minor_III('III', 4),
+  minor_iv('iv', 5),
+  minor_v('v', 7),
+  mm_vi('vi', 9),
+  minor_VII('VII', 10);
 
-  Diatonic(this._label);
+  Diatonic(this._label, this.halfStep);
 
   static List<Diatonic> parse(String s) {
     List<Diatonic> ret = [];
@@ -42,6 +42,7 @@ enum Diatonic {
 
   String get label => _label;
   final String _label;
+  final int halfStep;
 }
 
 const List<Diatonic> majorDiatonics = [.major_I, .mm_ii, .major_iii, .major_IV, .major_V, .mm_VI, .major_vii];
