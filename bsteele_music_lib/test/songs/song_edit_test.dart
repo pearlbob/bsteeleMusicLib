@@ -31,7 +31,7 @@ class TestSong {
 
   void edit(MeasureEditType type, String? locationString, String? measureNodeString, String? editEntry) {
     //  de-music character the result
-    measureNodeString = deMusic(measureNodeString);
+    String? currentMeasureNodeString = deMusic(measureNodeString);
 
     //  setup for edit as requested
     _myA.setCurrentMeasureEditType(type);
@@ -40,8 +40,8 @@ class TestSong {
 
       expect(_myA.getCurrentChordSectionLocation().toString(), locationString);
 
-      if (measureNodeString != null) {
-        expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), measureNodeString.trim());
+      if (currentMeasureNodeString != null) {
+        expect(_myA.getCurrentMeasureNode()!.toMarkup().trim(), currentMeasureNodeString.trim());
       }
     }
 
@@ -65,7 +65,8 @@ class TestSong {
     expect(_myA.toMarkup().trim(), deMusic(chords)!.trim());
   }
 
-  void post(MeasureEditType type, String currentLocationString, String? currentMeasureNodeString) {
+  void post(MeasureEditType type, String currentLocationString, String? measureNodeString) {
+    String? currentMeasureNodeString = measureNodeString;
     currentMeasureNodeString = deMusic(currentMeasureNodeString);
 
     expect(_myA.currentMeasureEditType, type);

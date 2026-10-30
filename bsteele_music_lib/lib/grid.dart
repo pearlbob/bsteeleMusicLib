@@ -44,7 +44,9 @@ class Grid<T> {
     }
   }
 
-  void set(int r, int c, T? t) {
+  void set(int setRow, int setColumn, T? t) {
+    int r = setRow;
+    int c = setColumn;
     if (r < 0) {
       r = 0;
     }

@@ -252,7 +252,7 @@ class RollingAverage {
         _index = 0;
       }
     }
-    assert((_sum - _list.reduce((value, element) => value += element)).abs() < 1e-6);
+    assert((_sum - _list.reduce((value, element) => value + element)).abs() < 1e-6);
 
     //  average
     return _sum / _list.length;

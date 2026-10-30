@@ -4,6 +4,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
+import '../util/util.dart';
 import 'music_constants.dart';
 import 'pitch.dart';
 import 'scale_chord.dart';
@@ -64,48 +65,57 @@ enum MinorKeyEnum {
   // ignore: constant_identifier_names
   /// E flat minor
   // ignore: constant_identifier_names
-  eb,
+  eb('e♭'),
 
   /// B flat minor
   // ignore: constant_identifier_names
-  bb,
+  bb('b♭'),
 
   /// F minor
   // ignore: constant_identifier_names
-  f,
+  f('f'),
 
   /// C minor
   // ignore: constant_identifier_names
-  c,
+  c('c'),
 
   /// G minor
   // ignore: constant_identifier_names
-  g,
+  g('g'),
 
   /// D minor
-  d,
+  d('d'),
 
   /// A minor
-  a,
+  a('a'),
 
   /// E minor
-  e,
+  e('e'),
 
   /// B minor
-  b,
+  b('b'),
 
   /// F sharp minor
-  fs,
+  fs('f♯'),
 
   /// C sharp minor
-  cs,
+  cs('c♯'),
 
   /// G sharp minor
-  gs,
+  gs('g♯'),
 
   /// D sharp minor (aka. E flat minor)
   // ignore: constant_identifier_names
-  ds,
+  ds('d♯');
+
+  const MinorKeyEnum(this.minorKeyString);
+
+  @override
+  String toString() {
+    return minorKeyString;
+  }
+
+  final String minorKeyString;
 }
 
 // Each major key has a relative minor, with which it shares a key signature.
@@ -863,6 +873,7 @@ final class MinorKey implements Key, Comparable<MinorKey> {
 
   static MinorKey get(MinorKeyEnum ke) {
     if (_minorMap == null) {
+      //  lazy eval
       _minorMap = {};
       for (var ke in MinorKeyEnum.values) {
         _minorMap![ke] = MinorKey._(ke);
@@ -889,7 +900,7 @@ final class MinorKey implements Key, Comparable<MinorKey> {
 
   @override
   String toString() {
-    return minorKeyEnum.name;
+    return '${Util.firstToUpper(minorKeyEnum.toString())}m';
   }
 
   @override
